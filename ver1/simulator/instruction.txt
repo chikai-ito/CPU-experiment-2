@@ -1,3 +1,2 @@
-ADD r2 r2 r1
-ADD r2 r1 r2
-J 0
+ADDI r3 r3 1
+ADDI r3 r3 -2

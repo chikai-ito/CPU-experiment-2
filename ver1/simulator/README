@@ -1,4 +1,18 @@
 現在の仕様
 ADD r1 r2 r3を実装
-J 1で1行目にjump(この実装は変える必要あり)
+J 0で1行目にjump(この実装は変える必要あり)
 BEQ のoffsetも上記理由で実装は変える必要あり
+
+fib :
+  BEQ r3 r0 4
+  ADD r4 r4 r3
+  SUB r3 r3 1
+  J 1
+last:
+  MR r3 r4
+をイメージしてfib.txtを実装
+
+
+<fibの動かし方>
+main.ccのコメントアウトを外す
+./simulator fib.txtでコードが実行される
