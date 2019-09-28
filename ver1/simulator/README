@@ -13,6 +13,6 @@ last:
 をイメージしてfib.txtを実装
 
 
-<fibの動かし方>
+<累計和の動かし方>
 main.ccのコメントアウトを外す
 ./simulator fib.txtでコードが実行される
