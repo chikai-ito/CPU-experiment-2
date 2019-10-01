@@ -16,3 +16,41 @@ last:
 <累計和の動かし方>
 main.ccのコメントアウトを外す
 ./simulator fib.txtでコードが実行される
+
+
+< fib.txtの構想 >
+BEQ r3 r0 0の場所にとぶ
+ADDI r0 r11 1
+BEQ r3 r11 1の場所にとぶ
+ADDI r0 r12 2
+BEQ r3 r12 2の場所にとぶ
+ADDI r0 r4 1
+ADDI r0 r5 0
+ADD r0 r3 r6
+ADDI r0 r3 1
+J pat2の場所に飛ぶ
+
+pat2の場所
+BEQ r6 2 outの場所に飛ぶ
+ADDI r3 r3 -1
+J calcの場所に飛ぶ
+
+calcの場所
+ADD r0 r4 r5
+ADD r0 r3 r4
+ADD r4 r5 r3
+J pat2の場所
+
+
+
+0の場所
+ADDI r0 r3 0
+
+1の場所
+ADDI r0 r3 1
+
+2の場所
+ADDI r0 r3 2
+
+outの場所
+ADD r0 r3 r3
