@@ -34,10 +34,10 @@ void exec_normal_code(string code, int pc, int* reg, int* now){
 	else if (code.substr(0,6) == "000010")
 	{ 
 		//JUMP命令の実行
-		cout << *now << endl;
+		cout << "before jump " <<*now << endl;
 		//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 		*now = stoi(code.substr(6,26), 0, 2) - 1;
-		cout << *now << endl;
+		cout << "after jump " << *now << endl;
 		cout << "J" << endl;
 	}
 	cout << code << endl;

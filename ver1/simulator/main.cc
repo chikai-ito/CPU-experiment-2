@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <utility>
 #include "exec.h"
 #include "assembler.h"
+#include "label_solver.h"
+#include "create_execute_file.h"
 using namespace std;
 
 int main(int argc, char**argv){
@@ -17,15 +20,32 @@ int main(int argc, char**argv){
 
 	//初期化などの処理を行うならここ
 	//fib(10)の場合fib.txtを用いて下記1行をコメントアウト
-	reg[3] = 10; 
+	reg[3] = 10;
+
+	pair<string,int> label_list[500];
+	//array of instructions which will be written on the execute.txt
+	string execute_instruction[500];
+	//label解決をまず行う
+	int line_num = 0;
+	int array_num = 0;
+	while(!reading_file.eof()){
+		getline(reading_file,one_assemble_instruction);
+		label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
+	}
 
 
+	//using label_list, create new file named execute.txt, which is written label-solved code
+	create_execute_file(execute_instruction,label_list,line_num,array_num);
+
+
+	ifstream reading_file1;
+	reading_file1.open("execute.txt",ios::in);
 	//この部分に命令をまず入れる。1つのstringが1assebly命令に対応。
 	string instruction_set [500];
 	int inst_num = 0;
-	while(!reading_file.eof())
+	while(!reading_file1.eof())
   {
-    getline(reading_file, one_assemble_instruction);
+    getline(reading_file1, one_assemble_instruction);
 		instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}
@@ -35,9 +55,9 @@ int main(int argc, char**argv){
 	//one_assemble_instructionがアセンブリコード1行に対応
 	//one_instructionが機械語一命令に対応
 	//debug用にassembleを用意したが後々コメントアウト予定
-	for(int now = 0; now < inst_num; now++)
+	for(int now = 0; now < inst_num-1; now++)
 	{
-		cout << "opsition is " << now << endl;
+		cout << "position is " << now << endl;
 		string one_instruction = assemble(instruction_set[now]);
 
 		if (one_instruction.substr(0,6) == "000000"){

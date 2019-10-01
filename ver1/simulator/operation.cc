@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include <utility>
 using namespace std;
 
 //べき乗計算
@@ -23,3 +24,16 @@ string decimal_to_binary(int num, int n){
   }
   return binary;
 }
+
+//find a specific value from the array of pairs
+int find_value_from_pair(pair<string,int>* p, string s,int l){
+	for(int i=0; i<l;i++){
+		if (p[i].first == s) {return p[i].second;}
+	}
+	return 0;
+}
+	
+
+
+
+

@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <bitset>
+#include <utility>
 #include "operation.h"
 using namespace std;
 
@@ -11,6 +12,7 @@ string assemble (string line){
 	string opcode;
 	istringstream s(line);
 	s >> opcode;
+	//branch for every instructions
 	if (opcode == "ADD") {
 		string rd, rs, rt;
 		s >> rd >> rs >> rt;
@@ -50,6 +52,11 @@ string assemble (string line){
     string instr_index_s = decimal_to_binary(atoi(instr_index.c_str()),26);
     return_code = "000010" + instr_index_s;
   }
+	else{
+		//this area is for the label
+		string colon;
+		s >> colon;
+	}
   cout << return_code << endl;	
 	return return_code;
 }
