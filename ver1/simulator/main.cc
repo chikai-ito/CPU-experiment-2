@@ -17,7 +17,7 @@ int main(int argc, char**argv){
 
 	//初期化などの処理を行うならここ
 	//fib(10)の場合fib.txtを用いて下記1行をコメントアウト
-	//reg[3] = 10; 
+	reg[3] = 10; 
 
 
 	//この部分に命令をまず入れる。1つのstringが1assebly命令に対応。
@@ -37,6 +37,7 @@ int main(int argc, char**argv){
 	//debug用にassembleを用意したが後々コメントアウト予定
 	for(int now = 0; now < inst_num; now++)
 	{
+		cout << "opsition is " << now << endl;
 		string one_instruction = assemble(instruction_set[now]);
 
 		if (one_instruction.substr(0,6) == "000000"){
