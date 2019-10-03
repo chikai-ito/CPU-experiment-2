@@ -3,6 +3,17 @@ ADD r1 r2 r3を実装
 J 0で1行目にjump(この実装は変える必要あり)
 BEQ のoffsetも上記理由で実装は変える必要あり
 
+
+how to use simulator
+
+./simulator {assembly code} {option}
+
+option : 
+	-a : create machine code file as machine_code.txt in the current directory
+
+
+
+
 fib :
   BEQ r3 r0 4
   ADD r4 r4 r3
