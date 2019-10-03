@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <utility>
+#include <fstream>
 #include "exec.h"
 #include "assembler.h"
 #include "label_solver.h"
@@ -50,6 +51,19 @@ int main(int argc, char**argv){
 		inst_num = inst_num + 1;
 	}
 
+	// create machine code file
+if(argc==3){
+	if(~strcmp(argv[2], "-a")){
+		ofstream writing_file;
+		writing_file.open("machine_code.txt");
+		for(int i=0; i<inst_num -1; i++){
+			string one_machine_code = assemble(instruction_set[i]);
+			writing_file << one_machine_code << endl;
+		}		
+	writing_file.close();
+	}
+}
+
 
 	//このwhileの中にアセンブリコード1行ずつが対応
 	//one_assemble_instructionがアセンブリコード1行に対応
@@ -70,10 +84,12 @@ int main(int argc, char**argv){
 		}
 
 		//ここでregisterの中身を出力する
+		/*
 		cout << "---------------------------" << endl;
 		for(int i = 0; i<32; i++){
 			printf("r%d = %d\n", i, reg[i]);
 		}
+		*/
 	}
 	
 	return 0;

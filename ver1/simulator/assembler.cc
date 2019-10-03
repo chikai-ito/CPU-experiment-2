@@ -57,6 +57,5 @@ string assemble (string line){
 		string colon;
 		s >> colon;
 	}
-  cout << return_code << endl;	
 	return return_code;
 }
