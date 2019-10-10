@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -o
+CFLAGS = -Wall -O2 -o
 SRCS = $(shell find . -name "*.cc")
 OBJS = $(SRCS:.cc=.o)
 
