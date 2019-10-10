@@ -16,6 +16,8 @@ int main(int argc, char**argv){
 	reading_file.open(filename,ios::in);
 	string one_assemble_instruction;
 	int reg[32];
+	float freg[32];
+	int mem[65536];
 	int clock = 0;
 	int pc = 0;
 
@@ -61,6 +63,7 @@ if(argc==3){
 			writing_file << one_machine_code << endl;
 		}		
 	writing_file.close();
+	return 0;
 	}
 }
 
@@ -78,9 +81,13 @@ if(argc==3){
 			//最初のopecodeがspecialつまり000000だった場合
 			exec_special_code(one_instruction,pc,reg);
 		}
+		else if (one_instruction.substr(0,6) == "010001"){
+			//code for fpu
+			exec_fpu_code(one_instruction,pc,reg,freg);
+		}
 		else{
 			//最初の6文字で命令の判別が可能な場合
-			exec_normal_code(one_instruction,pc,reg,&now);
+			exec_normal_code(one_instruction,pc,reg,&now,mem);
 		}
 
 		//ここでregisterの中身を出力する
