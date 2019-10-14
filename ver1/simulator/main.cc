@@ -23,7 +23,6 @@ int main(int argc, char**argv){
 
 	//初期化などの処理を行うならここ
 	//fib(10)の場合fib.txtを用いて下記1行をコメントアウト
-	reg[3] = 10;
 
 	pair<string,int> label_list[500];
 	//array of instructions which will be written on the execute.txt
@@ -76,10 +75,13 @@ if(argc==3){
 	{
 		cout << "position is " << now << endl;
 		string one_instruction = assemble(instruction_set[now]);
+		
+
+		if(one_instruction == "00000000000000000000000000000000") break;
 
 		if (one_instruction.substr(0,6) == "000000"){
 			//最初のopecodeがspecialつまり000000だった場合
-			exec_special_code(one_instruction,pc,reg);
+			exec_special_code(one_instruction,pc,&now,reg);
 		}
 		else if (one_instruction.substr(0,6) == "010001"){
 			//code for fpu
@@ -87,16 +89,14 @@ if(argc==3){
 		}
 		else{
 			//最初の6文字で命令の判別が可能な場合
-			exec_normal_code(one_instruction,pc,reg,&now,mem);
+			exec_normal_code(one_instruction,pc,reg,freg,&now,mem);
 		}
 
 		//ここでregisterの中身を出力する
-		/*
 		cout << "---------------------------" << endl;
 		for(int i = 0; i<32; i++){
 			printf("r%d = %d\n", i, reg[i]);
 		}
-		*/
 	}
 	
 	return 0;

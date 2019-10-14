@@ -13,7 +13,13 @@ void create_execute_file(string* execute_instruction, pair<string,int>* label_li
 		string jump;
 		istringstream s(execute_instruction[i]);
 		s >> jump;
-		if(jump == "J") {
+		if(jump == "j") {
+			string jump_to;
+			s >> jump_to;
+			int jump_to_num = find_value_from_pair(label_list,jump_to,array_num);
+			writing_file << jump << " " << jump_to_num << endl;
+		}
+		else if(jump == "jal"){
 			string jump_to;
 			s >> jump_to;
 			int jump_to_num = find_value_from_pair(label_list,jump_to,array_num);
