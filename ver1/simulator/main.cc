@@ -87,7 +87,7 @@ if(argc==3){
 		}
 		else{
 			//最初の6文字で命令の判別が可能な場合
-			exec_normal_code(one_instruction,pc,reg,&now,mem);
+			exec_normal_code(one_instruction,pc,reg,freg,&now,mem);
 		}
 
 		//ここでregisterの中身を出力する
