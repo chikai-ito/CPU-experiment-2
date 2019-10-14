@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-void alu(string code, int pc, int* reg){
+void alu(string code, int pc, int* now, int* reg){
 	if(code.substr(26,6) == "100000") {
 		//ADDの実行 rd = rs + rt
 		cout << "ADDを実行します" << endl;
@@ -51,4 +51,9 @@ void alu(string code, int pc, int* reg){
     int rt = stoi(code.substr(11,5), 0, 2);
 		reg[rt] = reg[rs];
 	}
+	else if(code.substr(26,6) == "111111"){
+    //execute retl
+    *now = reg[28];
+		cout << "retl to " << *now << endl;
+  }
 }

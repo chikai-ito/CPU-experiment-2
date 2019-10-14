@@ -3,9 +3,9 @@
 #include "alu.h"
 #include "fpu.h"
 using namespace std;
-void exec_special_code(string code, int pc, int* reg){
+void exec_special_code(string code, int pc, int* now, int* reg){
 	//最初が000000の命令はaluで実行
-	alu(code,pc,reg);
+	alu(code,pc,now,reg);
 }
 void exec_fpu_code(string code, int pc, int* reg, float* freg){
 	fpu(code,pc,reg,freg);
@@ -108,19 +108,25 @@ void exec_normal_code(string code, int pc, int* reg, float* freg, int* now, int*
 		cout << "after jump " << *now << endl;
 		cout << "J" << endl;
 	}
-	else if (code.substr(0,6) == "001000")
-	{
-		reg[27] = *now;
-		*now = stoi(code.substr(6,26), 0, 2) - 1;
-	}
+	else if (code.substr(0,6) == "011000")
+  {
+    //execute jal
+    cout << "before jump " <<*now << endl;
+		reg[28] = *now;
+    //*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+    *now = stoi(code.substr(6,26), 0, 2) - 1;
+    cout << "after jump " << *now << endl;
+    cout << "jal" << endl;
+  }
 	else if (code.substr(0,6) == "100011")
 	{
-		//execute LW instruction
+		//execute lw instruction
 		int base = stoi(code.substr(6,5),0,2);
 		int rt = stoi(code.substr(11,5),0,2);
 		if(code[16] == '1'){
       reg[rt] = mem[reg[base] + stoi(code.substr(17,15), 0, 2) - power(2,15)];
     }else{
+			cout << reg[base] + stoi(code.substr(16,16), 0, 2) << endl;
       reg[rt] = mem[reg[base] + stoi(code.substr(16,16), 0, 2)];
     }
 	}
@@ -145,7 +151,7 @@ void exec_normal_code(string code, int pc, int* reg, float* freg, int* now, int*
 	}
 	else if (code.substr(0,6) == "101011")
 	{
-		//execute SW instruction
+		//execute sw instruction
     int base = stoi(code.substr(6,5),0,2);
     int rt = stoi(code.substr(11,5),0,2);
     if(code[16] == '1'){
