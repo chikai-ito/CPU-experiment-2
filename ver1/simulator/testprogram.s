@@ -25,9 +25,9 @@ f.18 :
   sw  %r26 %r4 16
   sw  %r26 %r3 20
   sw  %r26 %r28 28
-  addi  %r26 32 %r26
+  addi  %r26 %r26 32
   jal g.15
-  addi  %r0 32 %r25
+  addi  %r0 %r25 32
   sub %r26 %r25 %r26
   lw  %r26 %r28 28
   lw  %r26 %r2 20

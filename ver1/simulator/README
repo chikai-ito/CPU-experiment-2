@@ -1,9 +1,3 @@
-現在の仕様
-ADD r1 r2 r3を実装
-J 0で1行目にjump(この実装は変える必要あり)
-BEQ のoffsetも上記理由で実装は変える必要あり
-
-
 how to use simulator
 
 ./simulator {assembly code} {option}
