@@ -1,3 +1,3 @@
 #include <utility>
 using namespace std;
-string assemble(string);	
+string assemble(string,int);	

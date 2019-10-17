@@ -6,8 +6,8 @@
 #include "operation.h"
 using namespace std;
 
-
-string assemble (string line){
+//option 0 is for execute, 1 is for core
+string assemble (string line, int option){
 	string return_code;
 	string opcode;
 	istringstream s(line);
@@ -118,6 +118,7 @@ string assemble (string line){
 	}
 	else if (opcode == "div"){
 		string rs,rt,rd;
+		s >> rs >> rt >> rd;
 		string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     string rd_s = decimal_to_binary(atoi(rd.substr(2,rd.length()-2).c_str()),5);
@@ -216,18 +217,21 @@ string assemble (string line){
 	}
 	else if (opcode == "mfc1"){
 		string rt,fs;
+		s >> rt >> fs;
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
 		string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
 		return_code = "01000100000" + rt_s + fs_s + "00000000000";
 	}
 	else if (opcode == "mtc1"){
     string rt,fs;
+		s >> rt >> fs;
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
     return_code = "01000100100" + rt_s + fs_s + "00000000000";
   }
 	else if (opcode == "mod"){
 		string rs,rt,rd;
+		s >> rs >> rt >> rd;
 		string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     string rd_s = decimal_to_binary(atoi(rd.substr(2,rd.length()-2).c_str()),5);
@@ -235,18 +239,21 @@ string assemble (string line){
 	}
 	else if (opcode == "mov"){
 		string rs,rt;
+		s >> rs >> rt;
 		string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
-    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+		string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
 		return_code = "000000" + rs_s + rt_s + "0000000000001001";
 	}
 	else if (opcode == "mov.s"){
 		string rs,rt;
+		s >> rs >> rt;
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     return_code = "010001" + rs_s + rt_s + "0000000000001001";
 	}
 	else if (opcode == "multh"){
 		string rs,rt,rd;
+		s >> rs >> rt >> rd;
 		string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
 		string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     string rd_s = decimal_to_binary(atoi(rd.substr(2,rd.length()-2).c_str()),5);
@@ -254,6 +261,7 @@ string assemble (string line){
 	}
 	else if (opcode == "multl"){
 		string rs,rt,rd;
+		s >> rs >> rt >> rd;
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     string rd_s = decimal_to_binary(atoi(rd.substr(2,rd.length()-2).c_str()),5);
@@ -349,6 +357,9 @@ string assemble (string line){
 		//this area is for the label
 		string colon;
 		s >> colon;
+	}
+	if (option == 1) {
+		return_code = return_code + "  \\\\ " + opcode;
 	}
 	return return_code;
 }
