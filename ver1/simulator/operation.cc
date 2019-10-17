@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<sstream>
 #include <utility>
 using namespace std;
 
@@ -34,6 +35,12 @@ int find_value_from_pair(pair<string,int>* p, string s,int l){
 }
 	
 
+//string to unsigned int
+unsigned int StringToUInt(string input)
+{
+	unsigned int a = stoul(input,nullptr,2);
+  return a;
+}
 
 
 

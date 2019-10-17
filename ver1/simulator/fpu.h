@@ -1,2 +1,2 @@
 using namespace std;
-void fpu(string, int, int*, float*);
+void fpu(unsigned int, int, unsigned int*, float*);

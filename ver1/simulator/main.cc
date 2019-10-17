@@ -6,6 +6,7 @@
 #include "exec.h"
 #include "assembler.h"
 #include "label_solver.h"
+#include "operation.h"
 #include "create_execute_file.h"
 using namespace std;
 
@@ -15,9 +16,9 @@ int main(int argc, char**argv){
 	ifstream reading_file;
 	reading_file.open(filename,ios::in);
 	string one_assemble_instruction;
-	int reg[32];
+	unsigned int reg[32];
 	float freg[32];
-	int mem[65536];
+	unsigned int mem[65536];
 	int clock = 0;
 	int pc = 0;
 
@@ -57,7 +58,7 @@ if(argc==3){
 	if(~strcmp(argv[2], "-a")){
 		ofstream writing_file;
 		writing_file.open("machine_code.txt");
-		for(int i=0; i<inst_num -1; i++){
+		for(int i=0; i<line_num -1; i++){
 			string one_machine_code = assemble(instruction_set[i],1);
 			writing_file << one_machine_code << endl;
 		}	
@@ -66,38 +67,60 @@ if(argc==3){
 	}
 }
 
+	//it is for executing simulator
+	ofstream writing_file;
+    writing_file.open("machine_code.txt");
+    for(int i=0; i<line_num -1; i++){
+      string one_machine_code = assemble(instruction_set[i],0);
+      writing_file << one_machine_code << endl;
+    }
+  writing_file.close();
+
+
 
 	//このwhileの中にアセンブリコード1行ずつが対応
 	//one_assemble_instructionがアセンブリコード1行に対応
 	//one_instructionが機械語一命令に対応
 	//debug用にassembleを用意したが後々コメントアウト予定
+	//
+	unsigned int int_inst_set [500];
+	for(int i = 0; i < line_num-1; i++){
+    string one_instruction = assemble(instruction_set[i],0);
+		int_inst_set[i] = StringToUInt(one_instruction);
+	}
+
 	for(int now = 0; now < inst_num-1; now++)
 	{
-		cout << "position is " << now << endl;
-		string one_instruction = assemble(instruction_set[now],0);
-		
-
-		if(one_instruction == "00000000000000000000000000000000") break;
-
-		if (one_instruction.substr(0,6) == "000000"){
-			//最初のopecodeがspecialつまり000000だった場合
-			exec_special_code(one_instruction,pc,&now,reg);
-		}
-		else if (one_instruction.substr(0,6) == "010001"){
-			//code for fpu
-			exec_fpu_code(one_instruction,pc,reg,freg);
-		}
-		else{
-			//最初の6文字で命令の判別が可能な場合
-			exec_normal_code(one_instruction,pc,reg,freg,&now,mem);
+		unsigned int one_instruction = int_inst_set[now];
+		if(one_instruction == 0) break;
+		switch(one_instruction >> 26){	
+			case 0b000000 :
+				//最初のopecodeがspecialつまり000000だった場合
+				exec_special_code(one_instruction,pc,&now,reg);
+				break;
+			case 0b010001 :
+				//code for fpu
+				exec_fpu_code(one_instruction,pc,reg,freg);
+				break;
+			default :
+				//最初の6文字で命令の判別が可能な場合
+				exec_normal_code(one_instruction,pc,reg,freg,&now,mem);
+				break;
 		}
 
+		/*
 		//ここでregisterの中身を出力する
 		cout << "---------------------------" << endl;
 		for(int i = 0; i<32; i++){
 			printf("r%d = %d\n", i, reg[i]);
 		}
+		*/
 	}
+	
+	cout << "---------------------------" << endl;
+    for(int i = 0; i<32; i++){
+      printf("r%d = %d\n", i, reg[i]);
+    }
 	
 	return 0;
 }

@@ -1,59 +1,59 @@
 #include <iostream>
 #include <string>
 using namespace std;
-void alu(string code, int pc, int* now, int* reg){
-	if(code.substr(26,6) == "100000") {
-		//ADDの実行 rd = rs + rt
-		cout << "ADDを実行します" << endl;
-		int rs = stoi(code.substr(6,5), 0, 2);
-		int rt = stoi(code.substr(11,5), 0, 2);
-		int rd = stoi(code.substr(16,5), 0, 2);
-		reg[rd] = reg[rs] + reg[rt];
+void alu(unsigned int code, int pc, int* now, unsigned int* reg){
+	switch (code & 0b111111) {
+		int rs,rt,rd;
+		case 0b100000 :
+			//ADDの実行 rd = rs + rt
+			rs = (int)((code >> 21) & 0b11111);
+			rt = (int)((code >> 16) & 0b11111);
+			rd = (int)((code >> 11) & 0b11111);
+			reg[rd] = reg[rs] + reg[rt];
+			break;
+		case 0b011000 :
+			//execute MULTH
+			rs = (int)((code >> 21) & 0b11111);
+			rt = (int)((code >> 16) & 0b111111);
+			rd = (int)((code >> 11) & 0b11111);
+			reg[rd] = (int)(((long long)reg[rs] * (long long)reg[rt]) / 4294967296);
+			break;
+		case 0b011001 :
+			//execute MULTL
+			rs = (int)((code >> 21) & 0b11111);
+    	rt = (int)((code >> 16) & 0b111111);
+    	rd = (int)((code >> 11) & 0b11111);
+			reg[rd] = (int)(((long long)reg[rs] * (long long)reg[rt]) % 4294967296);
+			break;
+		case 0b011010 :
+			//execute DIV
+			rs = (int)((code >> 21) & 0b11111);
+    	rt = (int)((code >> 16) & 0b11111);
+    	rd = (int)((code >> 11) & 0b11111);
+			reg[rd] = reg[rs] / reg[rt];
+			break;
+		case 0b011011 :
+			rs = (int)((code >> 21) & 0b11111);
+    	rt = (int)((code >> 16) & 0b11111);
+    	rd = (int)((code >> 11) & 0b11111);
+    	reg[rd] = reg[rs] % reg[rt];
+			break;
+		case 0b100010 :
+			//SUBの実行
+			rs = (int)((code >> 21) & 0b11111);
+    	rt = (int)((code >> 16) & 0b11111);
+    	rd = (int)((code >> 11) & 0b11111);
+			reg[rd] = reg[rs] - reg[rt];
+			break;
+		case 0b001001 :
+			//execute mov
+			rs = (int)((code >> 21) & 0b11111);
+    	rt = (int)((code >> 16) & 0b11111);
+			reg[rt] = reg[rs];
+			break;
+		case 0b111111:
+    	//execute retl
+    	*now = reg[28];
+			break;
 	}
-	else if(code.substr(26,6) == "011000"){
-		//execute MULTH
-		int rs = stoi(code.substr(6,5),0,2);
-		int rt = stoi(code.substr(11,5),0,2);
-		int rd = stoi(code.substr(16,5),0,2);
-		reg[rd] = (int)(((long long)reg[rs] * (long long)reg[rt]) / 4294967296);
-	}
-	else if(code.substr(26,6) == "011001"){
-		//execute MULTL
-		int rs = stoi(code.substr(6,5),0,2);
-    int rt = stoi(code.substr(11,5),0,2);
-    int rd = stoi(code.substr(16,5),0,2);
-		reg[rd] = (int)(((long long)reg[rs] * (long long)reg[rt]) % 4294967296);
-	}
-	else if(code.substr(26,6) == "011010"){
-		//execute DIV
-		int rs = stoi(code.substr(6,5), 0, 2);
-    int rt = stoi(code.substr(11,5), 0, 2);
-    int rd = stoi(code.substr(16,5), 0, 2);
-		reg[rd] = reg[rs] / reg[rt];
-	}
-	else if(code.substr(26,6) == "011011"){
-		int rs = stoi(code.substr(6,5), 0, 2);
-    int rt = stoi(code.substr(11,5), 0, 2);
-    int rd = stoi(code.substr(16,5), 0, 2);
-    reg[rd] = reg[rs] % reg[rt];
-	}
-	else if(code.substr(26,6) == "100010"){
-		//SUBの実行
-		cout << "SUBを実行します" << endl;
-		int rs = stoi(code.substr(6,5), 0, 2);
-    int rt = stoi(code.substr(11,5), 0, 2);
-    int rd = stoi(code.substr(16,5), 0, 2);
-		reg[rd] = reg[rs] - reg[rt];
-	}
-	else if(code.substr(26,6) == "001001"){
-		//execute mov
-		int rs = stoi(code.substr(6,5), 0, 2);
-    int rt = stoi(code.substr(11,5), 0, 2);
-		reg[rt] = reg[rs];
-	}
-	else if(code.substr(26,6) == "111111"){
-    //execute retl
-    *now = reg[28];
-		cout << "retl to " << *now << endl;
-  }
 }
