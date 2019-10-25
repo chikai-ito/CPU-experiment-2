@@ -1,4 +1,5 @@
 type id_or_imm = V of Id.t | C of int
+type data_t = I of int | F of float
 type t =
   | Ans of exp
   | Let of (Id.t * Type.t) * exp * t
@@ -12,6 +13,7 @@ and exp =
   | Sub of Id.t * id_or_imm
   | SLL of Id.t * id_or_imm
   | Ld of Id.t * id_or_imm
+  | ILd of Id.t * id_or_imm
   | St of Id.t * Id.t * id_or_imm
   | FMovD of Id.t
   | FNegD of Id.t
@@ -20,6 +22,7 @@ and exp =
   | FMulD of Id.t * Id.t
   | FDivD of Id.t * Id.t
   | LdDF of Id.t * id_or_imm
+  | ILdDF of Id.t * id_or_imm
   | StDF of Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
@@ -34,7 +37,7 @@ and exp =
   | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 *)
   | Restore of Id.t (* スタック変数から値を復元 *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
-type prog = Prog of (Id.l * float) list * fundef list * t
+type prog = Prog of (Id.l * data_t) list * fundef list * t
 
 val fletd : Id.t * exp * t -> t (* shorthand of Let for float *)
 val seq : exp * t -> t (* shorthand of Let for unit *)

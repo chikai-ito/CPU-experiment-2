@@ -11,7 +11,7 @@ program_start:
 	addi	%r0 l.19 %r2
 	ld.s	%r2 %f0 0
 	addi	%r0 l.21 %r2
-	ld.s	%r2 %f2 0
+	ld.s	%r2 %f2 
 	sw	%r26 %r28 4
 	addi	%r26 8 %r26	
 	jal	f.8

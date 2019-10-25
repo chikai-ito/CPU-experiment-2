@@ -1,8 +1,10 @@
 open Asm
 
+external get : float -> int32 = "get"
+(*
 external gethi : float -> int32 = "gethi"
 external getlo : float -> int32 = "getlo"
-
+*)
 let stackset = ref S.empty (* すでにSaveされた変数の集合 (caml2html: emit_stackset) *)
 let stackmap = ref [] (* Saveされた変数の、スタックにおける位置 (caml2html: emit_stackmap) *)
 let save x =
@@ -35,8 +37,7 @@ let rec shuffle sw xys =
   (* find acyclic moves *)
   match List.partition (fun (_, y) -> List.mem_assoc y xys) xys with
   | [], [] -> []
-  | (x, y) :: xys, [] -> (* no acyclic mov
-es; resolve a cyclic move *)
+  | (x, y) :: xys, [] -> (* no acyclic moves; resolve a cyclic move *)
       (y, sw) :: (x, y) :: shuffle sw (List.map
                                          (function
                                            | (y', z) when y = y' -> (sw, z)
@@ -69,6 +70,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     Printf.fprintf oc "\tsll\t%s %s %%r25\n" y x
   | NonTail(x), SLL(y, z') -> Printf.fprintf oc "\tsll\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(x), Ld(y, z') -> Printf.fprintf oc "\tlw\t%s %s %s\n" y x (pp_id_or_imm z')
+  | NonTail(x), ILd(y, z') -> Printf.fprintf oc "\tilw\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(_), St(x, y, z') -> Printf.fprintf oc "\tsw\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(x), FMovD(y) when x = y -> ()
   | NonTail(x), FMovD(y) ->
@@ -81,8 +83,9 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), FSubD(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" y z x
   | NonTail(x), FMulD(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" y z x
   | NonTail(x), FDivD(y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" y z x
-  | NonTail(x), LdDF(y, z') -> Printf.fprintf oc "\tld.s\t%s %s %s\n" y x (pp_id_or_imm z')
-  | NonTail(_), StDF(x, y, z') -> Printf.fprintf oc "\tsd.s\t%s %s %s\n" y x (pp_id_or_imm z')
+  | NonTail(x), LdDF(y, z') -> Printf.fprintf oc "\tlw.s\t%s %s %s\n" y x (pp_id_or_imm z')
+  | NonTail(x), ILdDF(y, z') -> Printf.fprintf oc "\tilw.s\t%s %s %s\n" y x (pp_id_or_imm z') 
+  | NonTail(_), StDF(x, y, z') -> Printf.fprintf oc "\tsw.s\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(_), Comment(s) -> Printf.fprintf oc "\t! %s\n" s
   (* 退避の仮想命令の実装 (caml2html: emit_save) *)
   | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
@@ -102,10 +105,12 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | Tail, (Nop | St _ | StDF _ | Comment _ | Save _ as exp) ->
       g' oc (NonTail(Id.gentmp Type.Unit), exp);
       Printf.fprintf oc "\tretl\n";
-  | Tail, (Set _ | SetL _ | Mov _ | Neg _ | Add _ | Sub _ | SLL _ | Ld _ as exp) ->
+  | Tail, (Set _ | SetL _ | Mov _ | Neg _ | Add _ | Sub _
+          | SLL _ | Ld _ | ILd _ as exp) ->
       g' oc (NonTail(regs.(0)), exp);
       Printf.fprintf oc "\tretl\n";
-  | Tail, (FMovD _ | FNegD _ | FAddD _ | FSubD _ | FMulD _ | FDivD _ | LdDF _ as exp) ->
+  | Tail, (FMovD _ | FNegD _ | FAddD _ | FSubD _ | FMulD _ | FDivD _
+          | LdDF _ | ILdDF _ as exp) ->
       g' oc (NonTail(fregs.(0)), exp);
       Printf.fprintf oc "\tretl\n";
   | Tail, (Restore(x) as exp) ->
@@ -243,10 +248,14 @@ let f oc (Prog(data, fundefs, e)) =
   (* Printf.fprintf oc ".align\t8\n"; *)
   Printf.fprintf oc "#data_section\n";
   List.iter
-    (fun (Id.L(x), d) ->
-      Printf.fprintf oc "%s:\t# %f\n" x d;
-      Printf.fprintf oc "\t.long\t0x%lx\n" (gethi d);
-      Printf.fprintf oc "\t.long\t0x%lx\n" (getlo d))
+    (fun (Id.L(x), d') ->
+       match d' with
+         F (d) ->
+         Printf.fprintf oc "%s:\t# %f\n" x d;
+         Printf.fprintf oc "\t.long\t0x%lx\n" (get d);
+       | I (d) ->
+         Printf.fprintf oc "%s:\t# %d\n" x d;
+         Printf.fprintf oc "\t.int\t%d\n" d)
     data;
   (* Printf.fprintf oc ".section\t\".text\"\n"; *)
   (* Printf.fprintf oc ".global\tmin_caml_start\n"; *)
@@ -255,7 +264,7 @@ let f oc (Prog(data, fundefs, e)) =
   (* Printf.fprintf oc "\tsave\t%%r29 -112 %%r29\n"; (* from gcc; why 112? *) *)
   stackset := S.empty;
   stackmap := [];
-  g oc (NonTail("%r0"), e);
+  g oc (NonTail("%r1"), e);
   Printf.fprintf oc "\tret\n";
   List.iter (fun fundef -> h oc fundef) fundefs;
   (* Printf.fprintf oc "\trestore\n" *)
