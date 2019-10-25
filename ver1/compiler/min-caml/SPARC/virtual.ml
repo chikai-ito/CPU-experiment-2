@@ -33,19 +33,40 @@ let expand xts ini addf addi =
 
 let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
   | Closure.Unit -> Ans(Nop)
-  | Closure.Int(i) -> Ans(Set(i))
-  | Closure.Float(d) ->
+  | Closure.Int(i) ->
+    if i < 1048576 && i > -1048576 then Ans(Set(i))
+    else
       let l =
         try
           (* すでに定数テーブルにあったら再利用 *)
-          let (l, _) = List.find (fun (_, d') -> d = d') !data in
+          let (l, _) =
+            List.find (fun (_,d') ->
+                match d' with
+                  I(i') -> i = i'
+                | _ -> false) !data in
           l
         with Not_found ->
           let l = Id.L(Id.genid "l") in
-          data := (l, d) :: !data;
+          data := (l, I(i)) :: !data;
           l in
       let x = Id.genid "l" in
-      Let((x, Type.Int), SetL(l), Ans(LdDF(x, C(0))))
+      Let((x, Type.Int), SetL(l), Ans(ILd(x, C(0))))
+  | Closure.Float(f) ->
+    let l =
+      try
+        (* すでに定数テーブルにあったら再利用 *)
+        let (l, _) =
+          List.find (fun (_, d) ->
+              match d with
+                F (f') -> f = f'
+              | _ -> false) !data in
+        l
+      with Not_found ->
+        let l = Id.L(Id.genid "l") in
+        data := (l, F(f)) :: !data;
+        l in
+    let x = Id.genid "l" in
+    Let((x, Type.Int), SetL(l), Ans(ILdDF(x, C(0))))
   | Closure.Neg(x) -> Ans(Neg(x))
   | Closure.Add(x, y) -> Ans(Add(x, V(y)))
   | Closure.Sub(x, y) -> Ans(Sub(x, V(y)))
