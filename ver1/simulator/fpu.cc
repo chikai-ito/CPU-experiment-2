@@ -36,4 +36,9 @@ void fpu(string code, int pc, int* reg, float* freg){
     int fd = stoi(code.substr(21,5),0,2);
     freg[fd] = freg[fs] - freg[ft];
 	}
+	else if(code.substr(26,6) == "001001"){
+		int ft = stoi(code.substr(6,5),0,2);
+    int fs = stoi(code.substr(11,5),0,2);
+		freg[ft] = freg[fs];
+	}
 }

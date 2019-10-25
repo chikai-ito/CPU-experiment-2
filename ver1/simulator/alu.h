@@ -1,2 +1,2 @@
 using namespace std;
-void alu(string, int, int*);
+void alu(string, int, int*, int*);

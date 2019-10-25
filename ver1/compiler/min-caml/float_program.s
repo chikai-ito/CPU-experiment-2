@@ -1,15 +1,17 @@
 #data_section
 l.21:	# 2.100000
-	.long	0x40066666
+	.long	0xcccccccd
+	.long	0x4000cccc
 l.19:	# 1.100000
-	.long	0x3f8ccccd
+	.long	0x9999999a
+	.long	0x3ff19999
 #text_section
 program_start:
 	addi	%r0 10 %r1
 	addi	%r0 l.19 %r2
-	ilw.s	%r2 %f0 0
+	ld.s	%r2 %f0 0
 	addi	%r0 l.21 %r2
-	ilw.s	%r2 %f2 0
+	ld.s	%r2 %f2 
 	sw	%r26 %r28 4
 	addi	%r26 8 %r26	
 	jal	f.8
