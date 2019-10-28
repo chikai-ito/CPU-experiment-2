@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <utility>
-#include <fstream>
 #include "exec.h"
 #include "assembler.h"
 #include "label_solver.h"
@@ -31,9 +31,36 @@ int main(int argc, char**argv){
 	//label解決をまず行う
 	int line_num = 0;
 	int array_num = 0;
+  int data_num = 0;
+  // flag knows we are in text_section
+  int flag = 0;
 	while(!reading_file.eof()){
 		getline(reading_file,one_assemble_instruction);
-		label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
+    if(flag==0){
+      string label_name;
+      istringstream s(one_assemble_instruction);
+      s >> label_name;
+      if(label_name == "#text_section"){flag++;}
+      else if(label_name[0] != '#'){
+        string colon;
+        s >> colon;
+        string data_code;
+        getline(reading_file,data_code);
+        string lon, number;
+        istringstream s1(data_code);
+        s1 >> lon >> number;
+        cout << number << endl;
+        label_list[array_num].first = label_name;
+        label_list[array_num].second = line_num;
+        line_num++;
+        array_num++;
+        data_num++;
+        //convert number into 32 bit and allocate it into instruction memory
+        //   !!! not yet !!!
+      }
+    } else {
+      label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
+    }
 	}
 
 
@@ -89,6 +116,67 @@ if(argc==3){
 		int_inst_set[i] = StringToUInt(one_instruction);
 	}
 
+
+// --- code for -l option --- 
+if(argc==4){
+  if(~strcmp(argv[2], "-l")){
+    int block = atoi(argv[3]);
+    for(int now = 0; now < block; now++)
+    {
+      unsigned int one_instruction = int_inst_set[now];
+      if(one_instruction == 0) break;
+      switch(one_instruction >> 26){
+        case 0b000000 :
+        //最初のopecodeがspecialつまり000000だった場合
+          exec_special_code(one_instruction,pc,&now,reg);
+          break;
+        case 0b010001 :
+          //code for fpu
+          exec_fpu_code(one_instruction,pc,reg,freg);
+          break;
+        default :
+          //最初の6文字で命令の判別が可能な場合
+          exec_normal_code(one_instruction,pc,reg,freg,&now,mem);
+          break;
+      }
+    }
+    while(1){
+      cout << "---------------------------" << endl;
+      for(int i = 0; i<32; i++){
+        printf("r%d = %d\n", i, reg[i]);
+      }
+      char option;
+      cin >> option;
+      if(option == 'e') break;
+      else if(option == 'c') {
+        unsigned int one_instruction = int_inst_set[block];
+        if(one_instruction == 0) break;
+        switch(one_instruction >> 26){
+          case 0b000000 :
+          //最初のopecodeがspecialつまり000000だった場合
+            exec_special_code(one_instruction,pc,&block,reg);
+            break;
+          case 0b010001 :
+            //code for fpu
+            exec_fpu_code(one_instruction,pc,reg,freg);
+            break;
+          default :
+            //最初の6文字で命令の判別が可能な場合
+            exec_normal_code(one_instruction,pc,reg,freg,&block,mem);
+            break;
+        }
+        block++;
+        continue;
+      }
+    }
+  }
+  return 0;
+}
+// ---  code for -l option ---
+
+
+
+
 	for(int now = 0; now < inst_num-1; now++)
 	{
 		unsigned int one_instruction = int_inst_set[now];
@@ -107,14 +195,6 @@ if(argc==3){
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem);
 				break;
 		}
-
-		/*
-		//ここでregisterの中身を出力する
-		cout << "---------------------------" << endl;
-		for(int i = 0; i<32; i++){
-			printf("r%d = %d\n", i, reg[i]);
-		}
-		*/
 	}
 	
 	cout << "---------------------------" << endl;

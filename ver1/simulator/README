@@ -4,7 +4,9 @@ how to use simulator
 
 option : 
 	-a : create machine code file as machine_code.txt in the current directory
-
+  -l number : stops at the numberth line.
+              press e : end
+              press c : continue
 
 <memo for me>
 how to add a new instruction
