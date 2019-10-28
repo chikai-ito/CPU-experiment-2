@@ -54,19 +54,19 @@ let rec g oc = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
 and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
   | NonTail(_), Nop -> ()
-  | NonTail(x), Set(i) -> Printf.fprintf oc "\taddi\t%%r0 %d %s\n" i x
-  | NonTail(x), SetL(Id.L(y)) -> Printf.fprintf oc "\taddi\t%%r0 %s %s\n" y x
+  | NonTail(x), Set(i) -> Printf.fprintf oc "\taddi\t%%r0 %s %d\n" x i
+  | NonTail(x), SetL(Id.L(y)) -> Printf.fprintf oc "\taddi\t%%r0 %s %s\n" x y
   | NonTail(x), Mov(y) when x = y -> ()
   | NonTail(x), Mov(y) -> Printf.fprintf oc "\tmov\t%s %s\n" y x
   | NonTail(x), Neg(y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" y x
-  | NonTail(x), Add(y,C(z')) -> Printf.fprintf oc "\taddi\t%s %s %s\n" y (pp_id_or_imm (C(z'))) x
+  | NonTail(x), Add(y,C(z')) -> Printf.fprintf oc "\taddi\t%s %s %s\n" y x (pp_id_or_imm (C(z')))
   | NonTail(x), Add(y, z') -> Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') x
   | NonTail(x), Sub(y, C(z')) ->
-    Printf.fprintf oc "\taddi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(z')));
+    Printf.fprintf oc "\taddi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(z')));
     Printf.fprintf oc "\tsub\t%s %%r25 %s\n" y x
   | NonTail(x), Sub(y, z') -> Printf.fprintf oc "\tsub\t%s %s %s\n" y (pp_id_or_imm z') x
   | NonTail(x), SLL(y, C(z')) ->
-    Printf.fprintf oc "\taddi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(z')));
+    Printf.fprintf oc "\taddi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(z')));
     Printf.fprintf oc "\tsll\t%s %s %%r25\n" y x
   | NonTail(x), SLL(y, z') -> Printf.fprintf oc "\tsll\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(x), Ld(y, z') -> Printf.fprintf oc "\tlw\t%s %s %s\n" y x (pp_id_or_imm z')
@@ -120,17 +120,17 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       | _ -> assert false);
       Printf.fprintf oc "\tretl\n";
   | Tail, IfEq(x, C(y'), e1, e2) ->
-    Printf.fprintf oc "\taddi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(y')));
+    Printf.fprintf oc "\taddi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
     g'_tail_if oc e1 e2 "be" "bne" x "%r25"
   | Tail, IfEq(x, y', e1, e2) ->
     g'_tail_if oc e1 e2 "be" "bne" x (pp_id_or_imm y')
   | Tail, IfLE(x, C(y'), e1, e2) ->
-    Printf.fprintf oc "\taddi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(y')));
+    Printf.fprintf oc "\taddi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
       g'_tail_if oc e1 e2 "ble" "bg" x "%r25"
   | Tail, IfLE(x, y', e1, e2) ->
     g'_tail_if oc e1 e2 "ble" "bg" x (pp_id_or_imm y')
   | Tail, IfGE(x, C(y'), e1, e2) ->
-    Printf.fprintf oc "\taddi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(y')));
+    Printf.fprintf oc "\taddi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
     g'_tail_if oc e1 e2 "bge" "bl" x "%r25"
   | Tail, IfGE(x, y', e1, e2) ->
       g'_tail_if oc e1 e2 "bge" "bl" x (pp_id_or_imm y')
@@ -139,17 +139,17 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | Tail, IfFLE(x, y, e1, e2) ->
     g'_tail_if oc e1 e2 "fble" "fbg" x y
   | NonTail(z), IfEq(x, C(y'), e1, e2) ->
-    Printf.fprintf oc "addi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(y')));
+    Printf.fprintf oc "addi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
     g'_non_tail_if oc (NonTail(z)) e1 e2 "be" "bne" x "%r25"
   | NonTail(z), IfEq(x, y', e1, e2) ->
     g'_non_tail_if oc (NonTail(z)) e1 e2 "be" "bne" x (pp_id_or_imm y')
   | NonTail(z), IfLE(x, C(y'), e1, e2) ->
-    Printf.fprintf oc "addi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(y')));
+    Printf.fprintf oc "addi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
     g'_non_tail_if oc (NonTail(z)) e1 e2 "ble" "bg" x "%r25"
   | NonTail(z), IfLE(x, y', e1, e2) ->
     g'_non_tail_if oc (NonTail(z)) e1 e2 "ble" "bg" x (pp_id_or_imm y')
   | NonTail(z), IfGE(x, C(y'), e1, e2) ->
-    Printf.fprintf oc "addi\t%%r0 %s %%r25\n" (pp_id_or_imm (C(y')));
+    Printf.fprintf oc "addi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
       g'_non_tail_if oc (NonTail(z)) e1 e2 "bge" "bl" x "r25"
   | NonTail(z), IfGE(x, y', e1, e2) ->
       g'_non_tail_if oc (NonTail(z)) e1 e2 "bge" "bl" x (pp_id_or_imm y')
@@ -170,9 +170,9 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       let ss = stacksize () in
       Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
       Printf.fprintf oc "\tlw\t%s %s 0\n" reg_cl reg_sw;
-      Printf.fprintf oc "\taddi\t%s %d %s\t\n" reg_sp ss reg_sp;
+      Printf.fprintf oc "\taddi\t%s %s %d\t\n" reg_sp reg_sp ss;
       Printf.fprintf oc "\tjal\t%s\n" reg_sw;
-      Printf.fprintf oc "\taddi\t%%r0 %d %%r25\n" ss;
+      Printf.fprintf oc "\taddi\t%%r0 %%r25 %d\n" ss;
       Printf.fprintf oc "\tsub\t%s %%r25 %s\n" reg_sp reg_sp;
       Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
       if List.mem a allregs && a <> regs.(0) then
@@ -184,9 +184,9 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       g'_args oc [] ys zs;
       let ss = stacksize () in
       Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
-      Printf.fprintf oc "\taddi\t%s %d %s\t\n" reg_sp ss reg_sp;
+      Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp ss;
       Printf.fprintf oc "\tjal\t%s\n" x;
-      Printf.fprintf oc "\taddi\t%%r0 %d %%r25\n" ss;
+      Printf.fprintf oc "\taddi\t%%r0 %%r25 %d\n" ss;
       Printf.fprintf oc "\tsub\t%s %%r25 %s\n" reg_sp reg_sp;
       Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
       if List.mem a allregs && a <> regs.(0) then
@@ -203,9 +203,8 @@ and g'_tail_if oc e1 e2 b bn reg1 reg2 =
   stackset := stackset_back;
   g oc (Tail, e2)
 and g'_non_tail_if oc dest e1 e2 b bn reg1 reg2 =
-  let b_else = Id.genid (b ^ "_else") in
-  let b_cont = Id.genid (b ^ "_cont") in
-  Printf.fprintf oc "\t%s\t%s %s %s\n" bn reg1 reg2 b_else;
+  let b_else = Id.genid (b ^ "_else ") in
+  let b_cont = Id.genid (b ^ "_cont ") in  Printf.fprintf oc "\t%s\t%s %s %s\n" bn reg1 reg2 b_else;
   let stackset_back = !stackset in
   g oc (dest, e1);
   let stackset1 = !stackset in
