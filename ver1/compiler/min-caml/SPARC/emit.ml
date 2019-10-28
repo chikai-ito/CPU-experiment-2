@@ -203,8 +203,8 @@ and g'_tail_if oc e1 e2 b bn reg1 reg2 =
   stackset := stackset_back;
   g oc (Tail, e2)
 and g'_non_tail_if oc dest e1 e2 b bn reg1 reg2 =
-  let b_else = Id.genid (b ^ "_else ") in
-  let b_cont = Id.genid (b ^ "_cont ") in  Printf.fprintf oc "\t%s\t%s %s %s\n" bn reg1 reg2 b_else;
+  let b_else = Id.genid (b ^ "_else") in
+  let b_cont = Id.genid (b ^ "_cont") in  Printf.fprintf oc "\t%s\t%s %s %s\n" bn reg1 reg2 b_else;
   let stackset_back = !stackset in
   g oc (dest, e1);
   let stackset1 = !stackset in
@@ -259,7 +259,7 @@ let f oc (Prog(data, fundefs, e)) =
   (* Printf.fprintf oc ".section\t\".text\"\n"; *)
   (* Printf.fprintf oc ".global\tmin_caml_start\n"; *)
   Printf.fprintf oc "#text_section\n";
-  Printf.fprintf oc "program_start:\n";
+  Printf.fprintf oc "program_start b :\n";
   (* Printf.fprintf oc "\tsave\t%%r29 -112 %%r29\n"; (* from gcc; why 112? *) *)
   stackset := S.empty;
   stackmap := [];
