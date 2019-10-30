@@ -5,7 +5,7 @@ l.19 : # 1.100000
   .long 0x3f8ccccd
 #text_section
 program_start :
-  addi  %r0 %r1 10
+  addi  %r0 %r1 2
   addi  %r0 %r2 l.19
   ilw.s %r2 %f0 0
   addi  %r0 %r2 l.21

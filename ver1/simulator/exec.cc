@@ -10,7 +10,11 @@ void exec_special_code(unsigned int code, int pc, int* now, unsigned int* reg){
 void exec_fpu_code(unsigned int code, int pc, unsigned int* reg, float* freg){
 	fpu(code,pc,reg,freg);
 }
-void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg, int* now, unsigned int* mem){
+union hoge{
+  unsigned int i;
+  float f;
+} x;
+void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg, int* now, unsigned int* mem, unsigned int* inst_mem){
 	switch(code >> 26){
 		int rt,rs,ft,base,fs,rd,sa;
 		case 0b001000 :
@@ -92,6 +96,23 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
      	 if(freg[fs] != freg[ft]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
     	}
 			break;
+    case 0b101111 :
+      //execute ilw
+      base = (int)((code >> 21) & 0b11111);
+      rt = (int)((code >> 16) & 0b11111);
+      if((code>>15)&0b1){
+        reg[rt] = inst_mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+      }else{
+        reg[rt] = inst_mem[reg[base] + (int)(code&0b1111111111111111)];
+      }
+      break;
+    case 0b100111 :
+      //exec ilw.s instruction
+      base = (int)((code >> 21) & 0b11111);
+      ft = (int)((code >> 16) & 0b11111);
+      x.i = inst_mem[reg[base]];
+      freg[ft] = x.f;
+      break;
 		case 0b000010 :
 			//JUMP命令の実行
 			//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
@@ -118,9 +139,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			base = (int)((code >> 21) & 0b11111);
 	    ft = (int)((code >> 16) & 0b11111);
 			if((code>>15)&0b1){
-	      reg[ft] = mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+	      freg[ft] = mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 	    }else{
-	      reg[ft] = mem[reg[base] + (int)(code&0b1111111111111111)];
+	      freg[ft] = mem[reg[base] + (int)(code&0b1111111111111111)];
 	    }
 			break;
 		case 0b111111 :

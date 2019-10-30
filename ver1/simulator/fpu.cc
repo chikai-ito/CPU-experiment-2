@@ -40,8 +40,9 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
     	freg[fd] = freg[fs] - freg[ft];
 			break;
 		case 0b001001 :
-			ft = (int)((code >> 21) & 0b11111);
-    	fs = (int)((code >> 16) & 0b11111);
+      // exec mov.s code
+			fs = (int)((code >> 21) & 0b11111);
+    	ft = (int)((code >> 16) & 0b11111);
     	freg[ft] = freg[fs];
 			break;
 	}

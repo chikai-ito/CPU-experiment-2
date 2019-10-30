@@ -18,9 +18,10 @@ void label_solver(string one_assemble_instruction, pair<string,int>* label_list,
 	  label_list[*array_num].second= *line_num;
 	  *array_num = *array_num + 1;
   }
-  else { 
-	  execute_instruction[*line_num] = one_assemble_instruction;
-		 *line_num = *line_num + 1;
+  else {
+    //+1 is because j in the initial position
+	  execute_instruction[*line_num+1] = one_assemble_instruction;
+	  *line_num = *line_num + 1;
   }
 	}
 }
