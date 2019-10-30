@@ -48,7 +48,7 @@ let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
   [| "%r1"; "%r2"; "%r3"; "%r4";
      "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
      "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18" |]
-let fregs = Array.init 16 (fun i -> Printf.sprintf "%%f%d" (i * 2))
+let fregs = Array.init 32 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *)
@@ -67,7 +67,7 @@ let co_freg_table =
       (Printf.sprintf "%%f%d" (i * 2 + 1))
   done;
   ht
-let co_freg freg = Hashtbl.find co_freg_table freg (* "companion" freg *)
+let co_freg freg = freg (* Hashtbl.find co_freg_table freg (* "companion" freg *) *)
 
 (* super-tenuki *)
 let rec remove_and_uniq xs = function

@@ -75,10 +75,8 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), FMovD(y) when x = y -> ()
   | NonTail(x), FMovD(y) ->
       Printf.fprintf oc "\tmov.s\t%s %s\n" y x;
-      Printf.fprintf oc "\tmov.s\t%s %s\n" (co_freg y) (co_freg x)
   | NonTail(x), FNegD(y) ->
       Printf.fprintf oc "\tneg.s\t%s %s\n" y x;
-      if x <> y then Printf.fprintf oc "\tmov.s\t%s, %s\n" (co_freg y) (co_freg x)
   | NonTail(x), FAddD(y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" y z x
   | NonTail(x), FSubD(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" y z x
   | NonTail(x), FMulD(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" y z x
@@ -178,8 +176,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       if List.mem a allregs && a <> regs.(0) then
         Printf.fprintf oc "\tmov\t%s %s\n" regs.(0) a
       else if List.mem a allfregs && a <> fregs.(0) then
-        (Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) a;
-         Printf.fprintf oc "\tmov.s\t%s %s\n" (co_freg fregs.(0)) (co_freg a))
+        (Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) a)
   | NonTail(a), CallDir(Id.L(x), ys, zs) ->
       g'_args oc [] ys zs;
       let ss = stacksize () in
@@ -192,8 +189,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       if List.mem a allregs && a <> regs.(0) then
         Printf.fprintf oc "\tmov\t%s %s\n" regs.(0) a
       else if List.mem a allfregs && a <> fregs.(0) then
-        (Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) a;
-         Printf.fprintf oc "\tmov.s\t%s %s\n" (co_freg fregs.(0)) (co_freg a))
+        (Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) a)
 and g'_tail_if oc e1 e2 b bn reg1 reg2 =
   let b_else = Id.genid (b ^ "_else") in
   Printf.fprintf oc "\t%s\t%s %s %s\n" bn reg1 reg2 b_else;
@@ -231,8 +227,7 @@ and g'_args oc x_reg_cl ys zs =
       zs in
   List.iter
     (fun (z, fr) ->
-      Printf.fprintf oc "\tmov.s\t%s %s\n" z fr;
-      Printf.fprintf oc "\tmov.s\t%s %s\n" (co_freg z) (co_freg fr))
+      Printf.fprintf oc "\tmov.s\t%s %s\n" z fr)
     (shuffle reg_fsw zfrs)
 
 let h oc { name = Id.L(x); args = _; fargs = _; body = e; ret = _ } =
