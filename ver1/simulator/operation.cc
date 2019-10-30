@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<sstream>
 #include <utility>
 using namespace std;
 
@@ -25,6 +26,7 @@ string decimal_to_binary(int num, int n){
   return binary;
 }
 
+
 //find a specific value from the array of pairs
 int find_value_from_pair(pair<string,int>* p, string s,int l){
 	for(int i=0; i<l;i++){
@@ -32,8 +34,22 @@ int find_value_from_pair(pair<string,int>* p, string s,int l){
 	}
 	return 0;
 }
-	
 
 
+//string to unsigned int
+unsigned int StringToUInt(string input)
+{
+	unsigned int a = stoul(input,nullptr,2);
+  return a;
+}
+
+
+//0xstring to unsigend int
+unsigned int StringToUInt0x(string input)
+{
+  long input2 = stol(input,NULL,16);
+  string a = decimal_to_binary(input2,32);
+  return StringToUInt(a);
+}
 
 

@@ -163,6 +163,40 @@ string assemble (string line, int option){
     string fd_s = decimal_to_binary(atoi(fd.substr(2,fd.length()-2).c_str()),5);
     return_code = "0100011000000000" + fs_s + fd_s + "001111";
 	}
+  else if (opcode == "ilw"){
+    string base;
+    string rt;
+    string offset;
+    s >> base >> rt >> offset;
+    string base_s = decimal_to_binary(atoi(base.substr(2,base.length()-2).c_str()),5);
+    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "101111" + base_s + rt_s + offset_s;
+  }
+  else if (opcode == "ilw.s"){
+    string base;
+    string rt;
+    string offset;
+    s >> base >> rt >> offset;
+    string base_s = decimal_to_binary(atoi(base.substr(2,base.length()-2).c_str()),5);
+    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "100111" + base_s + rt_s + offset_s;
+  }
 	else if (opcode == "j"){
     string instr_index;
     s >> instr_index;

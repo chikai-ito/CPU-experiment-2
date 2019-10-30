@@ -9,4 +9,5 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS)  $@ $^
 
 clean:
-	rm $(TARGET) $(OBJS) 
+	rm $(TARGET) $(OBJS)
+	rm machine_code.txt

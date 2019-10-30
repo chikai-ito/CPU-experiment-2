@@ -1,2 +1,0 @@
-ADDI r3 r3 1
-ADDI r3 r3 -2
