@@ -8,7 +8,7 @@ option :
               press e : end
               press c : continue
 
-<memo for me>
+<memo for developer>
 how to add a new instruction
  1. edit assembler.cc and create additional case for the new instruction
  2. if it is special instruction, which means byte code starts with 000000, add the operation at the exec_special_code in exec.cc, otherwise add it to exec_normal_code in exec.cc
