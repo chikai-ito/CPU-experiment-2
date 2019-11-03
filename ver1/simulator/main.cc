@@ -162,11 +162,15 @@ if(argc==4){
     }
     while(1){
       cout << "---------------------------" << endl;
+      cout << "position is " << block; 
       for(int i = 0; i<32; i++){
-        printf("r%d = %d\n", i, reg[i]);
+        if (i%5 == 0) { printf("\n"); }
+         printf("r%d = %d   ", i, reg[i]);
       }
+      printf("\n");
       for(int i = 0; i<32; i++){
-        printf("f%i = %f\n", i, freg[i]);
+        if (i%3 == 0) { printf("\n"); }
+        printf("f%i = %f    ", i, freg[i]);
       }
       char option;
       cin >> option;
@@ -174,7 +178,7 @@ if(argc==4){
       else if(option == 'c') {
         unsigned int one_instruction = inst_mem[block];
         if(one_instruction == 0) break;
-        printf("%d",one_instruction);
+        cout << instruction_set[(block-2)] << " ";
         switch(one_instruction >> 26){
           case 0b000000 :
           //最初のopecodeがspecialつまり000000だった場合
@@ -188,6 +192,7 @@ if(argc==4){
             //最初の6文字で命令の判別が可能な場合
             exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
             break;
+        printf("\n");
         }
         block++;
         continue;
@@ -223,10 +228,13 @@ if(argc==4){
 	
 	cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
-      printf("r%d = %d\n", i, reg[i]);
+      if (i%5 == 0) { printf("\n"); }
+      printf("r%d = %d   ", i, reg[i]);
     }
+    printf("\n");
     for(int i = 0; i<32; i++){
-      printf("f%i = %f\n", i, freg[i]);
+      if (i%3 == 0) { printf("\n"); }
+      printf("f%i = %f    ", i, freg[i]);
     }
 	
 	return 0;
