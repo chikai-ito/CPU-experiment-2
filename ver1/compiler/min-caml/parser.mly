@@ -1,6 +1,7 @@
 %{
 (* parserが利用する変数、関数、型などの定義 *)
 open Syntax
+open Lexing
 let addtyp x = (x, Type.gentyp ())
 %}
 
@@ -9,8 +10,16 @@ let addtyp x = (x, Type.gentyp ())
 %token <int> INT
 %token <float> FLOAT
 %token NOT
+%token FSQRT
+%token FLOOR
+%token ITOF
+%token GETCH
+%token OUT
+%token FTOI
 %token MINUS
 %token PLUS
+%token AST
+%token SLASH
 %token MINUS_DOT
 %token PLUS_DOT
 %token AST_DOT
@@ -47,7 +56,7 @@ let addtyp x = (x, Type.gentyp ())
 %left COMMA
 %left EQUAL LESS_GREATER LESS GREATER LESS_EQUAL GREATER_EQUAL
 %left PLUS MINUS PLUS_DOT MINUS_DOT
-%left AST_DOT SLASH_DOT
+%left AST SLASH AST_DOT SLASH_DOT
 %right prec_unary_minus
 %left prec_app
 %left DOT
@@ -80,6 +89,24 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | NOT exp
     %prec prec_app
     { Not($2) }
+| FSQRT exp
+    %prec prec_app
+       { FSqrt($2) }
+| FLOOR exp
+    %prec prec_app
+       { Floor($2) }
+| FTOI exp
+    %prec prec_app
+       { Ftoi($2) }
+| ITOF exp
+    %prec prec_app
+       { Itof($2) }
+| GETCH exp
+    %prec prec_app
+       { Getch($2) }
+| OUT exp
+    %prec prec_app
+    { Out($2) }
 | MINUS exp
     %prec prec_unary_minus
     { match $2 with
@@ -89,6 +116,10 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { Add($1, $3) }
 | exp MINUS exp
     { Sub($1, $3) }
+| exp AST exp
+    { Mul($1, $3) }
+| exp SLASH exp
+    { Div($1, $3) }
 | exp EQUAL exp
     { Eq($1, $3) }
 | exp LESS_GREATER exp
@@ -138,7 +169,13 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { Array($2, $3) }
 | error
     { failwith
-        (Printf.sprintf "parse error near characters %d-%d"
+        (
+          let pos = Parsing.symbol_start_pos () in
+          let lnum = pos.pos_lnum in
+          let cnum = pos.pos_cnum in
+          let bol = pos.pos_bol in
+          Printf.printf "line %d character %d\n" lnum (cnum - bol);
+          Printf.sprintf "parse error near characters %d-%d"
            (Parsing.symbol_start ())
            (Parsing.symbol_end ())) }
 

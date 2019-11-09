@@ -1,4 +1,3 @@
-let rec f x y z =
-  if x = 0 then y else
-    f (x - 1) z (y +. z) in
-f 10 1.1 2.1
+let rec f x =
+  (1.0 /. 6.0) *. x *. x *. x in
+    if 1. < (f 1.5) then f 1.5 else 4.

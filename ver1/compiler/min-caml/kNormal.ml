@@ -5,9 +5,17 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Int of int
   | Float of float
   | Neg of Id.t
+  | Itof of Id.t
+  | Getch of Id.t
+  | Out of Id.t
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
+  | Mul of Id.t * Id.t
+  | Div of Id.t * Id.t
   | FNeg of Id.t
+  | Ftoi of Id.t
+  | FSqrt of Id.t
+  | Floor of Id.t
   | FAdd of Id.t * Id.t
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
@@ -70,8 +78,32 @@ and print_kNormal =
       Printf.printf " ";
       Id.print_id id2;
       Printf.printf "\n"
+    | Mul (id1, id2) ->
+      Printf.printf "MUL ";
+      Id.print_id id1;
+      Printf.printf " ";
+      Id.print_id id2;
+      Printf.printf "\n"
+    | Div (id1, id2) ->
+      Printf.printf "DIV ";
+      Id.print_id id1;
+      Printf.printf " ";
+      Id.print_id id2;
+      Printf.printf "\n"
     | FNeg id ->
       Printf.printf "FNEG ";
+      Id.print_id id;
+      Printf.printf "\n"
+    | Ftoi id ->
+      Printf.printf "FTOI ";
+      Id.print_id id;
+      Printf.printf "\n"
+    | Floor id ->
+      Printf.printf "FLOOR ";
+      Id.print_id id;
+      Printf.printf "\n"
+    | FSqrt id ->
+      Printf.printf "SQRT ";
       Id.print_id id;
       Printf.printf "\n"
     | FAdd (id1, id2) ->
@@ -206,8 +238,10 @@ and print_kNormal =
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
-  | Neg(x) | FNeg(x) -> S.singleton x
-  | Add(x, y) | Sub(x, y) | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y) -> S.of_list [x; y]
+  | Neg(x) | Itof(x) | Getch(x)
+    | Out(x) | FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
+  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y)
+    | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y) -> S.of_list [x; y]
   | IfEq(x, y, e1, e2) | IfLE(x, y, e1, e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x, t), e1, e2) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x) -> S.singleton x
@@ -236,6 +270,15 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Neg(e) ->
       insert_let (g env e)
         (fun x -> Neg(x), Type.Int)
+  | Syntax.Itof(e) ->
+      insert_let (g env e)
+        (fun x -> Itof(x), Type.Float)
+  | Syntax.Getch(e) ->
+      insert_let (g env e)
+        (fun x -> Getch(x), Type.Int)
+  | Syntax.Out(e) ->
+      insert_let (g env e)
+        (fun x -> Out(x), Type.Unit)
   | Syntax.Add(e1, e2) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)
@@ -243,10 +286,27 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Sub(e1, e2) ->
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)
-            (fun y -> Sub(x, y), Type.Int))
+                    (fun y -> Sub(x, y), Type.Int))
+  | Syntax.Mul(e1, e2) ->
+      insert_let (g env e1)
+        (fun x -> insert_let (g env e2)
+                    (fun y -> Mul(x, y), Type.Int))
+  | Syntax.Div(e1, e2) ->
+      insert_let (g env e1)
+        (fun x -> insert_let (g env e2)
+            (fun y -> Div(x, y), Type.Int))
   | Syntax.FNeg(e) ->
       insert_let (g env e)
         (fun x -> FNeg(x), Type.Float)
+  | Syntax.Ftoi(e) ->
+      insert_let (g env e)
+        (fun x -> Ftoi(x), Type.Int)
+  | Syntax.Floor(e) ->
+      insert_let (g env e)
+        (fun x -> Floor(x), Type.Float)
+  | Syntax.FSqrt(e) ->
+      insert_let (g env e)
+        (fun x -> FSqrt(x), Type.Float)
   | Syntax.FAdd(e1, e2) ->
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)

@@ -10,14 +10,22 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | SetL of Id.l
   | Mov of Id.t
   | Neg of Id.t
+  | Itof of Id.t
+  | Getch of Id.t
+  | Out of Id.t
   | Add of Id.t * id_or_imm
   | Sub of Id.t * id_or_imm
+  | Mul of Id.t * id_or_imm
+  | Div of Id.t * id_or_imm
   | SLL of Id.t * id_or_imm
   | Ld of Id.t * id_or_imm
   | ILd of Id.t * id_or_imm
   | St of Id.t * Id.t * id_or_imm
   | FMovD of Id.t
+  | Ftoi of Id.t
   | FNegD of Id.t
+  | Floor of Id.t
+  | FSqrt of Id.t
   | FAddD of Id.t * Id.t
   | FSubD of Id.t * Id.t
   | FMulD of Id.t * Id.t
@@ -47,12 +55,13 @@ let seq(e1, e2) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2)
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
   [| "%r1"; "%r2"; "%r3"; "%r4";
      "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
-     "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18" |]
+     "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
+     "%r19"; "%r20"; "%r21"; "%r22"; "%r23"; "%r24"|]
 let fregs = Array.init 32 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
-let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *)
-let reg_sw = regs.(Array.length regs - 2) (* temporary for swap *)
+let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *) 
+let reg_sw = regs.(Array.length regs - 2) (* temporary for swap *) 
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *)
 let reg_sp = "%r26" (* stack pointer *)
 let reg_hp = "%r27" (* heap pointer (caml2html: sparcasm_reghp) *)
@@ -79,8 +88,10 @@ let rec remove_and_uniq xs = function
 let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
-  | Mov(x) | Neg(x) | FMovD(x) | FNegD(x) | Save(x, _) -> [x]
-  | Add(x, y') | Sub(x, y') | SLL(x, y') | Ld(x, y') | LdDF(x, y')
+  | Mov(x) | Neg(x) | Itof(x) | Getch(x) | Out(x) | FMovD(x) | Ftoi(x) | FNegD(x)
+    | FSqrt(x) | Floor(x) | Save(x, _) -> [x]
+  | Add(x, y') | Sub(x, y') | Mul(x, y') | Div(x, y')
+    | SLL(x, y') | Ld(x, y') | LdDF(x, y')
   | ILd(x,y') | ILdDF(x,y') -> x :: fv_id_or_imm y'
   | St(x, y, z') | StDF(x, y, z') -> x :: y :: fv_id_or_imm z'
   | FAddD(x, y) | FSubD(x, y) | FMulD(x, y) | FDivD(x, y) -> [x; y]
