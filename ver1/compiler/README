@@ -22,5 +22,14 @@ let f x y = x + y in f 2 3
 min-caml/testprogram.ml min-caml/float_program.ml 動作するテストプログラムがある。
 
 $./min-caml testprogram
-&./min-caml float_program
+$./min-caml float_program
 
+
+
+-------レイトレプログラム-------
+min-camlディレクトリ内で
+
+$make
+$./min-caml data/raytracer/minrt
+
+を実行すると data/raytracer/minrt.s にアセンブリコードが生成される．

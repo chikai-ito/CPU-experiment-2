@@ -5,9 +5,17 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | Float of float
   | Not of t
   | Neg of t
+  | Itof of t
+  | Getch of t
+  | Out of t
   | Add of t * t
   | Sub of t * t
+  | Mul of t * t
+  | Div of t * t
   | FNeg of t
+  | FSqrt of t
+  | Floor of t
+  | Ftoi of t
   | FAdd of t * t
   | FSub of t * t
   | FMul of t * t
@@ -63,7 +71,22 @@ and print_syntax =
       Printf.printf "NEG\n";
       depth := !depth + 1;
       print_syntax s;
-      depth := !depth -1 
+      depth := !depth -1
+    | Itof s -> 
+      Printf.printf "ITOF\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
+    | Getch s -> 
+      Printf.printf "GETCH\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
+    | Out s -> 
+      Printf.printf "OUT\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
     | Add (s1,s2) ->
       Printf.printf "ADD\n";
       depth := !depth + 1;
@@ -76,8 +99,35 @@ and print_syntax =
       print_syntax s1;
       print_syntax s2;
       depth := !depth -1
+    | Mul (s1,s2) ->
+      Printf.printf "MUL\n";
+      depth := !depth + 1;
+      print_syntax s1;
+      print_syntax s2;
+      depth := !depth -1
+    | Div (s1,s2) ->
+      Printf.printf "DIV\n";
+      depth := !depth + 1;
+      print_syntax s1;
+      print_syntax s2;
+      depth := !depth -1
     | FNeg s -> 
       Printf.printf "FNEG\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
+    | Ftoi s -> 
+      Printf.printf "Ftoi\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
+    | FSqrt s -> 
+      Printf.printf "FSQRT\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
+    | Floor s -> 
+      Printf.printf "FLOOR\n";
       depth := !depth + 1;
       print_syntax s;
       depth := !depth -1 
@@ -88,7 +138,7 @@ and print_syntax =
       print_syntax s2;
       depth := !depth -1
     | FSub (s1,s2) ->
-      Printf.printf "FSUB\n";
+      Printf.printf "nFSUB\n";
       depth := !depth + 1;
       print_syntax s1;
       print_syntax s2;

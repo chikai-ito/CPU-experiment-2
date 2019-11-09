@@ -9,14 +9,22 @@ and exp =
   | SetL of Id.l
   | Mov of Id.t
   | Neg of Id.t
+  | Itof of Id.t
+  | Getch of Id.t
+  | Out of Id.t
   | Add of Id.t * id_or_imm
   | Sub of Id.t * id_or_imm
+  | Mul of Id.t * id_or_imm
+  | Div of Id.t * id_or_imm
   | SLL of Id.t * id_or_imm
   | Ld of Id.t * id_or_imm
   | ILd of Id.t * id_or_imm
   | St of Id.t * Id.t * id_or_imm
   | FMovD of Id.t
+  | Ftoi of Id.t
   | FNegD of Id.t
+  | Floor of Id.t
+  | FSqrt of Id.t
   | FAddD of Id.t * Id.t
   | FSubD of Id.t * Id.t
   | FMulD of Id.t * Id.t

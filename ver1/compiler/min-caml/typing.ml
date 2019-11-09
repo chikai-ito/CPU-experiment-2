@@ -25,11 +25,19 @@ let rec deref_id_typ (x, t) = (x, deref_typ t)
 let rec deref_term = function
   | Not(e) -> Not(deref_term e)
   | Neg(e) -> Neg(deref_term e)
+  | Itof(e) -> Itof(deref_term e)
+  | Getch(e) -> Getch(deref_term e)
+  | Out(e) -> Out(deref_term e)
   | Add(e1, e2) -> Add(deref_term e1, deref_term e2)
   | Sub(e1, e2) -> Sub(deref_term e1, deref_term e2)
+  | Mul(e1, e2) -> Mul(deref_term e1, deref_term e2)
+  | Div(e1, e2) -> Div(deref_term e1, deref_term e2)
   | Eq(e1, e2) -> Eq(deref_term e1, deref_term e2)
   | LE(e1, e2) -> LE(deref_term e1, deref_term e2)
   | FNeg(e) -> FNeg(deref_term e)
+  | Floor(e) -> Floor(deref_term e)
+  | FSqrt(e) -> FSqrt(deref_term e)
+  | Ftoi(e) -> Ftoi(deref_term e)
   | FAdd(e1, e2) -> FAdd(deref_term e1, deref_term e2)
   | FSub(e1, e2) -> FSub(deref_term e1, deref_term e2)
   | FMul(e1, e2) -> FMul(deref_term e1, deref_term e2)
@@ -93,11 +101,30 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Neg(e) ->
         unify Type.Int (g env e);
         Type.Int
-    | Add(e1, e2) | Sub(e1, e2) -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
+    | Itof(e) ->
+        unify Type.Int (g env e);
+        Type.Float
+    | Getch(e) ->
+        unify Type.Unit (g env e);
+        Type.Int
+    | Out(e) ->
+        unify Type.Int (g env e);
+        Type.Unit
+    | Add(e1, e2) | Sub(e1, e2)
+      | Mul(e1, e2) | Div(e1, e2) -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
         unify Type.Int (g env e1);
         unify Type.Int (g env e2);
         Type.Int
     | FNeg(e) ->
+        unify Type.Float (g env e);
+        Type.Float
+    | Ftoi(e) ->
+       unify Type.Float (g env e);
+       Type.Int
+    | Floor(e) ->
+        unify Type.Float (g env e);
+        Type.Float
+    | FSqrt(e) ->
         unify Type.Float (g env e);
         Type.Float
     | FAdd(e1, e2) | FSub(e1, e2) | FMul(e1, e2) | FDiv(e1, e2) ->
@@ -148,7 +175,11 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
         unify (Type.Array(t)) (g env e1);
         unify Type.Int (g env e2);
         Type.Unit
-  with Unify(t1, t2) -> raise (Error(deref_term e, deref_typ t1, deref_typ t2))
+  with Unify(t1, t2) ->
+    print_syntax e;
+    Type.print_type t1;
+    Type.print_type t2;
+    raise (Error(deref_term e, deref_typ t1, deref_typ t2))
 
 let f e =
   extenv := M.empty;
@@ -163,6 +194,6 @@ let f e =
       with Unify _ ->
         (try unify Type.Float (g M.empty e)
          with Unify _ ->
-           failwith "top level does not have type unit")));
+               failwith "top level does not have type unit")));
   extenv := M.map deref_typ !extenv;
   deref_term e

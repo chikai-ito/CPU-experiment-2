@@ -12,8 +12,8 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   Typing.extenv := M.empty;
   let syntax = Parser.exp Lexer.token l in
   let kNormal = (KNormal.f (Typing.f syntax)) in
-  Syntax.print_syntax syntax;
-  KNormal.print_kNormal kNormal;
+  (* Syntax.print_syntax syntax;
+  KNormal.print_kNormal kNormal; *)
   Emit.f outchan
     (RegAlloc.f
        (Simm.f

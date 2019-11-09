@@ -2,10 +2,11 @@
 (* lexerが利用する変数、関数、型などの定義 *)
 open Parser
 open Type
+open Lexing
 }
 
 (* 正規表現の略記 *)
-let space = [' ' '\t' '\n' '\r']
+let space = [' ' '\t' '\r']
 let digit = ['0'-'9']
 let lower = ['a'-'z']
 let upper = ['A'-'Z']
@@ -13,6 +14,9 @@ let upper = ['A'-'Z']
 rule token = parse
 | space+
     { token lexbuf }
+| '\n'
+    { Lexing.new_line lexbuf; (* 改行をカウント *)
+      token lexbuf }
 | "(*"
     { comment lexbuf; (* ネストしたコメントのためのトリック *)
       token lexbuf }
@@ -34,6 +38,22 @@ rule token = parse
     { MINUS }
 | '+' (* +.より後回しにしなくても良い? 最長一致? *)
     { PLUS }
+| '*'
+    { AST }
+| '/'
+    { SLASH }
+| "sqrt"
+    { FSQRT }
+| "floor"
+    { FLOOR }
+| "getchar"
+    { GETCH }
+| "print_char"
+    { OUT }
+| "int_of_float"
+    { FTOI }
+| "float_of_int"
+    { ITOF }
 | "-."
     { MINUS_DOT }
 | "+."
@@ -70,7 +90,7 @@ rule token = parse
     { COMMA }
 | '_'
     { IDENT(Id.gentmp Type.Unit) }
-| "Array.create" | "Array.make" (* [XX] ad hoc *)
+| "Array.create" | "Array.make" | "create_array" (* [XX] ad hoc *)
     { ARRAY_CREATE }
 | '.'
     { DOT }
@@ -93,6 +113,9 @@ and comment = parse
     { () }
 | "(*"
     { comment lexbuf;
+      comment lexbuf }
+| '\n'
+    { Lexing.new_line lexbuf; (* 改行をカウント *)
       comment lexbuf }
 | eof
     { Format.eprintf "warning: unterminated comment@." }

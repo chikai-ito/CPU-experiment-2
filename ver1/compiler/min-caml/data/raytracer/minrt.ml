@@ -1,3 +1,206 @@
+(* libraries *)
+let rec fiszero x = (x = 0.0)
+    in
+    let rec fispos x = (x > 0.0)
+    in
+    let rec fisneg x = (x < 0.0)
+    in
+    let rec fneg x = 0.0 -. x
+    in
+    let rec fless x y = x < y
+    in 
+    let rec fsqr x = x *. x
+    in
+    let rec fabs x = if x < 0.0 then 0.0 -. x else x
+    in
+    let rec fhalf x = x /. 2.0
+    in
+    let rec fpow x y =
+      if y = 0 then 1.0
+      else x *. (fpow x (y - 1))
+    in
+    let rec sin x =
+      (1.0 /. 362880.0) *. (fpow x 9)
+      -. (1.0 /. 5040.0) *. (fpow x 7)
+      +. (1.0 /. 120.0) *. (fpow x 5)
+      -. (1.0 /. 6.0) *. (fpow x 3)
+      +. x
+    in
+    let rec cos x =
+      (1.0 /. 40320.0) *. (fpow x 8) 
+      -. (1.0 /. 720.0) *. (fpow x 6)
+      +. (1.0 /. 24.0) *. (fpow x 4)
+      -. (1.0 /. 2.0) *. (fpow x 2)
+      +. 1.0
+    in
+    let rec atan x =
+      (1.0 /. 9.0) *. (fpow x 9)
+      -. (1.0 /. 7.0) *. (fpow x 7)
+      +. (1.0 /. 5.0) *. (fpow x 5)
+      -. (1.0 /. 3.0) *. (fpow x 3)
+      +. x
+    in
+    let rec print_int x =
+      let a = x / 100 in
+      let b = (x - a * 100) / 10 in
+      let c = (x - a * 100 - b * 10) in
+      if a > 0 then (
+        print_char (a + 48)
+      ) else ();
+      if b > 0 then (
+        print_char (b + 48)
+      ) else ();
+      print_char (c + 48)
+    in
+    let rec tail_read_int sgn x =
+      let digit = getchar () in
+      if digit = 10 then sgn * x      
+      else if digit = 45 then tail_read_int (-1) x
+      else if digit < 48 then tail_read_int sgn x    (* 関係ない文字は読み飛ばす *)
+      else if digit > 57 then tail_read_int sgn x    (* 関係ない~飛ばす *)
+      else tail_read_int sgn (x * 10 + (digit - 48))
+    in
+    let rec read_int _ =
+      tail_read_int 1 0
+    in
+    let rec tail_read_float sgn u l e =
+      let digit = getchar () in
+      if digit = 10 then sgn *. ((float_of_int u) +. (float_of_int l) *. e)
+      else if digit = 45 then tail_read_float (-1.0) u l e
+      else if digit = 46 then tail_read_float sgn u l 1.0
+      else if digit < 48 then tail_read_float sgn u l e
+      else if digit > 57 then tail_read_float sgn u l e
+      else if e > 1.0
+      then tail_read_float sgn (u * 10 + (digit - 48)) l e
+      else tail_read_float sgn u (l * 10 + (digit - 48)) (e *. 0.1)
+    in
+    let rec read_float _ =
+      tail_read_float 1.0 0 0 10.0
+    in
+
+
+(* open MiniMLRuntime;; *)
+
+(**************** グローバル変数の宣言 ****************)
+
+(* オブジェクトの個数 *)
+let n_objects = create_array 1 0
+    in
+
+(* オブジェクトのデータを入れるベクトル（最大60個）*)
+let objects = 
+  let dummy = create_array 0 0.0 in
+  create_array 60 (0, 0, 0, 0, dummy, dummy, false, dummy, dummy, dummy, dummy)
+in
+
+(* Screen の中心座標 *)
+let screen = create_array 3 0.0
+in
+(* 視点の座標 *)
+let viewpoint = create_array 3 0.0
+in
+(* 光源方向ベクトル (単位ベクトル) *)
+let light = create_array 3 0.0
+in
+(* 鏡面ハイライト強度 (標準=255) *)
+let beam = create_array 1 255.0
+in
+(* AND ネットワークを保持 *)
+let and_net = create_array 50 (create_array 1 (-1))
+in
+(* OR ネットワークを保持 *)
+let or_net = create_array 1 (create_array 1 (and_net.(0)))
+in
+
+(* 以下、交差判定ルーチンの返り値格納用 *)
+(* solver の交点 の t の値 *)
+let solver_dist = create_array 1 0.0
+in
+(* 交点の直方体表面での方向 *)
+let intsec_rectside = create_array 1 0
+in
+(* 発見した交点の最小の t *)
+let tmin = create_array 1 (1000000000.0)
+in
+(* 交点の座標 *)
+let intersection_point = create_array 3 0.0
+in
+(* 衝突したオブジェクト番号 *)
+let intersected_object_id = create_array 1 0
+in
+(* 法線ベクトル *)
+let nvector = create_array 3 0.0
+in
+(* 交点の色 *)
+let texture_color = create_array 3 0.0
+in
+
+(* 計算中の間接受光強度を保持 *)
+let diffuse_ray = create_array 3 0.0
+in
+(* スクリーン上の点の明るさ *)
+let rgb = create_array 3 0.0
+in
+
+(* 画像サイズ *)
+let image_size = create_array 2 0
+in
+(* 画像の中心 = 画像サイズの半分 *)
+let image_center = create_array 2 0
+in
+(* 3次元上のピクセル間隔 *)
+let scan_pitch = create_array 1 0.0
+in
+
+(* judge_intersectionに与える光線始点 *)
+let startp = create_array 3 0.0
+in
+(* judge_intersection_fastに与える光線始点 *)
+let startp_fast = create_array 3 0.0
+in
+
+(* 画面上のx,y,z軸の3次元空間上の方向 *)
+let screenx_dir = create_array 3 0.0
+in
+let screeny_dir = create_array 3 0.0
+in
+let screenz_dir = create_array 3 0.0
+in
+
+(* 直接光追跡で使う光方向ベクトル *)
+let ptrace_dirvec  = create_array 3 0.0
+in
+
+(* 間接光サンプリングに使う方向ベクトル *)
+let dirvecs = 
+  let dummyf = create_array 0 0.0 in
+  let dummyff = create_array 0 dummyf in
+  let dummy_vs = create_array 0 (dummyf, dummyff) in
+  create_array 5 dummy_vs
+in
+
+(* 光源光の前処理済み方向ベクトル *)
+let light_dirvec =
+  let dummyf2 = create_array 0 0.0 in
+  let v3 = create_array 3 0.0 in
+  let consts = create_array 60 dummyf2 in
+  (v3, consts)
+in
+
+(* 鏡平面の反射情報 *)
+let reflections =
+  let dummyf3 = create_array 0 0.0 in
+  let dummyff3 = create_array 0 dummyf3 in
+  let dummydv = (dummyf3, dummyff3) in
+  create_array 180 (0, dummydv, 0.0)
+in
+
+(* reflectionsの有効な要素数 *) 
+
+let n_reflections = create_array 1 0
+in
+
+
 (****************************************************************)
 (*                                                              *)
 (* Ray Tracing Program for (Mini) Objective Caml                *)
@@ -11,8 +214,10 @@
 
 (*NOMINCAML open MiniMLRuntime;;*)
 (*NOMINCAML open Globals;;*)
+(*
 (*MINCAML*) let true = 1 in
 (*MINCAML*) let false = 0 in
+ *)
 (*MINCAML*) let rec xor x y = if x then not y else y in
 
 (******************************************************************************
@@ -1386,7 +1591,7 @@ let rec solve_each_element_fast iand_ofs and_group dirvec =
 		tmin.(0) <- t;
 		vecset intersection_point q0 q1 q2;
 		intersected_object_id.(0) <- iobj;
-		intsec_rectside.(0) <- t0;
+		intsec_rectside.(0) <- t0
 	       )
 	    else ()
 	   )
@@ -1665,7 +1870,7 @@ let rec trace_ray nref energy dirvec pixel dist =
 	veccpy energya.(nref) texture_color;
 	vecscale energya.(nref) ((1.0 /. 256.0) *. diffuse);
 	let nvectors = p_nvectors pixel in
-	veccpy nvectors.(nref) nvector;
+	veccpy nvectors.(nref) nvector
        );
 
       let w = (-2.0) *. veciprod dirvec nvector in
@@ -1695,7 +1900,7 @@ let rec trace_ray nref energy dirvec pixel dist =
 	if m_surface = 2 then (   (* 完全鏡面反射 *)
 	  let energy2 = energy *. (1.0 -. o_diffuse obj) in
 	  trace_ray (nref+1) energy2 dirvec pixel (dist +. tmin.(0))
-	 ) else ();
+	 ) else ()
 
        ) else ()
 
@@ -2054,7 +2259,7 @@ let rec scan_line y prev cur next group_id = (
       pretrace_line next (y + 1) group_id
     else ();
     scan_pixel 0 y prev cur next;
-    scan_line (y + 1) cur next prev (add_mod5 group_id 2);
+    scan_line (y + 1) cur next prev (add_mod5 group_id 2)
    ) else ()
 )
 in
