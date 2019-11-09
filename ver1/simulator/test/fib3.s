@@ -1,5 +1,5 @@
-# data_section
-# text_section
+#data_section
+#text_section
 program_start :
   addi  %r0 %r1 10
   sw  %r26 %r28 4

@@ -1,4 +1,5 @@
 #data_section
+
 l.28 :	# 4.000000
 	.long	0x40800000
 l.25 :	# 1.000000
@@ -34,6 +35,7 @@ fble_else.31 :
 	lw	%r26 %r28 4
 fble_cont.32 :
 	ret
+
 f.10 :
 	addi	%r0 %r1 l.21 
 	ilw.s	%r1 %f1 0
@@ -41,3 +43,6 @@ f.10 :
 	mul.s	%f1 %f0 %f1
 	mul.s	%f1 %f0 %f0
 	retl
+
+
+
