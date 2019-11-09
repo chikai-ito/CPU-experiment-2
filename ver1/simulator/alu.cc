@@ -33,11 +33,17 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg){
 			reg[rd] = reg[rs] / reg[rt];
 			break;
 		case 0b011011 :
+      //execute DIVU
 			rs = (int)((code >> 21) & 0b11111);
     	rt = (int)((code >> 16) & 0b11111);
     	rd = (int)((code >> 11) & 0b11111);
     	reg[rd] = reg[rs] % reg[rt];
 			break;
+    case 0b001000 :
+      //execute jr
+      rs = (int)((code >> 21) & 0b11111);
+      *now = rs -1;
+      break;
 		case 0b100010 :
 			//SUBの実行
 			rs = (int)((code >> 21) & 0b11111);
