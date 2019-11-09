@@ -10,6 +10,15 @@
 #include "create_execute_file.h"
 using namespace std;
 
+//file stream for IN and OUT instructions
+//get input from "input.txt" and output to "output.txt"
+ifstream fin;
+FILE *fout;
+if ((fout = fopen("input.txt", "r")) == NULL) {
+  perror("open error");
+  exit(1);
+}
+
 int main(int argc, char**argv){
 	string filename = argv[1];
 	
@@ -19,12 +28,12 @@ int main(int argc, char**argv){
 	unsigned int reg[32]; // register
 	float freg[32]; // float register
 	unsigned int mem[65536]; // memory
-  unsigned int inst_mem [500]; //instruction memory
+  unsigned int inst_mem [65536]; //instruction memory
 	int clock = 0;
 	int pc = 0;
 
-	pair<string,int> label_list[500]; //array of instructions which will be written on the execute.txt
-	string execute_instruction[500];
+	pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
+	string execute_instruction[65536];
 	//label解決をまず行う
 	int line_num = 0; //line number 
 	int array_num = 0; //represents where to save label information
@@ -74,7 +83,7 @@ int main(int argc, char**argv){
 	ifstream reading_file1; // file stream for reading execute.txt, the label-solved code
 	reading_file1.open("execute.txt",ios::in);
 	//この部分に命令をまず入れる。1つのstringが1assebly命令に対応。
-	string instruction_set [500];
+	string instruction_set [65536];
 	int inst_num = 0;
 	while(!reading_file1.eof())
   {
@@ -225,6 +234,11 @@ if(argc==4){
 				break;
 		}
 	}
+
+  if (fclose(fout) == EOF) {
+   		perror("close error");
+   		exit(1);
+ 	}
 	
 	cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
