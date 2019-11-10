@@ -124,6 +124,14 @@ string assemble (string line, int option){
     string rd_s = decimal_to_binary(atoi(rd.substr(2,rd.length()-2).c_str()),5);
 		return_code = "000000" + rs_s + rt_s + rd_s + "00000" + "011010";
 	}
+  else if (opcode == "div.s"){
+    string ft,fs,fd;
+    s >> ft >> fs >> fd;
+    string ft_s = decimal_to_binary(atoi(ft.substr(2,ft.length()-2).c_str()),5);
+    string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
+    string fd_s = decimal_to_binary(atoi(fd.substr(2,fd.length()-2).c_str()),5);
+    return_code = "01000110000" + ft_s + fs_s + fd_s + "000011";
+  }
 	else if (opcode == "fbg"){
     string fs,ft;
     string offset;
@@ -196,6 +204,12 @@ string assemble (string line, int option){
       offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
     }
     return_code = "100111" + base_s + rt_s + offset_s;
+  }
+  else if (opcode == "in"){
+    string rs;
+    s >> rs;
+    string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
+    return_code = "00000" + rs_s + "000000000000000101010";
   }
 	else if (opcode == "j"){
     string instr_index;
@@ -293,7 +307,7 @@ string assemble (string line, int option){
     string rd_s = decimal_to_binary(atoi(rd.substr(2,rd.length()-2).c_str()),5);
 		return_code = "000000" + rs_s + rt_s + rd_s + "00000" + "011000";
 	}
-	else if (opcode == "multl"){
+	else if (opcode == "mul"){
 		string rs,rt,rd;
 		s >> rs >> rt >> rd;
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
@@ -316,6 +330,12 @@ string assemble (string line, int option){
     string fd_s = decimal_to_binary(atoi(fd.substr(2,fd.length()-2).c_str()),5);
 		return_code = "0100011000000000" + fs_s + fd_s + "000111";
 	}
+  else if (opcode == "out"){
+    string rs;
+    s >> rs;
+    string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
+    return_code = "00000" + rs_s + "000000000000000010101";
+  }
 	else if (opcode == "ret"){
 		return_code = "00000000000000000000000000000000";
 	}

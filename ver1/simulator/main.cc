@@ -12,12 +12,9 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
+//FILE *fin;
 ifstream fin;
 FILE *fout;
-if ((fout = fopen("input.txt", "r")) == NULL) {
-  perror("open error");
-  exit(1);
-}
 
 int main(int argc, char**argv){
 	string filename = argv[1];
@@ -144,6 +141,19 @@ int main(int argc, char**argv){
   }
 
 
+//file stream creation
+/*
+if ((fin = fopen("input.txt", "r")) == NULL) {
+  perror("input file open error");
+}
+*/
+fin.open("input.txt",ios::in);
+if ((fout = fopen("result.bin", "w")) == NULL) {
+  perror("output file open error");
+  exit(1);
+}
+
+
   
   
 // --- code for -l option --- 
@@ -187,7 +197,7 @@ if(argc==4){
       else if(option == 'c') {
         unsigned int one_instruction = inst_mem[block];
         if(one_instruction == 0) break;
-        cout << instruction_set[(block-2)] << " ";
+        cout << instruction_set[(block)] << " ";
         switch(one_instruction >> 26){
           case 0b000000 :
           //最初のopecodeがspecialつまり000000だった場合

@@ -8,6 +8,12 @@ option :
               press e : end
               press c : continue
 
+
+<caution>
+  input file's name must be "input.txt"
+  output file will be created as "result.txt"
+
+
 <memo for developer>
 how to add a new instruction
  1. edit assembler.cc and create additional case for the new instruction

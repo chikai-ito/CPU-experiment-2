@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <math.h>
 using namespace std;
 void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
 	//switch using last 6 digits
@@ -35,7 +36,15 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
           break;
         }
       break;
+    case 0b000011 :
+      //exec div.s
+      ft = (int)((code >> 16) & 0b11111);
+      fs = (int)((code >> 11) & 0b11111);
+      fd = (int)((code >> 6) & 0b11111);
+      freg[fd] = freg[fs] / freg[ft];
+      break;
     case 0b001111 :
+      //exec floor 
       fs = (int)((code >> 11) & 0b11111);
       fd = (int)((code >> 6) & 0b11111);
       freg[fd] = floor(freg[fs]);
