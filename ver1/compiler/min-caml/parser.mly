@@ -105,7 +105,7 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
 | INTIN exp
     %prec prec_app
        { In($2) }
-| FLOAT exp
+| FLOATIN exp
     %prec prec_app
        { Fin($2) }
 | OUT exp
