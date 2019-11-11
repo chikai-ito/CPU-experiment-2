@@ -3,9 +3,9 @@
 #include "alu.h"
 #include "fpu.h"
 using namespace std;
-void exec_special_code(unsigned int code, int pc, int* now, unsigned int* reg){
+void exec_special_code(unsigned int code, int pc, int* now, unsigned int* reg, float* freg){
 	//最初が000000の命令はaluで実行
-	alu(code,pc,now,reg);
+	alu(code,pc,now,reg,freg);
 }
 void exec_fpu_code(unsigned int code, int pc, unsigned int* reg, float* freg){
 	fpu(code,pc,reg,freg);

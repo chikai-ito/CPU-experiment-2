@@ -164,6 +164,12 @@ string assemble (string line, int option){
     }
     return_code = "000011" + fs_s + ft_s + offset_s;
 	}
+  else if (opcode == "fin"){
+    string fs;
+    s >> fs;
+    string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
+    return_code = "000000" + fs_s + "000000000000000111010";
+  }
 	else if (opcode == "floor.w.s"){
 		string fs,fd;
     s >> fs >> fd;
