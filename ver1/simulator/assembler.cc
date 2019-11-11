@@ -235,6 +235,12 @@ string assemble (string line, int option){
 		string instr_index_s = decimal_to_binary(atoi(instr_index.c_str()),26);
     return_code = "011000" + instr_index_s;
   }
+  else if (opcode == "jalr"){
+    string rs;
+    s >> rs;
+    string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
+    return_code = "111000" + rs_s + "000000000000000000000";
+  }
 	else if (opcode == "lw") {
 		string base;
 		string rt;
