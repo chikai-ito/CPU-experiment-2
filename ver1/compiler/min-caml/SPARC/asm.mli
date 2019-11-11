@@ -10,7 +10,8 @@ and exp =
   | Mov of Id.t
   | Neg of Id.t
   | Itof of Id.t
-  | Getch of Id.t
+  | In of Id.t
+  | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * id_or_imm
   | Sub of Id.t * id_or_imm

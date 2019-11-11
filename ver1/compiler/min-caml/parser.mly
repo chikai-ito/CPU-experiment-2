@@ -13,7 +13,8 @@ let addtyp x = (x, Type.gentyp ())
 %token FSQRT
 %token FLOOR
 %token ITOF
-%token GETCH
+%token INTIN
+%token FLOATIN
 %token OUT
 %token FTOI
 %token MINUS
@@ -101,9 +102,12 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
 | ITOF exp
     %prec prec_app
        { Itof($2) }
-| GETCH exp
+| INTIN exp
     %prec prec_app
-       { Getch($2) }
+       { In($2) }
+| FLOAT exp
+    %prec prec_app
+       { Fin($2) }
 | OUT exp
     %prec prec_app
     { Out($2) }

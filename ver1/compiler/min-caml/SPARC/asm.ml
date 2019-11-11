@@ -11,7 +11,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | Mov of Id.t
   | Neg of Id.t
   | Itof of Id.t
-  | Getch of Id.t
+  | In of Id.t
+  | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * id_or_imm
   | Sub of Id.t * id_or_imm
@@ -88,7 +89,7 @@ let rec remove_and_uniq xs = function
 let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
-  | Mov(x) | Neg(x) | Itof(x) | Getch(x) | Out(x) | FMovD(x) | Ftoi(x) | FNegD(x)
+  | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMovD(x) | Ftoi(x) | FNegD(x)
     | FSqrt(x) | Floor(x) | Save(x, _) -> [x]
   | Add(x, y') | Sub(x, y') | Mul(x, y') | Div(x, y')
     | SLL(x, y') | Ld(x, y') | LdDF(x, y')
