@@ -155,6 +155,9 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 }
 
 
+cout << find_value_from_pair(label_list,"init_line_elements.3030",array_num) << endl;
+
+
   
   
 // --- code for -l option --- 
@@ -247,6 +250,7 @@ long long howmany_instructions;
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
+    //if (now == 9056) cout << reg[2] << endl;
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
@@ -260,8 +264,8 @@ long long howmany_instructions;
     for(int i = 0; i<32; i++){
       if (i%3 == 0) { printf("\n"); }
       printf("f%i = %f    ", i, freg[i]);
-    }
-    */
+      }
+      */
     }
 	}
 

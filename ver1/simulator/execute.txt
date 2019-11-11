@@ -1042,7 +1042,7 @@ addi %r0 %r2 512
 	sw	%r26 %r28 148
 	lw	%r24 %r23 0
 addi %r26 %r26 152
-jal 0
+	jalr	%r23
 addi %r0 %r25 152
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 148
@@ -2436,7 +2436,7 @@ bl %r1 %r25 2
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -2547,7 +2547,7 @@ addi %r2 %r1 1
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -2555,7 +2555,7 @@ addi %r0 %r25 24
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -2563,7 +2563,7 @@ addi %r0 %r25 24
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -2572,7 +2572,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -2743,7 +2743,7 @@ addi %r0 %r5 2
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -2761,7 +2761,7 @@ addi %r0 %r5 0
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -2779,7 +2779,7 @@ addi %r0 %r5 1
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -5189,7 +5189,7 @@ addi %r0 %r25 2
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -5259,7 +5259,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 52
 	lw	%r24 %r23 0
 addi %r26 %r26 56
-jal 0
+	jalr	%r23
 addi %r0 %r25 56
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 52
@@ -5295,7 +5295,7 @@ addi %r0 %r5 0
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -5339,7 +5339,7 @@ j 5420
 	sw	%r26 %r28 28
 	lw	%r24 %r23 0
 addi %r26 %r26 32
-jal 0
+	jalr	%r23
 addi %r0 %r25 32
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 28
@@ -5367,7 +5367,7 @@ addi %r0 %r1 1
 	sw	%r26 %r28 28
 	lw	%r24 %r23 0
 addi %r26 %r26 32
-jal 0
+	jalr	%r23
 addi %r0 %r25 32
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 28
@@ -5390,7 +5390,7 @@ addi %r0 %r1 1
 	sw	%r26 %r28 28
 	lw	%r24 %r23 0
 addi %r26 %r26 32
-jal 0
+	jalr	%r23
 addi %r0 %r25 32
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 28
@@ -5439,7 +5439,7 @@ bne %r13 %r25 2
 	sw	%r26 %r28 52
 	lw	%r24 %r23 0
 addi %r26 %r26 56
-jal 0
+	jalr	%r23
 addi %r0 %r25 56
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 52
@@ -5526,7 +5526,7 @@ addi %r0 %r2 0
 	sw	%r26 %r28 100
 	lw	%r24 %r23 0
 addi %r26 %r26 104
-jal 0
+	jalr	%r23
 addi %r0 %r25 104
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 100
@@ -5581,7 +5581,7 @@ addi %r0 %r6 0
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -5617,7 +5617,7 @@ addi %r0 %r4 1
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -5633,7 +5633,7 @@ j 5708
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -5660,7 +5660,7 @@ addi %r0 %r1 1
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -5687,7 +5687,7 @@ addi %r0 %r5 0
 	sw	%r26 %r28 4
 	lw	%r24 %r23 0
 addi %r26 %r26 8
-jal 0
+	jalr	%r23
 addi %r0 %r25 8
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 4
@@ -5756,7 +5756,7 @@ bne %r3 %r25 2
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -5841,7 +5841,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 108
 	lw	%r24 %r23 0
 addi %r26 %r26 112
-jal 0
+	jalr	%r23
 addi %r0 %r25 112
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 108
@@ -5896,7 +5896,7 @@ addi %r0 %r6 0
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -5931,7 +5931,7 @@ addi %r0 %r4 1
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -5946,7 +5946,7 @@ j 6021
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -5973,7 +5973,7 @@ addi %r0 %r1 1
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -6000,7 +6000,7 @@ addi %r0 %r5 0
 	sw	%r26 %r28 4
 	lw	%r24 %r23 0
 addi %r26 %r26 8
-jal 0
+	jalr	%r23
 addi %r0 %r25 8
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 4
@@ -6916,7 +6916,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -6948,7 +6948,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -7006,7 +7006,7 @@ addi %r0 %r25 104
 	sw	%r26 %r28 100
 	lw	%r24 %r23 0
 addi %r26 %r26 104
-jal 0
+	jalr	%r23
 addi %r0 %r25 104
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 100
@@ -7084,7 +7084,7 @@ addi %r0 %r25 128
 	sw	%r26 %r28 124
 	lw	%r24 %r23 0
 addi %r26 %r26 128
-jal 0
+	jalr	%r23
 addi %r0 %r25 128
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 124
@@ -7181,7 +7181,7 @@ addi %r0 %r25 152
 	sw	%r26 %r28 164
 	lw	%r24 %r23 0
 addi %r26 %r26 168
-jal 0
+	jalr	%r23
 addi %r0 %r25 168
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 164
@@ -7199,7 +7199,7 @@ addi %r0 %r25 168
 	sw	%r26 %r28 164
 	lw	%r24 %r23 0
 addi %r26 %r26 168
-jal 0
+	jalr	%r23
 addi %r0 %r25 168
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 164
@@ -7366,7 +7366,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 188
 	lw	%r24 %r23 0
 addi %r26 %r26 192
-jal 0
+	jalr	%r23
 addi %r0 %r25 192
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 188
@@ -7410,7 +7410,7 @@ addi %r0 %r25 200
 	sw	%r26 %r28 196
 	lw	%r24 %r23 0
 addi %r26 %r26 200
-jal 0
+	jalr	%r23
 addi %r0 %r25 200
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 196
@@ -7420,7 +7420,7 @@ j 7459
 	sw	%r26 %r28 196
 	lw	%r24 %r23 0
 addi %r26 %r26 200
-jal 0
+	jalr	%r23
 addi %r0 %r25 200
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 196
@@ -7435,7 +7435,7 @@ addi %r0 %r25 1
 	sw	%r26 %r28 196
 	lw	%r24 %r23 0
 addi %r26 %r26 200
-jal 0
+	jalr	%r23
 addi %r0 %r25 200
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 196
@@ -7521,7 +7521,7 @@ addi %r1 %r1 1
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -7549,7 +7549,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -7559,7 +7559,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -7570,7 +7570,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -7668,7 +7668,7 @@ addi %r0 %r4 3
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -7688,7 +7688,7 @@ addi %r0 %r4 4
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -7713,7 +7713,7 @@ addi %r0 %r25 2
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -7740,7 +7740,7 @@ j 7788
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -7759,7 +7759,7 @@ j 7807
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -7778,7 +7778,7 @@ j 7826
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -7797,7 +7797,7 @@ j 7845
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -7890,7 +7890,7 @@ addi %r0 %r25 2
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -8098,7 +8098,7 @@ j 8146
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -8307,7 +8307,7 @@ j 8355
 	sw	%r26 %r28 44
 	lw	%r24 %r23 0
 addi %r26 %r26 48
-jal 0
+	jalr	%r23
 addi %r0 %r25 48
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 44
@@ -8474,7 +8474,7 @@ addi %r0 %r25 2
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -8586,7 +8586,7 @@ addi %r0 %r5 42
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -8635,7 +8635,7 @@ addi %r0 %r4 0
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -8740,7 +8740,7 @@ addi %r0 %r25 48
 	sw	%r26 %r28 44
 	lw	%r24 %r23 0
 addi %r26 %r26 48
-jal 0
+	jalr	%r23
 addi %r0 %r25 48
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 44
@@ -8758,7 +8758,7 @@ addi %r0 %r4 0
 	sw	%r26 %r28 44
 	lw	%r24 %r23 0
 addi %r26 %r26 48
-jal 0
+	jalr	%r23
 addi %r0 %r25 48
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 44
@@ -8773,7 +8773,7 @@ addi %r0 %r6 0
 	sw	%r26 %r28 44
 	lw	%r24 %r23 0
 addi %r26 %r26 48
-jal 0
+	jalr	%r23
 addi %r0 %r25 48
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 44
@@ -8781,7 +8781,7 @@ addi %r0 %r25 48
 	sw	%r26 %r28 44
 	lw	%r24 %r23 0
 addi %r26 %r26 48
-jal 0
+	jalr	%r23
 addi %r0 %r25 48
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 44
@@ -8820,7 +8820,7 @@ addi %r1 %r8 1
 	sw	%r26 %r28 28
 	lw	%r24 %r23 0
 addi %r26 %r26 32
-jal 0
+	jalr	%r23
 addi %r0 %r25 32
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 28
@@ -8833,7 +8833,7 @@ addi %r0 %r1 0
 	sw	%r26 %r28 28
 	lw	%r24 %r23 0
 addi %r26 %r26 32
-jal 0
+	jalr	%r23
 addi %r0 %r25 32
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 28
@@ -9415,7 +9415,7 @@ addi %r0 %r6 42
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -9443,7 +9443,7 @@ addi %r3 %r4 2
 	sw	%r26 %r28 36
 	lw	%r24 %r23 0
 addi %r26 %r26 40
-jal 0
+	jalr	%r23
 addi %r0 %r25 40
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 36
@@ -9488,7 +9488,7 @@ addi %r0 %r5 4
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -9552,7 +9552,7 @@ bl %r2 %r25 23
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -9583,7 +9583,7 @@ addi %r0 %r5 120
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -9609,7 +9609,7 @@ addi %r0 %r3 118
 	sw	%r26 %r28 20
 	lw	%r24 %r23 0
 addi %r26 %r26 24
-jal 0
+	jalr	%r23
 addi %r0 %r25 24
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 20
@@ -9634,7 +9634,7 @@ addi %r0 %r25 2
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -9662,7 +9662,7 @@ addi %r0 %r4 119
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -9684,7 +9684,7 @@ addi %r0 %r4 4
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -9695,7 +9695,7 @@ addi %r0 %r3 0
 	sw	%r26 %r28 12
 	lw	%r24 %r23 0
 addi %r26 %r26 16
-jal 0
+	jalr	%r23
 addi %r0 %r25 16
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 12
@@ -9717,7 +9717,7 @@ addi %r0 %r1 4
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -9742,7 +9742,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -9827,7 +9827,7 @@ addi %r1 %r2 1
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -9846,7 +9846,7 @@ addi %r3 %r4 2
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -9865,7 +9865,7 @@ addi %r3 %r3 3
 	sw	%r26 %r28 68
 	lw	%r24 %r23 0
 addi %r26 %r26 72
-jal 0
+	jalr	%r23
 addi %r0 %r25 72
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 68
@@ -9980,7 +9980,7 @@ addi %r0 %r25 96
 	sw	%r26 %r28 92
 	lw	%r24 %r23 0
 addi %r26 %r26 96
-jal 0
+	jalr	%r23
 addi %r0 %r25 96
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 92
@@ -10093,7 +10093,7 @@ addi %r0 %r2 1
 	sw	%r26 %r28 44
 	lw	%r24 %r23 0
 addi %r26 %r26 48
-jal 0
+	jalr	%r23
 addi %r0 %r25 48
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 44
@@ -10102,7 +10102,7 @@ addi %r0 %r25 48
 	sw	%r26 %r28 52
 	lw	%r24 %r23 0
 addi %r26 %r26 56
-jal 0
+	jalr	%r23
 addi %r0 %r25 56
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 52
@@ -10111,7 +10111,7 @@ addi %r0 %r25 56
 	sw	%r26 %r28 52
 	lw	%r24 %r23 0
 addi %r26 %r26 56
-jal 0
+	jalr	%r23
 addi %r0 %r25 56
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 52
@@ -10120,7 +10120,7 @@ addi %r0 %r25 56
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -10128,7 +10128,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -10136,7 +10136,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -10159,7 +10159,7 @@ addi %r0 %r25 64
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -10171,7 +10171,7 @@ addi %r0 %r25 1
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
@@ -10182,7 +10182,7 @@ addi %r0 %r3 0
 	sw	%r26 %r28 60
 	lw	%r24 %r23 0
 addi %r26 %r26 64
-jal 0
+	jalr	%r23
 addi %r0 %r25 64
 	sub	%r26 %r25 %r26
 	lw	%r26 %r28 60
