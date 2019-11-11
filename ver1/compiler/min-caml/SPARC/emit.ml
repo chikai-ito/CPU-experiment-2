@@ -60,7 +60,8 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), Mov(y) -> Printf.fprintf oc "\tmov\t%s %s\n" y x
   | NonTail(x), Neg(y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" y x
   | NonTail(x), Itof(y) -> Printf.fprintf oc "\tmtc1\t%s %s\n" y x
-  | NonTail(x), Getch(_) -> Printf.fprintf oc "\tin\t%s\n" x
+  | NonTail(x), In(_) -> Printf.fprintf oc "\tin\t%s\n" x
+  | NonTail(x), Fin(_) -> Printf.fprintf oc "\tfin\t%s\n" x
   | NonTail(_), Out(y) -> Printf.fprintf oc "\tout\t%s\n" y
   | NonTail(x), Add(y,C(z')) -> Printf.fprintf oc "\taddi\t%s %s %s\n" y x (pp_id_or_imm (C(z')))
   | NonTail(x), Add(y, z') -> Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') x
@@ -119,7 +120,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | Tail, (Nop | St _ | StDF _ | Comment _ | Save _ as exp) ->
       g' oc (NonTail(Id.gentmp Type.Unit), exp);
       Printf.fprintf oc "\tretl\n";
-  | Tail, (Set _ | SetL _ | Mov _ | Neg _ | Itof _ | Getch _ | Out _
+  | Tail, (Set _ | SetL _ | Mov _ | Neg _ | Itof _ | In _ | Fin _ | Out _
            | Add _ | Sub _ | Mul _ | Div _ | SLL _ | Ld _ | ILd _ as exp) ->
       g' oc (NonTail(regs.(0)), exp);
       Printf.fprintf oc "\tretl\n";
@@ -270,7 +271,7 @@ let f oc (Prog(data, fundefs, e)) =
   (* Printf.fprintf oc ".section\t\".text\"\n"; *)
   (* Printf.fprintf oc ".global\tmin_caml_start\n"; *)
   Printf.fprintf oc "#text_section\n";
-  Printf.fprintf oc "program_start b :\n";
+  Printf.fprintf oc "program_start :\n";
   (* Printf.fprintf oc "\tsave\t%%r29 -112 %%r29\n"; (* from gcc; why 112? *) *)
   stackset := S.empty;
   stackmap := [];

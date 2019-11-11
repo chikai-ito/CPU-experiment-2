@@ -26,7 +26,8 @@ let rec deref_term = function
   | Not(e) -> Not(deref_term e)
   | Neg(e) -> Neg(deref_term e)
   | Itof(e) -> Itof(deref_term e)
-  | Getch(e) -> Getch(deref_term e)
+  | In(e) -> In(deref_term e)
+  | Fin(e) -> Fin(deref_term e)
   | Out(e) -> Out(deref_term e)
   | Add(e1, e2) -> Add(deref_term e1, deref_term e2)
   | Sub(e1, e2) -> Sub(deref_term e1, deref_term e2)
@@ -104,9 +105,12 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Itof(e) ->
         unify Type.Int (g env e);
         Type.Float
-    | Getch(e) ->
+    | In(e) ->
         unify Type.Unit (g env e);
         Type.Int
+    | Fin(e) ->
+        unify Type.Unit (g env e);
+        Type.Float
     | Out(e) ->
         unify Type.Int (g env e);
         Type.Unit

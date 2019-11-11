@@ -6,7 +6,8 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | Not of t
   | Neg of t
   | Itof of t
-  | Getch of t
+  | In of t
+  | Fin of t
   | Out of t
   | Add of t * t
   | Sub of t * t
@@ -77,8 +78,13 @@ and print_syntax =
       depth := !depth + 1;
       print_syntax s;
       depth := !depth -1
-    | Getch s -> 
-      Printf.printf "GETCH\n";
+    | In s -> 
+      Printf.printf "INPUT\n";
+      depth := !depth + 1;
+      print_syntax s;
+      depth := !depth -1
+    | Fin s -> 
+      Printf.printf "FINPUT\n";
       depth := !depth + 1;
       print_syntax s;
       depth := !depth -1

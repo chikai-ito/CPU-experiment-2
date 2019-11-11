@@ -52,31 +52,6 @@ let rec fiszero x = (x = 0.0)
       ) else ();
       print_char (c + 48)
     in
-    let rec tail_read_int sgn x =
-      let digit = getchar () in
-      if digit = 10 then sgn * x      
-      else if digit = 45 then tail_read_int (-1) x
-      else if digit < 48 then tail_read_int sgn x    (* 関係ない文字は読み飛ばす *)
-      else if digit > 57 then tail_read_int sgn x    (* 関係ない~飛ばす *)
-      else tail_read_int sgn (x * 10 + (digit - 48))
-    in
-    let rec read_int _ =
-      tail_read_int 1 0
-    in
-    let rec tail_read_float sgn u l e =
-      let digit = getchar () in
-      if digit = 10 then sgn *. ((float_of_int u) +. (float_of_int l) *. e)
-      else if digit = 45 then tail_read_float (-1.0) u l e
-      else if digit = 46 then tail_read_float sgn u l 1.0
-      else if digit < 48 then tail_read_float sgn u l e
-      else if digit > 57 then tail_read_float sgn u l e
-      else if e > 1.0
-      then tail_read_float sgn (u * 10 + (digit - 48)) l e
-      else tail_read_float sgn u (l * 10 + (digit - 48)) (e *. 0.1)
-    in
-    let rec read_float _ =
-      tail_read_float 1.0 0 0 10.0
-    in
 
 
 (* open MiniMLRuntime;; *)

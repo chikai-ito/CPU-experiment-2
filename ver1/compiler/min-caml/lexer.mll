@@ -46,8 +46,10 @@ rule token = parse
     { FSQRT }
 | "floor"
     { FLOOR }
-| "getchar"
-    { GETCH }
+| "read_int"
+    { INTIN }
+| "read_float"
+    { FLOATIN }
 | "print_char"
     { OUT }
 | "int_of_float"

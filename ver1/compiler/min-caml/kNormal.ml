@@ -6,7 +6,8 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Float of float
   | Neg of Id.t
   | Itof of Id.t
-  | Getch of Id.t
+  | In of Id.t
+  | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
@@ -238,7 +239,7 @@ and print_kNormal =
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
-  | Neg(x) | Itof(x) | Getch(x)
+  | Neg(x) | Itof(x) | In(x) | Fin(x)
     | Out(x) | FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y) -> S.of_list [x; y]
@@ -273,9 +274,12 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Itof(e) ->
       insert_let (g env e)
         (fun x -> Itof(x), Type.Float)
-  | Syntax.Getch(e) ->
+  | Syntax.In(e) ->
       insert_let (g env e)
-        (fun x -> Getch(x), Type.Int)
+        (fun x -> In(x), Type.Int)
+  | Syntax.Fin(e) ->
+      insert_let (g env e)
+        (fun x -> Fin(x), Type.Float)
   | Syntax.Out(e) ->
       insert_let (g env e)
         (fun x -> Out(x), Type.Unit)

@@ -4,7 +4,8 @@ type t =
   | Float of float
   | Neg of Id.t
   | Itof of Id.t
-  | Getch of Id.t
+  | In of Id.t
+  | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
