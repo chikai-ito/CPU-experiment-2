@@ -8,9 +8,9 @@ extern FILE *fout;
 union Convert{
   unsigned int i;
 } convert;
-void alu(unsigned int code, int pc, int* now, unsigned int* reg){
+void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
 	switch (code & 0b111111) {
-		int rs,rt,rd;
+		int rs,rt,rd,fs;
 		case 0b100000 :
 			//ADDの実行 rd = rs + rt
 			rs = (int)((code >> 21) & 0b11111);
@@ -46,6 +46,11 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg){
     	rd = (int)((code >> 11) & 0b11111);
     	reg[rd] = reg[rs] % reg[rt];
 			break;
+    case 0b111010 :
+      //execute FIN
+      fs = (int)((code >> 21) & 0b11111);
+      fin >> freg[fs];
+      break;
     case 0b101010 :
       //execute IN
       rs = (int)((code >> 21) & 0b11111);

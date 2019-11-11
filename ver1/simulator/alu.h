@@ -1,2 +1,2 @@
 using namespace std;
-void alu(unsigned int, int, int*, unsigned int*);
+void alu(unsigned int, int, int*, unsigned int*, float*);
