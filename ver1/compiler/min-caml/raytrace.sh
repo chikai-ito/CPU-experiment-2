@@ -3,6 +3,7 @@
 #$1== .sld file
 
 ./min-caml ./data/raytracer/minrt
+cat ./lib.s >> ./data/raytracer/minrt.s
 
 cp ./data/raytracer/minrt.s ../../simulator/test/minrt.s
 
@@ -12,7 +13,7 @@ cd ../../simulator
 
 make
 
-./simulator ./test/minrt.s -l 2
+./simulator ./test/minrt.s
 
 if [ -e "result.bin" ]; then
   cat "result.bin"
