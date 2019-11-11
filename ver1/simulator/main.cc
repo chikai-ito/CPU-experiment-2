@@ -250,6 +250,7 @@ long long howmany_instructions;
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
+      /*
       cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { printf("\n"); }
@@ -260,6 +261,7 @@ long long howmany_instructions;
       if (i%3 == 0) { printf("\n"); }
       printf("f%i = %f    ", i, freg[i]);
     }
+    */
     }
 	}
 

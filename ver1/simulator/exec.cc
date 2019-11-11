@@ -124,6 +124,11 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
     	//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
     	*now = (int)(code&0b11111111111111111111111111) - 1;
 			break;
+    case 0b111000 :
+      rs = (int)((code >> 21) & 0b11111);
+      reg[28] = *now;
+      *now = reg[rs] - 1;
+      break;
 		case 0b100011 :
 			//execute lw instruction
 			base = (int)((code >> 21) & 0b11111);
