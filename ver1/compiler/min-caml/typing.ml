@@ -180,9 +180,14 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
         unify Type.Int (g env e2);
         Type.Unit
   with Unify(t1, t2) ->
+    Printf.printf "Type error in the term:\n";
     print_syntax e;
+    Printf.printf "Expected type: ";
     Type.print_type t1;
+    Printf.printf "\n";
+    Printf.printf "Actual type: ";
     Type.print_type t2;
+    Printf.printf "\n";
     raise (Error(deref_term e, deref_typ t1, deref_typ t2))
 
 let f e =
