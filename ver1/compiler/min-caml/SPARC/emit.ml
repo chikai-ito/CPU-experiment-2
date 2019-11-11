@@ -186,7 +186,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
       Printf.fprintf oc "\tlw\t%s %s 0\n" reg_cl reg_sw;
       Printf.fprintf oc "\taddi\t%s %s %d\t\n" reg_sp reg_sp ss;
-      Printf.fprintf oc "\tjal\t%s\n" reg_sw;
+      Printf.fprintf oc "\tjalr\t%s\n" reg_sw;
       Printf.fprintf oc "\taddi\t%%r0 %%r25 %d\n" ss;
       Printf.fprintf oc "\tsub\t%s %%r25 %s\n" reg_sp reg_sp;
       Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
