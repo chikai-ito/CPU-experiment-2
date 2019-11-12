@@ -2,23 +2,11 @@
 #text_section
 program_start :
 	addi	%r0 %r1 80
-	sw	%r26 %r28 4
-	addi	%r26 %r26 8
-	jal	min_caml_print_char
-	addi	%r26 %r26 -8
-	lw	%r26 %r28 4
+	out	%r1
 	addi	%r0 %r1 32
-	sw	%r26 %r28 4
-	addi	%r26 %r26 8
-	jal	min_caml_print_char
-	addi	%r26 %r26 -8
-	lw	%r26 %r28 4
+	out	%r1
 	addi	%r0 %r1 55
-	sw	%r26 %r28 4
-	addi	%r26 %r26 8
-	jal	min_caml_print_char
-	addi	%r26 %r26 -8
-	lw	%r26 %r28 4
+	out	%r1
 	ret
 #libraries
 min_caml_create_array :
@@ -43,7 +31,4 @@ create_float_array_cont :
 	addi	%r2 %r2 -1
 	addi	%r27 %r27 4
 	j	create_float_array_loop
-min_caml_print_char :
-	out %r1
-	retl
 	

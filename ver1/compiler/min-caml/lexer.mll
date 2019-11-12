@@ -49,11 +49,9 @@ rule token = parse
 | "read_int"
     { INTIN }
 | "read_float"
-{ FLOATIN }
-(*
+    { FLOATIN }
 | "print_char"
     { OUT }
-*)
 | "int_of_float"
     { FTOI }
 | "float_of_int"
