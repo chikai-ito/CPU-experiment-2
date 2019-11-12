@@ -3,9 +3,6 @@ min_caml_create_array :
 	mov	%r27 %r1
 create_array_loop :
 	bne     %r3 %r0 create_array_cont
-	beq	%r3 %r0	create_array_exit
-	addi	%r27 %r27 4
-create_array_exit :
 	retl
 create_array_cont :
 	sw	%r27 %r2 0
