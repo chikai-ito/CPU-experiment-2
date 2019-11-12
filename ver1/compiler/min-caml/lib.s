@@ -6,8 +6,7 @@ create_array_loop :
 	retl
 create_array_cont :
 	sw	%r27 %r2 0
-	addi 	%r0 %r25 1
-	sub	%r3 %r25 %r3
+	addi 	%r3 %r3 -1
 	addi	%r27 %r27 4
 	j	create_array_loop
 min_caml_create_float_array :
@@ -18,7 +17,6 @@ create_float_array_loop :
 	retl
 create_float_array_cont :
 	sw.s	%r27 %f0 0
-	addi	%r0 %r25 1
-	sub	%r2 %r25 %r2
+	addi	%r2 %r2 -1
 	addi	%r27 %r27 4
 	j	create_float_array_loop
