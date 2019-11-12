@@ -1,6 +1,5 @@
-let rec f x y =
-  x - y in
-    f 39 22
-            
+print_char 80;
+print_char 32;
+print_char 55
 
     

@@ -20,3 +20,7 @@ create_float_array_cont :
 	addi	%r2 %r2 -1
 	addi	%r27 %r27 4
 	j	create_float_array_loop
+min_caml_print_char :
+	out %r1
+	retl
+	
