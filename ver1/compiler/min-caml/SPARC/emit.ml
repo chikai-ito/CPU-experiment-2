@@ -274,4 +274,9 @@ let f oc (Prog(data, fundefs, e)) =
   g oc (NonTail("%r1"), e);
   Printf.fprintf oc "\tret\n";
   List.iter (fun fundef -> h oc fundef) fundefs;
+  Printf.fprintf oc "#libraries\n";
+  let lib = open_in "lib.s" in
+  try
+    while true do Printf.fprintf oc "%s\n" (input_line lib) done
+  with End_of_file -> ()
   (* Printf.fprintf oc "\trestore\n" *)
