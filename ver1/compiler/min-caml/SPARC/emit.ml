@@ -108,14 +108,14 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp x (offset y)
   | NonTail(_), Save(x, y) when List.mem x allfregs && not (S.mem y !stackset) ->
       savef y;
-      Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp x (offset y)
+      Printf.fprintf oc "\tisw\t%s %s %d\n" reg_sp x (offset y)
   | NonTail(_), Save(x, y) -> assert (S.mem y !stackset); ()
   (* 復帰の仮想命令の実装 (caml2html: emit_restore) *)
   | NonTail(x), Restore(y) when List.mem x allregs ->
       Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp x (offset y)
   | NonTail(x), Restore(y) ->
       assert (List.mem x allfregs);
-      Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp x (offset y)
+      Printf.fprintf oc "\tilw\t%s %s %d\n" reg_sp x (offset y)
   (* 末尾だったら計算結果を第一レジスタにセットしてリターン (caml2html: emit_tailret) *)
   | Tail, (Nop | St _ | StDF _ | Comment _ | Save _ as exp) ->
       g' oc (NonTail(Id.gentmp Type.Unit), exp);
