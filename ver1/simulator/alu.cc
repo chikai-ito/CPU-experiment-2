@@ -16,7 +16,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
 			rs = (int)((code >> 21) & 0b11111);
 			rt = (int)((code >> 16) & 0b11111);
 			rd = (int)((code >> 11) & 0b11111);
-			reg[rd] = reg[rs] + reg[rt];
+			reg[rd] = (unsigned int)((int)reg[rs] + (int)reg[rt]);
 			break;
 		case 0b011000 :
 			//execute MULTH
@@ -30,21 +30,21 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
 			rs = (int)((code >> 21) & 0b11111);
     	rt = (int)((code >> 16) & 0b11111);
     	rd = (int)((code >> 11) & 0b11111);
-			reg[rd] = reg[rs] * reg[rt];
+			reg[rd] = (unsigned int)((int)reg[rs] * (int)reg[rt]);
 			break;
 		case 0b011010 :
 			//execute DIV
 			rs = (int)((code >> 21) & 0b11111);
     	rt = (int)((code >> 16) & 0b11111);
     	rd = (int)((code >> 11) & 0b11111);
-			reg[rd] = reg[rs] / reg[rt];
+			reg[rd] = (unsigned int)((int)reg[rs] / (int)reg[rt]);
 			break;
 		case 0b011011 :
       //execute DIVU
 			rs = (int)((code >> 21) & 0b11111);
     	rt = (int)((code >> 16) & 0b11111);
     	rd = (int)((code >> 11) & 0b11111);
-    	reg[rd] = reg[rs] % reg[rt];
+    	reg[rd] = (unsigned int)((int)reg[rs] % (int)reg[rt]);
 			break;
     case 0b111010 :
       //execute FIN
@@ -61,7 +61,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
     case 0b001000 :
       //execute jr
       rs = (int)((code >> 21) & 0b11111);
-      *now = rs -1;
+      *now = reg[rs] -1;
       break;
     case 0b010101:
       //execute OUT
@@ -75,7 +75,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
 			rs = (int)((code >> 21) & 0b11111);
     	rt = (int)((code >> 16) & 0b11111);
     	rd = (int)((code >> 11) & 0b11111);
-			reg[rd] = reg[rs] - reg[rt];
+			reg[rd] = (unsigned int)((int)reg[rs] - (int)reg[rt]);
 			break;
 		case 0b001001 :
 			//execute mov

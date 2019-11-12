@@ -155,7 +155,7 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 }
 
 
-cout << find_value_from_pair(label_list,"init_line_elements.3030",array_num) << endl;
+cout << find_value_from_pair(label_list,"rotate_quadratic_matrix.2736",array_num) << endl;
 
 
   
@@ -250,6 +250,7 @@ long long howmany_instructions;
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
+    //cout << now << endl;
     //if (now == 9056) cout << reg[2] << endl;
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
