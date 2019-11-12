@@ -36,9 +36,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			rt = (int)((code >> 16) & 0b11111);
 			//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			if((code>>16)&0b1){
-				if(reg[rs] == reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+				if((int)reg[rs] == (int)reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			}else{
-				if(reg[rs] == reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
+				if((int)reg[rs] == (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
 			}
 			break;
 		case 0b000110 :
@@ -69,9 +69,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
     	rt = (int)((code >> 16) & 0b11111);
     	//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
     	if((code>>15)&0b1){
-    	  if(reg[rs] != reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+    	  if((int)reg[rs] != (int)reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
     	}else{
-    	  if(reg[rs] != reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
+    	  if((int)reg[rs] != (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
     	}
 			break;
 		case 0b000111 :
@@ -101,16 +101,16 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
       base = (int)((code >> 21) & 0b11111);
       rt = (int)((code >> 16) & 0b11111);
       if((code>>15)&0b1){
-        reg[rt] = inst_mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
       }else{
-        reg[rt] = inst_mem[reg[base] + (int)(code&0b1111111111111111)];
+        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
       }
       break;
     case 0b100111 :
       //exec ilw.s instruction
       base = (int)((code >> 21) & 0b11111);
       ft = (int)((code >> 16) & 0b11111);
-      x.i = inst_mem[reg[base]];
+      x.i = inst_mem[(int)reg[base]];
       freg[ft] = x.f;
       break;
 		case 0b000010 :
@@ -134,9 +134,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			base = (int)((code >> 21) & 0b11111);
 			rt = (int)((code >> 16) & 0b11111);
 			if((code>>15)&0b1){
-	      reg[rt] = mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+	      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 	    }else{
-	      reg[rt] = mem[reg[base] + (int)(code&0b1111111111111111)];
+	      reg[rt] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
 	    }
 			break;
 		case 0b100100 :
@@ -144,9 +144,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			base = (int)((code >> 21) & 0b11111);
 	    ft = (int)((code >> 16) & 0b11111);
 			if((code>>15)&0b1){
-	      freg[ft] = mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+	      freg[ft] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 	    }else{
-	      freg[ft] = mem[reg[base] + (int)(code&0b1111111111111111)];
+	      freg[ft] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
 	    }
 			break;
 		case 0b111111 :
@@ -154,16 +154,20 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			rt = (int)((code >> 16) & 0b11111);
 			rd = (int)((code >> 11) & 0b11111);
 			sa = (int)((code >> 6) & 0b11111);
-			reg[rd] = (reg[rt]) << sa;
+      /*cout << "sll" << endl;
+      cout << reg[rt] << endl;
+      cout << reg[sa] << endl;
+      cout << ((reg[rt]) << reg[sa]) << endl;*/
+      reg[rd] = (reg[rt]) << reg[sa];
 			break;
 		case 0b101011 :
 			//execute sw instruction
 	    base = (int)((code >> 21) & 0b11111);
 	    rt = (int)((code >> 16) & 0b11111);
 	    if((code>>15)&0b1){
-	      mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
+	      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
 	    }else{
-	      mem[reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
+	      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
 	    }
 			break;
 		case 0b101100 :
@@ -171,9 +175,11 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 	    base = (int)((code >> 21) & 0b11111);
 	    ft = (int)((code >> 16) & 0b11111);
 	    if((code>>15)&0b1){
-	      mem[reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[ft];
+        x.f = freg[ft];
+	      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
 	    }else{
-	      mem[reg[base] + (int)(code&0b1111111111111111)] = reg[ft];
+        x.f = freg[ft];
+	      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
 	    }
 			break;
 	}

@@ -215,7 +215,7 @@ string assemble (string line, int option){
     string rs;
     s >> rs;
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
-    return_code = "00000" + rs_s + "000000000000000101010";
+    return_code = "000000" + rs_s + "000000000000000101010";
   }
 	else if (opcode == "j"){
     string instr_index;
@@ -346,7 +346,7 @@ string assemble (string line, int option){
     string rs;
     s >> rs;
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
-    return_code = "00000" + rs_s + "000000000000000010101";
+    return_code = "000000" + rs_s + "000000000000000010101";
   }
 	else if (opcode == "ret"){
 		return_code = "00000000000000000000000000000000";

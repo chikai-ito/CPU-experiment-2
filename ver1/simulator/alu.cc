@@ -49,13 +49,17 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
     case 0b111010 :
       //execute FIN
       fs = (int)((code >> 21) & 0b11111);
-      fin >> freg[fs];
+      float f;
+      fin >> f;
+      freg[fs] = f;
       break;
     case 0b101010 :
       //execute IN
       rs = (int)((code >> 21) & 0b11111);
       //fread(&convert, sizeof(char), 1, fin);
-      fin >> reg[rs];
+      int inp;
+      fin >> inp;
+      reg[rs] = (unsigned int)inp;
       //reg[rs] = convert.i;
       break;
     case 0b001000 :
