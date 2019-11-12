@@ -36,9 +36,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			rt = (int)((code >> 16) & 0b11111);
 			//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			if((code>>16)&0b1){
-				if(reg[rs] == reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+				if((int)reg[rs] == (int)reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			}else{
-				if(reg[rs] == reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
+				if((int)reg[rs] == (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
 			}
 			break;
 		case 0b000110 :
@@ -69,9 +69,9 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
     	rt = (int)((code >> 16) & 0b11111);
     	//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
     	if((code>>15)&0b1){
-    	  if(reg[rs] != reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+    	  if((int)reg[rs] != (int)reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
     	}else{
-    	  if(reg[rs] != reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
+    	  if((int)reg[rs] != (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
     	}
 			break;
 		case 0b000111 :
@@ -175,9 +175,11 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 	    base = (int)((code >> 21) & 0b11111);
 	    ft = (int)((code >> 16) & 0b11111);
 	    if((code>>15)&0b1){
-	      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = freg[ft];
+        x.f = freg[ft];
+	      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
 	    }else{
-	      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = freg[ft];
+        x.f = freg[ft];
+	      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
 	    }
 			break;
 	}

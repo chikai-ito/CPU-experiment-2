@@ -155,7 +155,7 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 }
 
 
-cout << find_value_from_pair(label_list,"trace_or_matrix.2899",array_num) << endl;
+cout << find_value_from_pair(label_list,"write_ppm_header.2994",array_num) << endl;
 
 
   
@@ -230,12 +230,14 @@ if(argc==4){
 // ---  code for -l option ---
 
 
+reg[27] = 10000;
+
 long long howmany_instructions;
 
 	for(int now = 0; now < instr_num; now++)
 	{
 		unsigned int one_instruction = inst_mem[now];
-		if(one_instruction == 0) break;
+		if(one_instruction == 0)  break;
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
@@ -250,12 +252,12 @@ long long howmany_instructions;
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
-    cout << now << endl;
-    //if (now == 5318) cout << (int)reg[10] << endl;
+    //cout << now << endl;
+    if (now == 5318) cout << (int)reg[10] << endl;
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
-     /* 
+     /*
       cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { printf("\n"); }
