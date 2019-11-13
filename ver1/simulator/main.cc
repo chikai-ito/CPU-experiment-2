@@ -13,8 +13,7 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-FILE *fin;
-//ifstream fin;
+ifstream fin;
 FILE *fout;
 
 int main(int argc, char**argv){
@@ -32,8 +31,6 @@ int main(int argc, char**argv){
   freg = (float *)malloc(32 * sizeof(float));
   memset(freg, 0, 32 * sizeof(float));
   
-//  unsigned int reg [32];
-//  float freg[32];
   reg[0] = 0;
   reg[27] = 10000;
 
@@ -43,9 +40,7 @@ int main(int argc, char**argv){
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
   memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
-  //cout << mem[300000] << endl;
 
-	//unsigned inst_mem[65536]; // memory
   unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
   memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
@@ -53,12 +48,10 @@ int main(int argc, char**argv){
   int clock = 0;
 	int pc = 0;
 
-	//pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
   pair<string,int>* label_list;
   label_list = (pair<string,int>*)malloc(66536 * sizeof(pair<string,int>));
   memset(label_list,0,66536*sizeof(pair<string,int>));
     
-	//string execute_instruction[65536];
   string* execute_instruction;
   execute_instruction = (string *)malloc(66536 * sizeof(string));
   memset(execute_instruction, 0, (66536 * sizeof(string)));
@@ -127,9 +120,10 @@ int main(int argc, char**argv){
 	}
   reading_file1.close();
 
+
 	// create machine code file
   if(argc==3){
-	  if(~strcmp(argv[2], "-a")){
+	  if(strcmp(argv[2], "-a")== 0){
 		  ofstream writing_file;
 		  writing_file.open("machine_code.txt");
       // write jump to machine_code.txt
@@ -148,9 +142,13 @@ int main(int argc, char**argv){
     free(label_list);
     free(execute_instruction);
     free(instruction_set);
+    free(reg);
+    free(freg);
 	  return 0;
 	  }
   }
+
+
 
 	//it is for executing simulator
 	ofstream writing_file;
@@ -168,6 +166,29 @@ int main(int argc, char**argv){
   writing_file.close();
 
 
+  //it is for -label option 
+  //create file that includes label information 
+  if(argc==3){
+    if(strcmp(argv[2], "-label")== 0){
+      ofstream writing_file1;
+      writing_file1.open("label_info.txt");
+      cout << array_num << endl;
+      for(int i=0; i<array_num; i++){
+        writing_file1 << label_list[i].first << " " << label_list[i].second << endl;
+      }
+    writing_file1.close();
+    free(mem);
+    free(inst_mem);
+    free(label_list);
+    free(execute_instruction);
+    free(instruction_set);
+    free(reg);
+    free(freg);
+    return 0;
+    }
+  }
+
+
 
   // --- using machine_code, create inst_mem ---
   ifstream reading_file2; // file stream for machine_code.txt
@@ -183,44 +204,16 @@ int main(int argc, char**argv){
   }
   reading_file2.close();
 
-/*  
-  // --- using machine_code, create inst_mem ---
-  FILE* codefp;
-  if ((codefp = fopen("machine_code.txt", "r")) == NULL) {
-    perror("input file open error");
-  }
-  int instr_num = 0;
-  char one_code[32];
-  char* one_code;
-  one_code = (char*)malloc(32*sizeof(char));
-  for (int i = 0; i < 32; i++) one_code[i] = '0';
-  while(fscanf(codefp,"%s",one_code) != EOF){
-    string inst = string(one_code);
-    inst_mem[instr_num] = StringToUInt(inst);
-    instr_num = instr_num + 1;
-  }
-  if (fclose(codefp) == EOF) {
-      perror("close error");
-      exit(1);
-  }
-*/
-
 
 
 //file stream creation
-if ((fin = fopen("input.txt", "r")) == NULL) {
-  perror("input file open error");
-}
-/*
 fin.open("input.txt",ios::in);
-*/
+
 if ((fout = fopen("result.bin", "w")) == NULL) {
   perror("output file open error");
   exit(1);
 }
 
-
-cout << find_value_from_pair(label_list,"scan_line.3020",array_num) << endl;
 
 
   
@@ -294,16 +287,14 @@ if(argc==4){
       perror("close error");
       exit(1);
   }
-  if (fclose(fin) == EOF) {
-      perror("close error");
-      exit(1);
-  }
-  //fin.close();
+  fin.close();
   free(mem);
   free(inst_mem);
   free(label_list);
   free(execute_instruction);
   free(instruction_set);
+  free(reg);
+  free(freg);
 
   return 0;
 }
@@ -319,7 +310,7 @@ long long howmany_instructions;
 		//cout << now << endl;
     //if (now == 2405) cout << (int)reg[2] << endl;
     unsigned int one_instruction = inst_mem[now];
-		if(one_instruction == 0)  {cout << now << endl;cout << "ret" << endl; break;}
+		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
@@ -356,16 +347,14 @@ long long howmany_instructions;
    		perror("close error");
    		exit(1);
  	}
-  if (fclose(fin) == EOF) {
-      perror("close error");
-      exit(1);
-  }
-  //fin.close();
+  fin.close();
   free(mem);
   free(inst_mem);
   free(label_list);
   free(execute_instruction);
   free(instruction_set);
+  free(reg);
+  free(freg);
   
 	
 	cout << "---------------------------" << endl;
