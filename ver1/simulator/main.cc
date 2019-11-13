@@ -24,14 +24,16 @@ int main(int argc, char**argv){
 	reading_file.open(filename,ios::in);
 	string one_assemble_instruction;
  
-  /* 
+ 
   unsigned int* reg; // register
   reg = (unsigned int *)malloc(32 * sizeof(unsigned int));
+  memset(reg, 0, 32 * sizeof(unsigned int));
   float* freg; // float register
   freg = (float *)malloc(32 * sizeof(float));
-  */
-  unsigned int reg [32];
-  float freg[32];
+  memset(freg, 0, 32 * sizeof(float));
+  
+//  unsigned int reg [32];
+//  float freg[32];
   reg[0] = 0;
   reg[27] = 10000;
 
@@ -43,16 +45,24 @@ int main(int argc, char**argv){
   memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
   //cout << mem[300000] << endl;
 
-	unsigned inst_mem[65536]; // memory
-  /*unsigned int* inst_mem; //instruction memory
+	//unsigned inst_mem[65536]; // memory
+  unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
   memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
-	*/
+	
   int clock = 0;
 	int pc = 0;
 
-	pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
-	string execute_instruction[65536];
+	//pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
+  pair<string,int>* label_list;
+  label_list = (pair<string,int>*)malloc(66536 * sizeof(pair<string,int>));
+  memset(label_list,0,66536*sizeof(pair<string,int>));
+    
+	//string execute_instruction[65536];
+  string* execute_instruction;
+  execute_instruction = (string *)malloc(66536 * sizeof(string));
+  memset(execute_instruction, 0, (66536 * sizeof(string)));
+
 	//label解決をまず行う
 	int line_num = 0; //line number 
 	int array_num = 0; //represents where to save label information
@@ -104,7 +114,10 @@ int main(int argc, char**argv){
 	ifstream reading_file1; // file stream for reading execute.txt, the label-solved code
 	reading_file1.open("execute.txt",ios::in);
 	//この部分に命令をまず入れる。1つのstringが1assebly命令に対応。
-	string instruction_set [65536];
+	//string instruction_set [65536];
+  string * instruction_set;
+  instruction_set = (string*)malloc(66536 * sizeof(string));
+  memset(instruction_set, 0, 66536 * sizeof(string));
 	int inst_num = 0;
 	while(!reading_file1.eof())
   {
@@ -131,6 +144,10 @@ int main(int argc, char**argv){
 		  }	
 	  writing_file.close();
     free(mem);
+    free(inst_mem);
+    free(label_list);
+    free(execute_instruction);
+    free(instruction_set);
 	  return 0;
 	  }
   }
@@ -166,7 +183,7 @@ int main(int argc, char**argv){
   }
   reading_file2.close();
 
-  /*
+/*  
   // --- using machine_code, create inst_mem ---
   FILE* codefp;
   if ((codefp = fopen("machine_code.txt", "r")) == NULL) {
@@ -174,6 +191,9 @@ int main(int argc, char**argv){
   }
   int instr_num = 0;
   char one_code[32];
+  char* one_code;
+  one_code = (char*)malloc(32*sizeof(char));
+  for (int i = 0; i < 32; i++) one_code[i] = '0';
   while(fscanf(codefp,"%s",one_code) != EOF){
     string inst = string(one_code);
     inst_mem[instr_num] = StringToUInt(inst);
@@ -184,7 +204,6 @@ int main(int argc, char**argv){
       exit(1);
   }
 */
-
 
 
 
@@ -281,6 +300,10 @@ if(argc==4){
   }
   //fin.close();
   free(mem);
+  free(inst_mem);
+  free(label_list);
+  free(execute_instruction);
+  free(instruction_set);
 
   return 0;
 }
@@ -339,6 +362,10 @@ long long howmany_instructions;
   }
   //fin.close();
   free(mem);
+  free(inst_mem);
+  free(label_list);
+  free(execute_instruction);
+  free(instruction_set);
   
 	
 	cout << "---------------------------" << endl;
