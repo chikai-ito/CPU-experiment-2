@@ -7,6 +7,7 @@
 #include "assembler.h"
 #include "label_solver.h"
 #include "operation.h"
+#include "stdlib.h"
 #include "create_execute_file.h"
 using namespace std;
 
@@ -24,8 +25,13 @@ int main(int argc, char**argv){
 	string one_assemble_instruction;
 	unsigned int reg[32]; // register
 	float freg[32]; // float register
+  
+  //main memory
   unsigned int * mem;
-  mem = (unsigned int *)malloc(8e+9 * sizeof(unsigned int));
+  mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
+  memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
+  cout << mem[700000] << endl;
+
 	//unsigned int mem[65536]; // memory
   unsigned int inst_mem [65536]; //instruction memory
 	int clock = 0;
@@ -108,6 +114,7 @@ int main(int argc, char**argv){
 			  writing_file << one_machine_code << endl;
 		  }	
 	  writing_file.close();
+    free(mem);
 	  return 0;
 	  }
   }
@@ -155,7 +162,7 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 }
 
 
-cout << find_value_from_pair(label_list,"write_ppm_header.2994",array_num) << endl;
+cout << find_value_from_pair(label_list,"scan_line.3020",array_num) << endl;
 
 
   
@@ -225,6 +232,13 @@ if(argc==4){
       }
     }
   }
+  if (fclose(fout) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+  fin.close();
+  free(mem);
+
   return 0;
 }
 // ---  code for -l option ---
@@ -236,8 +250,10 @@ long long howmany_instructions;
 
 	for(int now = 0; now < instr_num; now++)
 	{
-		unsigned int one_instruction = inst_mem[now];
-		if(one_instruction == 0)  break;
+		//cout << now << endl;
+    //if (now == 2405) cout << (int)reg[2] << endl;
+    unsigned int one_instruction = inst_mem[now];
+		if(one_instruction == 0)  {cout << now << endl;cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
@@ -252,8 +268,6 @@ long long howmany_instructions;
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
-    //cout << now << endl;
-    if (now == 5318) cout << (int)reg[10] << endl;
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
@@ -276,6 +290,9 @@ long long howmany_instructions;
    		perror("close error");
    		exit(1);
  	}
+  fin.close();
+  free(mem);
+  
 	
 	cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
@@ -287,6 +304,8 @@ long long howmany_instructions;
       if (i%3 == 0) { printf("\n"); }
       printf("f%i = %f    ", i, freg[i]);
     }
+
+  cout << "number of executed instructions is " << howmany_instructions << endl;
 	
 	return 0;
 }

@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -O2 -o
+CFLAGS = -Wall -O2 -fsanitize=address -o
 SRCS = $(shell find . -name "*.cc")
 OBJS = $(SRCS:.cc=.o)
 
