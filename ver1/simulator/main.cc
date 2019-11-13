@@ -7,13 +7,14 @@
 #include "assembler.h"
 #include "label_solver.h"
 #include "operation.h"
+#include "stdlib.h"
 #include "create_execute_file.h"
 using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-//FILE *fin;
-ifstream fin;
+FILE *fin;
+//ifstream fin;
 FILE *fout;
 
 int main(int argc, char**argv){
@@ -22,17 +23,46 @@ int main(int argc, char**argv){
 	ifstream reading_file;
 	reading_file.open(filename,ios::in);
 	string one_assemble_instruction;
-	unsigned int reg[32]; // register
-	float freg[32]; // float register
+ 
+ 
+  unsigned int* reg; // register
+  reg = (unsigned int *)malloc(32 * sizeof(unsigned int));
+  memset(reg, 0, 32 * sizeof(unsigned int));
+  float* freg; // float register
+  freg = (float *)malloc(32 * sizeof(float));
+  memset(freg, 0, 32 * sizeof(float));
+  
+//  unsigned int reg [32];
+//  float freg[32];
+  reg[0] = 0;
+  reg[27] = 10000;
+
+
+
+  //main memory
   unsigned int * mem;
-  mem = (unsigned int *)malloc(8e+9 * sizeof(unsigned int));
-	//unsigned int mem[65536]; // memory
-  unsigned int inst_mem [65536]; //instruction memory
-	int clock = 0;
+  mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
+  memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
+  //cout << mem[300000] << endl;
+
+	//unsigned inst_mem[65536]; // memory
+  unsigned int* inst_mem; //instruction memory
+  inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
+  memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
+	
+  int clock = 0;
 	int pc = 0;
 
-	pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
-	string execute_instruction[65536];
+	//pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
+  pair<string,int>* label_list;
+  label_list = (pair<string,int>*)malloc(66536 * sizeof(pair<string,int>));
+  memset(label_list,0,66536*sizeof(pair<string,int>));
+    
+	//string execute_instruction[65536];
+  string* execute_instruction;
+  execute_instruction = (string *)malloc(66536 * sizeof(string));
+  memset(execute_instruction, 0, (66536 * sizeof(string)));
+
 	//label解決をまず行う
 	int line_num = 0; //line number 
 	int array_num = 0; //represents where to save label information
@@ -66,6 +96,7 @@ int main(int argc, char**argv){
       label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
     }
 	}
+  reading_file.close();
 
 
 // --- create "execute.txt" --- 
@@ -83,7 +114,10 @@ int main(int argc, char**argv){
 	ifstream reading_file1; // file stream for reading execute.txt, the label-solved code
 	reading_file1.open("execute.txt",ios::in);
 	//この部分に命令をまず入れる。1つのstringが1assebly命令に対応。
-	string instruction_set [65536];
+	//string instruction_set [65536];
+  string * instruction_set;
+  instruction_set = (string*)malloc(66536 * sizeof(string));
+  memset(instruction_set, 0, 66536 * sizeof(string));
 	int inst_num = 0;
 	while(!reading_file1.eof())
   {
@@ -91,6 +125,7 @@ int main(int argc, char**argv){
 		instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}
+  reading_file1.close();
 
 	// create machine code file
   if(argc==3){
@@ -108,6 +143,11 @@ int main(int argc, char**argv){
 			  writing_file << one_machine_code << endl;
 		  }	
 	  writing_file.close();
+    free(mem);
+    free(inst_mem);
+    free(label_list);
+    free(execute_instruction);
+    free(instruction_set);
 	  return 0;
 	  }
   }
@@ -141,21 +181,46 @@ int main(int argc, char**argv){
     inst_mem[instr_num] = StringToUInt(inst);
     instr_num = instr_num + 1;
   }
+  reading_file2.close();
+
+/*  
+  // --- using machine_code, create inst_mem ---
+  FILE* codefp;
+  if ((codefp = fopen("machine_code.txt", "r")) == NULL) {
+    perror("input file open error");
+  }
+  int instr_num = 0;
+  char one_code[32];
+  char* one_code;
+  one_code = (char*)malloc(32*sizeof(char));
+  for (int i = 0; i < 32; i++) one_code[i] = '0';
+  while(fscanf(codefp,"%s",one_code) != EOF){
+    string inst = string(one_code);
+    inst_mem[instr_num] = StringToUInt(inst);
+    instr_num = instr_num + 1;
+  }
+  if (fclose(codefp) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+*/
+
+
 
 //file stream creation
-/*
 if ((fin = fopen("input.txt", "r")) == NULL) {
   perror("input file open error");
 }
-*/
+/*
 fin.open("input.txt",ios::in);
+*/
 if ((fout = fopen("result.bin", "w")) == NULL) {
   perror("output file open error");
   exit(1);
 }
 
 
-cout << find_value_from_pair(label_list,"write_ppm_header.2994",array_num) << endl;
+cout << find_value_from_pair(label_list,"scan_line.3020",array_num) << endl;
 
 
   
@@ -225,19 +290,36 @@ if(argc==4){
       }
     }
   }
+  if (fclose(fout) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+  if (fclose(fin) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+  //fin.close();
+  free(mem);
+  free(inst_mem);
+  free(label_list);
+  free(execute_instruction);
+  free(instruction_set);
+
   return 0;
 }
 // ---  code for -l option ---
 
 
-reg[27] = 10000;
 
 long long howmany_instructions;
 
 	for(int now = 0; now < instr_num; now++)
 	{
-		unsigned int one_instruction = inst_mem[now];
-		if(one_instruction == 0)  break;
+    //printf("%d\n",now);
+		//cout << now << endl;
+    //if (now == 2405) cout << (int)reg[2] << endl;
+    unsigned int one_instruction = inst_mem[now];
+		if(one_instruction == 0)  {cout << now << endl;cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
@@ -252,8 +334,6 @@ long long howmany_instructions;
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
-    //cout << now << endl;
-    if (now == 5318) cout << (int)reg[10] << endl;
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
@@ -276,6 +356,17 @@ long long howmany_instructions;
    		perror("close error");
    		exit(1);
  	}
+  if (fclose(fin) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+  //fin.close();
+  free(mem);
+  free(inst_mem);
+  free(label_list);
+  free(execute_instruction);
+  free(instruction_set);
+  
 	
 	cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
@@ -287,6 +378,8 @@ long long howmany_instructions;
       if (i%3 == 0) { printf("\n"); }
       printf("f%i = %f    ", i, freg[i]);
     }
+
+  cout << "number of executed instructions is " << howmany_instructions << endl;
 	
 	return 0;
 }

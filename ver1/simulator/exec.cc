@@ -15,7 +15,7 @@ union hoge{
   float f;
 } x;
 void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg, int* now, unsigned int* mem, unsigned int* inst_mem){
-	switch(code >> 26){
+  switch(code >> 26){
 		int rt,rs,ft,base,fs,rd,sa;
 		case 0b001000 :
 			//ADDI命令の実行
@@ -32,7 +32,7 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			break;
 		case 0b000100 :
     	//BEQ命令の実行
-			rs = (int)((code >> 21) & 0b11111);
+      rs = (int)((code >> 21) & 0b11111);
 			rt = (int)((code >> 16) & 0b11111);
 			//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			if((code>>16)&0b1){
@@ -125,6 +125,7 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
     	*now = (int)(code&0b11111111111111111111111111) - 1;
 			break;
     case 0b111000 :
+      //execute jalr
       rs = (int)((code >> 21) & 0b11111);
       reg[28] = *now;
       *now = reg[rs] - 1;
@@ -136,6 +137,7 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			if((code>>15)&0b1){
 	      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 	    }else{
+        //cout << mem[(int)reg[base] + (int)(code&0b1111111111111111)] << endl;
 	      reg[rt] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
 	    }
 			break;
@@ -144,9 +146,11 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			base = (int)((code >> 21) & 0b11111);
 	    ft = (int)((code >> 16) & 0b11111);
 			if((code>>15)&0b1){
-	      freg[ft] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+        x.i = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+	      freg[ft] = x.f;
 	    }else{
-	      freg[ft] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
+        x.i = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
+	      freg[ft] = x.f;
 	    }
 			break;
 		case 0b111111 :
