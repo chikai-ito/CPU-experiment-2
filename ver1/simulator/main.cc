@@ -13,8 +13,8 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-//FILE *fin;
-ifstream fin;
+FILE *fin;
+//ifstream fin;
 FILE *fout;
 
 int main(int argc, char**argv){
@@ -23,18 +23,32 @@ int main(int argc, char**argv){
 	ifstream reading_file;
 	reading_file.open(filename,ios::in);
 	string one_assemble_instruction;
-	unsigned int reg[32]; // register
-	float freg[32]; // float register
-  
+ 
+  /* 
+  unsigned int* reg; // register
+  reg = (unsigned int *)malloc(32 * sizeof(unsigned int));
+  float* freg; // float register
+  freg = (float *)malloc(32 * sizeof(float));
+  */
+  unsigned int reg [32];
+  float freg[32];
+  reg[0] = 0;
+  reg[27] = 10000;
+
+
+
   //main memory
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
   memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
-  cout << mem[700000] << endl;
+  //cout << mem[300000] << endl;
 
-	//unsigned int mem[65536]; // memory
-  unsigned int inst_mem [65536]; //instruction memory
-	int clock = 0;
+	unsigned inst_mem[65536]; // memory
+  /*unsigned int* inst_mem; //instruction memory
+  inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
+  memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
+	*/
+  int clock = 0;
 	int pc = 0;
 
 	pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
@@ -72,6 +86,7 @@ int main(int argc, char**argv){
       label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
     }
 	}
+  reading_file.close();
 
 
 // --- create "execute.txt" --- 
@@ -97,6 +112,7 @@ int main(int argc, char**argv){
 		instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}
+  reading_file1.close();
 
 	// create machine code file
   if(argc==3){
@@ -148,14 +164,37 @@ int main(int argc, char**argv){
     inst_mem[instr_num] = StringToUInt(inst);
     instr_num = instr_num + 1;
   }
+  reading_file2.close();
+
+  /*
+  // --- using machine_code, create inst_mem ---
+  FILE* codefp;
+  if ((codefp = fopen("machine_code.txt", "r")) == NULL) {
+    perror("input file open error");
+  }
+  int instr_num = 0;
+  char one_code[32];
+  while(fscanf(codefp,"%s",one_code) != EOF){
+    string inst = string(one_code);
+    inst_mem[instr_num] = StringToUInt(inst);
+    instr_num = instr_num + 1;
+  }
+  if (fclose(codefp) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+*/
+
+
+
 
 //file stream creation
-/*
 if ((fin = fopen("input.txt", "r")) == NULL) {
   perror("input file open error");
 }
-*/
+/*
 fin.open("input.txt",ios::in);
+*/
 if ((fout = fopen("result.bin", "w")) == NULL) {
   perror("output file open error");
   exit(1);
@@ -236,7 +275,11 @@ if(argc==4){
       perror("close error");
       exit(1);
   }
-  fin.close();
+  if (fclose(fin) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+  //fin.close();
   free(mem);
 
   return 0;
@@ -244,12 +287,12 @@ if(argc==4){
 // ---  code for -l option ---
 
 
-reg[27] = 10000;
 
 long long howmany_instructions;
 
 	for(int now = 0; now < instr_num; now++)
 	{
+    //printf("%d\n",now);
 		//cout << now << endl;
     //if (now == 2405) cout << (int)reg[2] << endl;
     unsigned int one_instruction = inst_mem[now];
@@ -290,7 +333,11 @@ long long howmany_instructions;
    		perror("close error");
    		exit(1);
  	}
-  fin.close();
+  if (fclose(fin) == EOF) {
+      perror("close error");
+      exit(1);
+  }
+  //fin.close();
   free(mem);
   
 	

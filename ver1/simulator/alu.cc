@@ -2,8 +2,8 @@
 #include <string>
 #include <fstream>
 using namespace std;
-//extern FILE *fin;
-extern ifstream fin;
+extern FILE *fin;
+//extern ifstream fin;
 extern FILE *fout;
 union Convert{
   unsigned int i;
@@ -50,15 +50,18 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
       //execute FIN
       fs = (int)((code >> 21) & 0b11111);
       float f;
-      fin >> f;
+      fscanf(fin,"%f",&f);
+      //fread(&f,sizeof(float),1,fin);
+      //fin >> f;
       freg[fs] = f;
       break;
     case 0b101010 :
       //execute IN
       rs = (int)((code >> 21) & 0b11111);
-      //fread(&convert, sizeof(char), 1, fin);
       int inp;
-      fin >> inp;
+      fscanf(fin,"%d",&inp);
+      //fread(&inp,sizeof(int),1,fin);
+      //fin >> inp;
       reg[rs] = (unsigned int)inp;
       //reg[rs] = convert.i;
       break;
