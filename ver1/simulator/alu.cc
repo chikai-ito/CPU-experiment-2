@@ -3,7 +3,8 @@
 #include <fstream>
 using namespace std;
 extern ifstream fin;
-extern FILE *fout;
+extern ofstream fout;
+//extern FILE *fout;
 union Convert{
   unsigned int i;
 } convert;
@@ -69,8 +70,9 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
       //execute OUT
       //using fout, output binary code
       rs = (int)((code >> 21) & 0b11111);
-      convert.i = reg[rs];
-      fwrite(&convert,sizeof(char),1,fout);
+      //convert.i = reg[rs];
+      //fwrite(&convert,sizeof(char),1,fout);
+      fout.write((char *)&reg[rs],1);
       break;
 		case 0b100010 :
 			//SUBの実行

@@ -14,7 +14,8 @@ using namespace std;
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
 ifstream fin;
-FILE *fout;
+ofstream fout;
+//FILE *fout;
 
 int main(int argc, char**argv){
 	string filename = argv[1];
@@ -208,19 +209,20 @@ int main(int argc, char**argv){
 
 //file stream creation
 fin.open("input.txt",ios::in);
-
+fout.open("result.bin",ios::out);
+/*
 if ((fout = fopen("result.bin", "w")) == NULL) {
   perror("output file open error");
   exit(1);
 }
-
+*/
 
 
   
   
 // --- code for -l option --- 
 if(argc==4){
-  if(~strcmp(argv[2], "-l")){
+  if(strcmp(argv[2], "-l")==0){
     int block = atoi(argv[3]);
     for(int now = 0; now < instr_num; now++)
     {
@@ -246,13 +248,13 @@ if(argc==4){
       cout << "---------------------------" << endl;
       cout << "position is " << block; 
       for(int i = 0; i<32; i++){
-        if (i%5 == 0) { printf("\n"); }
-         printf("r%d = %d   ", i, reg[i]);
+        if (i%5 == 0) { cout << "" << endl; }
+        cout << "r" << i << " = " << reg[i] << "  ";
       }
-      printf("\n");
+      cout << "" << endl;
       for(int i = 0; i<32; i++){
-        if (i%3 == 0) { printf("\n"); }
-        printf("f%i = %f    ", i, freg[i]);
+        if (i%3 == 0) { cout << "" << endl; }
+        cout << "f" << i << " = " << freg[i] << "  ";
       }
       char option;
       cin >> option;
@@ -276,18 +278,87 @@ if(argc==4){
             //最初の6文字で命令の判別が可能な場合
             exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
             break;
-        printf("\n");
+        cout << "" << endl;
         }
         block++;
         continue;
       }
+      else if (option == '1') {
+        for (int i = 0; i < 10; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
+              break;
+          }
+          block++;
+        }
+        continue;
+      }
+      else if (option == '2') {
+        for (int i = 0; i < 100; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
+              break;
+          }
+          block++;
+        }
+        continue;
+      }
+      else if (option == '3') {
+        for (int i = 0; i < 1000; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
+              break;
+          }
+          block++;
+        }
+        continue;
+      }
     }
   }
+  /*
   if (fclose(fout) == EOF) {
-      perror("close error");
-      exit(1);
+    perror("close error");
+    exit(1);
   }
+  */
   fin.close();
+  fout.close();
   free(mem);
   free(inst_mem);
   free(label_list);
@@ -302,7 +373,7 @@ if(argc==4){
 
 
 
-long long howmany_instructions;
+long long howmany_instructions = 0;
 
 	for(int now = 0; now < instr_num; now++)
 	{
@@ -331,23 +402,38 @@ long long howmany_instructions;
      /*
       cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
-      if (i%5 == 0) { printf("\n"); }
-      printf("r%d = %d   ", i, reg[i]);
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
     }
-    printf("\n");
+    cout << "" << endl;
     for(int i = 0; i<32; i++){
-      if (i%3 == 0) { printf("\n"); }
-      printf("f%i = %f    ", i, freg[i]);
-      }
-      */
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+    */
     }
 	}
-
+  /*
   if (fclose(fout) == EOF) {
    		perror("close error");
    		exit(1);
  	}
+  */
+  cout << "---------------------------" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
+    }
+    cout << "" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+
+  cout << "number of executed instructions is " << howmany_instructions << endl;
+
   fin.close();
+  fout.close();
   free(mem);
   free(inst_mem);
   free(label_list);
@@ -356,20 +442,6 @@ long long howmany_instructions;
   free(reg);
   free(freg);
   
-	
-	cout << "---------------------------" << endl;
-    for(int i = 0; i<32; i++){
-      if (i%5 == 0) { printf("\n"); }
-      printf("r%d = %d   ", i, reg[i]);
-    }
-    printf("\n");
-    for(int i = 0; i<32; i++){
-      if (i%3 == 0) { printf("\n"); }
-      printf("f%i = %f    ", i, freg[i]);
-    }
-
-  cout << "number of executed instructions is " << howmany_instructions << endl;
-	
 	return 0;
 }
 
