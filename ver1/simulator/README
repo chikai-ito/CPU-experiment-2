@@ -7,6 +7,10 @@ option :
   -l number : stops at the numberth line.
               press e : end
               press c : continue
+              press 1 : execute 10 instructions
+              press 2 : execute 100 instructions
+              press 3 : execute 1000 instructions
+  -label : print label information to the file named "label_info.txt"
 
 
 <caution>

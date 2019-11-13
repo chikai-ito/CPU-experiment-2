@@ -13,9 +13,9 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-FILE *fin;
-//ifstream fin;
-FILE *fout;
+ifstream fin;
+ofstream fout;
+//FILE *fout;
 
 int main(int argc, char**argv){
 	string filename = argv[1];
@@ -32,8 +32,6 @@ int main(int argc, char**argv){
   freg = (float *)malloc(32 * sizeof(float));
   memset(freg, 0, 32 * sizeof(float));
   
-//  unsigned int reg [32];
-//  float freg[32];
   reg[0] = 0;
   reg[27] = 10000;
 
@@ -43,9 +41,7 @@ int main(int argc, char**argv){
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
   memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
-  //cout << mem[300000] << endl;
 
-	//unsigned inst_mem[65536]; // memory
   unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
   memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
@@ -53,12 +49,10 @@ int main(int argc, char**argv){
   int clock = 0;
 	int pc = 0;
 
-	//pair<string,int> label_list[65536]; //array of instructions which will be written on the execute.txt
   pair<string,int>* label_list;
   label_list = (pair<string,int>*)malloc(66536 * sizeof(pair<string,int>));
   memset(label_list,0,66536*sizeof(pair<string,int>));
     
-	//string execute_instruction[65536];
   string* execute_instruction;
   execute_instruction = (string *)malloc(66536 * sizeof(string));
   memset(execute_instruction, 0, (66536 * sizeof(string)));
@@ -127,9 +121,10 @@ int main(int argc, char**argv){
 	}
   reading_file1.close();
 
+
 	// create machine code file
   if(argc==3){
-	  if(~strcmp(argv[2], "-a")){
+	  if(strcmp(argv[2], "-a")== 0){
 		  ofstream writing_file;
 		  writing_file.open("machine_code.txt");
       // write jump to machine_code.txt
@@ -148,9 +143,13 @@ int main(int argc, char**argv){
     free(label_list);
     free(execute_instruction);
     free(instruction_set);
+    free(reg);
+    free(freg);
 	  return 0;
 	  }
   }
+
+
 
 	//it is for executing simulator
 	ofstream writing_file;
@@ -168,6 +167,29 @@ int main(int argc, char**argv){
   writing_file.close();
 
 
+  //it is for -label option 
+  //create file that includes label information 
+  if(argc==3){
+    if(strcmp(argv[2], "-label")== 0){
+      ofstream writing_file1;
+      writing_file1.open("label_info.txt");
+      cout << array_num << endl;
+      for(int i=0; i<array_num; i++){
+        writing_file1 << label_list[i].first << " " << label_list[i].second << endl;
+      }
+    writing_file1.close();
+    free(mem);
+    free(inst_mem);
+    free(label_list);
+    free(execute_instruction);
+    free(instruction_set);
+    free(reg);
+    free(freg);
+    return 0;
+    }
+  }
+
+
 
   // --- using machine_code, create inst_mem ---
   ifstream reading_file2; // file stream for machine_code.txt
@@ -183,51 +205,24 @@ int main(int argc, char**argv){
   }
   reading_file2.close();
 
-/*  
-  // --- using machine_code, create inst_mem ---
-  FILE* codefp;
-  if ((codefp = fopen("machine_code.txt", "r")) == NULL) {
-    perror("input file open error");
-  }
-  int instr_num = 0;
-  char one_code[32];
-  char* one_code;
-  one_code = (char*)malloc(32*sizeof(char));
-  for (int i = 0; i < 32; i++) one_code[i] = '0';
-  while(fscanf(codefp,"%s",one_code) != EOF){
-    string inst = string(one_code);
-    inst_mem[instr_num] = StringToUInt(inst);
-    instr_num = instr_num + 1;
-  }
-  if (fclose(codefp) == EOF) {
-      perror("close error");
-      exit(1);
-  }
-*/
-
 
 
 //file stream creation
-if ((fin = fopen("input.txt", "r")) == NULL) {
-  perror("input file open error");
-}
-/*
 fin.open("input.txt",ios::in);
-*/
+fout.open("result.bin",ios::out);
+/*
 if ((fout = fopen("result.bin", "w")) == NULL) {
   perror("output file open error");
   exit(1);
 }
-
-
-cout << find_value_from_pair(label_list,"scan_line.3020",array_num) << endl;
+*/
 
 
   
   
 // --- code for -l option --- 
 if(argc==4){
-  if(~strcmp(argv[2], "-l")){
+  if(strcmp(argv[2], "-l")==0){
     int block = atoi(argv[3]);
     for(int now = 0; now < instr_num; now++)
     {
@@ -253,13 +248,13 @@ if(argc==4){
       cout << "---------------------------" << endl;
       cout << "position is " << block; 
       for(int i = 0; i<32; i++){
-        if (i%5 == 0) { printf("\n"); }
-         printf("r%d = %d   ", i, reg[i]);
+        if (i%5 == 0) { cout << "" << endl; }
+        cout << "r" << i << " = " << reg[i] << "  ";
       }
-      printf("\n");
+      cout << "" << endl;
       for(int i = 0; i<32; i++){
-        if (i%3 == 0) { printf("\n"); }
-        printf("f%i = %f    ", i, freg[i]);
+        if (i%3 == 0) { cout << "" << endl; }
+        cout << "f" << i << " = " << freg[i] << "  ";
       }
       char option;
       cin >> option;
@@ -283,27 +278,94 @@ if(argc==4){
             //最初の6文字で命令の判別が可能な場合
             exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
             break;
-        printf("\n");
+        cout << "" << endl;
         }
         block++;
         continue;
       }
+      else if (option == '1') {
+        for (int i = 0; i < 10; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
+              break;
+          }
+          block++;
+        }
+        continue;
+      }
+      else if (option == '2') {
+        for (int i = 0; i < 100; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
+              break;
+          }
+          block++;
+        }
+        continue;
+      }
+      else if (option == '3') {
+        for (int i = 0; i < 1000; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem);
+              break;
+          }
+          block++;
+        }
+        continue;
+      }
     }
   }
+  /*
   if (fclose(fout) == EOF) {
-      perror("close error");
-      exit(1);
+    perror("close error");
+    exit(1);
   }
-  if (fclose(fin) == EOF) {
-      perror("close error");
-      exit(1);
-  }
-  //fin.close();
+  */
+  fin.close();
+  fout.close();
   free(mem);
   free(inst_mem);
   free(label_list);
   free(execute_instruction);
   free(instruction_set);
+  free(reg);
+  free(freg);
 
   return 0;
 }
@@ -311,7 +373,7 @@ if(argc==4){
 
 
 
-long long howmany_instructions;
+long long howmany_instructions = 0;
 
 	for(int now = 0; now < instr_num; now++)
 	{
@@ -319,7 +381,7 @@ long long howmany_instructions;
 		//cout << now << endl;
     //if (now == 2405) cout << (int)reg[2] << endl;
     unsigned int one_instruction = inst_mem[now];
-		if(one_instruction == 0)  {cout << now << endl;cout << "ret" << endl; break;}
+		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
@@ -340,47 +402,46 @@ long long howmany_instructions;
      /*
       cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
-      if (i%5 == 0) { printf("\n"); }
-      printf("r%d = %d   ", i, reg[i]);
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
     }
-    printf("\n");
+    cout << "" << endl;
     for(int i = 0; i<32; i++){
-      if (i%3 == 0) { printf("\n"); }
-      printf("f%i = %f    ", i, freg[i]);
-      }
-      */
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+    */
     }
 	}
-
+  /*
   if (fclose(fout) == EOF) {
    		perror("close error");
    		exit(1);
  	}
-  if (fclose(fin) == EOF) {
-      perror("close error");
-      exit(1);
-  }
-  //fin.close();
+  */
+  cout << "---------------------------" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
+    }
+    cout << "" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+
+  cout << "number of executed instructions is " << howmany_instructions << endl;
+
+  fin.close();
+  fout.close();
   free(mem);
   free(inst_mem);
   free(label_list);
   free(execute_instruction);
   free(instruction_set);
+  free(reg);
+  free(freg);
   
-	
-	cout << "---------------------------" << endl;
-    for(int i = 0; i<32; i++){
-      if (i%5 == 0) { printf("\n"); }
-      printf("r%d = %d   ", i, reg[i]);
-    }
-    printf("\n");
-    for(int i = 0; i<32; i++){
-      if (i%3 == 0) { printf("\n"); }
-      printf("f%i = %f    ", i, freg[i]);
-    }
-
-  cout << "number of executed instructions is " << howmany_instructions << endl;
-	
 	return 0;
 }
 
