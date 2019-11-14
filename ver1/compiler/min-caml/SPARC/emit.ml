@@ -87,7 +87,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       Printf.fprintf oc "\tmov.s\t%s %s\n" y x;
   | NonTail(x), FNegD(y) ->
      Printf.fprintf oc "\tneg.s\t%s %s\n" y x;
-  | NonTail(x), Ftoi(y) -> Printf.fprintf oc "\tmfc1\t%s %s\n" y x
+  | NonTail(x), Ftoi(y) -> Printf.fprintf oc "\tmfc1\t%s %s\n" x y
   | NonTail(x), FSqrt(y) ->
      Printf.fprintf oc "\tsqrt.s\t%s %s\n" y x;
   | NonTail(x), Floor(y) ->
