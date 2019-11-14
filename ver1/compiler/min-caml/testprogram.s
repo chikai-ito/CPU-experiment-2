@@ -1,12 +1,9 @@
 #data_section
 #text_section
 program_start :
-	addi	%r0 %r1 80
-	out	%r1
-	addi	%r0 %r1 32
-	out	%r1
-	addi	%r0 %r1 55
-	out	%r1
+	addi	%r0 %r1 3
+	mtc1	%r1 %f0
+	mfc1	%r1 %f0
 	ret
 #libraries
 min_caml_create_array :
