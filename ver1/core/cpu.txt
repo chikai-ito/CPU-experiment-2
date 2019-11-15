@@ -1,12 +1,12 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 520) (
+module top #(CLK_PER_HALF_BIT = 5208) (
     input wire clk,
     input wire rstn,
     input wire [7:0] r_data,
     output wire [7:0] w_data,
     input wire receiver_valid,
-    input wire sender_sending,
+    input wire sender_senging,
     output wire sender_ready,
     output wire [31:0] out_led,
     output wire [31:0] pcout,
@@ -17,7 +17,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 4096;
+	localparam inst_size	 = 64;
 
 	reg [3:0]             status;
     reg [3:0]             err;
@@ -49,7 +49,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
     wire ovf;
     wire [31:0] f_result;
-    wire [3:0] f_exception;
+    wire f_exception;
     
     fpu1 fpu11(
         now_inst[31:26],
@@ -123,8 +123,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     integer i;
     
     
-    assign we = (now_inst[31:26] == sw || now_inst[31:26] == sws) && (status == s_first);
-    assign memory_addr = register_int[now_inst[25:21]] + now_inst[15:0];
+    assign we = (now_inst[31:26] == sw) && (status == s_first);
+    assign memory_addr = register_int[now_inst[25:21]] + now_inst[15:2];
     assign write_data = (now_inst[31:26] == sw) ? register_int[now_inst[20:16]] : register_float[now_inst[20:16]];
     
 
@@ -132,10 +132,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
                            now_inst[5:0] == s_out);
 
     initial begin
-        for(i=0;i<32;i=i+1) begin
-            register_int[i] <= 32'b0;
-            register_float[i] <= 32'b0;
-        end
         inst_stop <= 1'b0;
     	status <= s_first;
     	err <= 4'b0000;
@@ -145,7 +141,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     	$readmemb("copy.mem", inst);
     end
 
-    assign out_led = pc;
+    assign out_led = register_int[1];
     assign pcout = pc;
     assign errout = err;
 
@@ -160,6 +156,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
         clk,
         rstn);
 	*/
+    wire sender_sending;
 
     assign w_data = register_int[now_inst[25:21]][7:0];
     /*
@@ -175,7 +172,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
         if (~rstn) begin
             for(i=0;i<32;i=i+1) begin
                 register_int[i] <= 32'b0;
-                register_float[i] <= 32'b0;
             end
             inst_stop <= 1'b0;
             status <= s_first;
@@ -291,16 +287,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
         				pc <= pc + now_inst[15:0] - 1;
         			end
         		default:
-        		    if (now_inst[31:26] != sw) begin
+        		    if (now_inst[25:21] != sw) begin
         			     err <= 4'b0011;
         			end
         	endcase
         	// if (now_inst == (looking instruction) && !(break condition))
-        	if ((now_inst[31:26] == lw || now_inst[31:26] == ilw) && complete != 4'b0010) begin
+        	if (now_inst[31:26] == lw && complete != 4'b0010) begin
         	   complete <= complete + 1;
         	end else if (now_inst[31:26] == special && now_inst[5:0] == s_in && !receiver_valid) begin
-               complete <= complete + 1;
-            end else if (now_inst[31:26] == special && now_inst[5:0] == s_fin && !receiver_valid) begin
                complete <= complete + 1;
             end else if (now_inst[31:26] == special && now_inst[5:0] == s_out && sender_sending) begin
                complete <= complete + 1;

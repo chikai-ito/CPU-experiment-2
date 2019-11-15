@@ -1,6 +1,6 @@
 `default_nettype none
 
-module receiver #(CLK_PER_HALF_BIT = 5208) (
+module receiver #(CLK_PER_HALF_BIT = 520) (
                output reg [7:0] rdata,
                output reg       rdata_ready,
                output reg       ferr,
