@@ -1,4 +1,4 @@
-let rec print_int x =
+(*let rec print_int x =
   let a = x / 100 in
   let b = (x - a * 100) / 10 in
   let c = (x - a * 100 - b * 10) in
@@ -10,7 +10,7 @@ let rec print_int x =
   ) else ();
   print_char (c + 48)
     in
-
+ *)
 let rec diverge x y x0 y0 i iter_max =
       let a = x *. x -. y *. y +. x0 in
       let b = 2. *. x *. y +. y0 in
@@ -24,19 +24,19 @@ let rec diverge x y x0 y0 i iter_max =
     in
 
     let n = 20 in
-    let vec = create_array n (create_array 3 255) in
-    let array = create_array n vec in
+    let vec = Array.make n (Array.make 3 255) in
+    let array = Array.make n vec in
     let rec setup_vec v i =
       if i >= n then
         v
       else
-        (v.(i) <- (create_array 3 255);
+        (v.(i) <- Array.make 3 255;
          setup_vec v (i+1)) in
     let rec setup_array arr j =
       if j >= n then
         ()
       else
-        (arr.(j) <- (setup_vec (create_array n (create_array 3 255)) 0);
+        (arr.(j) <- setup_vec (Array.make n (Array.make 3 255)) 0;
          setup_array arr (j+1)) in
     setup_array array 0;
     let rec loop0 arr i j =
@@ -46,12 +46,13 @@ let rec diverge x y x0 y0 i iter_max =
         if j >= n then
           loop0 arr (i+1) 0
         else
-          ((arr.(i)).(j) <- (create_array 3 255);
+          ((arr.(i)).(j) <- (Array.make 3 255);
            loop0 arr i (j+1))
     in
     loop0 array 0 0;
 
     let rec loop1 arr i j =
+      (* Printf.printf("here\n"); *)
       if i >= n then
         ()
       else
@@ -76,11 +77,11 @@ let rec diverge x y x0 y0 i iter_max =
 
     let rec write_rgb rgb =
       print_int rgb.(0);
-      print_char 32;
+      print_char ' ';
       print_int rgb.(1);
-      print_char 32;
+      print_char ' ';
       print_int rgb.(2);
-      print_char 10
+      print_char '\n'
     in
 
     let rec loop2 arr x y =
