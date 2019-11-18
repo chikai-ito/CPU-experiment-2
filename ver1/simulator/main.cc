@@ -225,11 +225,12 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 if(argc==4){
   if(strcmp(argv[2], "-l")==0){
     int block = atoi(argv[3]);
+    int end_flag = 0;
     for(int now = 0; now < instr_num; now++)
     {
       if(now == block) break;
       unsigned int one_instruction = inst_mem[now];
-      if(one_instruction == 0) break;
+      if(one_instruction == 0) {end_flag = 1; break;}
       switch(one_instruction >> 26){
         case 0b000000 :
         //最初のopecodeがspecialつまり000000だった場合
@@ -245,6 +246,8 @@ if(argc==4){
           break;
       }
     }
+    if (end_flag == 1) { cout << "not reached this row" << endl; }
+    else {
     while(1){
       cout << "---------------------------" << endl;
       cout << "position is " << block; 
@@ -352,12 +355,7 @@ if(argc==4){
       }
     }
   }
-  /*
-  if (fclose(fout) == EOF) {
-    perror("close error");
-    exit(1);
   }
-  */
   fin.close();
   fout.close();
   free(mem);
