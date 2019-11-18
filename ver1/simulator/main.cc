@@ -88,7 +88,6 @@ int main(int argc, char**argv){
       }
     } else {
       // solve label in the text_section
-      if (reading_file.eof()) break;
       label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
     }
 	}while(!reading_file.eof());
@@ -118,7 +117,6 @@ int main(int argc, char**argv){
 	do
   {
     getline(reading_file1, one_assemble_instruction);
-		if (reading_file1.eof()) break;
     instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}while(!reading_file1.eof());
@@ -201,7 +199,6 @@ int main(int argc, char**argv){
   string inst;
   do
   {
-    if (reading_file2.eof()) break;
     getline(reading_file2, inst);
     if((int)inst[0] == 0) continue;
     inst_mem[instr_num] = StringToUInt(inst);
