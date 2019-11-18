@@ -88,6 +88,7 @@ int main(int argc, char**argv){
       }
     } else {
       // solve label in the text_section
+      if (reading_file.eof()) break;
       label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
     }
 	}while(!reading_file.eof());
@@ -116,6 +117,7 @@ int main(int argc, char**argv){
 	int inst_num = 0;
 	do
   {
+    if (reading_file1.eof()) break;
     getline(reading_file1, one_assemble_instruction);
 		instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
@@ -199,6 +201,7 @@ int main(int argc, char**argv){
   string inst;
   do
   {
+    if (reading_file2.eof()) break;
     getline(reading_file2, inst);
     if((int)inst[0] == 0) continue;
     inst_mem[instr_num] = StringToUInt(inst);
@@ -379,7 +382,6 @@ for(int now = 0; now < instr_num; now++)
     //printf("%d\n",now);
 		//cout << now << endl;
     //if (now == 2405) cout << (int)reg[2] << endl;
-    if(now == 7897) cout << "kita" << endl;
     unsigned int one_instruction = inst_mem[now];
 		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
