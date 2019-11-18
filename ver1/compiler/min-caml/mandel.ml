@@ -12,9 +12,9 @@ let rec print_int x =
     in
 
 let rec diverge x y x0 y0 i iter_max =
-      let a = x *. x -. y *. y +. x0 in
-      let b = 2. *. x *. y +. y0 in
-      if a *. a +. b *. b > 100. then
+      let a = (x *. x) -. (y *. y) +. x0 in
+      let b = (2. *. x) *. (y +. y0) in
+      if (a *. a) +. (b *. b) > 100. then
         true
       else
         if i = iter_max then
@@ -23,7 +23,7 @@ let rec diverge x y x0 y0 i iter_max =
           diverge a b x0 y0 (i+1) iter_max
     in
 
-    let n = 20 in
+    let n = 128 in
     let vec = create_array n (create_array 3 255) in
     let array = create_array n vec in
     let rec setup_vec v i =

@@ -14,6 +14,7 @@
 let rec diverge x y x0 y0 i iter_max =
       let a = x *. x -. y *. y +. x0 in
       let b = 2. *. x *. y +. y0 in
+      Printf.printf "%f\n" (a *. a +. b *. b);
       if a *. a +. b *. b > 100. then
         true
       else

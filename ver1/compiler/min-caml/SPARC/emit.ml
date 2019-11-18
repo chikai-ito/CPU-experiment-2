@@ -95,7 +95,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), FAddD(y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" y z x
   | NonTail(x), FSubD(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" y z x
   | NonTail(x), FMulD(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" y z x
-  | NonTail(x), FDivD(y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" y z x
+  | NonTail(x), FDivD(y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" z y x
   | NonTail(x), LdDF(y, z') -> Printf.fprintf oc "\tlw.s\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(x), ILdDF(y, z') -> Printf.fprintf oc "\tilw.s\t%s %s %s\n" y x (pp_id_or_imm z') 
   | NonTail(_), StDF(x, y, z') -> Printf.fprintf oc "\tsw.s\t%s %s %s\n" y x (pp_id_or_imm z')
