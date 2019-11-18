@@ -9,6 +9,7 @@
 #include "operation.h"
 #include "stdlib.h"
 #include "create_execute_file.h"
+#include "string.h"
 using namespace std;
 
 //file stream for IN and OUT instructions
@@ -62,7 +63,7 @@ int main(int argc, char**argv){
 	int array_num = 0; //represents where to save label information
   int data_num = 0;  //represents how many floating immediates are written in data_section
   int flag = 0; // flag knows we are in text_section or data_section
-	while(!reading_file.eof()){
+	do{
 		getline(reading_file,one_assemble_instruction);
     if(flag==0){
       string label_name;
@@ -89,7 +90,7 @@ int main(int argc, char**argv){
       // solve label in the text_section
       label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
     }
-	}
+	}while(!reading_file.eof());
   reading_file.close();
 
 
@@ -113,12 +114,12 @@ int main(int argc, char**argv){
   instruction_set = (string*)malloc(66536 * sizeof(string));
   memset(instruction_set, 0, 66536 * sizeof(string));
 	int inst_num = 0;
-	while(!reading_file1.eof())
+	do
   {
     getline(reading_file1, one_assemble_instruction);
 		instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
-	}
+	}while(!reading_file1.eof());
   reading_file1.close();
 
 
@@ -196,13 +197,13 @@ int main(int argc, char**argv){
   reading_file2.open("machine_code.txt",ios::in);
   int instr_num = 0;
   string inst;
-  while(!reading_file2.eof())
+  do
   {
     getline(reading_file2, inst);
     if((int)inst[0] == 0) continue;
     inst_mem[instr_num] = StringToUInt(inst);
     instr_num = instr_num + 1;
-  }
+  }while(!reading_file2.eof());
   reading_file2.close();
 
 
@@ -374,12 +375,13 @@ if(argc==4){
 
 
 long long howmany_instructions = 0;
-
-	for(int now = 0; now < instr_num; now++)
+	
+for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
 		//cout << now << endl;
     //if (now == 2405) cout << (int)reg[2] << endl;
+    if(now == 7897) cout << "kita" << endl;
     unsigned int one_instruction = inst_mem[now];
 		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
