@@ -92,14 +92,14 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
      Printf.fprintf oc "\tsqrt.s\t%s %s\n" y x;
   | NonTail(x), Floor(y) ->
       Printf.fprintf oc "\tfloor.w.s\t%s %s\n" y x;
-  | NonTail(x), FAddD(y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" y z x
-  | NonTail(x), FSubD(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" y z x
-  | NonTail(x), FMulD(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" y z x
+  | NonTail(x), FAddD(y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" z y x
+  | NonTail(x), FSubD(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" z y x
+  | NonTail(x), FMulD(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" z y x
   | NonTail(x), FDivD(y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" z y x
   | NonTail(x), LdDF(y, z') -> Printf.fprintf oc "\tlw.s\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(x), ILdDF(y, z') -> Printf.fprintf oc "\tilw.s\t%s %s %s\n" y x (pp_id_or_imm z') 
   | NonTail(_), StDF(x, y, z') -> Printf.fprintf oc "\tsw.s\t%s %s %s\n" y x (pp_id_or_imm z')
-  | NonTail(_), Comment(s) -> Printf.fprintf oc "\t! %s\n" s
+  | NonTail(_), Comment(s) -> Printf.fprintf oc "\t# %s\n" s
   (* 退避の仮想命令の実装 (caml2html: emit_save) *)
   | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
       save y;
