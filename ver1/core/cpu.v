@@ -50,6 +50,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     wire ovf;
     wire [31:0] f_result;
     wire [3:0] f_exception;
+    wire fequal_res;
+    wire fless_res;
     
     fpu1 fpu11(
         now_inst[31:26],
@@ -60,6 +62,18 @@ module top #(CLK_PER_HALF_BIT = 520) (
         f_result,
         f_exception
     );
+
+    fequal fequall(
+    	register_float[now_inst[25:21]],
+    	register_float[now_inst[20:16]],
+    	fequal_res
+    	);
+
+    fless flessl(
+    	register_float[now_inst[20:16]],
+    	register_float[now_inst[25:21]],
+    	fless_res
+    	);
     
 
     localparam s_idle = 0;
@@ -114,7 +128,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     localparam bg 			= 6'b000110;
     localparam fbne			= 6'b000011;
     localparam fbg			= 6'b000111;
-    localparam mov 			= 6'b010001;
+    localparam movs			= 6'b010001;
     localparam sll 			= 6'b000000;
 
     localparam equal    	= 1'b1;
@@ -290,6 +304,18 @@ module top #(CLK_PER_HALF_BIT = 520) (
         			if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
         				pc <= pc + now_inst[15:0] - 1;
         			end
+        		fbne:
+        			if(!fequal_res) begin:
+        				pc <= pc + now_inst[15:0] - 1;
+        			end
+        		fbg:
+        			if(fless_res) begin:
+        				pc <= pc + now_inst[15:0] - 1;
+        			end
+        		movs:
+        			register_float[now_inst[20:16]] <= register_float[now_inst[25:21]];
+        		sll:
+        			register_int[15:11] <= register_int[20:16] >> register_int[10:6];
         		default:
         		    if (now_inst[31:26] != sw) begin
         			     err <= 4'b0011;
