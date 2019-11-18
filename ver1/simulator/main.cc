@@ -117,9 +117,9 @@ int main(int argc, char**argv){
 	int inst_num = 0;
 	do
   {
-    if (reading_file1.eof()) break;
     getline(reading_file1, one_assemble_instruction);
-		instruction_set[inst_num] = one_assemble_instruction;
+		if (reading_file1.eof()) break;
+    instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}while(!reading_file1.eof());
   reading_file1.close();
