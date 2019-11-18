@@ -89,7 +89,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
 			break;
 		case 0b111111:
     	//execute retl
-    	*now = reg[28];
+    	*now = (int)reg[28];
 			break;
 	}
 }
