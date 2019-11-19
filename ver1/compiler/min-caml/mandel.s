@@ -180,7 +180,8 @@ ble_else.376 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 4
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r2 %r2 1
 	lw	%r26 %r24 0
 	mov	%r4 %r1
@@ -225,7 +226,8 @@ ble_else.377 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 4
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r2 %r2 1
 	lw	%r26 %r24 0
 	mov	%r4 %r1
@@ -244,7 +246,8 @@ ble_else.379 :
 ble_else.381 :
 	addi	%r0 %r25 2
 	sll	%r2 %r4 %r25
-	lw	%r1 %r4 %r4
+	add	%r1 %r4 %r25
+	lw	%r25 %r4 0
 	addi	%r0 %r5 3
 	addi	%r0 %r6 255
 	sw	%r26 %r2 0
@@ -263,7 +266,8 @@ ble_else.381 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 12
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r2 %r3 1
 	lw	%r26 %r1 4
 	lw	%r26 %r2 0
@@ -302,7 +306,8 @@ ble_else.384 :
 	addi	%r0 %r4 100
 	addi	%r0 %r25 2
 	sll	%r2 %r5 %r25
-	lw	%r1 %r5 %r5
+	add	%r1 %r5 %r25
+	lw	%r25 %r5 0
 	addi	%r0 %r6 l.302 
 	ilw.s	%r6 %f0 0
 	addi	%r0 %r6 l.302 
@@ -328,7 +333,8 @@ be_else.385 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 12
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	addi	%r0 %r3 0
 	sw	%r2 %r3 0
 	addi	%r0 %r3 0
@@ -387,10 +393,12 @@ ble_else.387 :
 ble_else.389 :
 	addi	%r0 %r25 2
 	sll	%r2 %r4 %r25
-	lw	%r1 %r4 %r4
+	add	%r1 %r4 %r25
+	lw	%r25 %r4 0
 	addi	%r0 %r25 2
 	sll	%r3 %r5 %r25
-	lw	%r4 %r4 %r5
+	add	%r4 %r5 %r25
+	lw	%r25 %r4 0
 	sw	%r26 %r2 0
 	sw	%r26 %r1 4
 	sw	%r26 %r24 8
