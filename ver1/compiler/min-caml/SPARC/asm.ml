@@ -22,18 +22,18 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | Ld of Id.t * id_or_imm
   | ILd of Id.t * id_or_imm
   | St of Id.t * Id.t * id_or_imm
-  | FMovD of Id.t
+  | FMov of Id.t
   | Ftoi of Id.t
-  | FNegD of Id.t
+  | FNeg of Id.t
   | Floor of Id.t
   | FSqrt of Id.t
-  | FAddD of Id.t * Id.t
-  | FSubD of Id.t * Id.t
-  | FMulD of Id.t * Id.t
-  | FDivD of Id.t * Id.t  (**)
-  | LdDF of Id.t * id_or_imm
-  | ILdDF of Id.t * id_or_imm
-  | StDF of Id.t * Id.t * id_or_imm
+  | FAdd of Id.t * Id.t
+  | FSub of Id.t * Id.t
+  | FMul of Id.t * Id.t
+  | FDiv of Id.t * Id.t  (**)
+  | LdF of Id.t * id_or_imm
+  | ILdF of Id.t * id_or_imm
+  | StF of Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | IfEq of Id.t * id_or_imm * t * t
@@ -89,13 +89,13 @@ let rec remove_and_uniq xs = function
 let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
-  | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMovD(x) | Ftoi(x) | FNegD(x)
+  | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
     | FSqrt(x) | Floor(x) | Save(x, _) -> [x]
   | Add(x, y') | Sub(x, y') | Mul(x, y') | Div(x, y')
-    | SLL(x, y') | Ld(x, y') | LdDF(x, y')
-  | ILd(x,y') | ILdDF(x,y') -> x :: fv_id_or_imm y'
-  | St(x, y, z') | StDF(x, y, z') -> x :: y :: fv_id_or_imm z'
-  | FAddD(x, y) | FSubD(x, y) | FMulD(x, y) | FDivD(x, y) -> [x; y]
+    | SLL(x, y') | Ld(x, y') | LdF(x, y')
+  | ILd(x,y') | ILdF(x,y') -> x :: fv_id_or_imm y'
+  | St(x, y, z') | StF(x, y, z') -> x :: y :: fv_id_or_imm z'
+  | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
   | IfEq(x, y', e1, e2) | IfLE(x, y', e1, e2) | IfGE(x, y', e1, e2) -> x :: fv_id_or_imm y' @ remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
   | IfFEq(x, y, e1, e2) | IfFLE(x, y, e1, e2) -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
   | CallCls(x, ys, zs) -> x :: ys @ zs

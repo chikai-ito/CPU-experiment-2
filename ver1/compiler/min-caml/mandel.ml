@@ -13,11 +13,11 @@ let rec print_int x =
 
 let rec diverge x y x0 y0 i iter_max =
       let a = (x *. x) -. (y *. y) +. x0 in
-      let b = (2. *. x) *. (y +. y0) in
+      let b = (2. *. x *. y) +. y0 in
       if (a *. a) +. (b *. b) > 100. then
         true
       else
-        if i = iter_max then
+        if i >= iter_max then
           false
         else
           diverge a b x0 y0 (i+1) iter_max

@@ -9,7 +9,7 @@ l.288 :	# 2.000000
 	.long	0x40000000
 #text_section
 program_start :
-	addi	%r0 %r1 20
+	addi	%r0 %r1 128
 	addi	%r0 %r2 3
 	addi	%r0 %r3 255
 	sw	%r26 %r1 0
@@ -136,23 +136,23 @@ ble_cont.373 :
 diverge.125 :
 	mul.s	%f0 %f0 %f4
 	mul.s	%f1 %f1 %f5
-	sub.s	%f4 %f5 %f4
-	add.s	%f4 %f2 %f4
+	sub.s	%f5 %f4 %f4
+	add.s	%f2 %f4 %f4
 	addi	%r0 %r3 l.288 
 	ilw.s	%r3 %f5 0
-	mul.s	%f5 %f0 %f0
-	mul.s	%f0 %f1 %f0
-	add.s	%f0 %f3 %f1
+	mul.s	%f0 %f5 %f0
+	mul.s	%f1 %f0 %f0
+	add.s	%f3 %f0 %f1
 	mul.s	%f4 %f4 %f0
 	mul.s	%f1 %f1 %f5
-	add.s	%f0 %f5 %f0
+	add.s	%f5 %f0 %f0
 	addi	%r0 %r3 l.290 
 	ilw.s	%r3 %f5 0
 	fbg	%f0 %f5 fble_else.374 
-	bne	%r1 %r2 be_else.375 
+	bg	%r2 %r1 ble_else.375 
 	addi	%r0 %r1 0
 	retl
-be_else.375 :
+ble_else.375 :
 	addi	%r1 %r1 1
 	mov.s	%f4 %f0
 	j	diverge.125 
@@ -284,21 +284,21 @@ ble_else.384 :
 	addi	%r0 %r5 l.296 
 	ilw.s	%r5 %f0 0
 	mtc1	%r4 %f1
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	mtc1	%r2 %f1
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	addi	%r0 %r5 l.288 
 	ilw.s	%r5 %f1 0
-	sub.s	%f0 %f1 %f2
+	sub.s	%f1 %f0 %f2
 	addi	%r0 %r5 l.296 
 	ilw.s	%r5 %f0 0
 	mtc1	%r4 %f1
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	mtc1	%r3 %f1
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	addi	%r0 %r4 l.288 
 	ilw.s	%r4 %f1 0
-	sub.s	%f0 %f1 %f3
+	sub.s	%f1 %f0 %f3
 	addi	%r0 %r4 100
 	addi	%r0 %r25 2
 	sll	%r2 %r5 %r25

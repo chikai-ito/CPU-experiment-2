@@ -144,7 +144,7 @@ and print_syntax =
       print_syntax s2;
       depth := !depth -1
     | FSub (s1,s2) ->
-      Printf.printf "nFSUB\n";
+      Printf.printf "FSUB\n";
       depth := !depth + 1;
       print_syntax s1;
       print_syntax s2;
@@ -256,6 +256,3 @@ and print_syntax =
       depth := !depth + 1;
       print_syntax s2;
       depth := !depth - 1 
-
-      
-

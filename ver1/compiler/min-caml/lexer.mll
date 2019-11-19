@@ -47,9 +47,9 @@ rule token = parse
 | "floor"
     { FLOOR }
 | "read_int"
-    { INTIN }
+    { READ_INT }
 | "read_float"
-    { FLOATIN }
+    { READ_INT }
 | "print_char"
     { OUT }
 | "int_of_float"
