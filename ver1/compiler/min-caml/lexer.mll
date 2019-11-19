@@ -49,7 +49,7 @@ rule token = parse
 | "read_int"
     { READ_INT }
 | "read_float"
-    { READ_INT }
+    { READ_FLOAT }
 | "print_char"
     { OUT }
 | "int_of_float"
