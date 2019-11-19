@@ -167,8 +167,8 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
         unify (Type.Tuple(List.map snd xts)) (g env e1);
         g (M.add_list xts env) e2
     | Array(e1, e2) -> (* must be a primitive for "polymorphic" typing *)
-        unify (g env e1) Type.Int;
-        Type.Array(g env e2)
+       unify (g env e1) Type.Int;
+       Type.Array(g env e2)
     | Get(e1, e2) ->
         let t = Type.gentyp () in
         unify (Type.Array(t)) (g env e1);
