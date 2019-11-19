@@ -117,8 +117,8 @@ int main(int argc, char**argv){
 	int inst_num = 0;
 	do
   {
-    if (reading_file1.eof()) break;
     getline(reading_file1, one_assemble_instruction);
+    if (reading_file1.eof()) break;
 		instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}while(!reading_file1.eof());
@@ -134,10 +134,10 @@ int main(int argc, char**argv){
       string one_machine_code = assemble(instruction_set[0],1);
       writing_file << one_machine_code << endl;
       for(int i = 0; i < data_num; i++){
-        writing_file << decimal_to_binary(inst_mem[i],32) << "  \\\\ " << "immediate" << endl;
+        writing_file << decimal_to_binary(inst_mem[i],32)/* << "  \\\\ " << "immediate" */<< endl;
       }
 		  for(int i=1; i<line_num - data_num; i++){
-			  string one_machine_code = assemble(instruction_set[i],1);
+			  string one_machine_code = assemble(instruction_set[i],0);
 			  writing_file << one_machine_code << endl;
 		  }	
 	  writing_file.close();
