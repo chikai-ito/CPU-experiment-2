@@ -78,7 +78,8 @@ loop.38 :
 ble_else.100 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
-	sw	%r3 %r1 %r2
+	add %r3 %r2 %r25
+	sw	%r25 %r1 0
 	addi	%r1 %r1 1
 	lw	%r24 %r23 0
 	jr	%r23
@@ -90,7 +91,8 @@ loop1.40 :
 ble_else.102 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	sw	%r26 %r24 0
 	sw	%r26 %r1 4
 	mov	%r2 %r1
