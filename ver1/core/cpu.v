@@ -18,6 +18,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     output wire we);
 
 	localparam inst_size	 = 4096;
+	localparam buffer_size	 = 4096;
 
 	reg [3:0]             status;
     reg [3:0]             err;
@@ -90,6 +91,10 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // total instruction = 64 
     reg [31:0] inst [0:inst_size-1];
     reg [31:0] now_inst;
+
+    reg [7:0] buffer [0:buffer_size];
+    reg [31:0] buffer_valid_idx;
+    reg [31:0] buffer_reading_idx;
     
     reg [3:0] complete;
 
@@ -198,6 +203,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
         clk,
         rstn);
     */
+
+    always @(posedge receiver_valid) begin
+    	// in_instruction buffer
+    	buffer[buffer_valid_idx] <= r_data;
+    	buffer_valid_idx <= buffer_valid_idx + 1;
+    end
+    	
+
     always @(posedge clk) begin
         if (~rstn) begin
             iteration <= 32'b0;
@@ -254,12 +267,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         s_ret:
                             inst_stop <= 1'b1;
                         s_in:
-                            if (receiver_valid) begin
-                                register_int[now_inst[25:21]][7:0] <= r_data;
+                            if (buffer_reading_idx < buffer_valid_idx) begin
+                                register_int[now_inst[25:21]][7:0] <= buffer[buffer_reading_idx];
+                            	buffer_reading_idx <= buffer_reading_idx + 1;
                             end
                         s_fin:
-                        	if (receiver_valid) begin
-                        		register_float[now_inst[25:21]][7:0] <= r_data;
+                        	if (buffer_reading_idx < buffer_valid_idx) begin
+                        		register_float[now_inst[25:21]][7:0] <= buffer[buffer_reading_idx];
+                        		buffer_reading_idx <= buffer_reading_idx + 1;
                         	end
                         default: begin
         					if (err == 4'b0000) begin
@@ -339,9 +354,9 @@ module top #(CLK_PER_HALF_BIT = 520) (
         	// if (now_inst == (looking instruction) && !(break condition))
         	if ((now_inst[31:26] == lw || now_inst[31:26] == lws) && complete != 4'b0010) begin
         	   complete <= complete + 1;
-        	end else if (now_inst[31:26] == special && now_inst[5:0] == s_in && !receiver_valid) begin
+        	end else if (now_inst[31:26] == special && now_inst[5:0] == s_in && buffer_reading_idx >= buffer_valid_idx) begin
                complete <= complete + 1;
-            end else if (now_inst[31:26] == special && now_inst[5:0] == s_fin && !receiver_valid) begin
+            end else if (now_inst[31:26] == special && now_inst[5:0] == s_fin && buffer_reading_idx >= buffer_valid_idx) begin
                complete <= complete + 1;
             end else if (now_inst[31:26] == special && now_inst[5:0] == s_out && sender_sending) begin
                complete <= complete + 1;
