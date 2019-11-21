@@ -82,24 +82,24 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), Ld(y, z') -> Printf.fprintf oc "\tlw\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(x), ILd(y, z') -> Printf.fprintf oc "\tilw\t%s %s %s\n" y x (pp_id_or_imm z')
   | NonTail(_), St(x, y, z') -> Printf.fprintf oc "\tsw\t%s %s %s\n" y x (pp_id_or_imm z')
-  | NonTail(x), FMovD(y) when x = y -> ()
-  | NonTail(x), FMovD(y) ->
+  | NonTail(x), FMov(y) when x = y -> ()
+  | NonTail(x), FMov(y) ->
       Printf.fprintf oc "\tmov.s\t%s %s\n" y x;
-  | NonTail(x), FNegD(y) ->
+  | NonTail(x), FNeg(y) ->
      Printf.fprintf oc "\tneg.s\t%s %s\n" y x;
   | NonTail(x), Ftoi(y) -> Printf.fprintf oc "\tmfc1\t%s %s\n" x y
   | NonTail(x), FSqrt(y) ->
      Printf.fprintf oc "\tsqrt.s\t%s %s\n" y x;
   | NonTail(x), Floor(y) ->
       Printf.fprintf oc "\tfloor.w.s\t%s %s\n" y x;
-  | NonTail(x), FAddD(y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" y z x
-  | NonTail(x), FSubD(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" y z x
-  | NonTail(x), FMulD(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" y z x
-  | NonTail(x), FDivD(y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" y z x
-  | NonTail(x), LdDF(y, z') -> Printf.fprintf oc "\tlw.s\t%s %s %s\n" y x (pp_id_or_imm z')
-  | NonTail(x), ILdDF(y, z') -> Printf.fprintf oc "\tilw.s\t%s %s %s\n" y x (pp_id_or_imm z') 
-  | NonTail(_), StDF(x, y, z') -> Printf.fprintf oc "\tsw.s\t%s %s %s\n" y x (pp_id_or_imm z')
-  | NonTail(_), Comment(s) -> Printf.fprintf oc "\t! %s\n" s
+  | NonTail(x), FAdd(y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" z y x
+  | NonTail(x), FSub(y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" z y x
+  | NonTail(x), FMul(y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" z y x
+  | NonTail(x), FDiv(y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" z y x
+  | NonTail(x), LdF(y, z') -> Printf.fprintf oc "\tlw.s\t%s %s %s\n" y x (pp_id_or_imm z')
+  | NonTail(x), ILdF(y, z') -> Printf.fprintf oc "\tilw.s\t%s %s %s\n" y x (pp_id_or_imm z') 
+  | NonTail(_), StF(x, y, z') -> Printf.fprintf oc "\tsw.s\t%s %s %s\n" y x (pp_id_or_imm z')
+  | NonTail(_), Comment(s) -> Printf.fprintf oc "\t# %s\n" s
   (* 退避の仮想命令の実装 (caml2html: emit_save) *)
   | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
       save y;
@@ -115,15 +115,15 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       assert (List.mem x allfregs);
       Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp x (offset y)
   (* 末尾だったら計算結果を第一レジスタにセットしてリターン (caml2html: emit_tailret) *)
-  | Tail, (Nop | St _ | StDF _ | Comment _ | Save _ as exp) ->
+  | Tail, (Nop | St _ | StF _ | Comment _ | Save _ as exp) ->
       g' oc (NonTail(Id.gentmp Type.Unit), exp);
       Printf.fprintf oc "\tretl\n";
   | Tail, (Set _ | SetL _ | Mov _ | Neg _ | Itof _ | In _ | Fin _ | Out _
            | Add _ | Sub _ | Mul _ | Div _ | SLL _ | Ld _ | ILd _ as exp) ->
       g' oc (NonTail(regs.(0)), exp);
       Printf.fprintf oc "\tretl\n";
-  | Tail, (FMovD _ | FNegD _ | Ftoi _ | FSqrt _ | Floor _ | FAddD _ | FSubD _ | FMulD _ | FDivD _
-          | LdDF _ | ILdDF _ as exp) ->
+  | Tail, (FMov _ | FNeg _ | Ftoi _ | FSqrt _ | Floor _ | FAdd _ | FSub _ | FMul _ | FDiv _
+          | LdF _ | ILdF _ as exp) ->
       g' oc (NonTail(fregs.(0)), exp);
       Printf.fprintf oc "\tretl\n";
   | Tail, (Restore(x) as exp) ->

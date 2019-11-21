@@ -1,7 +1,8 @@
 open KNormal
 
 let rec effect = function (* 副作用の有無 (caml2html: elim_effect) *)
-  | Let(_, e1, e2) | IfEq(_, _, e1, e2) | IfLE(_, _, e1, e2) -> effect e1 || effect e2
+  | Let(_, e1, e2) | IfEq(_, _, e1, e2)
+    | IfLE(_, _, e1, e2) -> effect e1 || effect e2
   | LetRec(_, e) | LetTuple(_, _, e) -> effect e
   | Out _ | App _ | Put _ | ExtFunApp _ -> true
   | _ -> false
