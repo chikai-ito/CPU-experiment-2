@@ -20,7 +20,7 @@ void label_solver(string one_assemble_instruction, pair<string,int>* label_list,
   }
   else {
     //+1 is because j in the initial position
-	  execute_instruction[*line_num+1] = one_assemble_instruction;
+	  execute_instruction[*(line_num)+1] = one_assemble_instruction;
 	  *line_num = *line_num + 1;
   }
 	}
