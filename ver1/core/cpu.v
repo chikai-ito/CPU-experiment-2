@@ -203,28 +203,30 @@ module top #(CLK_PER_HALF_BIT = 520) (
         clk,
         rstn);
     */
-
-    always @(posedge receiver_valid) begin
-    	// in_instruction buffer
-    	buffer[buffer_valid_idx] <= r_data;
-    	buffer_valid_idx <= buffer_valid_idx + 1;
-    end
-    	
-
+    reg reading;
     always @(posedge clk) begin
+        if (receiver_valid && !reading) begin
+            buffer[buffer_valid_idx] <= r_data;
+            buffer_valid_idx <= buffer_valid_idx + 1;
+            reading <= 1'b1;
+        end else if(!receiver_valid) begin 
+        	reading <= 1'b0;
+        end
         if (~rstn) begin
+        	reading <= 1'b0;
             iteration <= 32'b0;
             for(i=0;i<32;i=i+1) begin
                 register_int[i] <= 32'b0;
                 register_float[i] <= 32'b0;
             end
+            buffer_valid_idx <= 32'b0;
+            buffer_reading_idx <= 32'b0;
             register_int[27] <= 32'b00000000000000001000000000000000;
             inst_stop <= 1'b0;
             status <= s_first;
             err <= 4'b0000;
             complete <= 4'b0000;
             pc <= 0;
-            register_int[0] <= 32'b0;
     	    $readmemb("copy.mem", inst);
         end else if (status == s_idle) begin
 
