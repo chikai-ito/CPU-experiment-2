@@ -179,7 +179,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     	$readmemb("copy.mem", inst);
     end
 
-    assign out_led = iteration;
+    assign out_led = pc;
     assign pcout = pc;
     assign errout = err;
 
@@ -300,7 +300,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
                                 end else if(writing_byte == 2'b01) begin
                                     register_float[now_inst[25:21]][15:8] <= buffer[buffer_reading_idx];
                                 end else if(writing_byte == 2'b10) begin
-
                                     register_float[now_inst[25:21]][23:16] <= buffer[buffer_reading_idx];
                                 end else begin
                                     finished_write <= 1'b1;
