@@ -14,8 +14,6 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-ifstream fin;
-ofstream fout;
 //FILE *fout;
 
 int main(int argc, char**argv){
@@ -209,6 +207,8 @@ int main(int argc, char**argv){
 
 
 //file stream creation
+ifstream fin;
+ofstream fout;
 fin.open("input.txt",ios::in);
 fout.open("result.bin",ios::out);
 /*
@@ -234,7 +234,7 @@ if(argc==4){
       switch(one_instruction >> 26){
         case 0b000000 :
         //最初のopecodeがspecialつまり000000だった場合
-          exec_special_code(one_instruction,pc,&now,reg,freg);
+          exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
           break;
         case 0b010001 :
           //code for fpu
@@ -272,7 +272,7 @@ if(argc==4){
         switch(one_instruction >> 26){
           case 0b000000 :
           //最初のopecodeがspecialつまり000000だった場合
-            exec_special_code(one_instruction,pc,&block,reg,freg);
+            exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
             break;
           case 0b010001 :
             //code for fpu
@@ -294,7 +294,7 @@ if(argc==4){
           switch(one_instruction >> 26){
             case 0b000000 :
             //最初のopecodeがspecialつまり000000だった場合
-              exec_special_code(one_instruction,pc,&block,reg,freg);
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
               break;
             case 0b010001 :
               //code for fpu
@@ -316,7 +316,7 @@ if(argc==4){
           switch(one_instruction >> 26){
             case 0b000000 :
             //最初のopecodeがspecialつまり000000だった場合
-              exec_special_code(one_instruction,pc,&block,reg,freg);
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
               break;
             case 0b010001 :
               //code for fpu
@@ -338,7 +338,7 @@ if(argc==4){
           switch(one_instruction >> 26){
             case 0b000000 :
             //最初のopecodeがspecialつまり000000だった場合
-              exec_special_code(one_instruction,pc,&block,reg,freg);
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
               break;
             case 0b010001 :
               //code for fpu
@@ -378,7 +378,8 @@ for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
 		//cout << now << endl;
-   /* if (now == 84) {cout << "---------------------------" << endl;
+    /*
+    if (now == 2458) {cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { cout << "" << endl; }
       cout << "r" << i << " = " << reg[i] << "  ";
@@ -395,7 +396,7 @@ for(int now = 0; now < instr_num; now++)
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
-				exec_special_code(one_instruction,pc,&now,reg,freg);
+				exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
 				break;
 			case 0b010001 :
 				//code for fpu
