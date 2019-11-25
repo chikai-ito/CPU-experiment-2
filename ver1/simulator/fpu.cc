@@ -33,7 +33,7 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
           //exec mtc1
           rt = (int)((code >> 16) & 0b11111);
           fs = (int)((code >> 11) & 0b11111);
-          freg[fs] = (float)(reg[rt]);
+          freg[fs] = (float)((int)reg[rt]);
           break;
         }
       break;

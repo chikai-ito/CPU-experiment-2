@@ -62,7 +62,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg,ifst
     case 0b001000 :
       //execute jr
       rs = (int)((code >> 21) & 0b11111);
-      *now = reg[rs] -1;
+      *now = (int)reg[rs] -1;
       break;
     case 0b010101:
       //execute OUT
