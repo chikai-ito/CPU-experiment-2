@@ -63,6 +63,11 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
     	fd = (int)((code >> 6) & 0b11111);
     	freg[fd] = freg[fs] * freg[ft];
 			break;
+    case 0b000100 :
+      fs = (int)((code >> 11) & 0b11111);
+      fd = (int)((code >> 6) & 0b11111);
+      freg[fd] = sqrtf(freg[fs]);
+      break;
 		case 0b000001 :
 			//exec SUB.S code
     	ft = (int)((code >> 16) & 0b11111);

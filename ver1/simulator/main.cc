@@ -377,9 +377,10 @@ long long howmany_instructions = 0;
 for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
-		//cout << now << endl;
     /*
-    if (now == 2458) {cout << "---------------------------" << endl;
+		cout << now << endl;
+    
+    if (now == 2415) {cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { cout << "" << endl; }
       cout << "r" << i << " = " << reg[i] << "  ";
@@ -391,6 +392,7 @@ for(int now = 0; now < instr_num; now++)
     }
     }
     */
+    
     unsigned int one_instruction = inst_mem[now];
 		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
