@@ -1,7 +1,8 @@
 `default_nettype none
-module fadd//符号同じ
+module faddsub
 	(input wire [31:0]	x1,
 	 input wire [31:0]	x2,
+	 input wire			a_s,//add:0, sub:1
 	 output wire [31:0]	y,
 	 output wire		ovf);
 
@@ -10,23 +11,68 @@ module fadd//符号同じ
 	wire [7:0]	e1a = (x1[30:23]==8'd0) ? 8'd1 : x1[30:23];//非正規化数なら本当の指数は-126なので, バイアス値127を足した1を入れる
 	wire [7:0]	e2a = (x2[30:23]==8'd0) ? 8'd1 : x2[30:23];
 
-	//指数が大きい方がw, 小さい方がl
-	wire [7:0]	ew = (e1a>=e2a) ? e1a : e2a;
-	wire [7:0]	el = (e1a>=e2a) ? e2a : e1a;
-	wire [23:0]	mw = (e1a>=e2a) ? m1a : m2a;
-	wire [23:0]	ml = (e1a>=e2a) ? m2a : m1a;
+	//絶対値が大きい方がw, 小さい方がl
+	wire [7:0]	ew = (x1[30:0]>=x2[30:0]) ? e1a : e2a;
+	wire [7:0]	el = (x1[30:0]>=x2[30:0]) ? e2a : e1a;
+	wire [23:0]	mw = (x1[30:0]>=x2[30:0]) ? m1a : m2a;
+	wire [23:0]	ml = (x1[30:0]>=x2[30:0]) ? m2a : m1a;
 
 	//指数の差だけmlを右シフト
 	wire [7:0]	eshift = ew - el;
-	wire [47:0] mls1 = {ml, 24'd0} >> eshift;
-	wire [25:0]	mls2 = {mls1[47:23], |(mls1[22:0])};//シフト後の仮数24+G1+R1
-	
+	wire [48:0]	mls1 = {ml, 25'd0} >> eshift;
+	wire [26:0]	mls2 = {mls1[48:23], |(mls1[22:0])};//シフト後の仮数24+G1+R1+S1
+
 	//加算
-	wire [26:0]	myd1 = {1'd0, mw, 2'd0} + {1'd0, mls2};//繰り上がり1+仮数24+G1+R1
-	
+	wire [26:0]	myd1_a = {1'd0, mw, 2'd0} + {1'd0, mls2[26:2], |(mls2[1:0])};//繰り上がり1+仮数24+G1+R1
+	//減算
+	wire [26:0]	myd1_s = {mw, 3'd0} - mls2;//仮数24+G1+R1+S1
+
 	//繰り上がり補正(正規化数でのみ起こる)
-	wire [26:0]	myd2 = (myd1[26]) ? {1'd0, myd1[26:2], |(myd1[1:0])} : myd1;
-	wire [8:0]	eyd1 = (myd1[26]) ? {1'd0, ew} + {9'd1} : {1'd0, ew};
+	wire [26:0]	myd2_a = (myd1_a[26]) ? {1'd0, myd1_a[26:2], |(myd1_a[1:0])} : myd1_a;
+	wire [8:0]	eyd1_a = {1'd0, ew} + {8'd0, myd1_a[26]};
+
+	//繰り下がり補正
+	wire [4:0]	lshift_s = myd1_s[26] ? 5'd0 :
+						   myd1_s[25] ? 5'd1 :
+						   myd1_s[24] ? 5'd2 :
+						   myd1_s[23] ? 5'd3 :
+						   myd1_s[22] ? 5'd4 :
+						   myd1_s[21] ? 5'd5 :
+						   myd1_s[20] ? 5'd6 :
+						   myd1_s[19] ? 5'd7 :
+						   myd1_s[18] ? 5'd8 :
+						   myd1_s[17] ? 5'd9 :
+						   myd1_s[16] ? 5'd10 :
+						   myd1_s[15] ? 5'd11 :
+						   myd1_s[14] ? 5'd12 :
+						   myd1_s[13] ? 5'd13 :
+						   myd1_s[12] ? 5'd14 :
+						   myd1_s[11] ? 5'd15 :
+						   myd1_s[10] ? 5'd16 :
+						   myd1_s[9] ? 5'd17 :
+						   myd1_s[8] ? 5'd18 :
+						   myd1_s[7] ? 5'd19 :
+						   myd1_s[6] ? 5'd20 :
+						   myd1_s[5] ? 5'd21 :
+						   myd1_s[4] ? 5'd22 :
+						   myd1_s[3] ? 5'd23 :
+						   myd1_s[2] ? 5'd24 :
+						   myd1_s[1] ? 5'd25 :
+						   myd1_s[0] ? 5'd26 :
+						   5'd0;
+	wire [26:0] myd2_s = ({3'd0, lshift_s} < ew) ? myd1_s << lshift_s :
+						 (ew>8'd1) ? myd1_s << (ew-8'd1) ://正規化数が非正規化数になるパターン
+						 myd1_s;//元々非正規化数
+	wire [7:0]  eyd1_s = ({3'd0, lshift_s} < ew) ? ew - {3'd0, lshift_s} : 8'd1;
+
+	//加減算の選択
+	wire		s2 = a_s ^ x2[31]; 
+	wire [26:0]	myd2 = (x1[31]==s2) ? myd2_a : {1'd0, myd2_s[26:2], |(myd2_s[1:0])};//繰り上がり1+仮数24+G1+R1
+	wire [8:0]	eyd1 = (x1[31]==s2) ? eyd1_a : {1'd0, eyd1_s};
+	wire		sy_s = (x1[30:0]>x2[30:0]) ? x1[31] :
+					   (x1[30:0]==x2[30:0]) ? 1'd0 ://同じ数の減算結果は+0
+					   s2;
+	wire		sy = (x1[31]==s2) ? s2 : sy_s;
 
 	//丸め
 	wire [24:0] myd3 = myd2[26:2] + {24'd0, (myd2[1] & (myd2[2] | myd2[0]))};//繰り上がり1+仮数24
@@ -40,119 +86,19 @@ module fadd//符号同じ
 	wire		ovf1 = eyd2 >= 9'd255;
 	wire [7:0]	ey = myd4[23] ? eyd2[7:0] : 8'd0;
 	wire [22:0]	my = ovf1 ? 23'd0 : myd4[22:0];
-	
-	assign y = {x1[31], ey, my};//非数とかは上位モジュールで判定
-	assign ovf = (x1[30:23]<8'd255 && x2[30:23]<8'd255) ? ovf1 : 1'd0;
-endmodule
-
-module fsub//符号違う
-	(input wire [31:0]	x1,
-	 input wire [31:0]	x2,
-	 output wire [31:0]	y,
-	 output wire		ovf);//overflowしないけど
-
-	wire [23:0]	m1a = (x1[30:23]==8'd0) ? {1'b0, x1[22:0]} : {1'b1, x1[22:0]};
-	wire [23:0]	m2a = (x2[30:23]==8'd0) ? {1'b0, x2[22:0]} : {1'b1, x2[22:0]};//非正規化数かどうかで場合分け
-	wire [7:0]	e1a = (x1[30:23]==8'd0) ? 8'd1 : x1[30:23];//非正規化数なら本当の指数は-126なので, バイアス値127を足した1を入れる
-	wire [7:0]	e2a = (x2[30:23]==8'd0) ? 8'd1 : x2[30:23];
-
-	//絶対値が大きい方がw, 小さい方がl
-	wire [7:0]	ew = (x1[30:0]>=x2[30:0]) ? e1a : e2a;
-	wire [7:0]	el = (x1[30:0]>=x2[30:0]) ? e2a : e1a;
-	wire [23:0]	mw = (x1[30:0]>=x2[30:0]) ? m1a : m2a;
-	wire [23:0]	ml = (x1[30:0]>=x2[30:0]) ? m2a : m1a;
-	wire		sy = (x1[30:0]>x2[30:0]) ? x1[31] :
-					 (x1[30:0]==x2[30:0]) ? 1'd0 ://同じ数の減算結果は+0
-					 x2[31];
-
-	//指数の差だけmlを右シフト
-	wire [7:0]	eshift = ew - el;
-	wire [48:0] mls1 = {ml, 25'd0} >> eshift;
-	wire [26:0]	mls2 = {mls1[48:23], |(mls1[22:0])};//シフト後の仮数24+G1+R1+S1
-	
-	//減算
-	wire [26:0]	myd1 = {mw, 3'd0} - mls2;//仮数24+G1+R1+S1
-	
-	//繰り下がり補正
-	wire [4:0]	lshift = myd1[26] ? 5'd0 :
-						 myd1[25] ? 5'd1 :
-						 myd1[24] ? 5'd2 :
-						 myd1[23] ? 5'd3 :
-						 myd1[22] ? 5'd4 :
-						 myd1[21] ? 5'd5 :
-						 myd1[20] ? 5'd6 :
-						 myd1[19] ? 5'd7 :
-						 myd1[18] ? 5'd8 :
-						 myd1[17] ? 5'd9 :
-						 myd1[16] ? 5'd10 :
-						 myd1[15] ? 5'd11 :
-						 myd1[14] ? 5'd12 :
-						 myd1[13] ? 5'd13 :
-						 myd1[12] ? 5'd14 :
-						 myd1[11] ? 5'd15 :
-						 myd1[10] ? 5'd16 :
-						 myd1[9] ? 5'd17 :
-						 myd1[8] ? 5'd18 :
-						 myd1[7] ? 5'd19 :
-						 myd1[6] ? 5'd20 :
-						 myd1[5] ? 5'd21 :
-						 myd1[4] ? 5'd22 :
-						 myd1[3] ? 5'd23 :
-						 myd1[2] ? 5'd24 :
-						 myd1[1] ? 5'd25 :
-						 myd1[0] ? 5'd26 :
-						 5'd0;						 
-	wire [26:0]	myd2 = ({3'd0, lshift} < ew) ? myd1 << lshift :
-					   (ew>8'd1) ? myd1 << (ew-8'd1) ://正規化数が非正規化数になるパターン
-					   myd1;//元々非正規化数
-	wire [7:0]	eyd1 = ({3'd0, lshift} < ew) ? ew - {3'd0, lshift} : 8'd1;
-
-	//丸め
-	wire [24:0] myd3 = {1'd0, myd2[26:3]} + {24'd0, (myd2[2] & (myd2[3] | myd2[1] | myd2[0]))};//繰り上がり1+仮数24
-
-	//繰り上がり補正
-	wire [7:0]	eyd2 = (myd3[24] && eyd1==8'd1) ? 8'd1 ://非正規化数が正規化数になった
-					   (myd3[24]) ? eyd1 + 8'd1 :
-					   eyd1;
-	wire [23:0]	myd4 = (myd3[24]) ? {1'd1, 23'd0} : myd3[23:0];//ケチ1+仮数23
-	
-	wire [7:0]	ey = myd4[23] ? eyd2[7:0] : 8'd0;
-	wire [22:0]	my = myd4[22:0];
-	
-	assign y = {sy, ey, my};//非数とかは上位モジュールで判定
-	assign ovf = 1'd0;
-endmodule
-
-module faddsub
-	(input wire [31:0]	x1,
-	 input wire [31:0]	x2,
-	 input wire			a_s,//add:0, sub:1
-	 output wire [31:0]	y,
-	 output wire		ovf);
-
-	wire [31:0]	ya;//y_add
-	wire [31:0]	ys;//y_sub
-	wire		ovfa;//ovf_add
-	wire		ovfs;//ovf_sub
-
-	//符号を変えてa+bの形にする
-	wire		s2 = a_s ^ x2[31];
-	
-	fadd ua(x1, {s2, x2[30:0]}, ya, ovfa);
-	fsub us(x1, {s2, x2[30:0]}, ys, ovfs);
 
 	wire		nzm1 = |(x1[22:0]);
 	wire		nzm2 = |(x2[22:0]);
 
-	assign y = (x1[30:23]==8'd255 && x2[30:23]!=8'd255) ? {x1[31],8'd255,nzm1,x1[21:0]} :
-			   (x1[30:23]!=8'd255 && x2[30:23]==8'd255) ? {x2[31],8'd255,nzm2,x2[21:0]} :
+	assign y = (x1[30:23]==8'd255 && x2[30:23]!=8'd255) ? {x1[31], 8'd255, nzm1, x1[21:0]} :
+			   (x1[30:23]!=8'd255 && x2[30:23]==8'd255) ? {s2, 8'd255, nzm2, x2[21:0]} :
 			   (x1[30:23]==8'd255 && x2[30:23]==8'd255 && nzm2) ? {x2[31],8'd255,1'b1,x2[21:0]} :
 			   (x1[30:23]==8'd255 && x2[30:23]==8'd255 && nzm1) ? {x1[31],8'd255,1'b1,x1[21:0]} :
-			   (x1[30:23]==8'd255 && x2[30:23]==8'd255 && x1[31]==x2[31]) ? {x1[31],8'd255,23'b0} :
+			   (x1[30:23]==8'd255 && x2[30:23]==8'd255 && x1[31]==s2) ? {x1[31],8'd255,23'b0} :
 			   (x1[30:23]==8'd255 && x2[30:23]==8'd255) ? {1'b1,8'd255,1'b1,22'b0} :
-			   (x1[31]==s2) ? ya : ys;
+			   {sy, ey, my};
 	
-	assign ovf = (x1[30:23]<8'd255 && x2[30:23]<8'd255 && (x1[31]==s2)) ? ovfa : 1'b0;
+	assign ovf = (x1[30:23]<8'd255 && x2[30:23]<8'd255) ? ovf1 : 1'b0;
 endmodule
 
 module fmul
@@ -189,7 +135,7 @@ module fmul
 	wire [95:0]	myd2_den1 = ({myd1, 48'd0}>>(9'd128-eyd1));
 	wire [47:0]	myd2_den = {myd2_den1[95:49], |(myd2_den1[48:0])};
 	//wire [47:0]	myd2_den = (myd1>>(9'd128-eyd1));
-	wire [8:0]	eyd3_den = 9'd0;
+	wire [8:0]	eyd3_den = 9'd1;
 
 	wire [47:0]	myd2 = ((n_dn==2'b00)||(n_dn==2'b01 && myd1[47])) ? myd2_n : myd2_den;//元から正規か, 非正規から正規になったか
 	wire [8:0]	eyd3 = ((n_dn==2'b00)||(n_dn==2'b01 && myd1[47])) ? eyd3_n : eyd3_den;
@@ -246,8 +192,8 @@ module fmul
 	wire [47:0]	myd3 = (lshift<eyd3) ? myd2<<lshift :
 					   (lshift==eyd3) ? (myd2<<lshift)>>1 ://eyd3だけシフトするとケチ1が消えてしまう, 気持ちとしてはmyd2<<(lshift-1)
 					   (n_dn==2'b00) ? (myd2<<eyd3)>>1 ://正規化数が非正規化数になるパターン
-					   myd2<<eyd3;
-	wire [8:0]	eyd4 = (lshift<=eyd3) ? eyd3 - lshift : 9'd0;
+					   myd2;
+	wire [8:0]	eyd4 = (lshift<eyd3) ? eyd3 - lshift : 9'd1;
 	
 	//丸め
 	wire [26:0] myd4 = {myd3[47:22], |(myd3[21:0])};//繰り上がり1, 頭1, 仮数部23, G1, R1
@@ -255,9 +201,8 @@ module fmul
 
 	//指数調整
 	wire [8:0]	eyd5 = (myd5[24]) ? eyd4 + 9'd1 :
-					   (eyd4==9'd0 && myd5[23]) ? 9'd1 ://非正規化数が正規化数になった
-					   (myd1==48'd0) ? 9'd0 ://0
-					   eyd4;
+					   (myd5[23]) ? eyd4 :
+					   9'd0;
 	wire [22:0]	my = (myd5[24]) ? 23'd0 : myd5[22:0];//桁上がりが起きたら仮数は0になる
 
 	wire		ovf1 = eyd5>=9'd255;
