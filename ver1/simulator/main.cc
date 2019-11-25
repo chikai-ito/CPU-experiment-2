@@ -14,8 +14,6 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-ifstream fin;
-ofstream fout;
 //FILE *fout;
 
 int main(int argc, char**argv){
@@ -41,7 +39,7 @@ int main(int argc, char**argv){
   //main memory
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
-  memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
+  memset(mem , 1 , 8e+8 * sizeof(unsigned int) );
 
   unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
@@ -209,6 +207,8 @@ int main(int argc, char**argv){
 
 
 //file stream creation
+ifstream fin;
+ofstream fout;
 fin.open("input.txt",ios::in);
 fout.open("result.bin",ios::out);
 /*
@@ -234,7 +234,7 @@ if(argc==4){
       switch(one_instruction >> 26){
         case 0b000000 :
         //最初のopecodeがspecialつまり000000だった場合
-          exec_special_code(one_instruction,pc,&now,reg,freg);
+          exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
           break;
         case 0b010001 :
           //code for fpu
@@ -272,7 +272,7 @@ if(argc==4){
         switch(one_instruction >> 26){
           case 0b000000 :
           //最初のopecodeがspecialつまり000000だった場合
-            exec_special_code(one_instruction,pc,&block,reg,freg);
+            exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
             break;
           case 0b010001 :
             //code for fpu
@@ -294,7 +294,7 @@ if(argc==4){
           switch(one_instruction >> 26){
             case 0b000000 :
             //最初のopecodeがspecialつまり000000だった場合
-              exec_special_code(one_instruction,pc,&block,reg,freg);
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
               break;
             case 0b010001 :
               //code for fpu
@@ -316,7 +316,7 @@ if(argc==4){
           switch(one_instruction >> 26){
             case 0b000000 :
             //最初のopecodeがspecialつまり000000だった場合
-              exec_special_code(one_instruction,pc,&block,reg,freg);
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
               break;
             case 0b010001 :
               //code for fpu
@@ -338,7 +338,7 @@ if(argc==4){
           switch(one_instruction >> 26){
             case 0b000000 :
             //最初のopecodeがspecialつまり000000だった場合
-              exec_special_code(one_instruction,pc,&block,reg,freg);
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
               break;
             case 0b010001 :
               //code for fpu
@@ -378,13 +378,25 @@ for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
 		//cout << now << endl;
-    //if (now == 2405) cout << (int)reg[2] << endl;
+    /*
+    if (now == 2458) {cout << "---------------------------" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
+    }
+    cout << "" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+    }
+    */
     unsigned int one_instruction = inst_mem[now];
 		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
-				exec_special_code(one_instruction,pc,&now,reg,freg);
+				exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
 				break;
 			case 0b010001 :
 				//code for fpu
@@ -418,6 +430,7 @@ for(int now = 0; now < instr_num; now++)
    		exit(1);
  	}
   */
+
   cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { cout << "" << endl; }
@@ -428,6 +441,12 @@ for(int now = 0; now < instr_num; now++)
       if (i%3 == 0) { cout << "" << endl; }
       cout << "f" << i << " = " << freg[i] << "  ";
     }
+
+/*
+  for (int i = 50000; i < 1000732; i++) {
+    cout << mem[i] << endl;
+  }
+*/
 
   cout << "number of executed instructions is " << howmany_instructions << endl;
 
