@@ -888,9 +888,6 @@ in
 let rec read_light _ =
 
   let nl = read_int () in
-  print_char 112;
-  print_int nl;
-  print_char 10;
   (* 光線関係 *)
   let l1 = rad (read_float ()) in
   let sl1 = sin l1 in
@@ -955,75 +952,30 @@ let rec read_nth_object n =
   let texture = read_int () in
   if texture <> -1 then
     (
-      print_char 110;
-      print_int texture;
-      print_char 32;
       let form = read_int () in
       let refltype = read_int () in
       let isrot_p = read_int () in
-      print_char 111;
-      print_int form;
-      print_char 32;
-      print_char 111;
-      print_int refltype;
-      print_char 32;
-      print_char 111;
-      print_int isrot_p;
-      print_char 32;
 
       let abc = create_array 3 0.0 in
       abc.(0) <- read_float ();
       abc.(1) <- read_float (); (* 5 *)
       abc.(2) <- read_float ();
-      print_char 111;
-      print_int (int_of_float abc.(0));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float abc.(1));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float abc.(2));
-      print_char 32;
 
       let xyz = create_array 3 0.0 in
       xyz.(0) <- read_float ();
       xyz.(1) <- read_float ();
       xyz.(2) <- read_float ();
-      print_char 111;
-      print_int (int_of_float xyz.(0));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float xyz.(1));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float xyz.(2));
-      print_char 32;
 
       let m_invert = fisneg (read_float ()) in (* 10 *)
 
       let reflparam = create_array 2 0.0 in
       reflparam.(0) <- read_float (); (* diffuse *)
       reflparam.(1) <- read_float (); (* hilight *)
-      print_char 111;
-      print_int (int_of_float reflparam.(0));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float reflparam.(1));
-      print_char 32;
 
       let color = create_array 3 0.0 in
       color.(0) <- read_float ();
       color.(1) <- read_float ();
       color.(2) <- read_float (); (* 15 *)
-      print_char 111;
-      print_int (int_of_float color.(0));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float color.(1));
-      print_char 32;
-      print_char 111;
-      print_int (int_of_float color.(2));
-      print_char 10;
 
       let rotation = create_array 3 0.0 in
       if isrot_p <> 0 then
@@ -1096,46 +1048,14 @@ in
 (* ネットワーク1つを読み込みベクトルにして返す *)
 let rec read_net_item length =
   let item = read_int () in
-  print_char 103;
-  print_char 10;
-  print_int item;
-  print_char 10;
-  print_char 103;
-  print_char 10;
   if item = -1 then create_array (length + 1) (-1)
   else
     let v = read_net_item (length + 1) in
-    (v.(length) <- item;
-     print_char 104;
-     print_char 10;
-     print_int (v.(0));
-     print_char 32;
-     print_int (v.(1));
-     print_char 32;
-     print_int (v.(2));
-     print_char 32;
-     print_int (v.(3));
-     print_char 10;
-     print_char 104;
-     print_char 10; v)
+    (v.(length) <- item; v)
 in
 
 let rec read_or_network length =
-  print_char 108;
-  print_char 10;
   let net = read_net_item 0 in
-     print_char 108;
-     print_char 10;
-     print_int (net.(0));
-     print_char 32;
-     print_int (net.(1));
-     print_char 32;
-     print_int (net.(2));
-     print_char 32;
-     print_int (net.(3));
-     print_char 10;
-     print_char 108;
-     print_char 10;
   if net.(0) = -1 then
     create_array (length + 1) net
   else
