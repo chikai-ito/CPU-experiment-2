@@ -182,7 +182,7 @@ module fmul
 	wire [47:0]	myd1 = {24'd0, m1a} * {24'b0, m2a};
 
 	//正規化数の場合, 最上位ビットが1なら右シフト
-	wire [47:0] myd2_n = myd1[47] ? myd1>>1 : myd1;
+	wire [47:0] myd2_n = myd1[47] ? {1'd0, myd1[47:2], |(myd1[1:0])} : myd1;
 	wire [8:0]	eyd3_n = eyd2 + {8'd0, myd1[47]};
 	//wire		ovf1 = eyd3 >= 9'd255;
 	//非正規化数の場合(n_dn==10)
