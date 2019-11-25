@@ -110,14 +110,14 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
        { Fin($2) }
 | OUT exp
     %prec prec_app
-    { Out($2) }
+       { Out($2) }
 | MINUS exp
     %prec prec_unary_minus
-    { match $2 with
-    | Float(f) -> Float(-.f) (* -1.23などは型エラーではないので別扱い *)
-    | e -> Neg(e) }
+       { match $2 with
+         | Float(f) -> Float(-.f) (* -1.23などは型エラーではないので別扱い *)
+         | e -> Neg(e) }
 | exp PLUS exp /* (* 足し算を構文解析するルール (caml2html: parser_add) *) */
-    { Add($1, $3) }
+                    { Add($1, $3) }
 | exp MINUS exp
     { Sub($1, $3) }
 | exp AST exp
@@ -137,11 +137,11 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | exp GREATER_EQUAL exp
     { LE($3, $1) }
 | IF exp THEN exp ELSE exp
-    %prec prec_if
-    { If($2, $4, $6) }
+  %prec prec_if
+     { If($2, $4, $6) }
 | MINUS_DOT exp
-    %prec prec_unary_minus
-    { FNeg($2) }
+  %prec prec_unary_minus
+     { FNeg($2) }
 | exp PLUS_DOT exp
     { FAdd($1, $3) }
 | exp MINUS_DOT exp
@@ -151,11 +151,11 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | exp SLASH_DOT exp
     { FDiv($1, $3) }
 | LET IDENT EQUAL exp IN exp
-    %prec prec_let
-    { Let(addtyp $2, $4, $6) }
+  %prec prec_let
+     { Let(addtyp $2, $4, $6) }
 | LET REC fundef IN exp
-    %prec prec_let
-    { LetRec($3, $5) }
+  %prec prec_let
+     { LetRec($3, $5) }
 | simple_exp actual_args
     %prec prec_app
     { App($1, $2) }

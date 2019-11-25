@@ -3,7 +3,6 @@
 #$1== .sld file
 
 ./min-caml ./data/raytracer/minrt
-cat ./lib.s >> ./data/raytracer/minrt.s
 
 cp ./data/raytracer/minrt.s ../../simulator/test/minrt.s
 
