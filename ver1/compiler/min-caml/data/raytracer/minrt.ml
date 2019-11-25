@@ -1,44 +1,64 @@
 (* libraries *)
-let rec fiszero x = (x = 0.0)
+let rec fiszero x = (x = 0.)
     in
-    let rec fispos x = (x > 0.0)
+    let rec fispos x = (x > 0.)
     in
-    let rec fisneg x = (x < 0.0)
+    let rec fisneg x = (x < 0.)
     in
-    let rec fneg x = 0.0 -. x
+    let rec fneg x = 0. -. x
     in
     let rec fless x y = x < y
     in 
     let rec fsqr x = x *. x
     in
-    let rec fabs x = if x < 0.0 then 0.0 -. x else x
+    let rec fabs x = if x < 0. then 0. -. x else x
     in
-    let rec fhalf x = x /. 2.0
+    let rec fhalf x = x /. 2.
     in
     let rec fpow x y =
-      if y = 0 then 1.0
-      else x *. (fpow x (y - 1))
+      let rec loop_fpow x w y n =
+      if n = y then w
+      else
+        loop_fpow x (w *. x) y (n + 1) in
+      loop_fpow x 1. y 0  
     in
     let rec sin x =
-      (1.0 /. 362880.0) *. (fpow x 9)
-      -. (1.0 /. 5040.0) *. (fpow x 7)
-      +. (1.0 /. 120.0) *. (fpow x 5)
-      -. (1.0 /. 6.0) *. (fpow x 3)
-      +. x
+      let pi = 3.14159265359 in
+      if x > pi then
+        -. sin (x -. pi)
+      else if x < (-. pi) then
+        -. sin (x +. pi)
+      else
+        -. (1. /. 39916800.) *. (fpow x 11)
+        +. (1. /. 362880.) *. (fpow x 9)
+        -. (1. /. 5040.) *. (fpow x 7)
+        +. (1. /. 120.) *. (fpow x 5)
+        -. (1. /. 6.) *. (fpow x 3)
+        +. x
     in
     let rec cos x =
-      (1.0 /. 40320.0) *. (fpow x 8) 
-      -. (1.0 /. 720.0) *. (fpow x 6)
-      +. (1.0 /. 24.0) *. (fpow x 4)
-      -. (1.0 /. 2.0) *. (fpow x 2)
-      +. 1.0
+      let pi = 3.14159265359 in
+      if x > pi then
+        -. cos (x -. pi)
+      else if x < (-. pi) then
+        -. cos (x +. pi)
+      else
+        -. (1. /. 3628800.) *. (fpow x 10)
+        +. (1. /. 40320.) *. (fpow x 8) 
+        -. (1. /. 720.) *. (fpow x 6)
+        +. (1. /. 24.) *. (fpow x 4)
+        -. (1. /. 2.) *. (fpow x 2)
+        +. 1.0
     in
     let rec atan x =
-      (1.0 /. 9.0) *. (fpow x 9)
-      -. (1.0 /. 7.0) *. (fpow x 7)
-      +. (1.0 /. 5.0) *. (fpow x 5)
-      -. (1.0 /. 3.0) *. (fpow x 3)
-      +. x
+      let h = 0.001 in
+      let rec f x = 1. /. (1. +. x *. x) in
+      let rec euler u v x h =
+        if u +. h > x then v
+        else
+          let vv = v +. h *. (f u) in
+          euler (u +. h) vv x h in
+      euler 0. 0. x h 
     in
     let rec print_int x =
       let a = x / 100 in
@@ -221,11 +241,179 @@ in
    ベクトル操作のためのプリミティブ
  *****************************************************************************)
 
+
+(* open MiniMLRuntime;; *)
+
+(**************** グローバル変数の宣言 ****************)
+
+(* オブジェクトの個数 *)
+let n_objects = create_array 1 0
+    in
+
+(* オブジェクトのデータを入れるベクトル（最大60個）*)
+let objects = 
+  let dummy = create_array 0 0.0 in
+  create_array 60 (0, 0, 0, 0, dummy, dummy, false, dummy, dummy, dummy, dummy)
+in
+
+(* Screen の中心座標 *)
+let screen = create_array 3 0.0
+in
+(* 視点の座標 *)
+let viewpoint = create_array 3 0.0
+in
+(* 光源方向ベクトル (単位ベクトル) *)
+let light = create_array 3 0.0
+in
+(* 鏡面ハイライト強度 (標準=255) *)
+let beam = create_array 1 255.0
+in
+(* AND ネットワークを保持 *)
+let and_net = create_array 50 (create_array 1 (-1))
+in
+(* OR ネットワークを保持 *)
+let or_net = create_array 1 (create_array 1 (and_net.(0)))
+in
+
+(* 以下、交差判定ルーチンの返り値格納用 *)
+(* solver の交点 の t の値 *)
+let solver_dist = create_array 1 0.0
+in
+(* 交点の直方体表面での方向 *)
+let intsec_rectside = create_array 1 0
+in
+(* 発見した交点の最小の t *)
+let tmin = create_array 1 (1000000000.0)
+in
+(* 交点の座標 *)
+let intersection_point = create_array 3 0.0
+in
+(* 衝突したオブジェクト番号 *)
+let intersected_object_id = create_array 1 0
+in
+(* 法線ベクトル *)
+let nvector = create_array 3 0.0
+in
+(* 交点の色 *)
+let texture_color = create_array 3 0.0
+in
+
+(* 計算中の間接受光強度を保持 *)
+let diffuse_ray = create_array 3 0.0
+in
+(* スクリーン上の点の明るさ *)
+let rgb = create_array 3 0.0
+in
+
+(* 画像サイズ *)
+let image_size = create_array 2 0
+in
+(* 画像の中心 = 画像サイズの半分 *)
+let image_center = create_array 2 0
+in
+(* 3次元上のピクセル間隔 *)
+let scan_pitch = create_array 1 0.0
+in
+
+(* judge_intersectionに与える光線始点 *)
+let startp = create_array 3 0.0
+in
+(* judge_intersection_fastに与える光線始点 *)
+let startp_fast = create_array 3 0.0
+in
+
+(* 画面上のx,y,z軸の3次元空間上の方向 *)
+let screenx_dir = create_array 3 0.0
+in
+let screeny_dir = create_array 3 0.0
+in
+let screenz_dir = create_array 3 0.0
+in
+
+(* 直接光追跡で使う光方向ベクトル *)
+let ptrace_dirvec  = create_array 3 0.0
+in
+
+(* 間接光サンプリングに使う方向ベクトル *)
+let dirvecs = 
+  let dummyf = create_array 0 0.0 in
+  let dummyff = create_array 0 dummyf in
+  let dummy_vs = create_array 0 (dummyf, dummyff) in
+  create_array 5 dummy_vs
+in
+
+(* 光源光の前処理済み方向ベクトル *)
+let light_dirvec =
+  let dummyf2 = create_array 0 0.0 in
+  let v3 = create_array 3 0.0 in
+  let consts = create_array 60 dummyf2 in
+  (v3, consts)
+in
+
+(* 鏡平面の反射情報 *)
+let reflections =
+  let dummyf3 = create_array 0 0.0 in
+  let dummyff3 = create_array 0 dummyf3 in
+  let dummydv = (dummyf3, dummyff3) in
+  create_array 180 (0, dummydv, 0.0)
+in
+
+(* reflectionsの有効な要素数 *) 
+
+let n_reflections = create_array 1 0
+in
+
+
+(****************************************************************)
+(*                                                              *)
+(* Ray Tracing Program for (Mini) Objective Caml                *)
+(*                                                              *)
+(* Original Program by Ryoji Kawamichi                          *)
+(* Arranged for Chez Scheme by Motohico Nanano                  *)
+(* Arranged for Objective Caml by Y. Oiwa and E. Sumii          *)
+(* Added diffuse ray tracer by Y.Ssugawara                      *)
+(*                                                              *)
+(****************************************************************)
+
+(*NOMINCAML open MiniMLRuntime;;*)
+(*NOMINCAML open Globals;;*)
+(*
+(*MINCAML*) let true = 1 in
+(*MINCAML*) let false = 0 in
+ *)
+(*MINCAML*) let rec xor x y = if x then not y else y in
+
+(******************************************************************************
+   ユーティリティー
+ *****************************************************************************)
+
+(* 符号 *)
+let rec sgn x =
+  if fiszero x then 0.0
+  else if fispos x then 1.0
+  else -1.0
+in
+
+(* 条件付き符号反転 *)
+let rec fneg_cond cond x =
+  if cond then x else fneg x
+in
+
+(* (x+y) mod 5 *)
+let rec add_mod5 x y =
+  let sum = x + y in
+  if sum >= 5 then sum - 5 else sum
+in
+
+(******************************************************************************
+   ベクトル操作のためのプリミティブ
+ *****************************************************************************)
+
 (*
 let rec vecprint v =
   (o_param_abc m) inFormat.eprintf "(%f %f %f)" v.(0) v.(1) v.(2)
 in
-*)
+ *)
 
 (* 値代入 *)
 let rec vecset v x y z =
@@ -861,14 +1049,46 @@ in
 (* ネットワーク1つを読み込みベクトルにして返す *)
 let rec read_net_item length =
   let item = read_int () in
+  (*      print_char 103;
+      print_char 10;
+      print_int item;
+      print_char 10;
+      print_char 103;
+      print_char 10;*)
   if item = -1 then create_array (length + 1) (-1)
   else
     let v = read_net_item (length + 1) in
-    (v.(length) <- item; v)
+    (v.(length) <- item;
+(*     print_char 104;
+     print_char 10;
+     print_int (v.(0));
+     print_char 32;
+     print_int (v.(1));
+     print_char 32;
+     print_int (v.(2));
+     print_char 32;
+     print_int (v.(3));
+     print_char 10;
+     print_char 104;
+     print_char 10;*) v)
 in
 
 let rec read_or_network length =
+  print_char 108;
+  print_char 10;
   let net = read_net_item 0 in
+     print_char 108;
+     print_char 10;
+     print_int (net.(0));
+     print_char 32;
+     print_int (net.(1));
+     print_char 32;
+     print_int (net.(2));
+     print_char 32;
+     print_int (net.(3));
+     print_char 10;
+     print_char 108;
+     print_char 10;
   if net.(0) = -1 then
     create_array (length + 1) net
   else
@@ -877,10 +1097,12 @@ let rec read_or_network length =
 in
 
 let rec read_and_network n =
+  print_char 103;
+  print_char 10;
   let net = read_net_item 0 in
   if net.(0) = -1 then ()
   else (
-    and_net.(n) <- net;
+    and_net.(0) <- net;
     read_and_network (n + 1)
   )
 in
@@ -1506,6 +1728,10 @@ let rec trace_or_matrix ofs or_network dirvec =
   if range_primitive = -1 then (* 全オブジェクト終了 *)
     ()
   else (
+    print_char 102;
+    print_char 103;
+    print_char 104;
+    print_char 10;
     if range_primitive = 99 (* range primitive なし *)
     then (solve_one_or_network 1 head dirvec)
     else
@@ -1788,7 +2014,6 @@ in
 
 (* 各物体による光源の反射光を計算する関数(直方体と平面のみ) *)
 let rec trace_reflections index diffuse hilight_scale dirvec =
-
   if index >= 0 then (
     let rinfo = reflections.(index) in (* 鏡平面の反射情報 *)
     let dvec = r_dvec rinfo in    (* 反射光の方向ベクトル(光と逆向き *)
@@ -1879,7 +2104,7 @@ let rec trace_ray nref energy dirvec pixel dist =
 
        ) else ()
 
-     ) else (
+    ) else (
       (* どの物体にも当たらなかった場合。光源からの光を加味 *)
 
       surface_ids.(nref) <- -1;
@@ -2114,7 +2339,10 @@ in
 
 let rec write_rgb_element x =
   let ix = int_of_float x in
-  let elem = if ix > 255 then 255 else if ix < 0 then 0 else ix in
+  let elem = if ix > 255 then print_char 97;
+             print_int ix; 255
+             else if ix < 0 then print_char 98;
+             print_int ix; 0 else ix in
   print_int elem
 in
 
@@ -2485,6 +2713,9 @@ let rec rt size_x size_y =
 )
 in
 
-let _ = rt 512 512
+let _ =
+  print_int 333;
+  print_char 10;
+  rt 16 16
 
 in 0
