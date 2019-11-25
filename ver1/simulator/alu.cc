@@ -2,13 +2,11 @@
 #include <string>
 #include <fstream>
 using namespace std;
-extern ifstream fin;
-extern ofstream fout;
 //extern FILE *fout;
 union Convert{
   unsigned int i;
 } convert;
-void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
+void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg,ifstream* fin, ofstream* fout){
 	switch (code & 0b111111) {
 		int rs,rt,rd,fs;
 		case 0b100000 :
@@ -50,14 +48,14 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
       //execute FIN
       fs = (int)((code >> 21) & 0b11111);
       float f;
-      fin >> f;
+      (*fin) >> f;
       freg[fs] = f;
       break;
     case 0b101010 :
       //execute IN
       rs = (int)((code >> 21) & 0b11111);
       int inp;
-      fin >> inp;
+      (*fin) >> inp;
       reg[rs] = (unsigned int)inp;
       //reg[rs] = convert.i;
       break;
@@ -72,7 +70,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg){
       rs = (int)((code >> 21) & 0b11111);
       //convert.i = reg[rs];
       //fwrite(&convert,sizeof(char),1,fout);
-      fout.write((char *)&reg[rs],1);
+      (*fout).write((char *)&reg[rs],1);
       break;
 		case 0b100010 :
 			//SUBの実行
