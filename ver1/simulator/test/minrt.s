@@ -1083,8 +1083,8 @@ program_start :
 	sw	%r24 %r12 12
 	sw	%r24 %r4 8
 	sw	%r24 %r2 4
-	addi	%r0 %r1 16
-	addi	%r0 %r2 16
+	addi	%r0 %r1 128
+	addi	%r0 %r2 128
 	sw	%r26 %r28 148
 	lw	%r24 %r23 0
 	addi	%r26 %r26 152	
@@ -1886,6 +1886,7 @@ read_screen_settings.2732 :
 read_light.2734 :
 	lw	%r24 %r1 8
 	lw	%r24 %r2 4
+	in	%r3
 	fin	%f0
 	sw	%r26 %r2 0
 	sw	%r26 %r1 4
@@ -10236,3 +10237,4 @@ create_float_array_cont :
 	addi	%r2 %r2 -1
 	addi	%r27 %r27 4
 	j	create_float_array_loop
+	
