@@ -1083,8 +1083,8 @@ program_start :
 	sw	%r24 %r12 12
 	sw	%r24 %r4 8
 	sw	%r24 %r2 4
-	addi	%r0 %r1 8
-	addi	%r0 %r2 8
+	addi	%r0 %r1 16
+	addi	%r0 %r2 16
 	sw	%r26 %r28 148
 	lw	%r24 %r23 0
 	addi	%r26 %r26 152	
@@ -1123,7 +1123,7 @@ fble_else.9060 :
 fneg.2550 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f1 0
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	retl
 fless.2552 :
 	fbg	%f1 %f0 fble_else.9061 
@@ -1143,12 +1143,12 @@ fabs.2557 :
 fble_else.9062 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f1 0
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	retl
 fhalf.2559 :
 	addi	%r0 %r1 l.6257 
 	ilw.s	%r1 %f1 0
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	retl
 fpow.2561 :
 	addi	%r0 %r25 0
@@ -1165,7 +1165,7 @@ be_else.9063 :
 	addi	%r26 %r26 -16
 	lw	%r26 %r28 12
 	lw.s	%r26 %f1 0
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	retl
 sin.2564 :
 	addi	%r0 %r1 l.6261 
@@ -1179,7 +1179,7 @@ sin.2564 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 8
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6263 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 7
@@ -1193,9 +1193,9 @@ sin.2564 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6265 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 5
@@ -1209,9 +1209,9 @@ sin.2564 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 32
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6267 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 3
@@ -1225,11 +1225,11 @@ sin.2564 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 48
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 0
-	add.s	%f0 %f1 %f0
+	add.s	%f1 %f0 %f0
 	retl
 cos.2566 :
 	addi	%r0 %r1 l.6269 
@@ -1243,7 +1243,7 @@ cos.2566 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 8
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6271 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 6
@@ -1257,9 +1257,9 @@ cos.2566 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6273 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 4
@@ -1273,9 +1273,9 @@ cos.2566 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 32
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6275 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 2
@@ -1289,12 +1289,12 @@ cos.2566 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 48
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f1 0
-	add.s	%f0 %f1 %f0
+	add.s	%f1 %f0 %f0
 	retl
 atan.2568 :
 	addi	%r0 %r1 l.6278 
@@ -1308,7 +1308,7 @@ atan.2568 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 8
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6280 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 7
@@ -1322,9 +1322,9 @@ atan.2568 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6282 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 5
@@ -1338,9 +1338,9 @@ atan.2568 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 32
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6284 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 3
@@ -1354,11 +1354,11 @@ atan.2568 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 48
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 0
-	add.s	%f0 %f1 %f0
+	add.s	%f1 %f0 %f0
 	retl
 print_int.2570 :
 	addi	%r0 %r2 100
@@ -1448,13 +1448,13 @@ bge_else.9073 :
 	retl
 vecset.2613 :
 	sw.s	%r1 %f0 0
-	sw.s	%r1 %f1 8
-	sw.s	%r1 %f2 16
+	sw.s	%r1 %f1 4
+	sw.s	%r1 %f2 8
 	retl
 vecfill.2618 :
 	sw.s	%r1 %f0 0
+	sw.s	%r1 %f0 4
 	sw.s	%r1 %f0 8
-	sw.s	%r1 %f0 16
 	retl
 vecbzero.2621 :
 	addi	%r0 %r2 l.6250 
@@ -1463,10 +1463,10 @@ vecbzero.2621 :
 veccpy.2623 :
 	lw.s	%r2 %f0 0
 	sw.s	%r1 %f0 0
+	lw.s	%r2 %f0 4
+	sw.s	%r1 %f0 4
 	lw.s	%r2 %f0 8
 	sw.s	%r1 %f0 8
-	lw.s	%r2 %f0 16
-	sw.s	%r1 %f0 16
 	retl
 vecunit_sgn.2631 :
 	lw.s	%r1 %f0 0
@@ -1478,7 +1478,7 @@ vecunit_sgn.2631 :
 	addi	%r26 %r26 -16
 	lw	%r26 %r28 12
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	sw.s	%r26 %f0 8
 	mov.s	%f1 %f0
 	sw	%r26 %r28 20
@@ -1487,9 +1487,9 @@ vecunit_sgn.2631 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 8
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	sw.s	%r26 %f0 16
 	mov.s	%f1 %f0
 	sw	%r26 %r28 28
@@ -1498,7 +1498,7 @@ vecunit_sgn.2631 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw.s	%r26 %f1 16
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sqrt.s	%f0 %f0
 	sw.s	%r26 %f0 24
 	sw	%r26 %r28 36
@@ -1514,13 +1514,13 @@ addi	%r0 %r25 0
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 24
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	j	be_cont.9080 
 be_else.9079 :
 	addi	%r0 %r1 l.6288 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 24
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 be_cont.9080 :
 	j	be_cont.9078 
 be_else.9077 :
@@ -1529,99 +1529,99 @@ be_else.9077 :
 be_cont.9078 :
 	lw	%r26 %r1 4
 	lw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	sw.s	%r1 %f1 0
+	lw.s	%r1 %f1 4
+	mul.s	%f0 %f1 %f1
+	sw.s	%r1 %f1 4
 	lw.s	%r1 %f1 8
-	mul.s	%f1 %f0 %f1
-	sw.s	%r1 %f1 8
-	lw.s	%r1 %f1 16
-	mul.s	%f1 %f0 %f0
-	sw.s	%r1 %f0 16
+	mul.s	%f0 %f1 %f0
+	sw.s	%r1 %f0 8
 	retl
 veciprod.2634 :
 	lw.s	%r1 %f0 0
 	lw.s	%r2 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 4
+	lw.s	%r2 %f2 4
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	lw.s	%r1 %f1 8
 	lw.s	%r2 %f2 8
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 16
-	lw.s	%r2 %f2 16
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	retl
 veciprod2.2637 :
 	lw.s	%r1 %f3 0
-	mul.s	%f3 %f0 %f0
-	lw.s	%r1 %f3 8
-	mul.s	%f3 %f1 %f1
-	add.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 16
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
+	mul.s	%f0 %f3 %f0
+	lw.s	%r1 %f3 4
+	mul.s	%f1 %f3 %f1
+	add.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 8
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	retl
 vecaccum.2642 :
 	lw.s	%r1 %f1 0
 	lw.s	%r2 %f2 0
-	mul.s	%f0 %f2 %f2
-	add.s	%f1 %f2 %f1
+	mul.s	%f2 %f0 %f2
+	add.s	%f2 %f1 %f1
 	sw.s	%r1 %f1 0
+	lw.s	%r1 %f1 4
+	lw.s	%r2 %f2 4
+	mul.s	%f2 %f0 %f2
+	add.s	%f2 %f1 %f1
+	sw.s	%r1 %f1 4
 	lw.s	%r1 %f1 8
 	lw.s	%r2 %f2 8
-	mul.s	%f0 %f2 %f2
-	add.s	%f1 %f2 %f1
-	sw.s	%r1 %f1 8
-	lw.s	%r1 %f1 16
-	lw.s	%r2 %f2 16
-	mul.s	%f0 %f2 %f0
-	add.s	%f1 %f0 %f0
-	sw.s	%r1 %f0 16
+	mul.s	%f2 %f0 %f0
+	add.s	%f0 %f1 %f0
+	sw.s	%r1 %f0 8
 	retl
 vecadd.2646 :
 	lw.s	%r1 %f0 0
 	lw.s	%r2 %f1 0
-	add.s	%f0 %f1 %f0
+	add.s	%f1 %f0 %f0
 	sw.s	%r1 %f0 0
+	lw.s	%r1 %f0 4
+	lw.s	%r2 %f1 4
+	add.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 4
 	lw.s	%r1 %f0 8
 	lw.s	%r2 %f1 8
-	add.s	%f0 %f1 %f0
+	add.s	%f1 %f0 %f0
 	sw.s	%r1 %f0 8
-	lw.s	%r1 %f0 16
-	lw.s	%r2 %f1 16
-	add.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 16
 	retl
 vecscale.2652 :
 	lw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	sw.s	%r1 %f1 0
+	lw.s	%r1 %f1 4
+	mul.s	%f0 %f1 %f1
+	sw.s	%r1 %f1 4
 	lw.s	%r1 %f1 8
-	mul.s	%f1 %f0 %f1
-	sw.s	%r1 %f1 8
-	lw.s	%r1 %f1 16
-	mul.s	%f1 %f0 %f0
-	sw.s	%r1 %f0 16
+	mul.s	%f0 %f1 %f0
+	sw.s	%r1 %f0 8
 	retl
 vecaccumv.2655 :
 	lw.s	%r1 %f0 0
 	lw.s	%r2 %f1 0
 	lw.s	%r3 %f2 0
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	sw.s	%r1 %f0 0
+	lw.s	%r1 %f0 4
+	lw.s	%r2 %f1 4
+	lw.s	%r3 %f2 4
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 4
 	lw.s	%r1 %f0 8
 	lw.s	%r2 %f1 8
 	lw.s	%r3 %f2 8
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	sw.s	%r1 %f0 8
-	lw.s	%r1 %f0 16
-	lw.s	%r2 %f1 16
-	lw.s	%r3 %f2 16
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 16
 	retl
 o_texturetype.2659 :
 	lw	%r1 %r1 0
@@ -1644,11 +1644,11 @@ o_param_a.2669 :
 	retl
 o_param_b.2671 :
 	lw	%r1 %r1 16
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	retl
 o_param_c.2673 :
 	lw	%r1 %r1 16
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	retl
 o_param_abc.2675 :
 	lw	%r1 %r1 16
@@ -1659,11 +1659,11 @@ o_param_x.2677 :
 	retl
 o_param_y.2679 :
 	lw	%r1 %r1 20
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	retl
 o_param_z.2681 :
 	lw	%r1 %r1 20
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	retl
 o_diffuse.2683 :
 	lw	%r1 %r1 28
@@ -1671,7 +1671,7 @@ o_diffuse.2683 :
 	retl
 o_hilight.2685 :
 	lw	%r1 %r1 28
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	retl
 o_color_red.2687 :
 	lw	%r1 %r1 32
@@ -1679,11 +1679,11 @@ o_color_red.2687 :
 	retl
 o_color_green.2689 :
 	lw	%r1 %r1 32
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	retl
 o_color_blue.2691 :
 	lw	%r1 %r1 32
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	retl
 o_param_r1.2693 :
 	lw	%r1 %r1 36
@@ -1691,11 +1691,11 @@ o_param_r1.2693 :
 	retl
 o_param_r2.2695 :
 	lw	%r1 %r1 36
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	retl
 o_param_r3.2697 :
 	lw	%r1 %r1 36
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	retl
 o_param_ctbl.2699 :
 	lw	%r1 %r1 40
@@ -1747,7 +1747,7 @@ r_bright.2728 :
 rad.2730 :
 	addi	%r0 %r1 l.6376 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	retl
 read_screen_settings.2732 :
 	lw	%r24 %r1 20
@@ -1758,9 +1758,9 @@ read_screen_settings.2732 :
 	fin	%f0
 	sw.s	%r5 %f0 0
 	fin	%f0
-	sw.s	%r5 %f0 8
+	sw.s	%r5 %f0 4
 	fin	%f0
-	sw.s	%r5 %f0 16
+	sw.s	%r5 %f0 8
 	fin	%f0
 	sw	%r26 %r1 0
 	sw	%r26 %r5 4
@@ -1809,28 +1809,28 @@ read_screen_settings.2732 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 32
-	mul.s	%f1 %f0 %f2
+	mul.s	%f0 %f1 %f2
 	addi	%r0 %r1 l.6381 
 	ilw.s	%r1 %f3 0
-	mul.s	%f2 %f3 %f2
+	mul.s	%f3 %f2 %f2
 	lw	%r26 %r1 16
 	sw.s	%r1 %f2 0
 	addi	%r0 %r2 l.6384 
 	ilw.s	%r2 %f2 0
 	lw.s	%r26 %f3 40
-	mul.s	%f3 %f2 %f2
-	sw.s	%r1 %f2 8
+	mul.s	%f2 %f3 %f2
+	sw.s	%r1 %f2 4
 	lw.s	%r26 %f2 56
-	mul.s	%f1 %f2 %f4
+	mul.s	%f2 %f1 %f4
 	addi	%r0 %r2 l.6381 
 	ilw.s	%r2 %f5 0
-	mul.s	%f4 %f5 %f4
-	sw.s	%r1 %f4 16
+	mul.s	%f5 %f4 %f4
+	sw.s	%r1 %f4 8
 	lw	%r26 %r2 12
 	sw.s	%r2 %f2 0
 	addi	%r0 %r3 l.6250 
 	ilw.s	%r3 %f4 0
-	sw.s	%r2 %f4 8
+	sw.s	%r2 %f4 4
 	sw.s	%r26 %f0 64
 	sw	%r26 %r28 76
 	addi	%r26 %r26 80
@@ -1838,7 +1838,7 @@ read_screen_settings.2732 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw	%r26 %r1 12
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	lw.s	%r26 %f0 40
 	sw	%r26 %r28 76
 	addi	%r26 %r26 80
@@ -1846,7 +1846,7 @@ read_screen_settings.2732 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 8
 	sw.s	%r1 %f0 0
 	lw.s	%r26 %f0 32
@@ -1856,7 +1856,7 @@ read_screen_settings.2732 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw.s	%r26 %f0 40
 	sw	%r26 %r28 76
 	addi	%r26 %r26 80
@@ -1864,24 +1864,24 @@ read_screen_settings.2732 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 56
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	lw	%r26 %r1 4
 	lw.s	%r1 %f0 0
 	lw	%r26 %r2 16
 	lw.s	%r2 %f1 0
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	lw	%r26 %r3 0
 	sw.s	%r3 %f0 0
+	lw.s	%r1 %f0 4
+	lw.s	%r2 %f1 4
+	sub.s	%f1 %f0 %f0
+	sw.s	%r3 %f0 4
 	lw.s	%r1 %f0 8
 	lw.s	%r2 %f1 8
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	sw.s	%r3 %f0 8
-	lw.s	%r1 %f0 16
-	lw.s	%r2 %f1 16
-	sub.s	%f0 %f1 %f0
-	sw.s	%r3 %f0 16
 	retl
 read_light.2734 :
 	lw	%r24 %r1 8
@@ -1906,7 +1906,7 @@ read_light.2734 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	fin	%f0
 	sw	%r26 %r28 20
 	addi	%r26 %r26 24
@@ -1930,7 +1930,7 @@ read_light.2734 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r1 %f0 0
 	lw.s	%r26 %f0 16
@@ -1940,9 +1940,9 @@ read_light.2734 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	fin	%f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
@@ -1966,7 +1966,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	sw.s	%r26 %f0 16
 	mov.s	%f1 %f0
 	sw	%r26 %r28 28
@@ -1975,7 +1975,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	sw.s	%r26 %f0 24
 	mov.s	%f1 %f0
 	sw	%r26 %r28 36
@@ -1984,7 +1984,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	sw.s	%r26 %f0 32
 	mov.s	%f1 %f0
 	sw	%r26 %r28 44
@@ -1993,7 +1993,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	sw.s	%r26 %f0 40
 	mov.s	%f1 %f0
 	sw	%r26 %r28 52
@@ -2003,27 +2003,27 @@ rotate_quadratic_matrix.2736 :
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
 	lw.s	%r26 %f2 24
-	mul.s	%f2 %f1 %f3
+	mul.s	%f1 %f2 %f3
 	lw.s	%r26 %f4 32
 	lw.s	%r26 %f5 16
-	mul.s	%f5 %f4 %f6
-	mul.s	%f6 %f1 %f6
+	mul.s	%f4 %f5 %f6
+	mul.s	%f1 %f6 %f6
 	lw.s	%r26 %f7 8
-	mul.s	%f7 %f0 %f8
-	sub.s	%f6 %f8 %f6
-	mul.s	%f7 %f4 %f8
-	mul.s	%f8 %f1 %f8
-	mul.s	%f5 %f0 %f9
-	add.s	%f8 %f9 %f8
-	mul.s	%f2 %f0 %f9
-	mul.s	%f5 %f4 %f10
-	mul.s	%f10 %f0 %f10
-	mul.s	%f7 %f1 %f11
-	add.s	%f10 %f11 %f10
-	mul.s	%f7 %f4 %f11
-	mul.s	%f11 %f0 %f0
-	mul.s	%f5 %f1 %f1
-	sub.s	%f0 %f1 %f0
+	mul.s	%f0 %f7 %f8
+	sub.s	%f8 %f6 %f6
+	mul.s	%f4 %f7 %f8
+	mul.s	%f1 %f8 %f8
+	mul.s	%f0 %f5 %f9
+	add.s	%f9 %f8 %f8
+	mul.s	%f0 %f2 %f9
+	mul.s	%f4 %f5 %f10
+	mul.s	%f0 %f10 %f10
+	mul.s	%f1 %f7 %f11
+	add.s	%f11 %f10 %f10
+	mul.s	%f4 %f7 %f11
+	mul.s	%f0 %f11 %f0
+	mul.s	%f1 %f5 %f1
+	sub.s	%f1 %f0 %f0
 	sw.s	%r26 %f0 48
 	sw.s	%r26 %f8 56
 	sw.s	%r26 %f10 64
@@ -2038,13 +2038,13 @@ rotate_quadratic_matrix.2736 :
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 24
 	lw.s	%r26 %f2 16
-	mul.s	%f2 %f1 %f2
+	mul.s	%f1 %f2 %f2
 	lw.s	%r26 %f3 8
-	mul.s	%f3 %f1 %f1
+	mul.s	%f1 %f3 %f1
 	lw	%r26 %r1 0
 	lw.s	%r1 %f3 0
-	lw.s	%r1 %f4 8
-	lw.s	%r1 %f5 16
+	lw.s	%r1 %f4 4
+	lw.s	%r1 %f5 8
 	lw.s	%r26 %f6 88
 	sw.s	%r26 %f1 96
 	sw.s	%r26 %f2 104
@@ -2059,7 +2059,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -152
 	lw	%r26 %r28 148
 	lw.s	%r26 %f1 136
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 80
 	sw.s	%r26 %f0 144
 	mov.s	%f2 %f0
@@ -2069,9 +2069,9 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -160
 	lw	%r26 %r28 156
 	lw.s	%r26 %f1 128
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 144
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	lw.s	%r26 %f2 120
 	sw.s	%r26 %f0 152
 	mov.s	%f2 %f0
@@ -2081,9 +2081,9 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -168
 	lw	%r26 %r28 164
 	lw.s	%r26 %f1 112
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 152
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	lw.s	%r26 %f0 72
@@ -2093,7 +2093,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -168
 	lw	%r26 %r28 164
 	lw.s	%r26 %f1 136
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 64
 	sw.s	%r26 %f0 160
 	mov.s	%f2 %f0
@@ -2103,9 +2103,9 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -176
 	lw	%r26 %r28 172
 	lw.s	%r26 %f1 128
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 160
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	lw.s	%r26 %f2 104
 	sw.s	%r26 %f0 168
 	mov.s	%f2 %f0
@@ -2115,11 +2115,11 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -184
 	lw	%r26 %r28 180
 	lw.s	%r26 %f1 112
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 168
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	lw	%r26 %r1 0
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw.s	%r26 %f0 56
 	sw	%r26 %r28 180
 	addi	%r26 %r26 184
@@ -2127,7 +2127,7 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -184
 	lw	%r26 %r28 180
 	lw.s	%r26 %f1 136
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 48
 	sw.s	%r26 %f0 176
 	mov.s	%f2 %f0
@@ -2137,9 +2137,9 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -192
 	lw	%r26 %r28 188
 	lw.s	%r26 %f1 128
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 176
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	lw.s	%r26 %f2 96
 	sw.s	%r26 %f0 184
 	mov.s	%f2 %f0
@@ -2149,59 +2149,59 @@ rotate_quadratic_matrix.2736 :
 	addi	%r26 %r26 -200
 	lw	%r26 %r28 196
 	lw.s	%r26 %f1 112
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 184
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	lw	%r26 %r1 0
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	addi	%r0 %r1 l.6257 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f2 72
 	lw.s	%r26 %f3 136
-	mul.s	%f3 %f2 %f4
+	mul.s	%f2 %f3 %f4
 	lw.s	%r26 %f5 56
-	mul.s	%f4 %f5 %f4
+	mul.s	%f5 %f4 %f4
 	lw.s	%r26 %f6 64
 	lw.s	%r26 %f7 128
-	mul.s	%f7 %f6 %f8
+	mul.s	%f6 %f7 %f8
 	lw.s	%r26 %f9 48
-	mul.s	%f8 %f9 %f8
-	add.s	%f4 %f8 %f4
+	mul.s	%f9 %f8 %f8
+	add.s	%f8 %f4 %f4
 	lw.s	%r26 %f8 104
-	mul.s	%f1 %f8 %f10
+	mul.s	%f8 %f1 %f10
 	lw.s	%r26 %f11 96
-	mul.s	%f10 %f11 %f10
-	add.s	%f4 %f10 %f4
-	mul.s	%f0 %f4 %f0
+	mul.s	%f11 %f10 %f10
+	add.s	%f10 %f4 %f4
+	mul.s	%f4 %f0 %f0
 	lw	%r26 %r1 4
 	sw.s	%r1 %f0 0
 	addi	%r0 %r2 l.6257 
 	ilw.s	%r2 %f0 0
 	lw.s	%r26 %f4 88
-	mul.s	%f3 %f4 %f10
-	mul.s	%f10 %f5 %f5
+	mul.s	%f4 %f3 %f10
+	mul.s	%f5 %f10 %f5
 	lw.s	%r26 %f10 80
-	mul.s	%f7 %f10 %f12
-	mul.s	%f12 %f9 %f9
-	add.s	%f5 %f9 %f5
+	mul.s	%f10 %f7 %f12
+	mul.s	%f9 %f12 %f9
+	add.s	%f9 %f5 %f5
 	lw.s	%r26 %f9 120
-	mul.s	%f1 %f9 %f12
-	mul.s	%f12 %f11 %f11
-	add.s	%f5 %f11 %f5
-	mul.s	%f0 %f5 %f0
-	sw.s	%r1 %f0 8
+	mul.s	%f9 %f1 %f12
+	mul.s	%f11 %f12 %f11
+	add.s	%f11 %f5 %f5
+	mul.s	%f5 %f0 %f0
+	sw.s	%r1 %f0 4
 	addi	%r0 %r2 l.6257 
 	ilw.s	%r2 %f0 0
-	mul.s	%f3 %f4 %f3
-	mul.s	%f3 %f2 %f2
-	mul.s	%f7 %f10 %f3
-	mul.s	%f3 %f6 %f3
-	add.s	%f2 %f3 %f2
-	mul.s	%f1 %f9 %f1
-	mul.s	%f1 %f8 %f1
-	add.s	%f2 %f1 %f1
-	mul.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 16
+	mul.s	%f4 %f3 %f3
+	mul.s	%f2 %f3 %f2
+	mul.s	%f10 %f7 %f3
+	mul.s	%f6 %f3 %f3
+	add.s	%f3 %f2 %f2
+	mul.s	%f9 %f1 %f1
+	mul.s	%f8 %f1 %f1
+	add.s	%f1 %f2 %f1
+	mul.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 8
 	retl
 read_nth_object.2739 :
 	lw	%r24 %r2 4
@@ -2232,9 +2232,9 @@ be_else.9091 :
 	fin	%f0
 	sw.s	%r1 %f0 0
 	fin	%f0
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	fin	%f0
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	addi	%r0 %r2 3
 	addi	%r0 %r3 l.6250 
 	ilw.s	%r3 %f0 0
@@ -2248,9 +2248,9 @@ be_else.9091 :
 	fin	%f0
 	sw.s	%r1 %f0 0
 	fin	%f0
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	fin	%f0
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	fin	%f0
 	sw	%r26 %r1 28
 	sw	%r26 %r28 36
@@ -2271,7 +2271,7 @@ be_else.9091 :
 	fin	%f0
 	sw.s	%r1 %f0 0
 	fin	%f0
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	addi	%r0 %r2 3
 	addi	%r0 %r3 l.6250 
 	ilw.s	%r3 %f0 0
@@ -2285,9 +2285,9 @@ be_else.9091 :
 	fin	%f0
 	sw.s	%r1 %f0 0
 	fin	%f0
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	fin	%f0
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	addi	%r0 %r2 3
 	addi	%r0 %r3 l.6250 
 	ilw.s	%r3 %f0 0
@@ -2319,7 +2319,7 @@ be_else.9092 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw	%r26 %r1 44
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	fin	%f0
 	sw	%r26 %r28 52
 	addi	%r26 %r26 56
@@ -2327,7 +2327,7 @@ be_else.9092 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw	%r26 %r1 44
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 be_cont.9093 :
 	lw	%r26 %r2 16
 addi	%r0 %r25 2
@@ -2375,7 +2375,8 @@ be_cont.9095 :
 	addi	%r0 %r25 2
 	sll	%r6 %r6 %r25
 	lw	%r26 %r7 0
-	sw	%r7 %r2 %r6
+	add %r7 %r6 %r25
+	sw	%r25 %r2 0
 addi	%r0 %r25 3
 	bne	%r5 %r25 be_else.9096 
 	lw.s	%r3 %f0 0
@@ -2402,7 +2403,7 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	j	be_cont.9100 
 be_else.9099 :
 	addi	%r0 %r1 l.6250 
@@ -2410,7 +2411,7 @@ be_else.9099 :
 be_cont.9100 :
 	lw	%r26 %r1 24
 	sw.s	%r1 %f0 0
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
@@ -2434,15 +2435,15 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -96
 	lw	%r26 %r28 92
 	lw.s	%r26 %f1 80
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	j	be_cont.9102 
 be_else.9101 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f0 0
 be_cont.9102 :
 	lw	%r26 %r1 24
-	sw.s	%r1 %f0 8
-	lw.s	%r1 %f0 16
+	sw.s	%r1 %f0 4
+	lw.s	%r1 %f0 8
 	sw.s	%r26 %f0 88
 	sw	%r26 %r28 100
 	addi	%r26 %r26 104
@@ -2466,14 +2467,14 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -112
 	lw	%r26 %r28 108
 	lw.s	%r26 %f1 96
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	j	be_cont.9104 
 be_else.9103 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f0 0
 be_cont.9104 :
 	lw	%r26 %r1 24
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	j	be_cont.9097 
 be_else.9096 :
 addi	%r0 %r25 2
@@ -2566,7 +2567,8 @@ be_else.9115 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 0
-	sw	%r1 %r3 %r2
+	add %r1 %r2 %r25
+	sw	%r25 %r3 0
 	retl
 read_or_network.2747 :
 	addi	%r0 %r2 0
@@ -2598,7 +2600,8 @@ be_else.9116 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 4
-	sw	%r1 %r3 %r2
+	add %r1 %r2 %r25
+	sw	%r25 %r3 0
 	retl
 read_and_network.2749 :
 	lw	%r24 %r2 4
@@ -2621,7 +2624,8 @@ be_else.9117 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 4
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r2 %r1 1
 	lw	%r26 %r24 0
 	lw	%r24 %r23 0
@@ -2676,9 +2680,10 @@ read_parameter.2751 :
 	retl
 solver_rect_surface.2753 :
 	lw	%r24 %r6 4
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r3 %r7 %r25
-	lw.s	%r2 %f3 %r7
+	add	%r2 %r7 %r25
+	lw.s	%r25 %f3 0
 	sw	%r26 %r6 0
 	sw.s	%r26 %f2 8
 	sw	%r26 %r5 16
@@ -2711,10 +2716,11 @@ solver_rect_surface.2753 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw	%r26 %r2 52
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 48
-	lw.s	%r4 %f0 %r3
+	add	%r4 %r3 %r25
+	lw.s	%r25 %f0 0
 	sw	%r26 %r1 64
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
@@ -2729,30 +2735,33 @@ solver_rect_surface.2753 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw	%r26 %r2 52
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 60
-	lw.s	%r4 %f0 %r3
+	add	%r4 %r3 %r25
+	lw.s	%r25 %f0 0
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
 	jal	fneg_cond.2607 
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 40
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	lw	%r26 %r1 52
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 48
-	lw.s	%r2 %f1 %r1
-	div.s	%f0 %f1 %f0
+	add	%r2 %r1 %r25
+	lw.s	%r25 %f1 0
+	div.s	%f1 %f0 %f0
 	lw	%r26 %r1 32
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r3 %r25
-	lw.s	%r2 %f1 %r3
-	mul.s	%f0 %f1 %f1
+	add	%r2 %r3 %r25
+	lw.s	%r25 %f1 0
+	mul.s	%f1 %f0 %f1
 	lw.s	%r26 %f2 24
-	add.s	%f1 %f2 %f1
+	add.s	%f2 %f1 %f1
 	sw.s	%r26 %f0 72
 	mov.s	%f1 %f0
 	sw	%r26 %r28 84
@@ -2761,10 +2770,11 @@ solver_rect_surface.2753 :
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw	%r26 %r1 32
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 60
-	lw.s	%r2 %f1 %r1
+	add	%r2 %r1 %r25
+	lw.s	%r25 %f1 0
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
 	jal	fless.2552 
@@ -2776,24 +2786,26 @@ solver_rect_surface.2753 :
 	retl
 be_else.9125 :
 	lw	%r26 %r1 16
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 48
-	lw.s	%r3 %f0 %r2
+	add	%r3 %r2 %r25
+	lw.s	%r25 %f0 0
 	lw.s	%r26 %f1 72
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 8
-	add.s	%f0 %f2 %f0
+	add.s	%f2 %f0 %f0
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
 	jal	fabs.2557 
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw	%r26 %r1 16
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 60
-	lw.s	%r2 %f1 %r1
+	add	%r2 %r1 %r25
+	lw.s	%r25 %f1 0
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
 	jal	fless.2552 
@@ -2922,7 +2934,7 @@ be_else.9131 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	addi	%r0 %r1 1
@@ -2945,7 +2957,7 @@ quadratic.2774 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
 	sw.s	%r26 %f0 40
 	mov.s	%f1 %f0
@@ -2962,9 +2974,9 @@ quadratic.2774 :
 	addi	%r26 %r26 -64
 	lw	%r26 %r28 60
 	lw.s	%r26 %f1 48
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 40
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 8
 	sw.s	%r26 %f0 56
 	mov.s	%f1 %f0
@@ -2981,9 +2993,9 @@ quadratic.2774 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 56
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 24
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
@@ -2998,7 +3010,7 @@ quadratic.2774 :
 be_else.9133 :
 	lw.s	%r26 %f0 8
 	lw.s	%r26 %f1 16
-	mul.s	%f1 %f0 %f2
+	mul.s	%f0 %f1 %f2
 	lw	%r26 %r1 24
 	sw.s	%r26 %f2 80
 	sw	%r26 %r28 92
@@ -3007,12 +3019,12 @@ be_else.9133 :
 	addi	%r26 %r26 -96
 	lw	%r26 %r28 92
 	lw.s	%r26 %f1 80
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 72
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 0
 	lw.s	%r26 %f2 8
-	mul.s	%f2 %f1 %f2
+	mul.s	%f1 %f2 %f2
 	lw	%r26 %r1 24
 	sw.s	%r26 %f0 88
 	sw.s	%r26 %f2 96
@@ -3022,12 +3034,12 @@ be_else.9133 :
 	addi	%r26 %r26 -112
 	lw	%r26 %r28 108
 	lw.s	%r26 %f1 96
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 88
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
 	lw.s	%r26 %f2 0
-	mul.s	%f2 %f1 %f1
+	mul.s	%f1 %f2 %f1
 	lw	%r26 %r1 24
 	sw.s	%r26 %f0 104
 	sw.s	%r26 %f1 112
@@ -3037,12 +3049,12 @@ be_else.9133 :
 	addi	%r26 %r26 -128
 	lw	%r26 %r28 124
 	lw.s	%r26 %f1 112
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 104
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	retl
 bilinear.2779 :
-	mul.s	%f0 %f3 %f6
+	mul.s	%f3 %f0 %f6
 	sw.s	%r26 %f3 0
 	sw.s	%r26 %f0 8
 	sw.s	%r26 %f5 16
@@ -3057,10 +3069,10 @@ bilinear.2779 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 40
 	lw.s	%r26 %f2 48
-	mul.s	%f2 %f1 %f3
+	mul.s	%f1 %f2 %f3
 	lw	%r26 %r1 32
 	sw.s	%r26 %f0 64
 	sw.s	%r26 %f3 72
@@ -3070,12 +3082,12 @@ bilinear.2779 :
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 72
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 64
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
 	lw.s	%r26 %f2 24
-	mul.s	%f2 %f1 %f3
+	mul.s	%f1 %f2 %f3
 	lw	%r26 %r1 32
 	sw.s	%r26 %f0 80
 	sw.s	%r26 %f3 88
@@ -3085,9 +3097,9 @@ bilinear.2779 :
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 88
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 80
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 32
 	sw.s	%r26 %f0 96
 	sw	%r26 %r28 108
@@ -3102,11 +3114,11 @@ bilinear.2779 :
 be_else.9135 :
 	lw.s	%r26 %f0 40
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f2
+	mul.s	%f0 %f1 %f2
 	lw.s	%r26 %f3 16
 	lw.s	%r26 %f4 48
-	mul.s	%f4 %f3 %f5
-	add.s	%f2 %f5 %f2
+	mul.s	%f3 %f4 %f5
+	add.s	%f5 %f2 %f2
 	lw	%r26 %r1 32
 	sw.s	%r26 %f2 104
 	sw	%r26 %r28 116
@@ -3115,14 +3127,14 @@ be_else.9135 :
 	addi	%r26 %r26 -120
 	lw	%r26 %r28 116
 	lw.s	%r26 %f1 104
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 16
 	lw.s	%r26 %f2 8
-	mul.s	%f2 %f1 %f1
+	mul.s	%f1 %f2 %f1
 	lw.s	%r26 %f3 0
 	lw.s	%r26 %f4 24
-	mul.s	%f4 %f3 %f4
-	add.s	%f1 %f4 %f1
+	mul.s	%f3 %f4 %f4
+	add.s	%f4 %f1 %f1
 	lw	%r26 %r1 32
 	sw.s	%r26 %f0 112
 	sw.s	%r26 %f1 120
@@ -3132,16 +3144,16 @@ be_else.9135 :
 	addi	%r26 %r26 -136
 	lw	%r26 %r28 132
 	lw.s	%r26 %f1 120
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 112
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 40
 	lw.s	%r26 %f2 8
-	mul.s	%f2 %f1 %f1
+	mul.s	%f1 %f2 %f1
 	lw.s	%r26 %f2 0
 	lw.s	%r26 %f3 48
-	mul.s	%f3 %f2 %f2
-	add.s	%f1 %f2 %f1
+	mul.s	%f2 %f3 %f2
+	add.s	%f2 %f1 %f1
 	lw	%r26 %r1 32
 	sw.s	%r26 %f0 128
 	sw.s	%r26 %f1 136
@@ -3151,22 +3163,22 @@ be_else.9135 :
 	addi	%r26 %r26 -152
 	lw	%r26 %r28 148
 	lw.s	%r26 %f1 136
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 128
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw	%r26 %r28 148
 	addi	%r26 %r26 152
 	jal	fhalf.2559 
 	addi	%r26 %r26 -152
 	lw	%r26 %r28 148
 	lw.s	%r26 %f1 96
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	retl
 solver_second.2787 :
 	lw	%r24 %r3 4
 	lw.s	%r2 %f3 0
-	lw.s	%r2 %f4 8
-	lw.s	%r2 %f5 16
+	lw.s	%r2 %f4 4
+	lw.s	%r2 %f5 8
 	sw	%r26 %r3 0
 	sw.s	%r26 %f2 8
 	sw.s	%r26 %f1 16
@@ -3191,8 +3203,8 @@ solver_second.2787 :
 	bne	%r1 %r25 be_else.9137 
 	lw	%r26 %r1 36
 	lw.s	%r1 %f0 0
-	lw.s	%r1 %f1 8
-	lw.s	%r1 %f2 16
+	lw.s	%r1 %f1 4
+	lw.s	%r1 %f2 8
 	lw.s	%r26 %f3 24
 	lw.s	%r26 %f4 16
 	lw.s	%r26 %f5 8
@@ -3227,7 +3239,7 @@ addi	%r0 %r25 3
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 56
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	j	be_cont.9139 
 be_else.9138 :
 	lw.s	%r26 %f0 56
@@ -3242,8 +3254,8 @@ be_cont.9139 :
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
 	lw.s	%r26 %f2 40
-	mul.s	%f2 %f1 %f1
-	sub.s	%f0 %f1 %f0
+	mul.s	%f1 %f2 %f1
+	sub.s	%f1 %f0 %f0
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
@@ -3277,9 +3289,9 @@ be_else.9141 :
 	lw.s	%r26 %f0 80
 be_cont.9142 :
 	lw.s	%r26 %f1 48
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	lw.s	%r26 %f1 40
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	addi	%r0 %r1 1
@@ -3294,7 +3306,8 @@ solver.2793 :
 	lw	%r24 %r7 4
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
-	lw	%r7 %r1 %r1
+	add	%r7 %r1 %r25
+	lw	%r25 %r1 0
 	lw.s	%r3 %f0 0
 	sw	%r26 %r5 0
 	sw	%r26 %r4 4
@@ -3309,9 +3322,9 @@ solver.2793 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 20
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r2 16
 	sw.s	%r26 %f0 32
 	sw.s	%r26 %f1 40
@@ -3322,9 +3335,9 @@ solver.2793 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 20
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r1 16
 	sw.s	%r26 %f0 48
 	sw.s	%r26 %f1 56
@@ -3334,7 +3347,7 @@ solver.2793 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	sw.s	%r26 %f0 64
 	sw	%r26 %r28 76
@@ -3375,12 +3388,12 @@ be_else.9144 :
 solver_rect_fast.2797 :
 	lw	%r24 %r4 4
 	lw.s	%r3 %f3 0
-	sub.s	%f3 %f0 %f3
-	lw.s	%r3 %f4 8
-	mul.s	%f3 %f4 %f3
-	lw.s	%r2 %f4 8
-	mul.s	%f3 %f4 %f4
-	add.s	%f4 %f1 %f4
+	sub.s	%f0 %f3 %f3
+	lw.s	%r3 %f4 4
+	mul.s	%f4 %f3 %f3
+	lw.s	%r2 %f4 4
+	mul.s	%f4 %f3 %f4
+	add.s	%f1 %f4 %f4
 	sw	%r26 %r4 0
 	sw.s	%r26 %f0 8
 	sw.s	%r26 %f1 16
@@ -3415,11 +3428,11 @@ addi	%r0 %r25 0
 	j	be_cont.9148 
 be_else.9147 :
 	lw	%r26 %r1 48
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 32
-	add.s	%f0 %f2 %f0
+	add.s	%f2 %f0 %f0
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
 	jal	fabs.2557 
@@ -3445,7 +3458,7 @@ addi	%r0 %r25 0
 	j	be_cont.9150 
 be_else.9149 :
 	lw	%r26 %r1 24
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	sw	%r26 %r28 76
 	addi	%r26 %r26 80
 	jal	fiszero.2544 
@@ -3463,16 +3476,16 @@ be_cont.9148 :
 	addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9153 
 	lw	%r26 %r1 24
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	lw.s	%r26 %f1 16
-	sub.s	%f0 %f1 %f0
-	lw.s	%r1 %f2 24
-	mul.s	%f0 %f2 %f0
+	sub.s	%f1 %f0 %f0
+	lw.s	%r1 %f2 12
+	mul.s	%f2 %f0 %f0
 	lw	%r26 %r2 48
 	lw.s	%r2 %f2 0
-	mul.s	%f0 %f2 %f2
+	mul.s	%f2 %f0 %f2
 	lw.s	%r26 %f3 8
-	add.s	%f2 %f3 %f2
+	add.s	%f3 %f2 %f2
 	sw.s	%r26 %f0 72
 	mov.s	%f2 %f0
 	sw	%r26 %r28 84
@@ -3500,11 +3513,11 @@ addi	%r0 %r25 0
 	j	be_cont.9155 
 be_else.9154 :
 	lw	%r26 %r1 48
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	lw.s	%r26 %f1 72
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 32
-	add.s	%f0 %f2 %f0
+	add.s	%f2 %f0 %f0
 	sw	%r26 %r28 92
 	addi	%r26 %r26 96
 	jal	fabs.2557 
@@ -3530,7 +3543,7 @@ addi	%r0 %r25 0
 	j	be_cont.9157 
 be_else.9156 :
 	lw	%r26 %r1 24
-	lw.s	%r1 %f0 24
+	lw.s	%r1 %f0 12
 	sw	%r26 %r28 100
 	addi	%r26 %r26 104
 	jal	fiszero.2544 
@@ -3548,16 +3561,16 @@ be_cont.9155 :
 	addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9160 
 	lw	%r26 %r1 24
-	lw.s	%r1 %f0 32
+	lw.s	%r1 %f0 16
 	lw.s	%r26 %f1 32
-	sub.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 40
-	mul.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 20
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r2 48
 	lw.s	%r2 %f1 0
-	mul.s	%f0 %f1 %f1
+	mul.s	%f1 %f0 %f1
 	lw.s	%r26 %f2 8
-	add.s	%f1 %f2 %f1
+	add.s	%f2 %f1 %f1
 	sw.s	%r26 %f0 96
 	mov.s	%f1 %f0
 	sw	%r26 %r28 108
@@ -3585,11 +3598,11 @@ addi	%r0 %r25 0
 	j	be_cont.9162 
 be_else.9161 :
 	lw	%r26 %r1 48
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	lw.s	%r26 %f1 96
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 16
-	add.s	%f0 %f2 %f0
+	add.s	%f2 %f0 %f0
 	sw	%r26 %r28 116
 	addi	%r26 %r26 120
 	jal	fabs.2557 
@@ -3615,7 +3628,7 @@ addi	%r0 %r25 0
 	j	be_cont.9164 
 be_else.9163 :
 	lw	%r26 %r1 24
-	lw.s	%r1 %f0 40
+	lw.s	%r1 %f0 20
 	sw	%r26 %r28 124
 	addi	%r26 %r26 128
 	jal	fiszero.2544 
@@ -3672,17 +3685,17 @@ solver_surface_fast.2804 :
 	retl
 be_else.9169 :
 	lw	%r26 %r1 32
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	lw.s	%r26 %f1 24
-	mul.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 16
+	mul.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 8
 	lw.s	%r26 %f2 16
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 24
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 12
 	lw.s	%r26 %f2 8
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	addi	%r0 %r1 1
@@ -3706,17 +3719,17 @@ solver_second_fast.2810 :
 	addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9172 
 	lw	%r26 %r1 48
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	lw.s	%r26 %f1 40
-	mul.s	%f0 %f1 %f0
-	lw.s	%r1 %f2 16
+	mul.s	%f1 %f0 %f0
+	lw.s	%r1 %f2 8
 	lw.s	%r26 %f3 32
-	mul.s	%f2 %f3 %f2
-	add.s	%f0 %f2 %f0
-	lw.s	%r1 %f2 24
+	mul.s	%f3 %f2 %f2
+	add.s	%f2 %f0 %f0
+	lw.s	%r1 %f2 12
 	lw.s	%r26 %f4 24
-	mul.s	%f2 %f4 %f2
-	add.s	%f0 %f2 %f0
+	mul.s	%f4 %f2 %f2
+	add.s	%f2 %f0 %f0
 	lw	%r26 %r2 16
 	sw.s	%r26 %f0 56
 	mov	%r2 %r1
@@ -3740,7 +3753,7 @@ addi	%r0 %r25 3
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 64
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	j	be_cont.9175 
 be_else.9174 :
 	lw.s	%r26 %f0 64
@@ -3755,8 +3768,8 @@ be_cont.9175 :
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 72
 	lw.s	%r26 %f2 8
-	mul.s	%f2 %f1 %f1
-	sub.s	%f0 %f1 %f0
+	mul.s	%f1 %f2 %f1
+	sub.s	%f1 %f0 %f0
 	sw.s	%r26 %f0 80
 	sw	%r26 %r28 92
 	addi	%r26 %r26 96
@@ -3779,10 +3792,10 @@ addi	%r0 %r25 0
 	lw.s	%r26 %f0 80
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 56
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 48
-	lw.s	%r1 %f1 32
-	mul.s	%f0 %f1 %f0
+	lw.s	%r1 %f1 16
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	j	be_cont.9178 
@@ -3790,10 +3803,10 @@ be_else.9177 :
 	lw.s	%r26 %f0 80
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 56
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 48
-	lw.s	%r1 %f1 32
-	mul.s	%f0 %f1 %f0
+	lw.s	%r1 %f1 16
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 be_cont.9178 :
@@ -3809,7 +3822,8 @@ solver_fast.2816 :
 	lw	%r24 %r7 4
 	addi	%r0 %r25 2
 	sll	%r1 %r8 %r25
-	lw	%r7 %r7 %r8
+	add	%r7 %r8 %r25
+	lw	%r25 %r7 0
 	lw.s	%r3 %f0 0
 	sw	%r26 %r5 0
 	sw	%r26 %r4 4
@@ -3826,9 +3840,9 @@ solver_fast.2816 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 24
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r2 20
 	sw.s	%r26 %f0 40
 	sw.s	%r26 %f1 48
@@ -3839,9 +3853,9 @@ solver_fast.2816 :
 	addi	%r26 %r26 -64
 	lw	%r26 %r28 60
 	lw.s	%r26 %f1 48
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 24
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r1 20
 	sw.s	%r26 %f0 56
 	sw.s	%r26 %f1 64
@@ -3851,7 +3865,7 @@ solver_fast.2816 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
@@ -3862,7 +3876,8 @@ solver_fast.2816 :
 	lw	%r26 %r2 12
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
-	lw	%r1 %r1 %r2
+	add	%r1 %r2 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r2 20
 	sw	%r26 %r1 80
 	mov	%r2 %r1
@@ -3927,8 +3942,8 @@ be_else.9182 :
 	lw	%r26 %r1 8
 	lw.s	%r1 %f0 0
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 24
-	mul.s	%f0 %f1 %f0
+	lw.s	%r1 %f1 12
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	addi	%r0 %r1 1
@@ -3953,19 +3968,19 @@ solver_second_fast2.2827 :
 	addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9184 
 	lw	%r26 %r1 48
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	lw.s	%r26 %f1 40
-	mul.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 16
+	mul.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 8
 	lw.s	%r26 %f2 32
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
-	lw.s	%r1 %f1 24
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
+	lw.s	%r1 %f1 12
 	lw.s	%r26 %f2 24
-	mul.s	%f1 %f2 %f1
-	add.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	add.s	%f1 %f0 %f0
 	lw	%r26 %r2 16
-	lw.s	%r2 %f1 24
+	lw.s	%r2 %f1 12
 	sw.s	%r26 %f0 56
 	sw.s	%r26 %f1 64
 	sw	%r26 %r28 76
@@ -3975,8 +3990,8 @@ solver_second_fast2.2827 :
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
 	lw.s	%r26 %f2 8
-	mul.s	%f2 %f1 %f1
-	sub.s	%f0 %f1 %f0
+	mul.s	%f1 %f2 %f1
+	sub.s	%f1 %f0 %f0
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
@@ -3999,10 +4014,10 @@ addi	%r0 %r25 0
 	lw.s	%r26 %f0 72
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 56
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 48
-	lw.s	%r1 %f1 32
-	mul.s	%f0 %f1 %f0
+	lw.s	%r1 %f1 16
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	j	be_cont.9188 
@@ -4010,10 +4025,10 @@ be_else.9187 :
 	lw.s	%r26 %f0 72
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 56
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 48
-	lw.s	%r1 %f1 32
-	mul.s	%f0 %f1 %f0
+	lw.s	%r1 %f1 16
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 be_cont.9188 :
@@ -4029,7 +4044,8 @@ solver_fast2.2834 :
 	lw	%r24 %r6 4
 	addi	%r0 %r25 2
 	sll	%r1 %r7 %r25
-	lw	%r6 %r6 %r7
+	add	%r6 %r7 %r25
+	lw	%r25 %r6 0
 	sw	%r26 %r4 0
 	sw	%r26 %r3 4
 	sw	%r26 %r5 8
@@ -4043,8 +4059,8 @@ solver_fast2.2834 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw.s	%r1 %f0 0
-	lw.s	%r1 %f1 8
-	lw.s	%r1 %f2 16
+	lw.s	%r1 %f1 4
+	lw.s	%r1 %f2 8
 	lw	%r26 %r2 20
 	sw	%r26 %r1 24
 	sw.s	%r26 %f2 32
@@ -4059,7 +4075,8 @@ solver_fast2.2834 :
 	lw	%r26 %r2 16
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
-	lw	%r1 %r1 %r2
+	add	%r1 %r2 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r2 12
 	sw	%r26 %r1 56
 	mov	%r2 %r1
@@ -4170,17 +4187,17 @@ addi	%r0 %r25 0
 	ilw.s	%r2 %f0 0
 	lw	%r26 %r2 4
 	lw.s	%r2 %f1 0
-	div.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 8
+	div.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 4
 	j	be_cont.9193 
 be_else.9192 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f0 0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 be_cont.9193 :
 	lw	%r26 %r2 4
-	lw.s	%r2 %f0 8
+	lw.s	%r2 %f0 4
 	sw	%r26 %r28 20
 	addi	%r26 %r26 24
 	jal	fiszero.2544 
@@ -4195,7 +4212,7 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw	%r26 %r2 4
-	lw.s	%r2 %f0 8
+	lw.s	%r2 %f0 4
 	sw	%r26 %r1 20
 	sw	%r26 %r28 28
 	addi	%r26 %r26 32
@@ -4224,22 +4241,22 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	addi	%r0 %r2 l.6259 
 	ilw.s	%r2 %f0 0
 	lw	%r26 %r2 4
-	lw.s	%r2 %f1 8
-	div.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 24
+	lw.s	%r2 %f1 4
+	div.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 12
 	j	be_cont.9195 
 be_else.9194 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f0 0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 24
+	sw.s	%r1 %f0 12
 be_cont.9195 :
 	lw	%r26 %r2 4
-	lw.s	%r2 %f0 16
+	lw.s	%r2 %f0 8
 	sw	%r26 %r28 28
 	addi	%r26 %r26 32
 	jal	fiszero.2544 
@@ -4254,7 +4271,7 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw	%r26 %r2 4
-	lw.s	%r2 %f0 16
+	lw.s	%r2 %f0 8
 	sw	%r26 %r1 28
 	sw	%r26 %r28 36
 	addi	%r26 %r26 40
@@ -4283,19 +4300,19 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 32
+	sw.s	%r1 %f0 16
 	addi	%r0 %r2 l.6259 
 	ilw.s	%r2 %f0 0
 	lw	%r26 %r2 4
-	lw.s	%r2 %f1 16
-	div.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 40
+	lw.s	%r2 %f1 8
+	div.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 20
 	j	be_cont.9197 
 be_else.9196 :
 	addi	%r0 %r1 l.6250 
 	ilw.s	%r1 %f0 0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 40
+	sw.s	%r1 %f0 20
 be_cont.9197 :
 	retl
 setup_surface_table.2840 :
@@ -4322,9 +4339,9 @@ setup_surface_table.2840 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw.s	%r26 %f1 16
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r2 0
 	sw.s	%r26 %f0 24
 	sw.s	%r26 %f1 32
@@ -4335,11 +4352,11 @@ setup_surface_table.2840 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 24
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r1 0
 	sw.s	%r26 %f0 40
 	sw.s	%r26 %f1 48
@@ -4349,9 +4366,9 @@ setup_surface_table.2840 :
 	addi	%r26 %r26 -64
 	lw	%r26 %r28 60
 	lw.s	%r26 %f1 48
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 40
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw.s	%r26 %f0 56
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
@@ -4369,7 +4386,7 @@ be_else.9199 :
 	addi	%r0 %r1 l.6288 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 56
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	lw	%r26 %r1 8
 	sw.s	%r1 %f0 0
 	lw	%r26 %r2 0
@@ -4380,7 +4397,23 @@ be_else.9199 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
+	sw	%r26 %r28 68
+	addi	%r26 %r26 72
+	jal	fneg.2550 
+	addi	%r26 %r26 -72
+	lw	%r26 %r28 68
+	lw	%r26 %r1 8
+	sw.s	%r1 %f0 4
+	lw	%r26 %r2 0
+	mov	%r2 %r1
+	sw	%r26 %r28 68
+	addi	%r26 %r26 72
+	jal	o_param_b.2671 
+	addi	%r26 %r26 -72
+	lw	%r26 %r28 68
+	lw.s	%r26 %f1 56
+	div.s	%f1 %f0 %f0
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
 	jal	fneg.2550 
@@ -4392,34 +4425,18 @@ be_else.9199 :
 	mov	%r2 %r1
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
-	jal	o_param_b.2671 
-	addi	%r26 %r26 -72
-	lw	%r26 %r28 68
-	lw.s	%r26 %f1 56
-	div.s	%f0 %f1 %f0
-	sw	%r26 %r28 68
-	addi	%r26 %r26 72
-	jal	fneg.2550 
-	addi	%r26 %r26 -72
-	lw	%r26 %r28 68
-	lw	%r26 %r1 8
-	sw.s	%r1 %f0 16
-	lw	%r26 %r2 0
-	mov	%r2 %r1
-	sw	%r26 %r28 68
-	addi	%r26 %r26 72
 	jal	o_param_c.2673 
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
 	jal	fneg.2550 
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 24
+	sw.s	%r1 %f0 12
 be_cont.9200 :
 	retl
 setup_second_table.2843 :
@@ -4436,8 +4453,8 @@ setup_second_table.2843 :
 	lw	%r26 %r28 12
 	lw	%r26 %r2 4
 	lw.s	%r2 %f0 0
-	lw.s	%r2 %f1 8
-	lw.s	%r2 %f2 16
+	lw.s	%r2 %f1 4
+	lw.s	%r2 %f2 8
 	lw	%r26 %r3 0
 	sw	%r26 %r1 8
 	mov	%r3 %r1
@@ -4458,14 +4475,14 @@ setup_second_table.2843 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	sw	%r26 %r28 36
 	addi	%r26 %r26 40
 	jal	fneg.2550 
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r2 0
 	sw.s	%r26 %f0 32
 	sw.s	%r26 %f1 40
@@ -4476,14 +4493,14 @@ setup_second_table.2843 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	sw	%r26 %r28 52
 	addi	%r26 %r26 56
 	jal	fneg.2550 
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r2 0
 	sw.s	%r26 %f0 48
 	sw.s	%r26 %f1 56
@@ -4494,7 +4511,7 @@ setup_second_table.2843 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
 	jal	fneg.2550 
@@ -4515,15 +4532,15 @@ addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9202 
 	lw	%r26 %r1 8
 	lw.s	%r26 %f0 32
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw.s	%r26 %f0 48
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	lw.s	%r26 %f0 64
-	sw.s	%r1 %f0 24
+	sw.s	%r1 %f0 12
 	j	be_cont.9203 
 be_else.9202 :
 	lw	%r26 %r1 4
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	lw	%r26 %r2 0
 	sw.s	%r26 %f0 72
 	mov	%r2 %r1
@@ -4533,9 +4550,9 @@ be_else.9202 :
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 72
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r2 0
 	sw.s	%r26 %f0 80
 	sw.s	%r26 %f1 88
@@ -4546,20 +4563,20 @@ be_else.9202 :
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 88
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 80
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw	%r26 %r28 100
 	addi	%r26 %r26 104
 	jal	fhalf.2559 
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 32
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw	%r26 %r2 4
-	lw.s	%r2 %f0 16
+	lw.s	%r2 %f0 8
 	lw	%r26 %r3 0
 	sw.s	%r26 %f0 96
 	mov	%r3 %r1
@@ -4569,7 +4586,7 @@ be_else.9202 :
 	addi	%r26 %r26 -112
 	lw	%r26 %r28 108
 	lw.s	%r26 %f1 96
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	lw.s	%r1 %f1 0
 	lw	%r26 %r2 0
@@ -4582,20 +4599,20 @@ be_else.9202 :
 	addi	%r26 %r26 -128
 	lw	%r26 %r28 124
 	lw.s	%r26 %f1 112
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 104
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw	%r26 %r28 124
 	addi	%r26 %r26 128
 	jal	fhalf.2559 
 	addi	%r26 %r26 -128
 	lw	%r26 %r28 124
 	lw.s	%r26 %f1 48
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	lw	%r26 %r2 4
-	lw.s	%r2 %f0 8
+	lw.s	%r2 %f0 4
 	lw	%r26 %r3 0
 	sw.s	%r26 %f0 120
 	mov	%r3 %r1
@@ -4605,7 +4622,7 @@ be_else.9202 :
 	addi	%r26 %r26 -136
 	lw	%r26 %r28 132
 	lw.s	%r26 %f1 120
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	lw.s	%r1 %f1 0
 	lw	%r26 %r1 0
@@ -4617,18 +4634,18 @@ be_else.9202 :
 	addi	%r26 %r26 -152
 	lw	%r26 %r28 148
 	lw.s	%r26 %f1 136
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 128
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw	%r26 %r28 148
 	addi	%r26 %r26 152
 	jal	fhalf.2559 
 	addi	%r26 %r26 -152
 	lw	%r26 %r28 148
 	lw.s	%r26 %f1 64
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 24
+	sw.s	%r1 %f0 12
 be_cont.9203 :
 	lw.s	%r26 %f0 16
 	sw	%r26 %r28 148
@@ -4641,9 +4658,9 @@ addi	%r0 %r25 0
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 16
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	lw	%r26 %r1 8
-	sw.s	%r1 %f0 32
+	sw.s	%r1 %f0 16
 	j	be_cont.9205 
 be_else.9204 :
 be_cont.9205 :
@@ -4655,7 +4672,8 @@ iter_setup_dirvec_constants.2846 :
 	bl	%r2 %r25 bge_else.9206 
 	addi	%r0 %r25 2
 	sll	%r2 %r4 %r25
-	lw	%r3 %r3 %r4
+	add	%r3 %r4 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r24 0
 	sw	%r26 %r2 4
 	sw	%r26 %r3 8
@@ -4694,7 +4712,8 @@ addi	%r0 %r25 1
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 16
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	j	be_cont.9208 
 be_else.9207 :
 addi	%r0 %r25 2
@@ -4710,7 +4729,8 @@ addi	%r0 %r25 2
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 16
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	j	be_cont.9210 
 be_else.9209 :
 	lw	%r26 %r1 20
@@ -4724,7 +4744,8 @@ be_else.9209 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 16
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 be_cont.9210 :
 be_cont.9208 :
 	addi	%r2 %r2 -1
@@ -4747,7 +4768,8 @@ setup_startp_constants.2851 :
 	bl	%r2 %r25 bge_else.9212 
 	addi	%r0 %r25 2
 	sll	%r2 %r4 %r25
-	lw	%r3 %r3 %r4
+	add	%r3 %r4 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r24 0
 	sw	%r26 %r2 4
 	sw	%r26 %r1 8
@@ -4778,11 +4800,11 @@ setup_startp_constants.2851 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	sw.s	%r1 %f0 0
 	lw	%r26 %r2 8
-	lw.s	%r2 %f0 8
+	lw.s	%r2 %f0 4
 	lw	%r26 %r3 12
 	sw.s	%r26 %f0 32
 	mov	%r3 %r1
@@ -4792,11 +4814,11 @@ setup_startp_constants.2851 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw	%r26 %r2 8
-	lw.s	%r2 %f0 16
+	lw.s	%r2 %f0 8
 	lw	%r26 %r3 12
 	sw.s	%r26 %f0 40
 	mov	%r3 %r1
@@ -4806,9 +4828,9 @@ setup_startp_constants.2851 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	lw	%r26 %r2 20
 addi	%r0 %r25 2
 	bne	%r2 %r25 be_else.9213 
@@ -4821,15 +4843,15 @@ addi	%r0 %r25 2
 	lw	%r26 %r28 52
 	lw	%r26 %r2 16
 	lw.s	%r2 %f0 0
-	lw.s	%r2 %f1 8
-	lw.s	%r2 %f2 16
+	lw.s	%r2 %f1 4
+	lw.s	%r2 %f2 8
 	sw	%r26 %r28 52
 	addi	%r26 %r26 56
 	jal	veciprod2.2637 
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw	%r26 %r1 16
-	sw.s	%r1 %f0 24
+	sw.s	%r1 %f0 12
 	j	be_cont.9214 
 be_else.9213 :
 addi	%r0 %r25 2
@@ -4837,8 +4859,8 @@ addi	%r0 %r25 2
 	j	ble_cont.9216 
 ble_else.9215 :
 	lw.s	%r1 %f0 0
-	lw.s	%r1 %f1 8
-	lw.s	%r1 %f2 16
+	lw.s	%r1 %f1 4
+	lw.s	%r1 %f2 8
 	lw	%r26 %r3 12
 	mov	%r3 %r1
 	sw	%r26 %r28 52
@@ -4851,12 +4873,12 @@ addi	%r0 %r25 3
 	bne	%r1 %r25 be_else.9217 
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f1 0
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	j	be_cont.9218 
 be_else.9217 :
 be_cont.9218 :
 	lw	%r26 %r1 16
-	sw.s	%r1 %f0 24
+	sw.s	%r1 %f0 12
 ble_cont.9216 :
 be_cont.9214 :
 	lw	%r26 %r1 4
@@ -5047,7 +5069,7 @@ addi	%r0 %r25 3
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 8
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	j	be_cont.9231 
 be_else.9230 :
 	lw.s	%r26 %f0 8
@@ -5091,7 +5113,7 @@ is_outside.2871 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	sw.s	%r26 %f0 32
 	sw	%r26 %r28 44
@@ -5100,7 +5122,7 @@ is_outside.2871 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 8
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	sw.s	%r26 %f0 40
 	sw	%r26 %r28 52
@@ -5109,7 +5131,7 @@ is_outside.2871 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 0
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	sw.s	%r26 %f0 48
 	sw	%r26 %r28 60
@@ -5142,7 +5164,8 @@ check_all_inside.2876 :
 	lw	%r24 %r3 4
 	addi	%r0 %r25 2
 	sll	%r1 %r4 %r25
-	lw	%r2 %r4 %r4
+	add	%r2 %r4 %r25
+	lw	%r25 %r4 0
 	addi	%r0 %r25 -1
 	bne	%r4 %r25 be_else.9236 
 	addi	%r0 %r1 1
@@ -5150,7 +5173,8 @@ check_all_inside.2876 :
 be_else.9236 :
 	addi	%r0 %r25 2
 	sll	%r4 %r4 %r25
-	lw	%r3 %r3 %r4
+	add	%r3 %r4 %r25
+	lw	%r25 %r3 0
 	sw.s	%r26 %f2 0
 	sw.s	%r26 %f1 8
 	sw.s	%r26 %f0 16
@@ -5187,7 +5211,8 @@ shadow_check_and_group.2882 :
 	lw	%r24 %r9 4
 	addi	%r0 %r25 2
 	sll	%r1 %r10 %r25
-	lw	%r2 %r10 %r10
+	add	%r2 %r10 %r25
+	lw	%r25 %r10 0
 	addi	%r0 %r25 -1
 	bne	%r10 %r25 be_else.9238 
 	addi	%r0 %r1 0
@@ -5195,7 +5220,8 @@ shadow_check_and_group.2882 :
 be_else.9238 :
 	addi	%r0 %r25 2
 	sll	%r1 %r10 %r25
-	lw	%r2 %r10 %r10
+	add	%r2 %r10 %r25
+	lw	%r25 %r10 0
 	sw	%r26 %r9 0
 	sw	%r26 %r8 4
 	sw	%r26 %r7 8
@@ -5237,7 +5263,8 @@ be_cont.9241 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 24
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	sw	%r26 %r28 52
 	addi	%r26 %r26 56
 	jal	o_isinvert.2665 
@@ -5258,21 +5285,21 @@ be_else.9242 :
 	addi	%r0 %r1 l.6641 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 40
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
 	lw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	lw	%r26 %r2 4
 	lw.s	%r2 %f2 0
-	add.s	%f1 %f2 %f1
-	lw.s	%r1 %f2 8
-	mul.s	%f2 %f0 %f2
+	add.s	%f2 %f1 %f1
+	lw.s	%r1 %f2 4
+	mul.s	%f0 %f2 %f2
+	lw.s	%r2 %f3 4
+	add.s	%f3 %f2 %f2
+	lw.s	%r1 %f3 8
+	mul.s	%f0 %f3 %f0
 	lw.s	%r2 %f3 8
-	add.s	%f2 %f3 %f2
-	lw.s	%r1 %f3 16
-	mul.s	%f3 %f0 %f0
-	lw.s	%r2 %f3 16
-	add.s	%f0 %f3 %f0
+	add.s	%f3 %f0 %f0
 	addi	%r0 %r1 0
 	lw	%r26 %r2 12
 	lw	%r26 %r24 0
@@ -5302,7 +5329,8 @@ shadow_check_one_or_group.2885 :
 	lw	%r24 %r4 4
 	addi	%r0 %r25 2
 	sll	%r1 %r5 %r25
-	lw	%r2 %r5 %r5
+	add	%r2 %r5 %r25
+	lw	%r25 %r5 0
 	addi	%r0 %r25 -1
 	bne	%r5 %r25 be_else.9245 
 	addi	%r0 %r1 0
@@ -5310,7 +5338,8 @@ shadow_check_one_or_group.2885 :
 be_else.9245 :
 	addi	%r0 %r25 2
 	sll	%r5 %r5 %r25
-	lw	%r4 %r4 %r5
+	add	%r4 %r5 %r25
+	lw	%r25 %r4 0
 	addi	%r0 %r5 0
 	sw	%r26 %r2 0
 	sw	%r26 %r24 4
@@ -5343,7 +5372,8 @@ shadow_check_one_or_matrix.2888 :
 	lw	%r24 %r7 4
 	addi	%r0 %r25 2
 	sll	%r1 %r8 %r25
-	lw	%r2 %r8 %r8
+	add	%r2 %r8 %r25
+	lw	%r25 %r8 0
 	lw	%r8 %r9 0
 	addi	%r0 %r25 -1
 	bne	%r9 %r25 be_else.9247 
@@ -5450,7 +5480,8 @@ solve_each_element.2891 :
 	lw	%r24 %r12 4
 	addi	%r0 %r25 2
 	sll	%r1 %r13 %r25
-	lw	%r2 %r13 %r13
+	add	%r2 %r13 %r25
+	lw	%r25 %r13 0
 	addi	%r0 %r25 -1
 	bne	%r13 %r25 be_else.9258 
 	retl
@@ -5484,7 +5515,8 @@ be_else.9258 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 44
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	sw	%r26 %r28 52
 	addi	%r26 %r26 56
 	jal	o_isinvert.2665 
@@ -5532,21 +5564,21 @@ be_else.9265 :
 	addi	%r0 %r1 l.6641 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 56
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 28
 	lw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	lw	%r26 %r2 16
 	lw.s	%r2 %f2 0
-	add.s	%f1 %f2 %f1
-	lw.s	%r1 %f2 8
-	mul.s	%f2 %f0 %f2
-	lw.s	%r2 %f3 8
-	add.s	%f2 %f3 %f2
-	lw.s	%r1 %f3 16
-	mul.s	%f3 %f0 %f3
-	lw.s	%r2 %f4 16
-	add.s	%f3 %f4 %f3
+	add.s	%f2 %f1 %f1
+	lw.s	%r1 %f2 4
+	mul.s	%f0 %f2 %f2
+	lw.s	%r2 %f3 4
+	add.s	%f3 %f2 %f2
+	lw.s	%r1 %f3 8
+	mul.s	%f0 %f3 %f3
+	lw.s	%r2 %f4 8
+	add.s	%f4 %f3 %f3
 	addi	%r0 %r2 0
 	lw	%r26 %r3 32
 	lw	%r26 %r24 12
@@ -5602,14 +5634,16 @@ solve_one_or_network.2895 :
 	lw	%r24 %r5 4
 	addi	%r0 %r25 2
 	sll	%r1 %r6 %r25
-	lw	%r2 %r6 %r6
+	add	%r2 %r6 %r25
+	lw	%r25 %r6 0
 	addi	%r0 %r25 -1
 	bne	%r6 %r25 be_else.9269 
 	retl
 be_else.9269 :
 	addi	%r0 %r25 2
 	sll	%r6 %r6 %r25
-	lw	%r5 %r5 %r6
+	add	%r5 %r6 %r25
+	lw	%r25 %r5 0
 	addi	%r0 %r6 0
 	sw	%r26 %r3 0
 	sw	%r26 %r2 4
@@ -5639,7 +5673,8 @@ trace_or_matrix.2899 :
 	lw	%r24 %r8 4
 	addi	%r0 %r25 2
 	sll	%r1 %r9 %r25
-	lw	%r2 %r9 %r9
+	add	%r2 %r9 %r25
+	lw	%r25 %r9 0
 	lw	%r9 %r10 0
 	addi	%r0 %r25 -1
 	bne	%r10 %r25 be_else.9271 
@@ -5786,7 +5821,8 @@ solve_each_element_fast.2905 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 44
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	addi	%r0 %r25 -1
 	bne	%r3 %r25 be_else.9281 
 	retl
@@ -5809,7 +5845,8 @@ be_else.9281 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 32
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	sw	%r26 %r28 60
 	addi	%r26 %r26 64
 	jal	o_isinvert.2665 
@@ -5857,21 +5894,21 @@ be_else.9288 :
 	addi	%r0 %r1 l.6641 
 	ilw.s	%r1 %f0 0
 	lw.s	%r26 %f1 64
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 52
 	lw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	lw	%r26 %r2 16
 	lw.s	%r2 %f2 0
-	add.s	%f1 %f2 %f1
-	lw.s	%r1 %f2 8
-	mul.s	%f2 %f0 %f2
-	lw.s	%r2 %f3 8
-	add.s	%f2 %f3 %f2
-	lw.s	%r1 %f3 16
-	mul.s	%f3 %f0 %f3
-	lw.s	%r2 %f4 16
-	add.s	%f3 %f4 %f3
+	add.s	%f2 %f1 %f1
+	lw.s	%r1 %f2 4
+	mul.s	%f0 %f2 %f2
+	lw.s	%r2 %f3 4
+	add.s	%f3 %f2 %f2
+	lw.s	%r1 %f3 8
+	mul.s	%f0 %f3 %f3
+	lw.s	%r2 %f4 8
+	add.s	%f4 %f3 %f3
 	addi	%r0 %r1 0
 	lw	%r26 %r2 44
 	lw	%r26 %r24 12
@@ -5925,14 +5962,16 @@ solve_one_or_network_fast.2909 :
 	lw	%r24 %r5 4
 	addi	%r0 %r25 2
 	sll	%r1 %r6 %r25
-	lw	%r2 %r6 %r6
+	add	%r2 %r6 %r25
+	lw	%r25 %r6 0
 	addi	%r0 %r25 -1
 	bne	%r6 %r25 be_else.9292 
 	retl
 be_else.9292 :
 	addi	%r0 %r25 2
 	sll	%r6 %r6 %r25
-	lw	%r5 %r5 %r6
+	add	%r5 %r6 %r25
+	lw	%r25 %r5 0
 	addi	%r0 %r6 0
 	sw	%r26 %r3 0
 	sw	%r26 %r2 4
@@ -5961,7 +6000,8 @@ trace_or_matrix_fast.2913 :
 	lw	%r24 %r7 4
 	addi	%r0 %r25 2
 	sll	%r1 %r8 %r25
-	lw	%r2 %r8 %r8
+	add	%r2 %r8 %r25
+	lw	%r25 %r8 0
 	lw	%r8 %r9 0
 	addi	%r0 %r25 -1
 	bne	%r9 %r25 be_else.9294 
@@ -6090,10 +6130,11 @@ get_nvector_rect.2919 :
 	lw	%r26 %r1 8
 	addi	%r1 %r2 -1
 	addi	%r1 %r1 -1
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r3 4
-	lw.s	%r3 %f0 %r1
+	add	%r3 %r1 %r25
+	lw.s	%r25 %f0 0
 	sw	%r26 %r2 12
 	sw	%r26 %r28 20
 	addi	%r26 %r26 24
@@ -6106,10 +6147,11 @@ get_nvector_rect.2919 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw	%r26 %r1 12
-	addi	%r0 %r25 3
+	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 0
-	sw.s	%r2 %f0 %r1
+	add %r2 %r1 %r25
+	sw.s	%r25 %f0 0
 	retl
 get_nvector_plane.2921 :
 	lw	%r24 %r2 4
@@ -6140,7 +6182,7 @@ get_nvector_plane.2921 :
 	addi	%r26 %r26 -16
 	lw	%r26 %r28 12
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw	%r26 %r2 0
 	mov	%r2 %r1
 	sw	%r26 %r28 12
@@ -6154,7 +6196,7 @@ get_nvector_plane.2921 :
 	addi	%r26 %r26 -16
 	lw	%r26 %r28 12
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	retl
 get_nvector_second.2923 :
 	lw	%r24 %r2 8
@@ -6170,9 +6212,9 @@ get_nvector_second.2923 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw.s	%r26 %f1 16
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r2 4
 	sw.s	%r26 %f0 24
 	sw.s	%r26 %f1 32
@@ -6183,9 +6225,9 @@ get_nvector_second.2923 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 40
 	sw.s	%r26 %f1 48
@@ -6195,7 +6237,7 @@ get_nvector_second.2923 :
 	addi	%r26 %r26 -64
 	lw	%r26 %r28 60
 	lw.s	%r26 %f1 48
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 56
 	sw	%r26 %r28 68
@@ -6204,7 +6246,7 @@ get_nvector_second.2923 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 64
 	sw	%r26 %r28 76
@@ -6213,7 +6255,7 @@ get_nvector_second.2923 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
@@ -6222,7 +6264,7 @@ get_nvector_second.2923 :
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 80
 	sw	%r26 %r28 92
@@ -6236,9 +6278,9 @@ addi	%r0 %r25 0
 	lw.s	%r26 %f0 64
 	sw.s	%r1 %f0 0
 	lw.s	%r26 %f0 72
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw.s	%r26 %f0 80
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	j	be_cont.9308 
 be_else.9307 :
 	lw	%r26 %r1 4
@@ -6248,7 +6290,7 @@ be_else.9307 :
 	addi	%r26 %r26 -96
 	lw	%r26 %r28 92
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 88
 	sw	%r26 %r28 100
@@ -6257,16 +6299,16 @@ be_else.9307 :
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f2 88
-	add.s	%f2 %f0 %f0
+	add.s	%f0 %f2 %f0
 	sw	%r26 %r28 100
 	addi	%r26 %r26 104
 	jal	fhalf.2559 
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 64
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 0
 	sw.s	%r1 %f0 0
 	lw	%r26 %r2 4
@@ -6277,7 +6319,7 @@ be_else.9307 :
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 96
 	sw	%r26 %r28 108
@@ -6286,18 +6328,18 @@ be_else.9307 :
 	addi	%r26 %r26 -112
 	lw	%r26 %r28 108
 	lw.s	%r26 %f1 56
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 96
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw	%r26 %r28 108
 	addi	%r26 %r26 112
 	jal	fhalf.2559 
 	addi	%r26 %r26 -112
 	lw	%r26 %r28 108
 	lw.s	%r26 %f1 72
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 0
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw	%r26 %r2 4
 	mov	%r2 %r1
 	sw	%r26 %r28 108
@@ -6306,7 +6348,7 @@ be_else.9307 :
 	addi	%r26 %r26 -112
 	lw	%r26 %r28 108
 	lw.s	%r26 %f1 24
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	sw.s	%r26 %f0 104
 	sw	%r26 %r28 116
@@ -6315,18 +6357,18 @@ be_else.9307 :
 	addi	%r26 %r26 -120
 	lw	%r26 %r28 116
 	lw.s	%r26 %f1 40
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 104
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sw	%r26 %r28 116
 	addi	%r26 %r26 120
 	jal	fhalf.2559 
 	addi	%r26 %r26 -120
 	lw	%r26 %r28 116
 	lw.s	%r26 %f1 80
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw	%r26 %r1 0
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 be_cont.9308 :
 	lw	%r26 %r2 4
 	mov	%r2 %r1
@@ -6398,7 +6440,7 @@ utexture.2928 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	lw	%r26 %r2 8
 	mov	%r2 %r1
 	sw	%r26 %r28 20
@@ -6407,7 +6449,7 @@ utexture.2928 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	lw	%r26 %r2 12
 	addi	%r0 %r25 1
 	bne	%r2 %r25 be_else.9311 
@@ -6422,15 +6464,15 @@ utexture.2928 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw.s	%r26 %f1 16
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6775 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f1
+	mul.s	%f1 %f0 %f1
 	floor.w.s	%f1 %f1
 	addi	%r0 %r1 l.6777 
 	ilw.s	%r1 %f2 0
-	mul.s	%f1 %f2 %f1
-	sub.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	sub.s	%f1 %f0 %f0
 	addi	%r0 %r1 l.6758 
 	ilw.s	%r1 %f1 0
 	sw	%r26 %r28 28
@@ -6439,7 +6481,7 @@ utexture.2928 :
 	addi	%r26 %r26 -32
 	lw	%r26 %r28 28
 	lw	%r26 %r2 0
-	lw.s	%r2 %f0 16
+	lw.s	%r2 %f0 8
 	lw	%r26 %r2 8
 	sw	%r26 %r1 24
 	sw.s	%r26 %f0 32
@@ -6450,15 +6492,15 @@ utexture.2928 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6775 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f1
+	mul.s	%f1 %f0 %f1
 	floor.w.s	%f1 %f1
 	addi	%r0 %r1 l.6777 
 	ilw.s	%r1 %f2 0
-	mul.s	%f1 %f2 %f1
-	sub.s	%f0 %f1 %f0
+	mul.s	%f2 %f1 %f1
+	sub.s	%f1 %f0 %f0
 	addi	%r0 %r1 l.6758 
 	ilw.s	%r1 %f1 0
 	sw	%r26 %r28 44
@@ -6491,16 +6533,16 @@ be_else.9317 :
 be_cont.9318 :
 be_cont.9314 :
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 8
+	sw.s	%r1 %f0 4
 	retl
 be_else.9311 :
 	addi	%r0 %r25 2
 	bne	%r2 %r25 be_else.9320 
 	lw	%r26 %r2 0
-	lw.s	%r2 %f0 8
+	lw.s	%r2 %f0 4
 	addi	%r0 %r2 l.6767 
 	ilw.s	%r2 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	sw	%r26 %r28 44
 	addi	%r26 %r26 48
 	jal	sin.2564 
@@ -6513,16 +6555,16 @@ be_else.9311 :
 	lw	%r26 %r28 44
 	addi	%r0 %r1 l.6751 
 	ilw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	lw	%r26 %r1 4
 	sw.s	%r1 %f1 0
 	addi	%r0 %r2 l.6751 
 	ilw.s	%r2 %f1 0
 	addi	%r0 %r2 l.6259 
 	ilw.s	%r2 %f2 0
-	sub.s	%f2 %f0 %f0
-	mul.s	%f1 %f0 %f0
-	sw.s	%r1 %f0 8
+	sub.s	%f0 %f2 %f0
+	mul.s	%f0 %f1 %f0
+	sw.s	%r1 %f0 4
 	retl
 be_else.9320 :
 	addi	%r0 %r25 3
@@ -6538,9 +6580,9 @@ be_else.9320 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw.s	%r26 %f1 40
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 0
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r1 8
 	sw.s	%r26 %f0 48
 	sw.s	%r26 %f1 56
@@ -6550,7 +6592,7 @@ be_else.9320 :
 	addi	%r26 %r26 -72
 	lw	%r26 %r28 68
 	lw.s	%r26 %f1 56
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 48
 	sw.s	%r26 %f0 64
 	mov.s	%f1 %f0
@@ -6568,16 +6610,16 @@ be_else.9320 :
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 72
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	sqrt.s	%f0 %f0
 	addi	%r0 %r1 l.6758 
 	ilw.s	%r1 %f1 0
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	floor.w.s	%f0 %f1
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	addi	%r0 %r1 l.6739 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	sw	%r26 %r28 84
 	addi	%r26 %r26 88
 	jal	cos.2566 
@@ -6590,16 +6632,16 @@ be_else.9320 :
 	lw	%r26 %r28 84
 	addi	%r0 %r1 l.6751 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f1
+	mul.s	%f1 %f0 %f1
 	lw	%r26 %r1 4
-	sw.s	%r1 %f1 8
+	sw.s	%r1 %f1 4
 	addi	%r0 %r2 l.6259 
 	ilw.s	%r2 %f1 0
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r2 l.6751 
 	ilw.s	%r2 %f1 0
-	mul.s	%f0 %f1 %f0
-	sw.s	%r1 %f0 16
+	mul.s	%f1 %f0 %f0
+	sw.s	%r1 %f0 8
 	retl
 be_else.9322 :
 	addi	%r0 %r25 4
@@ -6615,7 +6657,7 @@ be_else.9322 :
 	addi	%r26 %r26 -96
 	lw	%r26 %r28 92
 	lw.s	%r26 %f1 80
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
 	sw.s	%r26 %f0 88
 	sw	%r26 %r28 100
@@ -6625,9 +6667,9 @@ be_else.9322 :
 	lw	%r26 %r28 100
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 88
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 0
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	lw	%r26 %r2 8
 	sw.s	%r26 %f0 96
 	sw.s	%r26 %f1 104
@@ -6638,7 +6680,7 @@ be_else.9322 :
 	addi	%r26 %r26 -120
 	lw	%r26 %r28 116
 	lw.s	%r26 %f1 104
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
 	sw.s	%r26 %f0 112
 	sw	%r26 %r28 124
@@ -6648,7 +6690,7 @@ be_else.9322 :
 	lw	%r26 %r28 124
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 112
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 96
 	sw.s	%r26 %f0 120
 	mov.s	%f1 %f0
@@ -6666,7 +6708,7 @@ be_else.9322 :
 	addi	%r26 %r26 -144
 	lw	%r26 %r28 140
 	lw.s	%r26 %f1 128
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 96
 	sw.s	%r26 %f0 136
 	mov.s	%f1 %f0
@@ -6686,7 +6728,7 @@ addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9325 
 	lw.s	%r26 %f0 96
 	lw.s	%r26 %f1 120
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	sw	%r26 %r28 148
 	addi	%r26 %r26 152
 	jal	fabs.2557 
@@ -6699,19 +6741,19 @@ addi	%r0 %r25 0
 	lw	%r26 %r28 148
 	addi	%r0 %r1 l.6737 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	addi	%r0 %r1 l.6739 
 	ilw.s	%r1 %f1 0
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	j	be_cont.9326 
 be_else.9325 :
 	addi	%r0 %r1 l.6735 
 	ilw.s	%r1 %f0 0
 be_cont.9326 :
 	floor.w.s	%f0 %f1
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	lw	%r26 %r1 0
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	lw	%r26 %r1 8
 	sw.s	%r26 %f0 144
 	sw.s	%r26 %f1 152
@@ -6721,7 +6763,7 @@ be_cont.9326 :
 	addi	%r26 %r26 -168
 	lw	%r26 %r28 164
 	lw.s	%r26 %f1 152
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 8
 	sw.s	%r26 %f0 160
 	sw	%r26 %r28 172
@@ -6731,7 +6773,7 @@ be_cont.9326 :
 	lw	%r26 %r28 172
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 160
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 136
 	sw.s	%r26 %f0 168
 	mov.s	%f1 %f0
@@ -6751,7 +6793,7 @@ addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9327 
 	lw.s	%r26 %f0 136
 	lw.s	%r26 %f1 168
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	sw	%r26 %r28 180
 	addi	%r26 %r26 184
 	jal	fabs.2557 
@@ -6764,23 +6806,23 @@ addi	%r0 %r25 0
 	lw	%r26 %r28 180
 	addi	%r0 %r1 l.6737 
 	ilw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	addi	%r0 %r1 l.6739 
 	ilw.s	%r1 %f1 0
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	j	be_cont.9328 
 be_else.9327 :
 	addi	%r0 %r1 l.6735 
 	ilw.s	%r1 %f0 0
 be_cont.9328 :
 	floor.w.s	%f0 %f1
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	addi	%r0 %r1 l.6746 
 	ilw.s	%r1 %f1 0
 	addi	%r0 %r1 l.6275 
 	ilw.s	%r1 %f2 0
 	lw.s	%r26 %f3 144
-	sub.s	%f2 %f3 %f2
+	sub.s	%f3 %f2 %f2
 	sw.s	%r26 %f0 176
 	sw.s	%r26 %f1 184
 	mov.s	%f2 %f0
@@ -6790,11 +6832,11 @@ be_cont.9328 :
 	addi	%r26 %r26 -200
 	lw	%r26 %r28 196
 	lw.s	%r26 %f1 184
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6275 
 	ilw.s	%r1 %f1 0
 	lw.s	%r26 %f2 176
-	sub.s	%f1 %f2 %f1
+	sub.s	%f2 %f1 %f1
 	sw.s	%r26 %f0 192
 	mov.s	%f1 %f0
 	sw	%r26 %r28 204
@@ -6803,7 +6845,7 @@ be_cont.9328 :
 	addi	%r26 %r26 -208
 	lw	%r26 %r28 204
 	lw.s	%r26 %f1 192
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	sw.s	%r26 %f0 200
 	sw	%r26 %r28 212
 	addi	%r26 %r26 216
@@ -6820,12 +6862,12 @@ be_else.9329 :
 be_cont.9330 :
 	addi	%r0 %r1 l.6751 
 	ilw.s	%r1 %f1 0
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6753 
 	ilw.s	%r1 %f1 0
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	lw	%r26 %r1 4
-	sw.s	%r1 %f0 16
+	sw.s	%r1 %f0 8
 	retl
 be_else.9324 :
 	retl
@@ -6877,17 +6919,17 @@ be_else.9335 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 28
 	lw.s	%r1 %f1 0
-	add.s	%f1 %f0 %f1
+	add.s	%f0 %f1 %f1
 	sw.s	%r1 %f1 0
+	lw.s	%r1 %f1 4
+	add.s	%f0 %f1 %f1
+	sw.s	%r1 %f1 4
 	lw.s	%r1 %f1 8
-	add.s	%f1 %f0 %f1
-	sw.s	%r1 %f1 8
-	lw.s	%r1 %f1 16
-	add.s	%f1 %f0 %f0
-	sw.s	%r1 %f0 16
+	add.s	%f0 %f1 %f0
+	sw.s	%r1 %f0 8
 	retl
 trace_reflections.2935 :
 	lw	%r24 %r3 32
@@ -6902,7 +6944,8 @@ trace_reflections.2935 :
 	bl	%r1 %r25 bge_else.9338 
 	addi	%r0 %r25 2
 	sll	%r1 %r11 %r25
-	lw	%r4 %r4 %r11
+	add	%r4 %r11 %r25
+	lw	%r25 %r4 0
 	sw	%r26 %r24 0
 	sw	%r26 %r1 4
 	sw.s	%r26 %f1 8
@@ -6984,9 +7027,9 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 24
-	mul.s	%f0 %f1 %f2
+	mul.s	%f1 %f0 %f2
 	lw.s	%r26 %f3 72
-	mul.s	%f2 %f3 %f2
+	mul.s	%f3 %f2 %f2
 	lw	%r26 %r1 60
 	sw.s	%r26 %f2 80
 	sw.s	%r26 %f0 88
@@ -7003,7 +7046,7 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -104
 	lw	%r26 %r28 100
 	lw.s	%r26 %f1 88
-	mul.s	%f1 %f0 %f1
+	mul.s	%f0 %f1 %f1
 	lw.s	%r26 %f0 80
 	lw.s	%r26 %f2 8
 	lw	%r26 %r24 16
@@ -7102,7 +7145,8 @@ trace_ray.2940 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 120
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r0 %r25 0
 	bne	%r2 %r25 be_else.9351 
 	retl
@@ -7136,22 +7180,22 @@ be_else.9354 :
 	addi	%r26 %r26 -144
 	lw	%r26 %r28 140
 	lw.s	%r26 %f1 128
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw.s	%r26 %f1 96
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 88
 	lw.s	%r1 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 84
 	lw.s	%r1 %f1 0
-	add.s	%f1 %f0 %f1
+	add.s	%f0 %f1 %f1
 	sw.s	%r1 %f1 0
+	lw.s	%r1 %f1 4
+	add.s	%f0 %f1 %f1
+	sw.s	%r1 %f1 4
 	lw.s	%r1 %f1 8
-	add.s	%f1 %f0 %f1
-	sw.s	%r1 %f1 8
-	lw.s	%r1 %f1 16
-	add.s	%f1 %f0 %f0
-	sw.s	%r1 %f0 16
+	add.s	%f0 %f1 %f0
+	sw.s	%r1 %f0 8
 	retl
 be_else.9350 :
 	lw	%r26 %r1 80
@@ -7159,7 +7203,8 @@ be_else.9350 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 76
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	sw	%r26 %r1 136
 	sw	%r26 %r2 140
 	mov	%r2 %r1
@@ -7177,7 +7222,7 @@ be_else.9350 :
 	addi	%r26 %r26 -152
 	lw	%r26 %r28 148
 	lw.s	%r26 %f1 96
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 140
 	lw	%r26 %r2 112
 	lw	%r26 %r24 72
@@ -7214,7 +7259,8 @@ be_else.9350 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 120
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	lw	%r26 %r1 52
 	sw	%r26 %r28 164
 	addi	%r26 %r26 168
@@ -7224,7 +7270,8 @@ be_else.9350 :
 	lw	%r26 %r2 108
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r1 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r3 64
 	mov	%r3 %r2
 	sw	%r26 %r28 164
@@ -7260,7 +7307,8 @@ addi	%r0 %r25 0
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 160
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	lw	%r26 %r1 52
 	sw	%r26 %r28 164
 	addi	%r26 %r26 168
@@ -7270,7 +7318,8 @@ addi	%r0 %r25 0
 	lw	%r26 %r2 108
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r3 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r3 0
 	lw	%r26 %r4 48
 	sw	%r26 %r1 164
 	mov	%r4 %r2
@@ -7284,11 +7333,12 @@ addi	%r0 %r25 0
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 164
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	addi	%r0 %r3 l.6809 
 	ilw.s	%r3 %f0 0
 	lw.s	%r26 %f1 152
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	mov	%r2 %r1
 	sw	%r26 %r28 172
 	addi	%r26 %r26 176
@@ -7304,7 +7354,8 @@ addi	%r0 %r25 0
 	lw	%r26 %r2 108
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r1 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r3 44
 	mov	%r3 %r2
 	sw	%r26 %r28 172
@@ -7319,7 +7370,8 @@ be_else.9358 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 160
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 be_cont.9359 :
 	addi	%r0 %r1 l.6812 
 	ilw.s	%r1 %f0 0
@@ -7332,7 +7384,7 @@ be_cont.9359 :
 	addi	%r26 %r26 -184
 	lw	%r26 %r28 180
 	lw.s	%r26 %f1 168
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 112
 	lw	%r26 %r2 44
 	sw	%r26 %r28 180
@@ -7347,7 +7399,7 @@ be_cont.9359 :
 	addi	%r26 %r26 -184
 	lw	%r26 %r28 180
 	lw.s	%r26 %f1 96
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	addi	%r0 %r1 0
 	lw	%r26 %r2 40
 	lw	%r2 %r2 0
@@ -7374,7 +7426,7 @@ addi	%r0 %r25 0
 	addi	%r26 %r26 -192
 	lw	%r26 %r28 188
 	lw.s	%r26 %f1 152
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 112
 	lw	%r26 %r2 104
 	sw.s	%r26 %f0 184
@@ -7444,7 +7496,8 @@ bge_else.9364 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r4 120
-	sw	%r4 %r3 %r2
+	add %r4 %r2 %r25
+	sw	%r25 %r3 0
 bge_cont.9365 :
 	lw	%r26 %r2 144
 	addi	%r0 %r25 2
@@ -7460,15 +7513,15 @@ bge_cont.9365 :
 	addi	%r26 %r26 -208
 	lw	%r26 %r28 204
 	lw.s	%r26 %f1 192
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 96
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 108
 	addi	%r1 %r1 1
 	lw	%r26 %r2 16
 	lw.s	%r2 %f1 0
 	lw.s	%r26 %f2 8
-	add.s	%f2 %f1 %f1
+	add.s	%f1 %f2 %f1
 	lw	%r26 %r2 112
 	lw	%r26 %r3 52
 	lw	%r26 %r24 0
@@ -7520,7 +7573,8 @@ be_else.9369 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 48
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r2 44
 	sw	%r26 %r1 56
 	mov	%r2 %r1
@@ -7586,7 +7640,7 @@ be_else.9373 :
 	lw.s	%r26 %f0 64
 be_cont.9374 :
 	lw.s	%r26 %f1 8
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 56
 	sw.s	%r26 %f0 72
 	sw	%r26 %r28 84
@@ -7595,7 +7649,7 @@ be_cont.9374 :
 	addi	%r26 %r26 -88
 	lw	%r26 %r28 84
 	lw.s	%r26 %f1 72
-	mul.s	%f1 %f0 %f0
+	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 4
 	lw	%r26 %r2 0
 	j	vecaccum.2642 
@@ -7607,7 +7661,8 @@ iter_trace_diffuse_rays.2949 :
 	bl	%r4 %r25 bge_else.9376 
 	addi	%r0 %r25 2
 	sll	%r4 %r6 %r25
-	lw	%r1 %r6 %r6
+	add	%r1 %r6 %r25
+	lw	%r25 %r6 0
 	sw	%r26 %r3 0
 	sw	%r26 %r24 4
 	sw	%r26 %r5 8
@@ -7638,11 +7693,12 @@ addi	%r0 %r25 0
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 12
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	addi	%r0 %r4 l.6838 
 	ilw.s	%r4 %f0 0
 	lw.s	%r26 %f1 24
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	lw	%r26 %r24 8
 	mov	%r2 %r1
 	sw	%r26 %r28 36
@@ -7658,11 +7714,12 @@ be_else.9377 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 12
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	addi	%r0 %r4 l.6835 
 	ilw.s	%r4 %f0 0
 	lw.s	%r26 %f1 24
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	lw	%r26 %r24 8
 	mov	%r2 %r1
 	sw	%r26 %r28 36
@@ -7840,7 +7897,8 @@ calc_diffuse_using_1point.2962 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 20
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	lw	%r26 %r4 8
 	sw	%r26 %r1 32
 	mov	%r3 %r2
@@ -7860,11 +7918,13 @@ calc_diffuse_using_1point.2962 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 24
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	addi	%r0 %r25 2
 	sll	%r2 %r4 %r25
 	lw	%r26 %r5 28
-	lw	%r5 %r4 %r4
+	add	%r5 %r4 %r25
+	lw	%r25 %r4 0
 	lw	%r26 %r24 4
 	mov	%r3 %r2
 	mov	%r4 %r3
@@ -7878,7 +7938,8 @@ calc_diffuse_using_1point.2962 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 32
-	lw	%r2 %r2 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r1 0
 	lw	%r26 %r3 8
 	j	vecaccumv.2655 
@@ -7887,7 +7948,8 @@ calc_diffuse_using_5points.2965 :
 	lw	%r24 %r7 4
 	addi	%r0 %r25 2
 	sll	%r1 %r8 %r25
-	lw	%r2 %r2 %r8
+	add	%r2 %r8 %r25
+	lw	%r25 %r2 0
 	sw	%r26 %r6 0
 	sw	%r26 %r7 4
 	sw	%r26 %r5 8
@@ -7905,7 +7967,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r3 %r3 %r25
 	lw	%r26 %r4 16
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r1 24
 	mov	%r3 %r1
 	sw	%r26 %r28 28
@@ -7917,7 +7980,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 16
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r1 28
 	mov	%r3 %r1
 	sw	%r26 %r28 36
@@ -7930,7 +7994,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r3 %r3 %r25
 	lw	%r26 %r4 16
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r1 32
 	mov	%r3 %r1
 	sw	%r26 %r28 36
@@ -7942,7 +8007,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 12
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r1 36
 	mov	%r3 %r1
 	sw	%r26 %r28 44
@@ -7954,7 +8020,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 24
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	lw	%r26 %r4 4
 	sw	%r26 %r1 40
 	mov	%r3 %r2
@@ -7968,7 +8035,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 28
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r3 4
 	mov	%r3 %r1
 	sw	%r26 %r28 44
@@ -7980,7 +8048,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 32
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r3 4
 	mov	%r3 %r1
 	sw	%r26 %r28 44
@@ -7992,7 +8061,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 36
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r3 4
 	mov	%r3 %r1
 	sw	%r26 %r28 44
@@ -8004,7 +8074,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 40
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r3 4
 	mov	%r3 %r1
 	sw	%r26 %r28 44
@@ -8016,7 +8087,8 @@ calc_diffuse_using_5points.2965 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 16
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	sw	%r26 %r28 44
 	addi	%r26 %r26 48
 	jal	p_energy.2709 
@@ -8025,7 +8097,8 @@ calc_diffuse_using_5points.2965 :
 	lw	%r26 %r2 8
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
-	lw	%r1 %r2 %r2
+	add	%r1 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r1 0
 	lw	%r26 %r3 4
 	j	vecaccumv.2655 
@@ -8045,7 +8118,8 @@ do_without_neighbors.2971 :
 	lw	%r26 %r2 12
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r1 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r1 0
 	addi	%r0 %r25 0
 	bl	%r1 %r25 bge_else.9391 
 	lw	%r26 %r1 8
@@ -8057,7 +8131,8 @@ do_without_neighbors.2971 :
 	lw	%r26 %r2 12
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r1 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r1 0
 addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9392 
 	j	be_cont.9393 
@@ -8117,12 +8192,14 @@ get_surface_id.2978 :
 	lw	%r26 %r2 0
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
-	lw	%r1 %r1 %r2
+	add	%r1 %r2 %r25
+	lw	%r25 %r1 0
 	retl
 neighbors_are_available.2981 :
 	addi	%r0 %r25 2
 	sll	%r1 %r6 %r25
-	lw	%r3 %r6 %r6
+	add	%r3 %r6 %r25
+	lw	%r25 %r6 0
 	sw	%r26 %r3 0
 	sw	%r26 %r4 4
 	sw	%r26 %r5 8
@@ -8139,7 +8216,8 @@ neighbors_are_available.2981 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 12
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	lw	%r26 %r4 8
 	sw	%r26 %r1 20
 	mov	%r4 %r2
@@ -8155,7 +8233,8 @@ neighbors_are_available.2981 :
 	addi	%r0 %r25 2
 	sll	%r1 %r3 %r25
 	lw	%r26 %r4 4
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	lw	%r26 %r4 8
 	mov	%r4 %r2
 	mov	%r3 %r1
@@ -8171,7 +8250,8 @@ neighbors_are_available.2981 :
 	addi	%r0 %r25 2
 	sll	%r3 %r3 %r25
 	lw	%r26 %r4 0
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	lw	%r26 %r5 8
 	mov	%r5 %r2
 	mov	%r3 %r1
@@ -8187,7 +8267,8 @@ neighbors_are_available.2981 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r3 0
-	lw	%r3 %r1 %r1
+	add	%r3 %r1 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r3 8
 	mov	%r3 %r2
 	sw	%r26 %r28 28
@@ -8216,7 +8297,8 @@ try_exploit_neighbors.2987 :
 	lw	%r24 %r8 4
 	addi	%r0 %r25 2
 	sll	%r1 %r9 %r25
-	lw	%r4 %r9 %r9
+	add	%r4 %r9 %r25
+	lw	%r25 %r9 0
 	addi	%r0 %r25 4
 	bg	%r6 %r25 ble_else.9404 
 	sw	%r26 %r2 0
@@ -8254,7 +8336,8 @@ try_exploit_neighbors.2987 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 28
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r2 20
 	lw	%r26 %r24 16
 	lw	%r24 %r23 0
@@ -8269,7 +8352,8 @@ be_else.9406 :
 	lw	%r26 %r5 20
 	addi	%r0 %r25 2
 	sll	%r5 %r2 %r25
-	lw	%r1 %r1 %r2
+	add	%r1 %r2 %r25
+	lw	%r25 %r1 0
 addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9407 
 	j	be_cont.9408 
@@ -8363,7 +8447,7 @@ write_rgb.2998 :
 	addi	%r0 %r1 32
 	out	%r1
 	lw	%r26 %r1 0
-	lw.s	%r1 %f0 8
+	lw.s	%r1 %f0 4
 	sw	%r26 %r28 4
 	addi	%r26 %r26 8
 	jal	write_rgb_element.2996 
@@ -8372,7 +8456,7 @@ write_rgb.2998 :
 	addi	%r0 %r1 32
 	out	%r1
 	lw	%r26 %r1 0
-	lw.s	%r1 %f0 16
+	lw.s	%r1 %f0 8
 	sw	%r26 %r28 4
 	addi	%r26 %r26 8
 	jal	write_rgb_element.2996 
@@ -8409,7 +8493,8 @@ pretrace_diffuse_rays.3000 :
 	lw	%r26 %r2 16
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r1 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r1 0
 addi	%r0 %r25 0
 	bne	%r1 %r25 be_else.9417 
 	j	be_cont.9418 
@@ -8446,15 +8531,18 @@ be_else.9417 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 8
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r3 16
 	addi	%r0 %r25 2
 	sll	%r3 %r4 %r25
 	lw	%r26 %r5 28
-	lw	%r5 %r4 %r4
+	add	%r5 %r4 %r25
+	lw	%r25 %r4 0
 	addi	%r0 %r25 2
 	sll	%r3 %r5 %r25
-	lw	%r1 %r1 %r5
+	add	%r1 %r5 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r24 4
 	mov	%r1 %r3
 	mov	%r2 %r1
@@ -8474,7 +8562,8 @@ be_else.9417 :
 	lw	%r26 %r2 16
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r1 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r3 12
 	mov	%r3 %r2
 	sw	%r26 %r28 36
@@ -8509,19 +8598,19 @@ pretrace_pixels.3003 :
 	lw	%r12 %r8 0
 	sub	%r2 %r8 %r8
 	mtc1	%r8 %f4
-	mul.s	%f3 %f4 %f3
+	mul.s	%f4 %f3 %f3
 	lw.s	%r7 %f4 0
-	mul.s	%f3 %f4 %f4
-	add.s	%f4 %f0 %f4
+	mul.s	%f4 %f3 %f4
+	add.s	%f0 %f4 %f4
 	sw.s	%r10 %f4 0
+	lw.s	%r7 %f4 4
+	mul.s	%f4 %f3 %f4
+	add.s	%f1 %f4 %f4
+	sw.s	%r10 %f4 4
 	lw.s	%r7 %f4 8
-	mul.s	%f3 %f4 %f4
-	add.s	%f4 %f1 %f4
-	sw.s	%r10 %f4 8
-	lw.s	%r7 %f4 16
-	mul.s	%f3 %f4 %f3
-	add.s	%f3 %f2 %f3
-	sw.s	%r10 %f3 16
+	mul.s	%f4 %f3 %f3
+	add.s	%f2 %f3 %f3
+	sw.s	%r10 %f3 8
 	addi	%r0 %r7 0
 	sw.s	%r26 %f2 0
 	sw.s	%r26 %f1 8
@@ -8563,7 +8652,8 @@ pretrace_pixels.3003 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 44
-	lw	%r4 %r3 %r3
+	add	%r4 %r3 %r25
+	lw	%r25 %r3 0
 	addi	%r0 %r5 l.6250 
 	ilw.s	%r5 %f1 0
 	lw	%r26 %r5 36
@@ -8579,7 +8669,8 @@ pretrace_pixels.3003 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 44
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	mov	%r2 %r1
 	sw	%r26 %r28 68
 	addi	%r26 %r26 72
@@ -8596,7 +8687,8 @@ pretrace_pixels.3003 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 44
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	lw	%r26 %r4 32
 	mov	%r2 %r1
 	mov	%r4 %r2
@@ -8609,7 +8701,8 @@ pretrace_pixels.3003 :
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 44
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	addi	%r0 %r4 0
 	lw	%r26 %r24 28
 	mov	%r2 %r1
@@ -8653,19 +8746,19 @@ pretrace_line.3010 :
 	lw	%r9 %r6 4
 	sub	%r2 %r6 %r2
 	mtc1	%r2 %f1
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	lw.s	%r5 %f1 0
-	mul.s	%f0 %f1 %f1
+	mul.s	%f1 %f0 %f1
 	lw.s	%r4 %f2 0
-	add.s	%f1 %f2 %f1
-	lw.s	%r5 %f2 8
-	mul.s	%f0 %f2 %f2
+	add.s	%f2 %f1 %f1
+	lw.s	%r5 %f2 4
+	mul.s	%f2 %f0 %f2
+	lw.s	%r4 %f3 4
+	add.s	%f3 %f2 %f2
+	lw.s	%r5 %f3 8
+	mul.s	%f3 %f0 %f0
 	lw.s	%r4 %f3 8
-	add.s	%f2 %f3 %f2
-	lw.s	%r5 %f3 16
-	mul.s	%f0 %f3 %f0
-	lw.s	%r4 %f3 16
-	add.s	%f0 %f3 %f0
+	add.s	%f3 %f0 %f0
 	lw	%r8 %r2 0
 	addi	%r2 %r2 -1
 	mov	%r7 %r24
@@ -8688,7 +8781,8 @@ scan_pixel.3014 :
 ble_else.9423 :
 	addi	%r0 %r25 2
 	sll	%r1 %r10 %r25
-	lw	%r4 %r10 %r10
+	add	%r4 %r10 %r25
+	lw	%r25 %r10 0
 	sw	%r26 %r24 0
 	sw	%r26 %r6 4
 	sw	%r26 %r3 8
@@ -8729,7 +8823,8 @@ addi	%r0 %r25 0
 	addi	%r0 %r25 2
 	sll	%r1 %r2 %r25
 	lw	%r26 %r3 20
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	addi	%r0 %r4 0
 	lw	%r26 %r24 16
 	mov	%r2 %r1
@@ -8991,7 +9086,8 @@ init_line_elements.3030 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 0
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r2 %r2 -1
 	mov	%r4 %r1
 	j	init_line_elements.3030 
@@ -9034,17 +9130,17 @@ tan.3035 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 8
-	div.s	%f1 %f0 %f0
+	div.s	%f0 %f1 %f0
 	retl
 adjust_position.3037 :
 	mul.s	%f0 %f0 %f0
 	addi	%r0 %r1 l.6816 
 	ilw.s	%r1 %f2 0
-	add.s	%f0 %f2 %f0
+	add.s	%f2 %f0 %f0
 	sqrt.s	%f0 %f0
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f2 0
-	div.s	%f2 %f0 %f2
+	div.s	%f0 %f2 %f2
 	sw.s	%r26 %f0 0
 	sw.s	%r26 %f1 8
 	mov.s	%f2 %f0
@@ -9054,14 +9150,14 @@ adjust_position.3037 :
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 8
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	sw	%r26 %r28 20
 	addi	%r26 %r26 24
 	jal	tan.3035 
 	addi	%r26 %r26 -24
 	lw	%r26 %r28 20
 	lw.s	%r26 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	retl
 calc_dirvec.3040 :
 	lw	%r24 %r4 4
@@ -9086,27 +9182,29 @@ calc_dirvec.3040 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw.s	%r26 %f1 32
-	add.s	%f1 %f0 %f0
+	add.s	%f0 %f1 %f0
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f1 0
-	add.s	%f0 %f1 %f0
+	add.s	%f1 %f0 %f0
 	sqrt.s	%f0 %f0
 	lw.s	%r26 %f1 16
-	div.s	%f1 %f0 %f1
+	div.s	%f0 %f1 %f1
 	lw.s	%r26 %f2 24
-	div.s	%f2 %f0 %f2
+	div.s	%f0 %f2 %f2
 	addi	%r0 %r1 l.6259 
 	ilw.s	%r1 %f3 0
-	div.s	%f3 %f0 %f0
+	div.s	%f0 %f3 %f0
 	lw	%r26 %r1 8
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 4
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	lw	%r26 %r2 0
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
-	lw	%r1 %r3 %r3
+	add	%r1 %r3 %r25
+	lw	%r25 %r3 0
 	sw	%r26 %r1 40
 	sw.s	%r26 %f0 48
 	sw.s	%r26 %f2 56
@@ -9130,7 +9228,8 @@ calc_dirvec.3040 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 40
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	mov	%r2 %r1
 	sw	%r26 %r28 76
 	addi	%r26 %r26 80
@@ -9158,7 +9257,8 @@ calc_dirvec.3040 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 40
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	mov	%r2 %r1
 	sw	%r26 %r28 76
 	addi	%r26 %r26 80
@@ -9194,7 +9294,8 @@ calc_dirvec.3040 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 40
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	mov	%r2 %r1
 	sw	%r26 %r28 92
 	addi	%r26 %r26 96
@@ -9238,7 +9339,8 @@ calc_dirvec.3040 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 40
-	lw	%r3 %r2 %r2
+	add	%r3 %r2 %r25
+	lw	%r25 %r2 0
 	mov	%r2 %r1
 	sw	%r26 %r28 116
 	addi	%r26 %r26 120
@@ -9274,7 +9376,8 @@ calc_dirvec.3040 :
 	addi	%r0 %r25 2
 	sll	%r1 %r1 %r25
 	lw	%r26 %r2 40
-	lw	%r2 %r1 %r1
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
 	sw	%r26 %r28 132
 	addi	%r26 %r26 136
 	jal	d_vec.2720 
@@ -9332,10 +9435,10 @@ calc_dirvecs.3048 :
 	mtc1	%r1 %f1
 	addi	%r0 %r5 l.6282 
 	ilw.s	%r5 %f2 0
-	mul.s	%f1 %f2 %f1
+	mul.s	%f2 %f1 %f1
 	addi	%r0 %r5 l.6946 
 	ilw.s	%r5 %f2 0
-	sub.s	%f1 %f2 %f2
+	sub.s	%f2 %f1 %f2
 	addi	%r0 %r5 0
 	addi	%r0 %r6 l.6250 
 	ilw.s	%r6 %f1 0
@@ -9363,10 +9466,10 @@ calc_dirvecs.3048 :
 	mtc1	%r1 %f0
 	addi	%r0 %r2 l.6282 
 	ilw.s	%r2 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	addi	%r0 %r2 l.6816 
 	ilw.s	%r2 %f1 0
-	add.s	%f0 %f1 %f2
+	add.s	%f1 %f0 %f2
 	addi	%r0 %r2 0
 	addi	%r0 %r3 l.6250 
 	ilw.s	%r3 %f0 0
@@ -9413,10 +9516,10 @@ calc_dirvec_rows.3053 :
 	mtc1	%r1 %f0
 	addi	%r0 %r5 l.6282 
 	ilw.s	%r5 %f1 0
-	mul.s	%f0 %f1 %f0
+	mul.s	%f1 %f0 %f0
 	addi	%r0 %r5 l.6946 
 	ilw.s	%r5 %f1 0
-	sub.s	%f0 %f1 %f0
+	sub.s	%f1 %f0 %f0
 	addi	%r0 %r5 4
 	sw	%r26 %r24 0
 	sw	%r26 %r3 4
@@ -9496,7 +9599,8 @@ create_dirvec_elements.3059 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 4
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r2 %r2 -1
 	lw	%r26 %r24 0
 	mov	%r4 %r1
@@ -9534,10 +9638,12 @@ create_dirvecs.3062 :
 	addi	%r0 %r25 2
 	sll	%r2 %r3 %r25
 	lw	%r26 %r4 8
-	sw	%r4 %r1 %r3
+	add %r4 %r3 %r25
+	sw	%r25 %r1 0
 	addi	%r0 %r25 2
 	sll	%r2 %r1 %r25
-	lw	%r4 %r1 %r1
+	add	%r4 %r1 %r25
+	lw	%r25 %r1 0
 	addi	%r0 %r3 118
 	lw	%r26 %r24 4
 	mov	%r3 %r2
@@ -9560,7 +9666,8 @@ init_dirvec_constants.3064 :
 	bl	%r2 %r25 bge_else.9449 
 	addi	%r0 %r25 2
 	sll	%r2 %r4 %r25
-	lw	%r1 %r4 %r4
+	add	%r1 %r4 %r25
+	lw	%r25 %r4 0
 	sw	%r26 %r1 0
 	sw	%r26 %r24 4
 	sw	%r26 %r2 8
@@ -9587,7 +9694,8 @@ init_vecset_constants.3067 :
 	bl	%r1 %r25 bge_else.9451 
 	addi	%r0 %r25 2
 	sll	%r1 %r4 %r25
-	lw	%r3 %r3 %r4
+	add	%r3 %r4 %r25
+	lw	%r25 %r3 0
 	addi	%r0 %r4 119
 	sw	%r26 %r24 0
 	sw	%r26 %r1 4
@@ -9688,7 +9796,8 @@ add_reflection.3071 :
 	addi	%r0 %r25 2
 	sll	%r2 %r2 %r25
 	lw	%r26 %r3 0
-	sw	%r3 %r1 %r2
+	add %r3 %r2 %r25
+	sw	%r25 %r1 0
 	retl
 setup_rect_reflection.3078 :
 	lw	%r24 %r3 12
@@ -9712,7 +9821,7 @@ setup_rect_reflection.3078 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 16
 	lw.s	%r1 %f1 0
 	sw.s	%r26 %f0 32
@@ -9723,7 +9832,7 @@ setup_rect_reflection.3078 :
 	addi	%r26 %r26 -48
 	lw	%r26 %r28 44
 	lw	%r26 %r1 16
-	lw.s	%r1 %f1 8
+	lw.s	%r1 %f1 4
 	sw.s	%r26 %f0 40
 	mov.s	%f1 %f0
 	sw	%r26 %r28 52
@@ -9732,7 +9841,7 @@ setup_rect_reflection.3078 :
 	addi	%r26 %r26 -56
 	lw	%r26 %r28 52
 	lw	%r26 %r1 16
-	lw.s	%r1 %f1 16
+	lw.s	%r1 %f1 8
 	sw.s	%r26 %f0 48
 	mov.s	%f1 %f0
 	sw	%r26 %r28 60
@@ -9762,7 +9871,7 @@ setup_rect_reflection.3078 :
 	lw	%r26 %r3 12
 	addi	%r3 %r4 2
 	lw	%r26 %r5 16
-	lw.s	%r5 %f2 8
+	lw.s	%r5 %f2 4
 	lw.s	%r26 %f0 32
 	lw.s	%r26 %f1 40
 	lw.s	%r26 %f3 56
@@ -9780,7 +9889,7 @@ setup_rect_reflection.3078 :
 	lw	%r26 %r3 12
 	addi	%r3 %r3 3
 	lw	%r26 %r4 16
-	lw.s	%r4 %f3 16
+	lw.s	%r4 %f3 8
 	lw.s	%r26 %f0 32
 	lw.s	%r26 %f1 40
 	lw.s	%r26 %f2 48
@@ -9822,7 +9931,7 @@ setup_surface_reflection.3081 :
 	addi	%r26 %r26 -40
 	lw	%r26 %r28 36
 	lw.s	%r26 %f1 24
-	sub.s	%f1 %f0 %f0
+	sub.s	%f0 %f1 %f0
 	lw	%r26 %r1 20
 	sw.s	%r26 %f0 32
 	sw	%r26 %r28 44
@@ -9848,12 +9957,12 @@ setup_surface_reflection.3081 :
 	addi	%r26 %r26 -64
 	lw	%r26 %r28 60
 	lw.s	%r26 %f1 48
-	mul.s	%f1 %f0 %f0
-	lw.s	%r26 %f1 40
 	mul.s	%f0 %f1 %f0
+	lw.s	%r26 %f1 40
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 16
 	lw.s	%r1 %f2 0
-	sub.s	%f0 %f2 %f0
+	sub.s	%f2 %f0 %f0
 	addi	%r0 %r2 l.6257 
 	ilw.s	%r2 %f2 0
 	lw	%r26 %r2 20
@@ -9866,12 +9975,12 @@ setup_surface_reflection.3081 :
 	addi	%r26 %r26 -80
 	lw	%r26 %r28 76
 	lw.s	%r26 %f1 64
-	mul.s	%f1 %f0 %f0
-	lw.s	%r26 %f1 40
 	mul.s	%f0 %f1 %f0
+	lw.s	%r26 %f1 40
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 16
-	lw.s	%r1 %f2 8
-	sub.s	%f0 %f2 %f0
+	lw.s	%r1 %f2 4
+	sub.s	%f2 %f0 %f0
 	addi	%r0 %r2 l.6257 
 	ilw.s	%r2 %f2 0
 	lw	%r26 %r2 20
@@ -9884,12 +9993,12 @@ setup_surface_reflection.3081 :
 	addi	%r26 %r26 -96
 	lw	%r26 %r28 92
 	lw.s	%r26 %f1 80
-	mul.s	%f1 %f0 %f0
-	lw.s	%r26 %f1 40
 	mul.s	%f0 %f1 %f0
+	lw.s	%r26 %f1 40
+	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 16
-	lw.s	%r1 %f1 16
-	sub.s	%f0 %f1 %f3
+	lw.s	%r1 %f1 8
+	sub.s	%f1 %f0 %f3
 	lw.s	%r26 %f0 32
 	lw.s	%r26 %f1 56
 	lw.s	%r26 %f2 72
@@ -9915,7 +10024,8 @@ setup_reflections.3084 :
 	bl	%r1 %r25 bge_else.9459 
 	addi	%r0 %r25 2
 	sll	%r1 %r5 %r25
-	lw	%r4 %r4 %r5
+	add	%r4 %r5 %r25
+	lw	%r25 %r4 0
 	sw	%r26 %r2 0
 	sw	%r26 %r1 4
 	sw	%r26 %r3 8
@@ -9998,7 +10108,7 @@ rt.3086 :
 	addi	%r0 %r2 l.6995 
 	ilw.s	%r2 %f0 0
 	mtc1	%r1 %f1
-	div.s	%f0 %f1 %f0
+	div.s	%f1 %f0 %f0
 	sw.s	%r6 %f0 0
 	sw	%r26 %r7 0
 	sw	%r26 %r9 4
