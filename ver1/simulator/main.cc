@@ -41,7 +41,7 @@ int main(int argc, char**argv){
   //main memory
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
-  memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
+  memset(mem , 1 , 8e+8 * sizeof(unsigned int) );
 
   unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
@@ -378,7 +378,18 @@ for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
 		//cout << now << endl;
-    //if (now == 2405) cout << (int)reg[2] << endl;
+   /* if (now == 84) {cout << "---------------------------" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
+    }
+    cout << "" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+    }
+    */
     unsigned int one_instruction = inst_mem[now];
 		if(one_instruction == 0)  {cout << "ret" << endl; break;}
 		switch(one_instruction >> 26){
@@ -418,6 +429,7 @@ for(int now = 0; now < instr_num; now++)
    		exit(1);
  	}
   */
+
   cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { cout << "" << endl; }
@@ -428,6 +440,12 @@ for(int now = 0; now < instr_num; now++)
       if (i%3 == 0) { cout << "" << endl; }
       cout << "f" << i << " = " << freg[i] << "  ";
     }
+
+/*
+  for (int i = 50000; i < 1000732; i++) {
+    cout << mem[i] << endl;
+  }
+*/
 
   cout << "number of executed instructions is " << howmany_instructions << endl;
 
