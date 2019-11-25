@@ -17,7 +17,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 4096;
+	localparam inst_size	 = 8192;
+	localparam buffer_size	 = 8192;
 
 	reg [3:0]             status;
     reg [3:0]             err;
@@ -90,6 +91,10 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // total instruction = 64 
     reg [31:0] inst [0:inst_size-1];
     reg [31:0] now_inst;
+
+    reg [7:0] buffer [0:buffer_size];
+    reg [31:0] buffer_valid_idx;
+    reg [31:0] buffer_reading_idx;
     
     reg [3:0] complete;
 
@@ -146,6 +151,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
    
 
     integer i;
+    reg [1:0] writing_byte;
+    reg first_send;
     
     
     assign we = (now_inst[31:26] == sw || now_inst[31:26] == sws) && (status == s_first);
@@ -154,7 +161,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     
 
     assign sender_ready = (now_inst[31:26] == special &&
-                           now_inst[5:0] == s_out);
+                           now_inst[5:0] == s_out) || first_send;
 
     initial begin
         iteration <= 32'b0;
@@ -172,7 +179,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     	$readmemb("copy.mem", inst);
     end
 
-    assign out_led = iteration;
+    assign out_led = pc;
     assign pcout = pc;
     assign errout = err;
 
@@ -188,7 +195,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
         rstn);
 	*/
 
-    assign w_data = register_int[now_inst[25:21]][7:0];
+    assign w_data = (first_send) ? 8'b10101010 : register_int[now_inst[25:21]][7:0];
     /*
     sender #(CLK_PER_HALF_BIT) sender(
         w_data,
@@ -198,20 +205,38 @@ module top #(CLK_PER_HALF_BIT = 520) (
         clk,
         rstn);
     */
+    reg reading;
+    reg finished_write;
+
     always @(posedge clk) begin
+        if (first_send && status == s_second) begin
+            first_send <= 1'b0;
+        end
+        if (receiver_valid && !reading) begin
+            buffer[buffer_valid_idx] <= r_data;
+            buffer_valid_idx <= buffer_valid_idx + 1;
+            reading <= 1'b1;
+        end else if(!receiver_valid) begin 
+        	reading <= 1'b0;
+        end
         if (~rstn) begin
+            finished_write <= 1'b0;
+            first_send <= 1'b1;
+            writing_byte <= 2'b0;
+        	reading <= 1'b0;
             iteration <= 32'b0;
             for(i=0;i<32;i=i+1) begin
                 register_int[i] <= 32'b0;
                 register_float[i] <= 32'b0;
             end
+            buffer_valid_idx <= 32'b0;
+            buffer_reading_idx <= 32'b0;
             register_int[27] <= 32'b00000000000000001000000000000000;
             inst_stop <= 1'b0;
             status <= s_first;
             err <= 4'b0000;
             complete <= 4'b0000;
             pc <= 0;
-            register_int[0] <= 32'b0;
     	    $readmemb("copy.mem", inst);
         end else if (status == s_idle) begin
 
@@ -254,12 +279,34 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         s_ret:
                             inst_stop <= 1'b1;
                         s_in:
-                            if (receiver_valid) begin
-                                register_int[now_inst[25:21]][7:0] <= r_data;
+                            if (buffer_reading_idx < buffer_valid_idx && !finished_write) begin
+                                if(writing_byte == 2'b00) begin
+                                    register_int[now_inst[25:21]][7:0] <= buffer[buffer_reading_idx];
+                                end else if(writing_byte == 2'b01) begin
+                                    register_int[now_inst[25:21]][15:8] <= buffer[buffer_reading_idx];
+                                end else if(writing_byte == 2'b10) begin
+                                    register_int[now_inst[25:21]][23:16] <= buffer[buffer_reading_idx];
+                                end else begin
+                                    finished_write <= 1'b1;
+                                    register_int[now_inst[25:21]][31:24] <= buffer[buffer_reading_idx];
+                                end
+                                writing_byte <= writing_byte + 1;
+                            	buffer_reading_idx <= buffer_reading_idx + 1;
                             end
                         s_fin:
-                        	if (receiver_valid) begin
-                        		register_float[now_inst[25:21]][7:0] <= r_data;
+                        	if (buffer_reading_idx < buffer_valid_idx && !finished_write) begin
+                        		if(writing_byte == 2'b00) begin
+                                    register_float[now_inst[25:21]][7:0] <= buffer[buffer_reading_idx];
+                                end else if(writing_byte == 2'b01) begin
+                                    register_float[now_inst[25:21]][15:8] <= buffer[buffer_reading_idx];
+                                end else if(writing_byte == 2'b10) begin
+                                    register_float[now_inst[25:21]][23:16] <= buffer[buffer_reading_idx];
+                                end else begin
+                                    finished_write <= 1'b1;
+                                    register_float[now_inst[25:21]][31:24] <= buffer[buffer_reading_idx];
+                                end
+                                writing_byte <= writing_byte + 1;
+                                buffer_reading_idx <= buffer_reading_idx + 1;
                         	end
                         default: begin
         					if (err == 4'b0000) begin
@@ -316,7 +363,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
         			if(register_int[now_inst[25:21]] < register_int[now_inst[20:16]]) begin
         				pc <= pc + minus_immediate;
         			end
-
         		bg:
         			if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
         				pc <= pc + minus_immediate;
@@ -339,13 +385,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
         	// if (now_inst == (looking instruction) && !(break condition))
         	if ((now_inst[31:26] == lw || now_inst[31:26] == lws) && complete != 4'b0010) begin
         	   complete <= complete + 1;
-        	end else if (now_inst[31:26] == special && now_inst[5:0] == s_in && !receiver_valid) begin
+        	end else if (now_inst[31:26] == special && now_inst[5:0] == s_in && !finished_write) begin
                complete <= complete + 1;
-            end else if (now_inst[31:26] == special && now_inst[5:0] == s_fin && !receiver_valid) begin
+            end else if (now_inst[31:26] == special && now_inst[5:0] == s_fin && !finished_write) begin
                complete <= complete + 1;
             end else if (now_inst[31:26] == special && now_inst[5:0] == s_out && sender_sending) begin
                complete <= complete + 1;
             end else begin
+               finished_write <= 1'b0;
         	   complete <= 4'b0000;
         	   status <= s_first;
         	end
