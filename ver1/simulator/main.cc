@@ -378,9 +378,9 @@ long long howmany_instructions = 0;
 for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
-    /*
-		cout << now << endl;
     
+		//cout << now << endl;
+    /*
     if (now == 2415) {cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { cout << "" << endl; }
@@ -416,7 +416,7 @@ for(int now = 0; now < instr_num; now++)
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
-    }
+    
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
@@ -433,7 +433,7 @@ for(int now = 0; now < instr_num; now++)
     }
     */
     }
-	//}
+	}
   /*
   if (fclose(fout) == EOF) {
    		perror("close error");
