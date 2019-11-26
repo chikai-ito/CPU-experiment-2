@@ -175,7 +175,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     g'_non_tail_if oc (NonTail(z)) e1 e2 "ble" "bg" x (pp_id_or_imm y')
   | NonTail(z), IfGE(x, C(y'), e1, e2) ->
     Printf.fprintf oc "addi\t%%r0 %%r25 %s\n" (pp_id_or_imm (C(y')));
-      g'_non_tail_if oc (NonTail(z)) e1 e2 "bge" "bl" x "r25"
+      g'_non_tail_if oc (NonTail(z)) e1 e2 "bge" "bl" x "%r25"
   | NonTail(z), IfGE(x, y', e1, e2) ->
       g'_non_tail_if oc (NonTail(z)) e1 e2 "bge" "bl" x (pp_id_or_imm y')
   | NonTail(z), IfFEq(x, y, e1, e2) ->
