@@ -221,7 +221,6 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 
 
   
-  
 // --- code for -l option --- 
 if(argc==4){
   if(strcmp(argv[2], "-l")==0){
@@ -380,6 +379,14 @@ for(int now = 0; now < instr_num; now++)
     //printf("%d\n",now);
     
 		//cout << now << endl;
+    /*
+    if (now == 8190 && (int)reg[1] > 0){
+      cout << reg[1] << endl;
+      cout << howmany_instructions << endl;
+    }
+    */
+    
+
     /*
     if (now == 2415) {cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){

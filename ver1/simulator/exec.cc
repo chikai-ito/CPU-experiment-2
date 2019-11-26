@@ -60,7 +60,7 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
     	if((code>>15)&0b1){
     	  if((int)reg[rs] < (int)reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
    	 	}else{
-   	   if((int)reg[rs] < (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
+   	    if((int)reg[rs] < (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
    	 	}
 			break;
 		case 0b000101 :
