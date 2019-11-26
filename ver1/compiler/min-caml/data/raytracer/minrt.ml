@@ -5,13 +5,13 @@ let rec fiszero x = (x = 0.)
     in
     let rec fisneg x = (x < 0.)
     in
-    let rec fneg x = 0. -. x
+    let rec fneg x = -. x
     in
     let rec fless x y = x < y
     in 
     let rec fsqr x = x *. x
     in
-    let rec fabs x = if x < 0. then 0. -. x else x
+    let rec fabs x = if x < 0. then -. x else x
     in
     let rec fhalf x = x /. 2.
     in
@@ -51,7 +51,7 @@ let rec fiszero x = (x = 0.)
         +. 1.0
     in
     let rec atan x =
-      let h = 0.001 in
+      let h = 0.0001 in
       let rec f x = 1. /. (1. +. x *. x) in
       let rec euler u v x h =
         if u +. h > x then v
@@ -65,13 +65,17 @@ let rec fiszero x = (x = 0.)
       let b = (x - a * 100) / 10 in
       let c = (x - a * 100 - b * 10) in
       if a > 0 then (
-        print_char (a + 48)
-      ) else ();
-      if b > 0 then (
-        print_char (b + 48)
-      ) else ();
-      print_char (c + 48)
-    in
+        print_char (a + 48);
+        print_char (b + 48);
+        print_char (c + 48)
+      ) else (
+        if b > 0 then (
+          print_char (b + 48);
+          print_char (c + 48)
+        ) else (
+          print_char (c + 48)
+        )
+      ) in
 
 
 (* open MiniMLRuntime;; *)
