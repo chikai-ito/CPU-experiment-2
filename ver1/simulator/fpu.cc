@@ -26,13 +26,14 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
           //exec mfc1
           rt = (int)((code >> 16) & 0b11111);
           fs = (int)((code >> 11) & 0b11111);
-          //cout << round(freg[fs]);
+          //cout << "round(mfc1) " << freg[fs] << "-> " << round(freg[fs]) << endl;
           reg[rt] = (unsigned int) round(freg[fs]);
           break;
         case 0b00100 :
           //exec mtc1
           rt = (int)((code >> 16) & 0b11111);
           fs = (int)((code >> 11) & 0b11111);
+          //cout << "mtc " << (int) reg[rt] << "-> " << (float)((int)reg[rt]) << endl;
           freg[fs] = (float)((int)reg[rt]);
           break;
         }
@@ -42,12 +43,14 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
       ft = (int)((code >> 16) & 0b11111);
       fs = (int)((code >> 11) & 0b11111);
       fd = (int)((code >> 6) & 0b11111);
+      //cout << "div " << freg[fs] << "/" << freg[ft] << "=" <<  freg[fs] / freg[ft] << endl;
       freg[fd] = freg[fs] / freg[ft];
       break;
     case 0b001111 :
       //exec floor 
       fs = (int)((code >> 11) & 0b11111);
       fd = (int)((code >> 6) & 0b11111);
+      //cout << "floor " << freg[fs] << "-> " << floor(freg[fs]) << endl;
       freg[fd] = floor(freg[fs]);
       break;
 		case 0b000111 :
@@ -64,8 +67,10 @@ void fpu(unsigned int code, int pc, unsigned int* reg, float* freg){
     	freg[fd] = freg[fs] * freg[ft];
 			break;
     case 0b000100 :
+      //exec sqrt code
       fs = (int)((code >> 11) & 0b11111);
       fd = (int)((code >> 6) & 0b11111);
+      //cout << "sqrt " << freg[fs] << "-> " << sqrtf(freg[fs]) << endl;
       freg[fd] = sqrtf(freg[fs]);
       break;
 		case 0b000001 :
