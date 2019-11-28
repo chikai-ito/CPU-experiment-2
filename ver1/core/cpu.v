@@ -8,7 +8,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     input wire receiver_valid,
     input wire sender_sending,
     output wire sender_ready,
-    output wire [31:0] out_led,
+    output wire [7:0] out_led,
     output wire [31:0] pcout,
     output wire [3:0] errout,
     input wire [31:0] read_data,
@@ -17,8 +17,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 8192;
-	localparam buffer_size	 = 8192;
+	localparam inst_size	 = 20000;
+	localparam buffer_size	 = 20000;
 
 	reg [3:0]             status;
     reg [3:0]             err;
@@ -156,7 +156,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     
     
     assign we = (now_inst[31:26] == sw || now_inst[31:26] == sws) && (status == s_first);
-    assign memory_addr = register_int[now_inst[25:21]] + immediate;
+    assign memory_addr = register_int[now_inst[25:21]][31:2] + immediate[31:2];
     assign write_data = (now_inst[31:26] == sw) ? register_int[now_inst[20:16]] : register_float[now_inst[20:16]];
     
 
@@ -164,6 +164,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
                            now_inst[5:0] == s_out) || first_send;
 
     initial begin
+        buffer_valid_idx <= 32'b0;
+        buffer_reading_idx <= 32'b0;
         iteration <= 32'b0;
         for(i=0;i<32;i=i+1) begin
             register_int[i] <= 32'b0;
@@ -360,13 +362,29 @@ module top #(CLK_PER_HALF_BIT = 520) (
         				pc <= pc + minus_immediate;
         			end
         		bl:
-        			if(register_int[now_inst[25:21]] < register_int[now_inst[20:16]]) begin
-        				pc <= pc + minus_immediate;
-        			end
+                    if(register_int[now_inst[25:21]][31:31] == 1'b1 && register_int[now_inst[20:16]][31:31] == 1'b1) begin
+                        if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
+                            pc <= pc + minus_immediate;
+                        end
+                    end else if (register_int[now_inst[25:21]][31:31] == 1'b0 && register_int[now_inst[20:16]][31:31] == 1'b0) begin
+                        if(register_int[now_inst[25:21]] < register_int[now_inst[20:16]]) begin
+                            pc <= pc + minus_immediate;
+                        end
+                    end else if (register_int[now_inst[25:21]][31:31] == 1'b1 && register_int[now_inst[20:16]][31:31] == 1'b0) begin
+                        pc <= pc + minus_immediate;
+                    end
         		bg:
-        			if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
-        				pc <= pc + minus_immediate;
-        			end
+        			if(register_int[now_inst[25:21]][31:31] == 1'b1 && register_int[now_inst[20:16]][31:31] == 1'b1) begin
+                        if(register_int[now_inst[25:21]] < register_int[now_inst[20:16]]) begin
+                            pc <= pc + minus_immediate;
+                        end
+                    end else if (register_int[now_inst[25:21]][31:31] == 1'b0 && register_int[now_inst[20:16]][31:31] == 1'b0) begin
+                        if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
+                            pc <= pc + minus_immediate;
+                        end
+                    end else if (register_int[now_inst[25:21]][31:31] == 1'b0 && register_int[now_inst[20:16]][31:31] == 1'b1) begin
+                        pc <= pc + minus_immediate;
+                    end
         		fbne:
         			if(!fequal_res) begin
         				pc <= pc + minus_immediate;
