@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "create_execute_file.h"
 #include "string.h"
+#include "math.h"
 using namespace std;
 
 //file stream for IN and OUT instructions
@@ -220,7 +221,6 @@ if ((fout = fopen("result.bin", "w")) == NULL) {
 
 
   
-  
 // --- code for -l option --- 
 if(argc==4){
   if(strcmp(argv[2], "-l")==0){
@@ -377,9 +377,17 @@ long long howmany_instructions = 0;
 for(int now = 0; now < instr_num; now++)
 	{
     //printf("%d\n",now);
-    /*
-		cout << now << endl;
     
+		//cout << now << endl;
+    /*
+    if (now == 8190 && (int)reg[1] > 0){
+      cout << reg[1] << endl;
+      cout << howmany_instructions << endl;
+    }
+    */
+    
+
+    /*
     if (now == 2415) {cout << "---------------------------" << endl;
     for(int i = 0; i<32; i++){
       if (i%5 == 0) { cout << "" << endl; }
@@ -395,6 +403,12 @@ for(int now = 0; now < instr_num; now++)
     
     unsigned int one_instruction = inst_mem[now];
 		if(one_instruction == 0)  {cout << "ret" << endl; break;}
+    /*
+    if(one_instruction == 1610613852){cout << "sin" << endl;freg[0] = sin(freg[0]);}
+    else if (one_instruction == 1610613931){cout << "cos" << endl;freg[0] = cos(freg[0]);}
+    else if (one_instruction == 1610614040){cout << "atan" << endl;freg[0] = atan(freg[0]);}
+    else{
+    */
 		switch(one_instruction >> 26){
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
@@ -409,6 +423,7 @@ for(int now = 0; now < instr_num; now++)
 				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem);
 				break;
 		}
+    
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
