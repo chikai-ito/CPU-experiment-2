@@ -17,8 +17,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 20000;
-	localparam buffer_size	 = 20000;
+	localparam inst_size	 = 15000;
+	localparam buffer_size	 = 5000;
 
 	reg [3:0]             status;
     reg [3:0]             err;
@@ -180,7 +180,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     	$display("Loading rom.");
     	$readmemb("copy.mem", inst);
     end
-
+    
     assign out_led = pc;
     assign pcout = pc;
     assign errout = err;
