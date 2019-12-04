@@ -214,7 +214,7 @@ fout.open("result.bin",ios::out);
 
 
 
-long long howmany_instructions = 0;
+//long long howmany_instructions = 0;
 
 union hoge{
   unsigned int i;
@@ -290,7 +290,6 @@ for(int now = 0; now < instr_num; now++)
 			      fs = (int)((code >> 21) & 0b11111);
 			      float f;
 			      (fin) >> f;
-			      cout << "fin " <<  f << endl;
 			      freg[fs] = f;
 			      break;
 			    case 0b101010 :
@@ -298,7 +297,6 @@ for(int now = 0; now < instr_num; now++)
 			      rs = (int)((code >> 21) & 0b11111);
 			      int inp;
 			      (fin) >> inp;
-			      cout << inp << endl;
 			      reg[rs] = (unsigned int)inp;
 			      //reg[rs] = convert.i;
 			      break;
@@ -615,11 +613,12 @@ for(int now = 0; now < instr_num; now++)
 
 
 
-
+    /*
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
     }
+    */
 	}
 
 
@@ -662,7 +661,8 @@ for(int now = 0; now < instr_num; now++)
     }
 
 
-  cout << "number of executed instructions is " << howmany_instructions << endl;
+  //cout << "number of executed instructions is " << howmany_instructions << endl;
+
 
   fin.close();
   fout.close();
