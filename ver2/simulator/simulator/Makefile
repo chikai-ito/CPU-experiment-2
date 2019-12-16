@@ -11,3 +11,4 @@ $(TARGET): $(OBJS)
 clean:
 	rm $(TARGET) $(OBJS)
 	rm machine_code.txt
+	rm machine_code_comment.txt

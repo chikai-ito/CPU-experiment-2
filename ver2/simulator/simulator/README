@@ -3,14 +3,24 @@ how to use simulator
 ./simulator {assembly code} {option}
 
 option : 
-	-a : create machine code file as machine_code.txt in the current directory
+	-a1 : create machine code file as machine_code.txt in the current directory
+  -a2 : create machine code file as machine_code.txt in the current directory with comment
+
   -l number : stops at the numberth line.
               press e : end
               press c : continue
               press 1 : execute 10 instructions
               press 2 : execute 100 instructions
               press 3 : execute 1000 instructions
+  
   -label : print label information to the file named "label_info.txt"
+  
+  -suml number : stops at the numberth instruction
+              press e : end
+              press c : continue
+              press 1 : execute 10 instructions
+              press 2 : execute 100 instructions
+              press 3 : execute 1000 instructions
 
 
 <caution>
