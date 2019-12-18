@@ -84,6 +84,22 @@ string assemble (string line, int option){
     }
     return_code = "000110" + rs_s + rt_s + offset_s;
   }
+  else if (opcode == "bge"){
+    string rs,rt;
+    string offset;
+    s >> rs >> rt >> offset;
+    string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
+    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "001001" + rs_s + rt_s + offset_s;
+  }
 	else if (opcode == "bl"){
     string rs,rt;
     string offset;
@@ -99,6 +115,22 @@ string assemble (string line, int option){
       offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
     }
     return_code = "000001" + rs_s + rt_s + offset_s;
+  }
+  else if (opcode == "ble"){
+    string rs,rt;
+    string offset;
+    s >> rs >> rt >> offset;
+    string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
+    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "001011" + rs_s + rt_s + offset_s;
   }
 	else if (opcode == "bne"){
 		string rs,rt;
@@ -147,6 +179,22 @@ string assemble (string line, int option){
       offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
     }
     return_code = "000111" + fs_s + ft_s + offset_s;
+  }
+  else if (opcode == "fbge"){
+    string fs,ft;
+    string offset;
+    s >> fs >> ft >> offset;
+    string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
+    string ft_s = decimal_to_binary(atoi(ft.substr(2,ft.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "001110" + fs_s + ft_s + offset_s;
   }
 	else if (opcode == "fbne"){
 		string fs,ft;
@@ -423,6 +471,7 @@ string assemble (string line, int option){
 		//this area is for the label
 		string colon;
 		s >> colon;
+    if (colon != ":") {cout << "unknown instruction " << opcode << endl;}
 	}
 	if (option == 1) {
 		return_code = return_code + "  \\\\ " + opcode;
