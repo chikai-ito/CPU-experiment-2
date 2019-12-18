@@ -214,7 +214,7 @@ fout.open("result.bin",ios::out);
 
 
 
-//long long howmany_instructions = 0;
+long long howmany_instructions = 0;
 
 union hoge{
   unsigned int i;
@@ -459,6 +459,17 @@ for(int now = 0; now < instr_num; now++)
 			      	if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
 						break;
+          case 0b001001 :
+            //execute bge
+            rs = (int)((code >> 21) & 0b11111);
+            rt = (int)((code >> 16) & 0b11111);
+            //*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+            if((code>>15)&0b1){
+              if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+            }else{
+              if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
+            }
+            break;
 					case 0b000001 :
 						//execute bl
 						rs = (int)((code >> 21) & 0b11111);
@@ -470,6 +481,17 @@ for(int now = 0; now < instr_num; now++)
 			   	    if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			   	 	}
 						break;
+          case 0b001011 :
+            //execute ble
+            rs = (int)((code >> 21) & 0b11111);
+            rt = (int)((code >> 16) & 0b11111);
+            //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+            if((code>>15)&0b1){
+              if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+            }else{
+              if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
+            }
+            break;
 					case 0b000101 :
 						//execute bne
 						rs = (int)((code >> 21) & 0b11111);
@@ -492,6 +514,17 @@ for(int now = 0; now < instr_num; now++)
 			   	  	if(freg[fs] > freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
 						break;
+          case 0b001110 :
+            //execute fbge
+            fs = (int)((code >> 21) & 0b11111);
+            ft = (int)((code >> 16) & 0b11111);
+            //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+            if((code>>15)&0b1){
+              if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+            }else{
+              if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
+            }
+            break;
 					case 0b000011 :
 						//execute fbne
 						fs = (int)((code >> 21) & 0b11111);
@@ -613,12 +646,12 @@ for(int now = 0; now < instr_num; now++)
 
 
 
-    /*
+    
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
     }
-    */
+    
 	}
 
 
@@ -661,7 +694,7 @@ for(int now = 0; now < instr_num; now++)
     }
 
 
-  //cout << "number of executed instructions is " << howmany_instructions << endl;
+  cout << "number of executed instructions is " << howmany_instructions << endl;
 
 
   fin.close();
