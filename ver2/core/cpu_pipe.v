@@ -37,12 +37,15 @@ module top #(CLK_PER_HALF_BIT = 520) (
 	localparam buffer_size	 = 5000;
 
 	// 状態変数
-	// 0:フェッチ 1:デコード 2:実行 3:格納
+	// 1:フェッチ 2:デコード 3:実行1 4:実行2 5:実行3 6:格納
 	reg [3:0]             status;
     localparam s_idle = 0;
-    localparam s_first = 1;
-    localparam s_second = 2;
-    localparam s_third = 3;
+    localparam s_1 = 1;
+    localparam s_2 = 2;
+    localparam s_3 = 3;
+    localparam s_4 = 4;
+    localparam s_5 = 5;
+    localparam s_6 = 6;
 
     reg [3:0]             err;
     
@@ -133,6 +136,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // FPUに渡す引数
     assign f_argument = (now_inst[31:26] == cop1 && now_inst[25:21] == f_mtc1) ? (register_int[now_inst[20:16]]) : (register_float[now_inst[20:16]]);
     
+    // メインFPU
     fpu1 fpu11(
         now_inst[31:26],
         now_inst[25:21],
@@ -143,12 +147,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
         f_exception
     );
 
+    // fequal(fbne用)
     fequal fequall(
     	register_float[now_inst[25:21]],
     	register_float[now_inst[20:16]],
     	fequal_res
     	);
 
+    // fless(fbg用)
     fless flessl(
     	register_float[now_inst[20:16]],
     	register_float[now_inst[25:21]],
@@ -166,8 +172,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // 最初に送るバイトを送り終えたなら0
     reg first_send;
     
-    // write-enablu
-    assign we = (now_inst[31:26] == sw || now_inst[31:26] == sws) && (status == s_first);
+    // write-enable
+    assign we = (now_inst[31:26] == sw || now_inst[31:26] == sws) && (status == s_1);
     
     // 読み出し・書き出しに使うメモリアドレス
     assign memory_addr = register_int[now_inst[25:21]][31:2] + immediate[31:2];
@@ -179,6 +185,19 @@ module top #(CLK_PER_HALF_BIT = 520) (
     assign sender_ready = (now_inst[31:26] == special &&
                            now_inst[5:0] == s_out) || first_send;
 
+    // RSレジスタ
+    reg [31:0] argument1;
+    // RTレジスタ
+    reg [31:0] argument2;
+    // 分岐用レジスタ
+    reg [31:0] argument3;
+
+    // 演算結果
+    reg [31:0] result;
+
+    // 分岐命令フラグ
+    reg jump;
+
     initial begin
         // 各種初期化
         buffer_valid_idx <= 32'b0;
@@ -189,7 +208,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
         end
         register_int[27] <= 32'b00000000000000001000000000000000;
         inst_stop <= 1'b0;
-    	status <= s_first;
+    	status <= s_1;
     	complete <= 4'b0;
     	pc <= 32'b0;
     	$readmemb("copy.mem", inst);
@@ -210,8 +229,10 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // in命令で4バイト分の入力が終わっているか？
     reg finished_write;
 
+
+
     always @(posedge clk) begin
-        if (first_send && status == s_second) begin
+        if (first_send && status == s_2) begin
             first_send <= 1'b0;
         end
         if (receiver_valid && !reading) begin
@@ -234,14 +255,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
             buffer_reading_idx <= 32'b0;
             register_int[27] <= 32'b00000000000000001000000000000000;
             inst_stop <= 1'b0;
-            status <= s_first;
+            status <= s_1;
             err <= 4'b0000;
             complete <= 4'b0000;
             pc <= 0;
     	    $readmemb("copy.mem", inst);
         end else if (status == s_idle) begin
 
-        end else if (status == s_first) begin
+        end else if (status == s_1) begin
             // フェッチフェーズ
 
             if (inst_stop == 1'b0) begin
@@ -249,180 +270,217 @@ module top #(CLK_PER_HALF_BIT = 520) (
             	// プログラムカウンタは常に次の命令の値を格納している
             	// そのため、相対的にジャンプするときには注意が必要
             	pc <= pc + 1;
+                
+                // 分岐命令フラグはtrueにしか更新しないため、
+                // ここで初期化しておく 
+                jump <= 1'b0;
             end else begin
                 status <= s_idle;
             end
 
-        	status <= s_second;
+        	status <= s_2;
 
-        end else if (status == s_second) begin
+        end else if (status == s_2) begin
             // デコードフェーズ
-
-        	case (now_inst[31:26])
-        		// special命令群の実行
-        		special:
-        			case (now_inst[5:0])
-        				s_add:
-        					register_int[now_inst[15:11]] <= register_int[now_inst[25:21]] + register_int[now_inst[20:16]];
-        				s_sub:
-                            register_int[now_inst[15:11]] <= register_int[now_inst[25:21]] - register_int[now_inst[20:16]];
-                        s_mult:
-                            register_int[now_inst[15:11]] <= register_int[now_inst[25:21]] * register_int[now_inst[20:16]];
-                        s_div:
-                        	register_int[now_inst[15:11]] <= register_int[now_inst[25:21]] / register_int[now_inst[20:16]];
-                        s_mod:
-                        	register_int[now_inst[15:11]] <= register_int[now_inst[25:21]] % register_int[now_inst[20:16]];
+            case (now_inst[31:26])
+                // special命令群の実行
+                special:
+                    case (now_inst[5:0])
+                        s_add, s_sub, s_mult, s_div, s_mod: begin
+                            argument1 <= register_int[now_inst[25:21]];
+                            argument2 <= register_int[now_inst[20:16]];
+                        end
                         s_mov:
-                        	register_int[now_inst[20:16]] <= register_int[now_inst[25:21]];
+
                         s_retl:
-                        	// プログラムカウンタは次の値を保持しているため、+1の必要はない
-                        	pc <= register_int[28];
+                            jump <= 1'b1;
+                            argument3 <= register_int[28];
                         s_jr:
-                        	pc <= register_int[now_inst[25:21]];
+                            jump <= 1'b1;
+                            argument3 <= register_int[now_inst[25:21]];
                         s_ret:
-                            inst_stop <= 1'b1;
                         s_in:
-                            if (buffer_reading_idx < buffer_valid_idx && !finished_write) begin
-                                if(writing_byte == 2'b00) begin
-                                    register_int[now_inst[25:21]][7:0] <= buffer[buffer_reading_idx];
-                                end else if(writing_byte == 2'b01) begin
-                                    register_int[now_inst[25:21]][15:8] <= buffer[buffer_reading_idx];
-                                end else if(writing_byte == 2'b10) begin
-                                    register_int[now_inst[25:21]][23:16] <= buffer[buffer_reading_idx];
-                                end else begin
-                                    finished_write <= 1'b1;
-                                    register_int[now_inst[25:21]][31:24] <= buffer[buffer_reading_idx];
-                                end
-                                writing_byte <= writing_byte + 1;
-                            	buffer_reading_idx <= buffer_reading_idx + 1;
-                            end
                         s_fin:
-                        	if (buffer_reading_idx < buffer_valid_idx && !finished_write) begin
-                        		if(writing_byte == 2'b00) begin
-                                    register_float[now_inst[25:21]][7:0] <= buffer[buffer_reading_idx];
-                                end else if(writing_byte == 2'b01) begin
-                                    register_float[now_inst[25:21]][15:8] <= buffer[buffer_reading_idx];
-                                end else if(writing_byte == 2'b10) begin
-                                    register_float[now_inst[25:21]][23:16] <= buffer[buffer_reading_idx];
-                                end else begin
-                                    finished_write <= 1'b1;
-                                    register_float[now_inst[25:21]][31:24] <= buffer[buffer_reading_idx];
-                                end
-                                writing_byte <= writing_byte + 1;
-                                buffer_reading_idx <= buffer_reading_idx + 1;
-                        	end
-                        default: begin
-        					if (err == 4'b0000) begin
-        					   err_pc <= pc;
-        					end
-        					err <= 4'b0010;
-        			    end
-        					
-        					
-        			endcase
-        		
+
+                    endcase // now_inst[5:0]
                 cop1:
-                    if (now_inst[5:0] == s_mov) begin
-                        register_float[now_inst[20:16]] <= register_float[now_inst[25:21]];
-                    end else if(now_inst[25:21] == f_others) begin
-                        register_float[now_inst[10:6]] <= f_result;
-                    end else if(now_inst[25:21] == f_mfc1) begin
-                        register_int[now_inst[20:16]] <= f_result;
-                    end else if(now_inst[25:21] == f_mtc1) begin
-                        register_float[now_inst[15:11]] <= f_result;
+                addi:
+                lw:
+                ilw:
+                lws:
+                ilws:
+                j: begin
+                    jump <= 1'b1;
+                    argument3 <= {6'b0, now_inst[25:0]};
+                end
+                beq, bne, bl, bg: begin
+                    jump <= 1'b1;
+                    argument1 <= register_int[now_inst[25:21]];
+                    argument2 <= register_int[now_inst[20:16]];
+                    argument3 <= pc + {16'b0, now_inst[15:0]};
+                end
+                jal: begin
+                    jump <= 1'b1;
+                    register_int[28] <= pc;
+                    argument3 <= {6'b0, now_inst[25:0]};
+                end
+                jalr: begin
+                    jump <= 1'b1;
+                    register_int[28] <= pc;
+                    argument3 <= register_int[now_inst[25:21]];
+                end
+                fbne:
+                fbg:
+                sll:
+            endcase // now_inst[31:26]
+
+            status <= s_3;
+
+        end else if (status == s_3) begin
+            // 実行フェーズその1
+            case (now_inst[31:26])
+                // special命令群の実行
+                special:
+                    case (now_inst[5:0])
+                        s_add:
+                            result <= argument1 + argument2;
+                        s_sub:
+                            result <= argument1 - argument2;
+                        s_mult:
+                            result <= argument1 * argument2;
+                        s_div:
+                            result <= argument1 / argument2;
+                        s_mod:
+                            result <= argument1 % argument2;
+                        s_mov:
+                            result <= register_int[now_inst[25:21]];
+                        s_retl:
+                            result <= argument3;
+                        s_jr:
+                            result <= argument3;
+                        s_ret:
+                        s_in:
+                        s_fin:
+
+                    endcase // now_inst[5:0]
+                cop1:
+                addi:
+                lw:
+                ilw:
+                lws:
+                ilws:
+                j: begin
+                    result <= argument3;
+                end
+                beq: begin
+                    if (argument1 == argument2) begin
+                        result <= argument3;
+                    else begin
+                        result <= pc;
                     end
-                
-        		addi:
-        			register_int[now_inst[20:16]] <= register_int[now_inst[25:21]] + immediate;
-        		lw:
-        			register_int[now_inst[20:16]] <= read_data;
-        		ilw:
-        			register_int[now_inst[20:16]] <= inst[register_int[now_inst[25:21]] + immediate];
-        		//sw:
-        			/* do nothing */
-        		lws:
-        			register_float[now_inst[20:16]] <= read_data;
-        		ilws:
-        			register_float[now_inst[20:16]] <= inst[register_int[now_inst[25:21]] + immediate];
-        		//sws:
-        			/* do nothing */
-        		j:
-        			pc <= now_inst[25:0];
-        		beq:
-        			if (register_int[now_inst[25:21]] == register_int[now_inst[20:16]]) begin
-        				pc <= pc + minus_immediate;
-        			end
-        		jal: begin
-        			register_int[28] <= pc;
-        			pc <= now_inst[25:0];
-        		end
-        		jalr: begin
-        			register_int[28] <= pc;
-        			pc <= register_int[now_inst[25:21]];
-        		end
-        		bne:
-        			if(register_int[now_inst[25:21]] != register_int[now_inst[20:16]]) begin
-        				pc <= pc + minus_immediate;
-        			end
-        		
-        		bl:
-                    if(register_int[now_inst[25:21]][31:31] == 1'b1 && register_int[now_inst[20:16]][31:31] == 1'b1) begin
-                        if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
-                            pc <= pc + minus_immediate;
-                        end
-                    end else if (register_int[now_inst[25:21]][31:31] == 1'b0 && register_int[now_inst[20:16]][31:31] == 1'b0) begin
-                        if(register_int[now_inst[25:21]] < register_int[now_inst[20:16]]) begin
-                            pc <= pc + minus_immediate;
-                        end
-                    end else if (register_int[now_inst[25:21]][31:31] == 1'b1 && register_int[now_inst[20:16]][31:31] == 1'b0) begin
-                        pc <= pc + minus_immediate;
+                end
+                jal: begin
+                    result <= argument3;
+                end
+                jalr: begin
+                    result <= argument3;
+                end
+                bne: begin
+                    if (argument1 != argument2) begin
+                        result <= argument3;
+                    else begin
+                        result <= pc;
                     end
-        		bg:
-        			if(register_int[now_inst[25:21]][31:31] == 1'b1 && register_int[now_inst[20:16]][31:31] == 1'b1) begin
-                        if(register_int[now_inst[25:21]] < register_int[now_inst[20:16]]) begin
-                            pc <= pc + minus_immediate;
-                        end
-                    end else if (register_int[now_inst[25:21]][31:31] == 1'b0 && register_int[now_inst[20:16]][31:31] == 1'b0) begin
-                        if(register_int[now_inst[25:21]] > register_int[now_inst[20:16]]) begin
-                            pc <= pc + minus_immediate;
-                        end
-                    end else if (register_int[now_inst[25:21]][31:31] == 1'b0 && register_int[now_inst[20:16]][31:31] == 1'b1) begin
-                        pc <= pc + minus_immediate;
+                end
+                bl: begin
+                    if (argument1 < argument2) begin
+                        result <= argument3;
+                    else begin
+                        result <= pc;
                     end
-        		fbne:
-        			if(!fequal_res) begin
-        				pc <= pc + minus_immediate;
-        			end
-        		fbg:
-        			if(fless_res) begin
-        				pc <= pc + minus_immediate;
-        			end
-        		sll:
-        			register_int[now_inst[15:11]] <= register_int[now_inst[20:16]] << register_int[now_inst[10:6]];
-        		
-        		default:
-        		    if (now_inst[31:26] != sw) begin
-        			     err <= 4'b0011;
-        			end
-        	endcase
-        	// if (now_inst == (looking instruction) && !(break condition))
-        	if ((now_inst[31:26] == lw || now_inst[31:26] == lws) && complete != 4'b0010) begin
-        	   complete <= complete + 1;
-        	end else if (now_inst[31:26] == special && now_inst[5:0] == s_in && !finished_write) begin
-               complete <= complete + 1;
-            end else if (now_inst[31:26] == special && now_inst[5:0] == s_fin && !finished_write) begin
-               complete <= complete + 1;
-            end else if (now_inst[31:26] == special && now_inst[5:0] == s_out && sender_sending) begin
-               complete <= complete + 1;
+                end
+                bg: begin
+                    if(argument1 > argument2) begin
+                        result <= argument3;
+                    else begin
+                        result <= pc;
+                    end
+                end
+                fbne:
+                fbg:
+                sll:
+            endcase // now_inst[31:26]
+
+            status <= s_4;
+
+        end else if (status == s_4) begin
+            // 実行フェーズその2
+            if (flag) begin
+                pc <= result;
+                status <= s_1;
             end else begin
-               finished_write <= 1'b0;
-        	   complete <= 4'b0000;
-        	   status <= s_first;
-        	end
-        	   
+                case (now_inst[31:26])
+                    // special命令群の実行
+                    special:
+                        case (now_inst[5:0])
+                            s_mov:
+                                register_int[now_inst[20:16]] <= result;
+                            s_ret:
+                            s_in:
+                            s_fin:
+
+                        endcase // now_inst[5:0]
+                    cop1:
+                    addi:
+                    lw:
+                    ilw:
+                    lws:
+                    ilws:
+                    jal:
+                    jalr:
+                    fbne:
+                    fbg:
+                    sll:
+                endcase // now_inst[31:26]
+                status <= s_5;
+            end
+
+        end else if (status == s_5) begin
+            // 実行フェーズその3
         end else begin
-        	err <= 1;
-        end
+            // 格納フェーズ
+            case (now_inst[31:26])
+                // special命令群の実行
+                special:
+                    case (now_inst[5:0])
+                        s_add, s_sub, s_mult, s_div, s_mod:
+                            register_int[now_inst[15:11]] <= result;
+                        s_mov:
+                        s_retl:
+                        s_jr:
+                        s_ret:
+                        s_in:
+                        s_fin:
+
+                    endcase // now_inst[5:0]
+                cop1:
+                addi:
+                lw:
+                ilw:
+                lws:
+                ilws:
+                j:
+                beq:
+                jal:
+                jalr:
+                bne:
+                bl:
+                bg:
+                fbne:
+                fbg:
+                sll:
+            endcase // now_inst[31:26]
+
     end
    
 endmodule
