@@ -17,12 +17,11 @@ union hoge{
 } x;
 void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg, int* now, unsigned int* mem, unsigned int* inst_mem,int* howmany_label, pair<string,int>* label_list,int array_num){
   switch(code >> 26){
-		int rt,rs,ft,base,fs,rd,sa;
+		int rt,rs,ft,base,fs,rd,sa,immediate;
 		case 0b001000 :
 			//ADDI命令の実行
 			rs = (int)((code >> 21) & 0b11111);
 			rt = (int)((code >> 16) & 0b11111);
-			int immediate;
 			//immediateは場合分けが必要
 			if((code>>15)&0b1){
 				immediate = (int)(code&0b111111111111111) - power(2,15);
@@ -201,6 +200,17 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
       cout << ((reg[rt]) << reg[sa]) << endl;*/
       reg[rd] = (reg[rt]) << reg[sa];
 			break;
+    case 0b111110 :
+      //execute slli instruction
+      rt = (int)((code >> 21) & 0b11111);
+      rs = (int)((code >> 16) & 0b11111);
+      if((code>>15)&0b1){
+        immediate = (int)(code&0b111111111111111) - power(2,15);
+      }else{
+        immediate = (int)(code&0b1111111111111111);
+      }
+      reg[rt] = (reg[rs]) << immediate;
+      break;
 		case 0b101011 :
 			//execute sw instruction
 	    base = (int)((code >> 21) & 0b11111);
