@@ -57,6 +57,7 @@ int main(int argc, char**argv){
   execute_instruction = (string *)malloc(66536 * sizeof(string));
   memset(execute_instruction, 0, (66536 * sizeof(string)));
 
+
 	//label解決をまず行う
 	int line_num = 0; //line number 
 	int array_num = 0; //represents where to save label information
@@ -87,6 +88,7 @@ int main(int argc, char**argv){
       }
     } else {
       // solve label in the text_section
+      if (one_assemble_instruction.size() == 0) {line_num++; break;}
       label_solver(one_assemble_instruction,label_list,&line_num,&array_num,execute_instruction);
     }
 	}while(!reading_file.eof());
@@ -116,6 +118,7 @@ int main(int argc, char**argv){
 	do
   {
     getline(reading_file1, one_assemble_instruction);
+    if(one_assemble_instruction.size() == 0) break;
     instruction_set[inst_num] = one_assemble_instruction;
 		inst_num = inst_num + 1;
 	}while(!reading_file1.eof());
