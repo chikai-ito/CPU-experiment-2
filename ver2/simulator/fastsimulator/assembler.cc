@@ -418,10 +418,10 @@ string assemble (string line, int option){
 		return_code = "11111100000" + rt_s + rd_s + sa_s + "000000";
 	}
   else if (opcode == "slli"){
-    string rt, rs, immediate;
-    s >> rt >> rs >> immediate;
-    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+    string rs, rt, immediate;
+    s >> rs >> rt >> immediate;
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
+    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     int immediate_int = atoi(immediate.c_str());
     
     string immediate_s;
@@ -431,7 +431,7 @@ string assemble (string line, int option){
     }else{
       immediate_s = "0" + decimal_to_binary(immediate_int, 15);
     }
-    return_code = "111110" + rt_s + rs_s + immediate_s;
+    return_code = "111110" + rs_s + rt_s + immediate_s;
   }
 	else if (opcode == "sub"){
 		string rs,rt,rd;
