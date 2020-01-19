@@ -423,12 +423,11 @@ for(int now = 0; now < instr_num; now++)
 			default :
 				//最初の6文字で命令の判別が可能な場合
 				switch(code >> 26){
-					int rt,rs,ft,base,fs,rd,sa;
+					int rt,rs,ft,base,fs,rd,sa,immediate;
 					case 0b001000 :
 						//ADDI命令の実行
 						rs = (int)((code >> 21) & 0b11111);
 						rt = (int)((code >> 16) & 0b11111);
-						int immediate;
 						//immediateは場合分けが必要
 						if((code>>15)&0b1){
 							immediate = (int)(code&0b111111111111111) - power(2,15);
@@ -604,6 +603,17 @@ for(int now = 0; now < instr_num; now++)
 			      cout << ((reg[rt]) << reg[sa]) << endl;*/
 			      reg[rd] = (reg[rt]) << reg[sa];
 						break;
+          case 0b111110 :
+            //execute slli instruction
+            rt = (int)((code >> 21) & 0b11111);
+            rs = (int)((code >> 16) & 0b11111);
+            if((code>>15)&0b1){
+              immediate = (int)(code&0b111111111111111) - power(2,15);
+            }else{
+              immediate = (int)(code&0b1111111111111111);
+            }
+            reg[rt] = (reg[rs]) << immediate;
+            break;
 					case 0b101011 :
 						//execute sw instruction
 				    base = (int)((code >> 21) & 0b11111);
