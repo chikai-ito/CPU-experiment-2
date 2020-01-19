@@ -202,8 +202,8 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
 			break;
     case 0b111110 :
       //execute slli instruction
-      rt = (int)((code >> 21) & 0b11111);
-      rs = (int)((code >> 16) & 0b11111);
+      rs = (int)((code >> 21) & 0b11111);
+      rt = (int)((code >> 16) & 0b11111);
       if((code>>15)&0b1){
         immediate = (int)(code&0b111111111111111) - power(2,15);
       }else{
