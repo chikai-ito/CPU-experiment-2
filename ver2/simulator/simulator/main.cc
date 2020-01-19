@@ -176,7 +176,6 @@ int main(int argc, char**argv){
   }
 
 
-
 	//it is for executing simulator
 	ofstream writing_file;
   writing_file.open("machine_code.txt");
@@ -191,6 +190,7 @@ int main(int argc, char**argv){
     writing_file << one_machine_code << endl;
   }
   writing_file.close();
+
 
 
   //it is for -label option 
@@ -230,7 +230,6 @@ int main(int argc, char**argv){
     instr_num = instr_num + 1;
   }while(!reading_file2.eof());
   reading_file2.close();
-
 
 
 //file stream creation
@@ -573,7 +572,6 @@ long long howmany_instructions = 0;
 	
 for(int now = 0; now < instr_num; now++)
 	{
-    
 
     //printf("%d\n",now);
     
