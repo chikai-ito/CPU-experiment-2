@@ -35,7 +35,7 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
       rs = (int)((code >> 21) & 0b11111);
 			rt = (int)((code >> 16) & 0b11111);
 			//*nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			if((code>>16)&0b1){
+			if((code>>15)&0b1){
 				if((int)reg[rs] == (int)reg[rt]) { *now = *now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			}else{
 				if((int)reg[rs] == (int)reg[rt]) { *now = *now + (int)(code&0b1111111111111111) - 1; }
