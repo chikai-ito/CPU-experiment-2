@@ -43,25 +43,7 @@ let rec g env = function (* 定数畳み込みルーチン本体 (caml2html: constfold_g) *)
      let valx = findf x env in
      let valy = findf y env in
      cmp_fold cmp valx valy e1 e2
-  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, g env e1, g env e2)                                              
-  (* | IfEq(x, y, e1, e2) when memi x env && memi y env ->
-   *    if findi x env = findi y env then g env e1 else g env e2
-   * | IfEq(x, y, e1, e2) when memf x env && memf y env ->
-   *    if findf x env = findf y env then g env e1 else g env e2
-   * | IfEq(x, y, e1, e2) ->
-   *    IfEq(x, y, g env e1, g env e2)
-   * | IfLE(x, y, e1, e2) when memi x env && memi y env ->
-   *    if findi x env <= findi y env then g env e1 else g env e2
-   * | IfLE(x, y, e1, e2) when memf x env && memf y env ->
-   *    if findf x env <= findf y env then g env e1 else g env e2
-   * | IfLE(x, y, e1, e2) ->
-   *    IfLE(x, y, g env e1, g env e2)
-   * | IfLt(x, y, e1, e2) when memi x env && memi y env ->
-   *    if findi x env <= findi y env then g env e1 else g env e2
-   * | IfLt(x, y, e1, e2) when memf x env && memf y env ->
-   *    if findf x env <= findf y env then g env e1 else g env e2
-   * | IfLt(x, y, e1, e2) ->
-   *    IfLt(x, y, g env e1, g env e2) *)
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, g env e1, g env e2)
   | Let((x, t), e1, e2) -> (* letのケース (caml2html: constfold_let) *)
       let e1' = g env e1 in
       let e2' = g (M.add x e1' env) e2 in

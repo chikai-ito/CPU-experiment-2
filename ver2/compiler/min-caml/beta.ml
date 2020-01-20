@@ -24,11 +24,6 @@ let rec g env = function (* β簡約ルーチン本体 (caml2html: beta_g) *)
   | FMul(x, y) -> FMul(find x env, find y env)
   | FDiv(x, y) -> FDiv(find x env, find y env)
   | If(cmp, x, y, e1, e2) -> If(cmp, find x env, find y env, g env e1, g env e2)
-  (*
-  | IfEq(x, y, e1, e2) -> IfEq(find x env, find y env, g env e1, g env e2)
-  | IfLE(x, y, e1, e2) -> IfLE(find x env, find y env, g env e1, g env e2)
-  | IfLt(x, y, e1, e2) -> IfLt(find x env, find y env, g env e1, g env e2)
-   *)
   | Let((x, t), e1, e2) -> (* letのβ簡約 (caml2html: beta_let) *)
       (match g env e1 with
       | Var(y) ->

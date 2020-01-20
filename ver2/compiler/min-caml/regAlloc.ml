@@ -11,8 +11,6 @@ let rec target' src (dest, t) = function
   | FMov(x) when x = src && is_reg dest ->
       assert (t = Type.Float);
       false, [dest]
-  (* | IfEq(_, _, e1, e2) | IfLE(_, _, e1, e2) | IfLt(_,_,e1,e2)
-   *   | IfFEq(_, _, e1, e2) | IfFLE(_, _, e1, e2) -> *)
   | If(_,_,_,e1,e2) | FIf(_,_,_,e1,e2) ->
       let c1, rs1 = target src (dest, t) e1 in
       let c2, rs2 = target src (dest, t) e2 in
@@ -134,11 +132,6 @@ and g' dest cont regenv = function (* 各命令のレジスタ割り当て (caml2html: regal
   | SLL(x,y) -> (Ans(SLL(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | SLLI(x,C(i)) -> (Ans(SLLI(find x Type.Int regenv, C(i))), regenv)
   | SLLI(_,V(_)) -> failwith "in RegAlloc.g': non immediate second argument to SLLI"
-  (* | Add(x, y') -> (Ans(Add(find x Type.Int regenv, find' y' regenv)), regenv)
-   * | Sub(x, y') -> (Ans(Sub(find x Type.Int regenv, find' y' regenv)), regenv)
-   * | Mul(x, y') -> (Ans(Mul(find x Type.Int regenv, find' y' regenv)), regenv)
-   * | Div(x, y') -> (Ans(Div(find x Type.Int regenv, find' y' regenv)), regenv)
-   * | SLL(x, y') -> (Ans(SLL(find x Type.Int regenv, find' y' regenv)), regenv) *)
   | Ld(x, y') -> (Ans(Ld(find x Type.Int regenv, find' y' regenv)), regenv)
   | ILd(x, y') -> (Ans(ILd(find x Type.Int regenv, find' y' regenv)), regenv)
   | St(x, y, z') -> (Ans(St(find x Type.Int regenv, find y Type.Int regenv, find' z' regenv)), regenv)
@@ -160,18 +153,6 @@ and g' dest cont regenv = function (* 各命令のレジスタ割り当て (caml2html: regal
   | FIf(cmp,x,y,e1,e2) as exp ->
      g'_if dest cont regenv exp
        (fun e1' e2' -> FIf(cmp, find x Type.Float regenv, find y Type.Float regenv, e1', e2')) e1 e2
-  (* | IfEq(x, y', e1, e2) as exp ->
-   *    g'_if dest cont regenv exp (fun e1' e2' -> IfEq(find x Type.Int regenv, find' y' regenv, e1', e2')) e1 e2
-   * | IfLE(x, y', e1, e2) as exp ->
-   *    g'_if dest cont regenv exp (fun e1' e2' -> IfLE(find x Type.Int regenv, find' y' regenv, e1', e2')) e1 e2
-   * | IfLt(x, y', e1, e2) as exp ->
-   *    g'_if dest cont regenv exp (fun e1' e2' -> IfLt(find x Type.Int regenv, find' y' regenv, e1', e2')) e1 e2
-   * | IfFEq(x, y, e1, e2) as exp ->
-   *    g'_if dest cont regenv exp (fun e1' e2' -> IfFEq(find x Type.Float regenv, find y Type.Float regenv, e1', e2')) e1 e2
-   * | IfFLE(x, y, e1, e2) as exp ->
-   *    g'_if dest cont regenv exp (fun e1' e2' -> IfFLE(find x Type.Float regenv, find y Type.Float regenv, e1', e2')) e1 e2
-   * | IfFLt(x, y, e1, e2) as exp ->
-   *    g'_if dest cont regenv exp (fun e1' e2' -> IfFLt(find x Type.Float regenv, find y Type.Float regenv, e1', e2')) e1 e2 *)
   | CallCls(x, ys, zs) as exp ->
       if List.length ys > Array.length regs - 2 || List.length zs > Array.length fregs - 1 then
         failwith (Format.sprintf "cannot allocate registers for arugments to %s" x)

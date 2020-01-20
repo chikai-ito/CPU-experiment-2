@@ -22,9 +22,6 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
   | If of cmp * Id.t * Id.t * t * t
-  (* | IfEq of Id.t * Id.t * t * t
-   * | IfLE of Id.t * Id.t * t * t
-   * | IfLt of Id.t * Id.t * t * t *)
   | Let of (Id.t * Type.t) * t * t
   | Var of Id.t
   | MakeCls of (Id.t * Type.t) * closure * t
@@ -49,8 +46,6 @@ let rec fv = function
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y)
     -> S.of_list [x; y]
   | If(_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
-  (* | IfEq(x, y, e1, e2)| IfLE(x, y, e1, e2) | IfLt(x,y,e1,e2)
-   *   -> S.add x (S.add y (S.union (fv e1) (fv e2))) *)
   | Let((x, t), e1, e2) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x) -> S.singleton x
   | MakeCls((x, t), { entry = l; actual_fv = ys }, e)
@@ -91,9 +86,6 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
          | KNormal.LE -> LE
          | KNormal.Lt -> Lt) in
       If(cls_cmp cmp, x, y, g env known e1, g env known e2))
-  (* | KNormal.IfEq(x, y, e1, e2) -> IfEq(x, y, g env known e1, g env known e2)
-   * | KNormal.IfLE(x, y, e1, e2) -> IfLE(x, y, g env known e1, g env known e2)
-   * | KNormal.IfLt(x, y, e1, e2) -> IfLt(x, y, g env known e1, g env known e2) *)
   | KNormal.Let((x, t), e1, e2)
     -> Let((x, t), g env known e1, g (M.add x t env) known e2)
   | KNormal.Var(x) -> Var(x)

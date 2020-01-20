@@ -1,81 +1,139 @@
 (* libraries *)
 let rec fiszero x = (x = 0.)
-    in
-    let rec fispos x = (x > 0.)
-    in
-    let rec fisneg x = (x < 0.)
-    in
-    let rec fneg x = -. x
-    in
-    let rec fless x y = x < y
-    in 
-    let rec fsqr x = x *. x
-    in
-    let rec fabs x = if x < 0. then -. x else x
-    in
-    let rec fhalf x = x /. 2.
-    in
-    let rec fpow x y =
-      let rec loop_fpow x w y n =
-      if n = y then w
-      else
-        loop_fpow x (w *. x) y (n + 1) in
-      loop_fpow x 1. y 0  
-    in
-    let rec sin x =
-      let pi = 3.141593 in
-      if x > pi then
-        -. sin (x -. pi)
-      else if x < (-. pi) then
-        -. sin (x +. pi)
-      else
-        -. (1. /. 39916800.) *. (fpow x 11)
-        +. (1. /. 362880.) *. (fpow x 9)
-        -. (1. /. 5040.) *. (fpow x 7)
-        +. (1. /. 120.) *. (fpow x 5)
-        -. (1. /. 6.) *. (fpow x 3)
-        +. x
-    in
-    let rec cos x =
-      let pi = 3.141593 in
-      if x > pi then
-        -. cos (x -. pi)
-      else if x < (-. pi) then
-        -. cos (x +. pi)
-      else
-        -. (1. /. 3628800.) *. (fpow x 10)
-        +. (1. /. 40320.) *. (fpow x 8) 
-        -. (1. /. 720.) *. (fpow x 6)
-        +. (1. /. 24.) *. (fpow x 4)
-        -. (1. /. 2.) *. (fpow x 2)
-        +. 1.0
-    in
-    let rec atan x =
-      let h = 0.001 in
-      let rec f x = 1. /. (1. +. x *. x) in
-      let rec euler u v x h =
-        if u +. h > x then v
-        else
-          let vv = v +. h *. (f u) in
-          euler (u +. h) vv x h in
-      euler 0. 0. x h 
-    in
-    let rec print_int x =
-      let a = x / 100 in
-      let b = (x - a * 100) / 10 in
-      let c = (x - a * 100 - b * 10) in
-      if a > 0 then (
-        print_char (a + 48);
-        print_char (b + 48);
-        print_char (c + 48)
-      ) else (
-        if b > 0 then (
-          print_char (b + 48);
-          print_char (c + 48)
-        ) else (
-          print_char (c + 48)
-        )
-      ) in
+in
+let rec fispos x = (x > 0.)
+in
+let rec fisneg x = (x < 0.)
+in
+let rec fneg x = -. x
+in
+let rec fless x y = x < y
+in 
+let rec fsqr x = x *. x
+in
+let rec fabs x = if x < 0. then -. x else x
+in
+let rec fhalf x = x /. 2.
+in
+
+let rec kernel_sin x sgn =
+  let y = -.(x *. x) in
+  let a = 0.00019587841 *. x in
+  let a = 0.008332824 *. x +. a *. y in
+  let a = 0.16666668 *. x +. a *. y in
+  let a = 1. *. x +. a *. y in
+  a *. sgn
+in
+  
+let rec kernel_cos x sgn =
+  let y = -.(x *. x) in
+  let a = 0.0013695068 in
+  let a = 0.04166368 +. a *. y in
+  let a = 0.5 +. a *. y in
+  let a = 1. +. a *. y in
+  a *. sgn
+in
+
+let pi = 3.141592653589793
+in
+     
+let rec sin3 x sgn =
+  if x <= (pi /. 4.) then
+    kernel_sin x sgn
+  else
+    kernel_cos (pi/.2. -. x) sgn
+in
+
+let rec cos3 x sgn =
+  if x <= (pi /. 4.) then
+    kernel_cos x sgn
+  else
+    kernel_sin (pi/.2. -. x) sgn
+in
+
+let rec sin2 x sgn =
+  if x >= (pi /. 2.) then
+    sin3 (pi -. x) sgn
+  else
+    sin3 x sgn
+in
+
+let rec cos2 x sgn =
+  if x >= (pi /. 2.) then
+    cos3 (pi -. x) (-.sgn)
+  else
+    cos3 x sgn
+in
+
+let rec sin x =
+  if x >= pi *. 2. then
+    sin (x -. pi *. 2.)
+  else if x < 0. then
+    sin (x +. pi *. 2.)
+  else if x >= pi then
+    sin2 (x -. pi) (-.1.)
+  else
+    sin2 x 1.
+in
+
+let rec cos x =
+  if x >= pi *. 2. then
+    cos (x -. pi *. 2.)
+  else if x < 0. then
+    cos (x +. pi *. 2.)
+  else if x >= pi then
+    cos2 (x -. pi) (-.1.)
+  else
+    cos2 x 1.
+in
+
+let rec kernel_atan x sgn base =
+  let y = -. x *. x in
+  let a = 0.060035485 *. x in
+  let a = 0.08976446 *. x +. a *. y in
+  let a = 0.111111104 *. x +. a *. y in
+  let a = 0.142857142 *. x +. a *. y in
+  let a = 0.2 *. x +. a *. y in
+  let a = 0.3333333 *. x +. a *. y in
+  let a = x +. a *. y in
+  (base +. a) *. sgn
+in
+
+let rec atan x =
+  if x >= 0. then
+    if x < 0.4375 then
+      kernel_atan x 1. 0.
+    else if x < 2.4375 then
+      kernel_atan ((x -. 1.)/.(x +. 1.)) 1. (pi/.4.)
+    else
+      kernel_atan (1./.x) (-.1.) (-.pi/.2.)
+  else
+    let x = -.x in
+    if x < 0.4375 then
+      kernel_atan x (-.1.) 0.
+    else if x < 2.4375 then
+      kernel_atan ((x -. 1.)/.(x +. 1.)) (-.1.) (pi/.4.)
+    else
+      kernel_atan (1./.x) 1. (-.pi/.2.)
+in
+
+let rec print_int x =
+  let a = x / 100 in
+  let b = (x - a * 100) / 10 in
+  let c = (x - a * 100 - b * 10) in
+  if a > 0 then (
+    print_char (a + 48);
+    print_char (b + 48);
+    print_char (c + 48)
+  ) else (
+    if b > 0 then (
+      print_char (b + 48);
+      print_char (c + 48)
+    ) else (
+      print_char (c + 48)
+    )
+  )
+in
 
 
 (* open MiniMLRuntime;; *)

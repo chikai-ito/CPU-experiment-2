@@ -1,5 +1,6 @@
 (* give names to intermediate values (K-normalization) *)
 
+type cmp = Eq | NE | LE | Lt
 type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Unit
   | Int of int
@@ -22,11 +23,6 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
   | If of cmp * Id.t * Id.t * t * t
-  (*        
-  | IfEq of Id.t * Id.t * t * t (* 比較 + 分岐 (caml2html: knormal_branch) *)
-  | IfLE of Id.t * Id.t * t * t (* 比較 + 分岐 *)
-  | IfLt of Id.t * Id.t * t * t
-   *)
   | Let of (Id.t * Type.t) * t * t
   | Var of Id.t
   | LetRec of fundef * t
@@ -39,20 +35,15 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
-and cmp = Eq | NE | LE | Lt
 (*and loopdef = { index : Id.t; step : t; bound : t }*)
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
   | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) |
       FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
-  | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y) |
-      FAdd(x,y) | FSub(x,y) | FMul(x,y) | FDiv(x,y) |
-        Get(x,y) -> S.of_list [x;y]
-  (*
-  | IfEq(x,y,e1,e2) | IfLE(x,y,e1,e2) |
-    IfLt(x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
-   *)
+  | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y)
+    | FAdd(x,y) | FSub(x,y) | FMul(x,y) | FDiv(x,y)
+    | Get(x,y) -> S.of_list [x;y]
   | If (_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x,t),e1,e2) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x) -> S.singleton x
@@ -207,16 +198,6 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
                       (fun x -> bind (xs @ [x]) e2s) in
               bind [] e2s) (* left-to-right evaluation *)
       | e1, t ->
-         (match e1 with
-            Get(_) -> Printf.printf "Get\n";
-          | Unit -> Printf.printf "Unit\n";
-          | Out(_) -> Printf.printf "Out\n";
-          | App(_) -> Printf.printf "App\n";
-          | Var(_) -> Printf.printf "Var\n";
-          | Put(_) -> Printf.printf "Put\n";
-          | _ -> Printf.printf "others\n");
-         Type.print_type t;
-         Printf.printf "\n";
          assert false)
   | Syntax.Tuple(es) ->
       let rec bind xs ts = function (* "xs" and "ts" are identifiers and types for the elements *)

@@ -4,14 +4,11 @@ open KNormal
 let threshold = ref 100 (* Mainで-inlineオプションによりセットされる *)
 
 let rec size = function
-  (* | IfEq(_, _, e1, e2) | IfLE(_, _, e1, e2) *)
   | If(_,_,_,e1,e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) -> 1 + size e1 + size e2
   | LetTuple(_, _, e) -> 1 + size e
   | _ -> 1
 
 let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
-  (* | IfEq(x, y, e1, e2) -> IfEq(x, y, g env e1, g env e2)
-   * | IfLE(x, y, e1, e2) -> IfLE(x, y, g env e1, g env e2) *)
   | If(cmp,x,y,e1,e2) -> If(cmp,x,y, g env e1, g env e2)
   | Let(xt, e1, e2) -> Let(xt, g env e1, g env e2)
   | LetRec({ name = (x, t); args = yts; body = e1 }, e2) -> (* 関数定義の場合 (caml2html: inline_letrec) *)

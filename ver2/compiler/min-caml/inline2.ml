@@ -24,15 +24,6 @@ let rec occur x = function
   | If(cmp,y,z,e1,e2) ->
      x = y || x = z ||
        occur x e1 || occur x e2
-  (* | IfEq(y,z,e1,e2) ->
-   *    x = y || x = z ||
-   *      occur x e1 || occur x e2
-   * | IfLE(y,z,e1,e2) ->
-   *    x = y || x = z ||
-   *      occur x e1 || occur x e2
-   * | IfLt(y,z,e1,e2) ->
-   *    x = y || x = z ||
-   *      occur x e1 || occur x e2 *)
   | Let ((y,t),e1,e2) -> 
      (* terms are assumed to be alpha converted *)
      (* thus, bound variable y never equals x *)
@@ -75,18 +66,6 @@ let rec subst env = function
      let x, y = find x env, find y env in
      let e1, e2 = subst env e1, subst env e2 in
      If(cmp,x,y,e1,e2)
-  (* | IfEq(x,y,e1,e2) ->
-   *    let x, y = find x env, find y env in
-   *    let e1, e2 = subst env e1, subst env e2 in
-   *    IfEq(x,y,e1,e2)
-   * | IfLE(x,y,e1,e2) ->
-   *    let x, y = find x env, find y env in
-   *    let e1, e2 = subst env e1, subst env e2 in
-   *    IfLE(x,y,e1,e2)
-   * | IfLt(x,y,e1,e2) ->
-   *    let x, y = find x env, find y env in
-   *    let e1, e2 = subst env e1, subst env e2 in
-   *    IfLt(x,y,e1,e2) *)
   | Let((x,t),e1,e2) ->
      (* terms are assumed to be alpha converted *)
      let e1, e2 = subst env e1, subst env e2 in
@@ -110,7 +89,6 @@ let rec subst env = function
   | ExtFunApp(x,ys) -> ExtFunApp(x, List.map (fun x -> find x env) ys)
 
 let rec call_exists x = function
-  (* | IfEq(_,_,e1,e2) | IfLE(_,_,e1,e2) | IfLt(_,_,e1,e2) *)
   | If(_,_,_,e1,e2) | Let(_,e1,e2) ->
      call_exists x e1 || call_exists x e2
   | LetRec({ name = (y,t); args = zts; body = e1 },e2) ->
@@ -128,9 +106,6 @@ let rec is_recfun { name = (x,t); args = yts; body = e } =
 
 let rec inline2 fnlist = function
   | If(cmp,x,y,e1,e2) -> If(cmp,x,y,inline2 fnlist e1,inline2 fnlist e2)
-  (* | IfEq(x,y,e1,e2) -> IfEq(x,y,inline2 fnlist e1,inline2 fnlist e2)
-   * | IfLE(x,y,e1,e2) -> IfLE(x,y,inline2 fnlist e1,inline2 fnlist e2)
-   * | IfLt(x,y,e1,e2) -> IfLt(x,y,inline2 fnlist e1,inline2 fnlist e2) *)
   | Let((x,t),e1,e2) -> Let((x,t),inline2 fnlist e1,inline2 fnlist e2)
   | LetRec(fd,e2) ->
      let (x,_) = fd.name in

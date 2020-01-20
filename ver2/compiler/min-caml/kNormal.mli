@@ -20,11 +20,6 @@ type t =
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
   | If of cmp * Id.t * Id.t * t * t
-  (*
-  | IfEq of Id.t * Id.t * t * t
-  | IfLE of Id.t * Id.t * t * t
-  | IfLt of Id.t * Id.t * t * t
-   *)
   | Let of (Id.t * Type.t) * t * t
   | Var of Id.t
   | LetRec of fundef * t

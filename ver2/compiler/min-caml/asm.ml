@@ -15,11 +15,6 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | In of Id.t
   | Fin of Id.t
   | Out of Id.t
-  (* | Add of Id.t * id_or_imm
-   * | Sub of Id.t * id_or_imm
-   * | Mul of Id.t * id_or_imm
-   * | Div of Id.t * id_or_imm
-   * | SLL of Id.t * id_or_imm *)
   | AddI of Id.t * id_or_imm
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
@@ -44,16 +39,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | StF of Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
-  (* | IfEq of Id.t * id_or_imm * t * t
-   * | IfLE of Id.t * id_or_imm * t * t
-   * | IfLt of Id.t * id_or_imm * t * t
-   * | IfGE of Id.t * id_or_imm * t * t (\* 左右対称ではないので必要 *\)
-   * | IfGt of Id.t * id_or_imm * t * t (\* 左右対称ではないので必要 *\) *)
   | If of cmp * Id.t * Id.t * t * t
   | FIf of cmp * Id.t * Id.t * t * t
-  (* | IfFEq of Id.t * Id.t * t * t
-   * | IfFLE of Id.t * Id.t * t * t
-   * | IfFLt of Id.t * Id.t * t * t *)
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list
   | CallDir of Id.l * Id.t list * Id.t list
@@ -104,18 +91,13 @@ let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
     | FSqrt(x) | Floor(x) | Save(x, _) -> [x]
-  (* | Add(x, y') | Sub(x, y') | Mul(x, y') | Div(x, y') | SLL(x, y') *)
   | Ld(x, y') | LdF(x, y') | ILd(x,y') | ILdF(x,y')
     | AddI(x,y') | SLLI(x,y') -> x :: fv_id_or_imm y'
   | St(x, y, z') | StF(x, y, z') -> x :: y :: fv_id_or_imm z'
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
-  (* | IfEq(x, y', e1, e2) | IfLE(x, y', e1, e2) | IfGE(x, y', e1, e2) |
-   *     IfLt(x,y',e1,e2) | IfGt(x,y',e1,e2) -> x :: fv_id_or_imm y' @ remove_and_uniq S.empty (fv e1 @ fv e2) (\* uniq here just for efficiency *\) *)
   | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2)
     -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  (* | IfFEq(x, y, e1, e2) | IfFLE(x, y, e1, e2) |
-   *   IfFLt(x,y,e1,e2) -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (\* uniq here just for efficiency *\) *)
   | CallCls(x, ys, zs) -> x :: ys @ zs
   | CallDir(_, ys, zs) -> ys @ zs
 and fv = function
