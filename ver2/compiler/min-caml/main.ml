@@ -1,5 +1,5 @@
 let limit = ref 50
-let limit2 = ref 4
+let limit2 = ref 0
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
   Format.eprintf "iteration %d@." n;
@@ -22,7 +22,7 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   let syntax = Typing.f syntax in
   (* Syntax.print_syntax syntax; *)
   let kNormal = Alpha.f (KNormal.f syntax) in
-  let kNormal = iter !limit kNormal in 
+  let kNormal = iter !limit kNormal in
   let kNormal = ANormal.f (iter2 !limit2 kNormal) in
   (*Printf.printf "----ANormal----\n";
   KNormal.print_kNormal kNormal;*)
@@ -31,7 +31,8 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
        (Simm.f
           (Virtual.f
              (Closure.f
-                kNormal))))
+                (Lamlift.f
+                   kNormal)))))
 
 let string s = lexbuf stdout (Lexing.from_string s) (* 文字列をコンパイルして標準出力に表示する (caml2html: main_string) *)
 
@@ -48,7 +49,11 @@ let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
   let files = ref [] in
   Arg.parse
     [("-inline", Arg.Int(fun i -> Inline.threshold := i), "maximum size of functions inlined");
-     ("-iter", Arg.Int(fun i -> limit := i), "maximum number of optimizations iterated")]
+     ("-iter", Arg.Int(fun i -> limit := i), "maximum number of optimizations iterated");
+     ("-iter2", Arg.Int(fun i -> limit2 := i),
+      "maximum number of optimizations involving recursive functions iterated");
+     ("-argmax", Arg.Int(fun i -> Lamlift.argsize_max := i),
+      "maximum number of arguments functions can have after lambda lifting")]
     (fun s -> files := !files @ [s])
     ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^
      Printf.sprintf "usage: %s [-inline m] [-iter n] ...filenames without \".ml\"..." Sys.argv.(0));
