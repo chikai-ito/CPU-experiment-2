@@ -31,13 +31,6 @@ let expand xts ini addf addi =
     (fun (offset, acc) x t ->
       (offset + 4, addi x t offset acc))
 
-let asm_cmp cmp =
-  (match cmp with
-   | Closure.Eq -> Eq
-   | Closure.NE -> NE
-   | Closure.LE -> LE
-   | Closure.Lt -> Lt)
-
 let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
   | Closure.Unit -> Ans(Nop)
   | Closure.Int(i) ->
@@ -93,8 +86,8 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
   | Closure.FDiv(x, y) -> Ans(FDiv(x, y))
   | Closure.If(cmp, x, y, e1, e2) ->
       (match M.find x env with
-      | Type.Bool | Type.Int -> Ans(If(asm_cmp cmp, x, y, g env e1, g env e2))
-      | Type.Float -> Ans(FIf(asm_cmp cmp, x, y, g env e1, g env e2))
+      | Type.Bool | Type.Int -> Ans(If(cmp, x, y, g env e1, g env e2))
+      | Type.Float -> Ans(FIf(cmp, x, y, g env e1, g env e2))
       | _ -> failwith "equality supported only for bool, int, and float")
   | Closure.Let((x, t1), e1, e2) ->
       let e1' = g env e1 in

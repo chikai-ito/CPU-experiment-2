@@ -16,7 +16,6 @@ let rec a_normal = function
      let e1', dflist1 = a_normal e1 in
      let e2', dflist2 = a_normal e2 in
      e2', (dflist2 @ (((x,t),e1')::dflist1))
-  (* | Var(x) -> Var(x), [] *)
   | LetRec({ name = (x,t); args = yts; body = e1 },e2) ->
      let e1, dflist1 = a_normal e1 in
      let e2, dflist2 = a_normal e2 in

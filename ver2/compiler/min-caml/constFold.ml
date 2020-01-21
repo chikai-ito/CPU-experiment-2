@@ -1,4 +1,5 @@
 open KNormal
+open Enums
 
 let memi x env =
   try (match M.find x env with Int(_) -> true | _ -> false)

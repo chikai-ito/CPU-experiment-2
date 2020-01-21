@@ -1,4 +1,5 @@
 open Asm
+open Enums
 
 external get : float -> int32 = "get"
 (*

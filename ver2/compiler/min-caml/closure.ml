@@ -1,5 +1,5 @@
+open Enums
 type closure = { entry : Id.l; actual_fv : Id.t list }
-type cmp = Eq | NE | LE | Lt
 type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Unit
   | Int of int
@@ -79,13 +79,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.FMul(x, y) -> FMul(x, y)
   | KNormal.FDiv(x, y) -> FDiv(x, y)
   | KNormal.If(cmp, x, y, e1, e2) ->
-     (let cls_cmp cmp =
-        (match cmp with
-         | KNormal.Eq -> Eq
-         | KNormal.NE -> NE
-         | KNormal.LE -> LE
-         | KNormal.Lt -> Lt) in
-      If(cls_cmp cmp, x, y, g env known e1, g env known e2))
+      If(cmp, x, y, g env known e1, g env known e2)
   | KNormal.Let((x, t), e1, e2)
     -> Let((x, t), g env known e1, g (M.add x t env) known e2)
   | KNormal.Var(x) -> Var(x)

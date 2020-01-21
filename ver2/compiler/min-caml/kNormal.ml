@@ -1,6 +1,6 @@
 (* give names to intermediate values (K-normalization) *)
-
-type cmp = Eq | NE | LE | Lt
+open Enums
+(* type cmp = Eq | NE | LE | Lt *)
 type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Unit
   | Int of int
@@ -368,41 +368,6 @@ and print_kNormal =
        Printf.printf "ELSE\n";
        print_kNormal s2;
        depth := !depth - 1
-      (*
-    | IfEq (id1,id2,s1,s2) ->
-      Printf.printf "IFEQ ";
-      Id.print_id id1;
-      Printf.printf " ";
-      Id.print_id id2;
-      Printf.printf "\nTHEN\n";      
-      depth := !depth + 1;
-      print_kNormal s1;
-      Printf.printf "ELSE\n";
-      print_kNormal s2;
-      depth := !depth - 1
-    | IfLE (id1,id2,s1,s2) ->
-      Printf.printf "IFLE ";
-      Id.print_id id1;
-      Printf.printf " ";
-      Id.print_id id2;
-      Printf.printf "\nTHEN\n";
-      depth := !depth + 1;
-      print_kNormal s1;
-      Printf.printf "ELSE\n";
-      print_kNormal s2;
-      depth := !depth - 1
-    | IfLt (id1,id2,s1,s2) ->
-      Printf.printf "IFL ";
-      Id.print_id id1;
-      Printf.printf " ";
-      Id.print_id id2;
-      Printf.printf "\nTHEN\n";
-      depth := !depth + 1;
-      print_kNormal s1;
-      Printf.printf "ELSE\n";
-      print_kNormal s2;
-      depth := !depth - 1
-*)
     | Let ((id,ty),s1,s2) ->
       Printf.printf "LET ";
       Id.print_id id;

@@ -1,6 +1,6 @@
+open Enums
 type id_or_imm = V of Id.t | C of int
 type data_t = I of int | F of float
-type cmp = Eq | NE | LE | Lt
 type t =
   | Ans of exp
   | Let of (Id.t * Type.t) * exp * t
@@ -14,11 +14,6 @@ and exp =
   | In of Id.t
   | Fin of Id.t
   | Out of Id.t
-  (* | Add of Id.t * id_or_imm
-   * | Sub of Id.t * id_or_imm
-   * | Mul of Id.t * id_or_imm
-   * | Div of Id.t * id_or_imm
-   * | SLL of Id.t * id_or_imm *)
   | AddI of Id.t * id_or_imm
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
@@ -43,14 +38,6 @@ and exp =
   | StF of Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
-  (* | IfEq of Id.t * id_or_imm * t * t
-   * | IfLE of Id.t * id_or_imm * t * t
-   * | IfLt of Id.t * id_or_imm * t * t
-   * | IfGE of Id.t * id_or_imm * t * t
-   * | IfGt of Id.t * id_or_imm * t * t
-   * | IfFEq of Id.t * Id.t * t * t
-   * | IfFLE of Id.t * Id.t * t * t
-   * | IfFLt of Id.t * Id.t * t * t *)
   | If of cmp * Id.t * Id.t * t * t
   | FIf of cmp * Id.t * Id.t * t * t
   (* closure address, integer arguments, and float arguments *)

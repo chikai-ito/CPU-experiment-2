@@ -142,7 +142,7 @@ in
 
 (* オブジェクトの個数 *)
 let n_objects = create_array 1 0
-    in
+in
 
 (* オブジェクトのデータを入れるベクトル（最大60個）*)
 let objects = 

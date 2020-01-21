@@ -1,24 +1,40 @@
 #data_section
-l.7 :	# 3.140000
-	.long	0x4048f5c3
 #text_section
 program_start :
-	fin	%f0
-	addi	%r0 %r1 l.7
-	ilw.s	%r1 %f1 0
-	fbge	%f1 %f0 fbl_else.10 
 	addi	%r0 %r1 1
-	j	fbl_cont.11 
-fbl_else.10 :
-	neg.s	%f1 %f1
-	fbge	%f0 %f1 fbl_else.12 
-	addi	%r0 %r1 2
-	j	fbl_cont.13 
-fbl_else.12 :
-	addi	%r0 %r1 3
-fbl_cont.13 :
-fbl_cont.11 :
+	addi	%r0 %r2 0
+	sw	%r26 %r28 4
+	addi	%r26 %r26 8
+	jal	min_caml_create_array 
+	addi	%r26 %r26 -8
+	lw	%r26 %r28 4
+	mov	%r27 %r24
+	addi	%r27 %r27 8
+	addi	%r0 %r2 loop.9
+	sw	%r24 %r2 0
+	sw	%r24 %r1 4
+	addi	%r0 %r1 0
+	sw	%r26 %r28 4
+	lw	%r24 %r23 0
+	addi	%r26 %r26 8	
+	jalr	%r23
+	addi	%r26 %r26 -8
+	lw	%r26 %r28 4
 	ret
+loop.9 :
+	lw	%r24 %r2 4
+	addi	%r0 %r3 10
+	bg	%r3 %r1 ble_else.23 
+	addi	%r0 %r1 0
+	slli	%r1 %r1 2
+	add	%r2 %r1 %r25
+	lw	%r25 %r1 0
+	retl
+ble_else.23 :
+	addi	%r0 %r2 1
+	add	%r1 %r2 %r1
+	lw	%r24 %r23 0
+	jr	%r23
 #libraries
 min_caml_create_array :
 	mov	%r1 %r3

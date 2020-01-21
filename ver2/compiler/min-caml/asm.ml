@@ -1,7 +1,7 @@
 (* SPARC assembly with a few virtual instructions *)
+open Enums
 type id_or_imm = V of Id.t | C of int
 type data_t = I of int | F of float
-type cmp = Eq | NE | LE | Lt
 type t = (* Ì¿Îá¤ÎÎó (caml2html: sparcasm_t) *)
   | Ans of exp
   | Let of (Id.t * Type.t) * exp * t

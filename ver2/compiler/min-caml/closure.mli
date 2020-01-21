@@ -1,5 +1,5 @@
+open Enums
 type closure = { entry : Id.l; actual_fv : Id.t list }
-type cmp = Eq | NE | LE | Lt
 type t =
   | Unit
   | Int of int
@@ -22,9 +22,6 @@ type t =
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
   | If of cmp * Id.t * Id.t * t * t
-  (* | IfEq of Id.t * Id.t * t * t
-   * | IfLE of Id.t * Id.t * t * t
-   * | IfLt of Id.t * Id.t * t * t *)
   | Let of (Id.t * Type.t) * t * t
   | Var of Id.t
   | MakeCls of (Id.t * Type.t) * closure * t
