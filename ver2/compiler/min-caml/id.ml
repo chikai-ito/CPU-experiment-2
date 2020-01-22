@@ -11,6 +11,10 @@ let rec pp_list = function
 let counter = ref 0
 let genid s =
   incr counter;
+  let s =
+    (match Str.split (Str.regexp "\\.") s with
+     | x::_ -> x
+     | _ -> assert false) in
   Printf.sprintf "%s.%d" s !counter
 
 let rec id_of_typ = function

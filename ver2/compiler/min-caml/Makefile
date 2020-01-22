@@ -8,6 +8,7 @@ NCSUFFIX = .opt
 CC = gcc
 CFLAGS = -g -O2 -Wall
 OCAMLLDFLAGS=-warn-error -31
+LIBS = str
 
 default: debug-code top $(RESULT) #do_test
 $(RESULT): debug-code top
@@ -25,7 +26,9 @@ syntax.ml parser.mly lexer.mll \
 typing.mli typing.ml kNormal.mli kNormal.ml aNormal.mli aNormal.ml \
 alpha.mli alpha.ml inline2.mli inline2.ml beta.mli beta.ml assoc.mli assoc.ml \
 inline.ml inline.mli constFold.mli constFold.ml elim.mli elim.ml \
-lamlift.mli lamlift.ml closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
+lamlift.mli lamlift.ml lNormal.ml loop.ml linline.ml \
+closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
+closure2.ml asm2.ml virtual2.ml \
 simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml \
 main.mli main.ml
 

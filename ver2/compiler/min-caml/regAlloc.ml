@@ -96,10 +96,12 @@ let find' x' regenv =
 let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)
   | Ans(exp) -> g'_and_restore dest cont regenv exp
   | Let((x, t) as xt, exp, e) ->
+     (* Â«ÇûÊÑ¿ôx¤¬¤¹¤Ç¤Ëregenv¤Ë¤¢¤ë¤È¤¤¤¦¤Î¤Ï *)
+     (* alpha conversion ¤¬¼ºÇÔ¤·¤Æ¤¤¤ë¤³¤È¤ò°ÕÌ£¤¹¤ë *)
      assert (not (M.mem x regenv));
      let cont' = concat e dest cont in
-      let (e1', regenv1) = g'_and_restore xt cont' regenv exp in
-      (match alloc dest cont' regenv1 x t with
+     let (e1', regenv1) = g'_and_restore xt cont' regenv exp in
+     (match alloc dest cont' regenv1 x t with
       | Spill(y) ->
           let r = M.find y regenv1 in
           let (e2', regenv2) = g dest cont (add x r (M.remove y regenv1)) e in
@@ -116,6 +118,7 @@ and g'_and_restore dest cont regenv exp = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥¯¤«¤é¥ì¥¸¥¹¥
     ((* Format.eprintf "restoring %s@." x; *)
      g dest cont regenv (Let((x, t), Restore(x), Ans(exp))))
 and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_gprime) *)
+    (* ¤³¤ì¤é¤ÎÌ¿Îá¤Ï¥ì¥¸¥¹¥¿¤ò»È¤ï¤Ê¤¤ *)
   | Nop | Set _ | SetL _ | Comment _ | Restore _ as exp -> (Ans(exp), regenv)
   | Mov(x) -> (Ans(Mov(find x Type.Int regenv)), regenv)
   | Neg(x) -> (Ans(Neg(find x Type.Int regenv)), regenv)

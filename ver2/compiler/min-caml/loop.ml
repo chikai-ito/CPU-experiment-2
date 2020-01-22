@@ -1,99 +1,94 @@
-open kNormal
+(* 末尾呼び出しの再帰関数をループに変換する *)
+(* 大域レジスタ割り当てを実行しやすくする *)
+(* expressions are assumed to be properly alpha converted *)
+open Enums
+open LNormal
 
-type cond = UptoE of Id.t | DowntoE of Id.t | Upto of Id.t | Downto of Id.t
-type loopinfo = { idx : Id.t;  bound : Id.t;
-                  funname : Id.t; args = Id.t list; step : int }
+(* ループの中には関数呼び出し，つまりAppが無いという条件を仮定する *)
+(* さらにループ中には関数定義も存在しないと仮定する *)
 
-let detect_loop1 args defs = function
-  | IfLE(x,y,e1,e2) ->
-     match detect_loop args defs with
-     | None -> None
-     | Some 
-     if List.mem args then
-       Some (x, UptoE(y))
-     else if List.mem args then
-       Some (y, Downto(x))
-  | _ -> None
+(* 自分自身を末尾再帰呼び出しする関数が考慮の対象となる *)
+let rec tail_call_exists x = function
+  | If(_,_,_,e1,e2) -> tail_call_exists x e1 || tail_call_exists x e2
+  | Let(_,_,e2) -> tail_call_exists x e2
+  | App(y,_) -> x = y 
+  | LetTuple(_,_,e) -> tail_call_exists x e
+  | _ -> false
 
+let rec no_calls = function
+  | If(_,_,_,e1,e2) | Let(_,e1,e2) -> no_calls e1 && no_calls e2
+  | LetRec(fn, e2) -> no_calls fn.body && no_calls e2
+  | App(_) -> false
+  | LetTuple(_,_,e) -> no_calls e
+  | _ -> true (* ループの中には関数呼び出しがないから，Loop(_,e)のeは追う必要がない．Subst(_,_,e)も同様 *)
 
-let detect_loop2 info consts next_ids = function
-  | IfEq(x,y,e1,e2) ->
-     detect_loop2 info consts next_ids e1 &&
-       detect_loop2 info consts next_ids e2
-  | IfLE(x,y,e1,e2) ->
-     detect_loop2 info consts next_ids e1 &&
-       detect_loop2 info consts next_ids e2
-  | IfLt(x,y,e1,e2) ->
-     detect_loop2 info consts next_ids e1 &&
-       detect_loop2 info consts next_ids e2
-  | Let((x,t),Int(i),e2) ->
-     if x = info.idx || x = info.bound then
-       false
-     else 
-       let consts = if i = 1 then M.add x 1 consts else consts in
-       detect_loop2 info consts next_ids e2
-  | Let((x,t),Neg(y),e2) ->
-     if x = info.idx || x = info.bound then
-       false
+(* function x is convertible to a loop when, in its body,
+ * there's no fundefs 
+ * & no function calls which aren't tail_calls of itself *)
+let rec convertible x = function
+  | If(_,_,_,e1,e2) -> convertible x e1 && convertible x e2
+  | Let(_,e1,e2) -> no_calls e1 (* 非末尾呼び出しの非存在 *) && convertible x e2 
+  | LetRec(_) -> false (* 関数定義は一発アウト *)
+  | App(y,_) -> x = y (* 末尾でも呼び出しは自分自身のみしか許されない *)
+  | LetTuple(_,_,e) -> convertible x e
+  | _ -> true (* ループの中に関数定義も呼び出しもない．no_calls中に同様の注意 *)
+
+(* convert a convertible function body into a loop *)
+(* i.e., replace App(x,zs) with a jump back to the starting point *)
+let rec loop_conv fn = function
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, loop_conv fn e1,loop_conv fn e2)
+  | Let(xt,e1,e2) -> Let(xt, e1, loop_conv fn e2) (* e1中には呼び出しはない *)
+  | LetRec(_) -> failwith "LNormal.loop_conv: inconvertible expression: fundef is detected"
+  | App(x,zs) -> 
+     assert (x = fst fn.name); (* 無いとは思うけど一応 *) (* considering only convertible functions *)
+     let ys = List.map fst fn.args in
+     (* List.fold_right2
+      *   (fun y z e -> Subst(y,z,e)) ys zs (Jump(L(fn.name))) (\* 変数を上書きしてジャンプ *\) *)
+     let yzs = List.fold_right2 (fun y z acc -> (y,z)::acc) ys zs [] in
+     Jump(yzs,L(fst fn.name))
+  | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_conv fn e)
+  | e -> e (* Loop, Substはよい *)
+
+(* 関数呼び出しの部分にループを埋める *)
+(* やっていることはほぼインライン化 *)
+(* loopはループ化したfn *)
+(* i.e., loop = Loop(L(fn.name), loop_conv fn fn.body) *)
+let rec loop_inline fn loop = function
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, loop_inline fn loop e1, loop_inline fn loop e2)
+  | Let(xt,e1,e2) -> Let(xt, loop_inline fn loop e1, loop_inline fn loop e2)
+  | LetRec({ name = xt; args = yts; body = e1 }, e2) ->
+     LetRec({ name = xt; args = yts; body = loop_inline fn loop e1 }, loop_inline fn loop e2)
+  | App(x,ys) when x = fst fn.name -> (* メイン *)
+     let ys' = List.map Id.genid ys in
+     let yts' = List.fold_right2 (* Letの挿入のために変数の型情報が必要 *)
+             (fun y t acc -> (y,t)::acc) ys' (List.map snd fn.args) [] in
+     let env = M.add_list2 (List.map fst fn.args) ys' M.empty in
+     let e = subst env M.empty loop in (* LNormal.subst *)
+     (* ysを新しい変数ys'にLet束縛する *)
+     (* ys'はループ中で代入されるので，こうしておかないとysのスコープがループ以降に続かない *)
+     List.fold_right2 (fun yt y m -> Let(yt,Var(y),m)) yts' ys e
+  | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_inline fn loop e)
+  | e -> e
+
+(* ループ化可能な関数を発見してループにする *)
+(* 内側から順にループ化していく *)
+let rec f = function
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, f e1, f e2)
+  | Let(xt,e1,e2) -> Let(xt, f e1, f e2)
+  | LetRec({ name = (x,t); args = yts; body = e1 } as fn, e2) ->
+     if tail_call_exists x e1 && convertible x e1 then (* もともとループ化可能な関数の場合 *)
+       (Format.eprintf "convert function %s into a loop@." x;
+        let loop = Loop(L(x), loop_conv fn e1) in
+        f (loop_inline fn loop e2))
      else
-       (try
-          let d = M.find y consts in
-          let consts = M.add x (-d) consts in
-          detect_loop2 info consts next_ids e2
-        with
-          Not_found -> detect_loop2 info consts next_ids e2)
-  | Let((x,t),Add(y,z),e2) ->
-     if x = info.idx || x = info.bound then
-       false
-     else if info.idx = y || info.idx = z then
-       (* let z be the one in {y,z} which's not info.idx *)
-       let z = if info.idx = z then y else z in
-       (try
-          let d = M.find z consts in
-          if d = info.step then
-            let next_ids = S.add x next_ids in
-            detect_loop2 info consts next_ids e2
-          else
-            detect_loop2 info consts next_ids e2
-        with
-          Not_found -> detect_loop2 info consts next_ids e2)
-     else
-       detect_loop2 info consts next_ids e2
-  | Let((x,t),Sub(y,z),e2) ->
-     if x = info.idx || x = info.bound then
-       false
-     else if info.idx = y then
-       (try
-          let d = M.find z consts in
-          if (-d) = info.step then
-            let next_ids = S.add x next_ids in
-            detect_loop2 info consts next_ids e2
-          else
-            detect_loop2 info consts next_ids e2
-        with
-          Not_found -> detect_loop2 info consts next_ids e2)
-     else
-       detect_loop2 info consts next_ids e2
-  | Let((x,t),e1,e2) ->
-     if x = info.idx || x = info.bound then
-       false
-     else if occur info.funname e1 then
-       false
-     else
-       detect_loop2 info consts next_ids e2
-  | LetTuple((xts,y,e)) ->
-     let xs = List.map fst xts in
-     if List.mem info.idx xs || List.mem info.bound xs then
-       false
-     else
-       detect_loop2 info consts next_ids e
-  | App(x,ys) ->
-     if x = info.funname then
-       let zip = List.fold_left2 (fun a b c -> (b,c)::a) [] info.args ys in
-       if S.mem (List.assoc info.idx zip) next_ids then
-         true
-       else
-         false
-     else
-       false
-  | e -> false
+       (let e1' = f e1 in
+        if tail_call_exists x e1 && convertible x e1 then
+          ((* 内側をループ化するとループ化できるようになる可能性がある *)
+           Format.eprintf "convert function %s into a loop@." x;
+           let loop = Loop(L(x), loop_conv fn e1') in
+           f (loop_inline fn loop e2))
+        else
+          ((* 内側をループ化してもループ化不能のとき *)
+           LetRec({ name = (x,t); args = yts; body = e1' }, f e2)))
+  | LetTuple(xts,y,e) -> LetTuple(xts,y, f e)
+  | e -> e (* ループ内には関数定義はない *)

@@ -68,16 +68,16 @@ let reg_sp = "%r26" (* stack pointer *)
 let reg_hp = "%r27" (* heap pointer (caml2html: sparcasm_reghp) *)
 let reg_ra = "%r28" (* return address *)
 let is_reg x = (x.[0] = '%')
-let co_freg_table =
-  let ht = Hashtbl.create 16 in
-  for i = 0 to 15 do
-    Hashtbl.add
-      ht
-      (Printf.sprintf "%%f%d" (i * 2))
-      (Printf.sprintf "%%f%d" (i * 2 + 1))
-  done;
-  ht
-let co_freg freg = freg (* Hashtbl.find co_freg_table freg (* "companion" freg *) *)
+(* let co_freg_table =
+ *   let ht = Hashtbl.create 16 in
+ *   for i = 0 to 15 do
+ *     Hashtbl.add
+ *       ht
+ *       (Printf.sprintf "%%f%d" (i * 2))
+ *       (Printf.sprintf "%%f%d" (i * 2 + 1))
+ *   done;
+ *   ht
+ * let co_freg freg = freg (\* Hashtbl.find co_freg_table freg (\* "companion" freg *\) *\) *)
 
 (* super-tenuki *)
 let rec remove_and_uniq xs = function
@@ -111,4 +111,5 @@ let rec concat e1 xt e2 =
   | Ans(exp) -> Let(xt, exp, e2)
   | Let(yt, exp, e1') -> Let(yt, exp, concat e1' xt e2)
 
-let align i = (if i mod 8 = 0 then i else i + 4)
+(* alignment is not necessary for our target machine on FPGA *)
+let align i = i (* (if i mod 8 = 0 then i else i + 4) *)
