@@ -35,39 +35,53 @@ let rec convertible x = function
 
 (* convert a convertible function body into a loop *)
 (* i.e., replace App(x,zs) with a jump back to the starting point *)
-let rec loop_conv fn = function
-  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, loop_conv fn e1,loop_conv fn e2)
-  | Let(xt,e1,e2) -> Let(xt, e1, loop_conv fn e2) (* e1中には呼び出しはない *)
+(* i.e., insertion of Jump in the place where App was *)
+(* l = fundef.name, ys = List.map fst fundef.args *)
+let rec loop_conv l ys = function
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, loop_conv l ys e1,loop_conv l ys e2)
+  | Let(xt,e1,e2) -> Let(xt, e1, loop_conv l ys e2) (* e1中には呼び出しはない *)
   | LetRec(_) -> failwith "LNormal.loop_conv: inconvertible expression: fundef is detected"
-  | App(x,zs) -> 
-     assert (x = fst fn.name); (* 無いとは思うけど一応 *) (* considering only convertible functions *)
-     let ys = List.map fst fn.args in
+  | App(x,zs) -> (* メイン *)
+     assert (x = l); (* 無いとは思うけど一応 *) (* considering only convertible functions *)
+     (* let ys = List.map fst fn.args in *)
      (* List.fold_right2
       *   (fun y z e -> Subst(y,z,e)) ys zs (Jump(L(fn.name))) (\* 変数を上書きしてジャンプ *\) *)
      let yzs = List.fold_right2 (fun y z acc -> (y,z)::acc) ys zs [] in
-     Jump(yzs,L(fst fn.name))
-  | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_conv fn e)
+     Jump(yzs,L(l))
+  | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_conv l ys e)
   | e -> e (* Loop, Substはよい *)
 
 (* 関数呼び出しの部分にループを埋める *)
 (* やっていることはほぼインライン化 *)
 (* loopはループ化したfn *)
 (* i.e., loop = Loop(L(fn.name), loop_conv fn fn.body) *)
-let rec loop_inline fn loop = function
-  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, loop_inline fn loop e1, loop_inline fn loop e2)
-  | Let(xt,e1,e2) -> Let(xt, loop_inline fn loop e1, loop_inline fn loop e2)
+let rec loop_inline loop e =
+  let l, zs =
+    (match loop with
+     | Loop(L(l),yts,zs,body) -> l, zs
+     | _ -> assert false) in
+  match e with
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y, loop_inline loop e1, loop_inline loop e2)
+  | Let(xt,e1,e2) -> Let(xt, loop_inline loop e1, loop_inline loop e2)
   | LetRec({ name = xt; args = yts; body = e1 }, e2) ->
-     LetRec({ name = xt; args = yts; body = loop_inline fn loop e1 }, loop_inline fn loop e2)
-  | App(x,ys) when x = fst fn.name -> (* メイン *)
-     let ys' = List.map Id.genid ys in
-     let yts' = List.fold_right2 (* Letの挿入のために変数の型情報が必要 *)
-             (fun y t acc -> (y,t)::acc) ys' (List.map snd fn.args) [] in
-     let env = M.add_list2 (List.map fst fn.args) ys' M.empty in
-     let e = subst env M.empty loop in (* LNormal.subst *)
+     LetRec({ name = xt; args = yts; body = loop_inline loop e1 }, loop_inline loop e2)
+  | App(x,ys) when x = l -> (* メイン *) (* ラベルlとzsを外側で指定する必要性 *)
+     (* Letの挿入に対応する操作はsubstがやってくれるようになった *)
+     (* let ys' = List.map Id.genid ys in
+      * let yts' = List.fold_right2 (\* Letの挿入のために変数の型情報が必要 *\)
+      *         (fun y t acc -> (y,t)::acc) ys' (List.map snd fn.args) [] in *)
+     let env = M.add_list2 zs ys M.empty in
+       (* M.add_list2 (List.map fst fn.args) ys' M.empty in *)
+     let lenv = M.add l (Id.genid l) M.empty in (* ループを埋め込む度にラベルを新しくしてラベルの一意性を保証 *)
+     (* (match loop with 
+      *             | Loop(L(l), _) -> assert (x = l); M.add l (Id.genid l) M.empty
+      *             | _ -> assert false) in *)
+     (* let e = subst env lenv loop in (\* LNormal.subst *\) *)
+     subst env lenv loop
      (* ysを新しい変数ys'にLet束縛する *)
      (* ys'はループ中で代入されるので，こうしておかないとysのスコープがループ以降に続かない *)
-     List.fold_right2 (fun yt y m -> Let(yt,Var(y),m)) yts' ys e
-  | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_inline fn loop e)
+  (* List.fold_right2 (fun yt y m -> Let(yt,Var(y),m)) yts' ys e *)
+  | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_inline loop e)
   | e -> e
 
 (* ループ化可能な関数を発見してループにする *)
@@ -75,18 +89,20 @@ let rec loop_inline fn loop = function
 let rec f = function
   | If(cmp,x,y,e1,e2) -> If(cmp,x,y, f e1, f e2)
   | Let(xt,e1,e2) -> Let(xt, f e1, f e2)
-  | LetRec({ name = (x,t); args = yts; body = e1 } as fn, e2) ->
+  | LetRec({ name = (x,t); args = yts; body = e1 }, e2) ->
      if tail_call_exists x e1 && convertible x e1 then (* もともとループ化可能な関数の場合 *)
        (Format.eprintf "convert function %s into a loop@." x;
-        let loop = Loop(L(x), loop_conv fn e1) in
-        f (loop_inline fn loop e2))
+        let ys' = List.map (fun (y,t) -> Id.genid y) yts in (* 変数束縛のためのプレースホルダ *)
+        let loop = Loop(L(x), yts, ys', loop_conv x (List.map fst yts) e1) in
+        f (loop_inline loop e2))
      else
        (let e1' = f e1 in
         if tail_call_exists x e1 && convertible x e1 then
           ((* 内側をループ化するとループ化できるようになる可能性がある *)
            Format.eprintf "convert function %s into a loop@." x;
-           let loop = Loop(L(x), loop_conv fn e1') in
-           f (loop_inline fn loop e2))
+           let ys' = List.map (fun (y,t) -> Id.genid y) yts in (* 変数束縛のためのプレースホルダ *)
+           let loop = Loop(L(x), yts, ys', loop_conv x (List.map fst yts) e1') in
+           f (loop_inline loop e2))
         else
           ((* 内側をループ化してもループ化不能のとき *)
            LetRec({ name = (x,t); args = yts; body = e1' }, f e2)))

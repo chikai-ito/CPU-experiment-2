@@ -1,4 +1,4 @@
-let limit = ref 50
+let limit = ref 25
 let limit2 = ref 0
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
@@ -26,9 +26,9 @@ let lexbuf2 l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main
   let kNormal = ANormal.f (iter2 !limit2 kNormal) in
   let lNormal = Loop.f (LNormal.ktol kNormal) in
   let lNormal = Loop.f (Linline.f lNormal) in
-  (*Printf.printf "----ANormal----\n";
-  KNormal.print_kNormal kNormal;*)
-  let _ = Virtual2.f (Closure2.f lNormal) in ()
+  (* Printf.printf "----ANormal----\n";
+   * KNormal.print_kNormal kNormal; *)
+  let _ = Cfg.f (Virtual2.f (Closure2.f lNormal)) in ()
 
 let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
   Id.counter := 0;
@@ -39,8 +39,8 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   let kNormal = Alpha.f (KNormal.f syntax) in
   let kNormal = iter !limit kNormal in
   let kNormal = ANormal.f (iter2 !limit2 kNormal) in
-  (*Printf.printf "----ANormal----\n";
-  KNormal.print_kNormal kNormal;*)
+  Printf.printf "----ANormal----\n";
+  KNormal.print_kNormal kNormal;
   Emit.f outchan
     (RegAlloc.f
        (Simm.f

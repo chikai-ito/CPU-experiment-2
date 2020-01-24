@@ -19,16 +19,16 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | In of Id.t
   | Fin of Id.t
   | Out of Id.t
-  | AddI of Id.t * id_or_imm
+  | AddI of Id.t * int
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
-  | SLLI of Id.t * id_or_imm
-  | Ld of Id.t * id_or_imm
-  | ILd of Id.t * id_or_imm
-  | St of Id.t * Id.t * id_or_imm
+  | SLLI of Id.t * int
+  | Ld of mem * Id.t * id_or_imm
+  (* | ILd of Id.t * id_or_imm *)
+  | St of mem * Id.t * Id.t * id_or_imm
   | FMov of Id.t
   | Ftoi of Id.t
   | FNeg of Id.t
@@ -38,20 +38,24 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t  
-  | LdF of Id.t * id_or_imm
-  | ILdF of Id.t * id_or_imm
-  | StF of Id.t * Id.t * id_or_imm
+  | LdF of mem * Id.t * id_or_imm
+  (* | ILdF of Id.t * id_or_imm *)
+  | StF of mem * Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t (* これはブロックを生成する必要がある *)
   | FIf of cmp * Id.t * Id.t * t * t (* 上に同じ *)
-  | Loop of Id.l * t (* asm.mlとのdiff *) (* これもブロックを生成する *)
+  (* | Loop of Id.l * t (\* asm.mlとのdiff *\) (\* これもブロックを生成する *\) *)
+  | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t (* ブロックを生成 *)
+  (* Loopには変数定義の機能がある!! *)
+  (* レジスタ割り付けなどでこれを考慮することを忘れない!! *)
   (* | Jump of Id.l (\* asm.mlとのdiff *\) *)
   | Jump of (Id.t * Id.t) list * Id.l (* JumpとSubstを統合した *)
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list (* これはブロック内でどういう命令なのか *)
   | CallDir of Id.l * Id.t list * Id.t list
   | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
+  (* Saveの第二引数は変数名，第一引数はその変数が実際に割り当てられているレジスタ *)
   | Restore of Id.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 (* プログラム全体 = 浮動小数点数 & 大きな整数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
@@ -89,15 +93,16 @@ let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) (* | Jump(_) (* diff *) *) -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
-    | FSqrt(x) | Floor(x) | Save(x, _) -> [x]
-  | Ld(x, y') | LdF(x, y') | ILd(x,y') | ILdF(x,y')
-    | AddI(x,y') | SLLI(x,y') -> x :: fv_id_or_imm y'
-  | St(x, y, z') | StF(x, y, z') -> x :: y :: fv_id_or_imm z'
+    | FSqrt(x) | Floor(x) | Save(x, _) | AddI(x,_) | SLLI(x,_) -> [x]
+  | Ld(_, x, y') | LdF(_, x, y') (*| ILd(x,y') | ILdF(x,y')*) -> x :: fv_id_or_imm y'
+    (* | AddI(x,y') | SLLI(x,y')  *)
+  | St(_, x, y, z') | StF(_, x, y, z') -> x :: y :: fv_id_or_imm z'
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
   | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2)
     -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  | Loop(_,e) -> remove_and_uniq S.empty (fv e) (* diff *)
+  (* | Loop(_,e) -> remove_and_uniq S.empty (fv e) (\* diff *\) *)
+  | Loop(_,yts,zs,e) -> zs @ remove_and_uniq (S.of_list (List.map fst yts)) (fv e)
   | Jump(yzs,_) -> remove_and_uniq S.empty
                      (List.fold_right (fun (y,z) acc -> z :: y :: acc) yzs [])
   | CallCls(x, ys, zs) -> x :: ys @ zs

@@ -15,16 +15,16 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | In of Id.t
   | Fin of Id.t
   | Out of Id.t
-  | AddI of Id.t * id_or_imm
+  | AddI of Id.t * int
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
-  | SLLI of Id.t * id_or_imm
-  | Ld of Id.t * id_or_imm
-  | ILd of Id.t * id_or_imm
-  | St of Id.t * Id.t * id_or_imm
+  | SLLI of Id.t * int
+  | Ld of mem * Id.t * id_or_imm
+  (* | ILd of Id.t * id_or_imm *)
+  | St of mem * Id.t * Id.t * id_or_imm
   | FMov of Id.t
   | Ftoi of Id.t
   | FNeg of Id.t
@@ -34,9 +34,9 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t  
-  | LdF of Id.t * id_or_imm
-  | ILdF of Id.t * id_or_imm
-  | StF of Id.t * Id.t * id_or_imm
+  | LdF of mem * Id.t * id_or_imm
+  (* | ILdF of Id.t * id_or_imm *)
+  | StF of mem * Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t
@@ -90,10 +90,10 @@ let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
-    | FSqrt(x) | Floor(x) | Save(x, _) -> [x]
-  | Ld(x, y') | LdF(x, y') | ILd(x,y') | ILdF(x,y')
-    | AddI(x,y') | SLLI(x,y') -> x :: fv_id_or_imm y'
-  | St(x, y, z') | StF(x, y, z') -> x :: y :: fv_id_or_imm z'
+    | FSqrt(x) | Floor(x) | Save(x, _) | AddI(x,_) | SLLI(x,_) -> [x]
+  | Ld(_,x, y') | LdF(_,x, y')   -> x :: fv_id_or_imm y'
+  (* | AddI(x,y') | SLLI(x,y') | ILd(x,y') | ILdF(x,y') *)
+  | St(_,x, y, z') | StF(_,x, y, z') -> x :: y :: fv_id_or_imm z'
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
   | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2)

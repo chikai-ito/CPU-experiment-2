@@ -12,9 +12,9 @@ let rec exists_call x = function
 let rec is_recfun { name = (x,t); args = yts; body = e } =
   exists_call x e
 
-let rec inline2 fnlist = function
-  | If(cmp,x,y,e1,e2) -> If(cmp,x,y,inline2 fnlist e1,inline2 fnlist e2)
-  | Let((x,t),e1,e2) -> Let((x,t),inline2 fnlist e1,inline2 fnlist e2)
+let rec linline fnlist = function
+  | If(cmp,x,y,e1,e2) -> If(cmp,x,y,linline fnlist e1,linline fnlist e2)
+  | Let((x,t),e1,e2) -> Let((x,t),linline fnlist e1,linline fnlist e2)
   | LetRec(fd,e2) ->
      let (x,_) = fd.name in
      let fnlist =
@@ -22,8 +22,8 @@ let rec inline2 fnlist = function
          M.add x fd fnlist
        else
          fnlist in
-     LetRec({ name = fd.name; args = fd.args; body = inline2 fnlist fd.body },
-            inline2 fnlist e2)
+     LetRec({ name = fd.name; args = fd.args; body = linline fnlist fd.body },
+            linline fnlist e2)
   | App(x,ys) ->
      (try
         let { name = (x,t); args = yts; body = e } = M.find x fnlist in
@@ -31,7 +31,7 @@ let rec inline2 fnlist = function
         e
       with
         Not_found -> App(x,ys))
-  | LetTuple(xts,y,e) -> LetTuple(xts,y,inline2 fnlist e)
+  | LetTuple(xts,y,e) -> LetTuple(xts,y,linline fnlist e)
   | e -> e
 
-let f e = inline2 M.empty e
+let f e = linline M.empty e

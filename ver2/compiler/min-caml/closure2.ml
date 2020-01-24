@@ -33,7 +33,9 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | LetTuple of (Id.t * Type.t) list * Id.t * t
   | Get of Id.t * Id.t
   | Put of Id.t * Id.t * Id.t
-  | Loop of Id.l * t (* closure.mlとのdiff *)
+  (* | Loop of Id.l * t (\* closure.mlとのdiff *\) *)
+  | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t
+  (* ループ前のLetもデータ型に含める *)
   (* | Subst of Id.t * Id.t * t  (\* closure.mlとのdiff *\)
    * | Jump of Id.l (\* closure.mlとのdiff *\) *)
   | Jump of (Id.t * Id.t) list * Id.l (* closure.mlとのdiff *)
@@ -61,7 +63,8 @@ let rec fv = function
   | LetTuple(xts, y, e) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xts)))
   | Put(x, y, z) -> S.of_list [x; y; z]
   (* 以降diff *)
-  | Loop(_,e) -> fv e (* ラベルは変数ではない *)
+  | Loop(_,yts,zs,e) -> S.union (S.of_list zs) (S.diff (fv e) (S.of_list (List.map fst yts)))
+  (* | Loop(_,e) -> fv e (\* ラベルは変数ではない *\) *)
   (* | Subst(x,y,e) -> S.add x (S.addy (fv e))
    * | Jump(_) -> S.empty *)
   | Jump(yzs,_) -> List.fold_left (fun acc (y,z) -> S.add y (S.add z acc)) S.empty yzs
@@ -147,7 +150,8 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2
   | LNormal.ExtArray(x) -> ExtArray(Id.L(x))
   | LNormal.ExtFunApp(x, ys) -> AppDir(Id.L("min_caml_" ^ x), ys)
   (* 以降diff *)
-  | LNormal.Loop(L(x),e) -> Loop(L(x), g env known e)
+  | LNormal.Loop(L(x),yts,zs,e) -> (* zsの扱いはVar(x)と同じ．つまり何もしなくていい *)
+     Loop(L(x),yts,zs, g (M.add_list yts env) known e)
   (* | LNormal.Subst(x,y,e) -> Subst(x,y, g env known e) (\* Substは変数を束縛しない *\)
    * | LNormal.Jump(l) -> Jump(l) *)
   | LNormal.Jump(yzs,l) -> Jump(yzs,l)

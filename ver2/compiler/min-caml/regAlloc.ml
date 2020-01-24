@@ -126,18 +126,18 @@ and g' dest cont regenv = function (* 各命令のレジスタ割り当て (caml2html: regal
   | In(x) -> (Ans(In(find x Type.Int regenv)), regenv)
   | Fin(x) -> (Ans(Fin(find x Type.Int regenv)), regenv)
   | Out(x) -> (Ans(Out(find x Type.Int regenv)), regenv)
-  | AddI(x, C(i)) -> (Ans(AddI(find x Type.Int regenv, C(i))), regenv)
-  | AddI(_, V(_)) -> failwith "in RegAlloc.g': non immediate second argument to AddI"
+  | AddI(x, i) -> (Ans(AddI(find x Type.Int regenv, i)), regenv)
+  (* | AddI(_, V(_)) -> failwith "in RegAlloc.g': non immediate second argument to AddI" *)
   | Add(x,y) -> (Ans(Add(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | Sub(x,y) -> (Ans(Sub(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | Mul(x,y) -> (Ans(Mul(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | Div(x,y) -> (Ans(Div(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | SLL(x,y) -> (Ans(SLL(find x Type.Int regenv, find y Type.Int regenv)), regenv)
-  | SLLI(x,C(i)) -> (Ans(SLLI(find x Type.Int regenv, C(i))), regenv)
-  | SLLI(_,V(_)) -> failwith "in RegAlloc.g': non immediate second argument to SLLI"
-  | Ld(x, y') -> (Ans(Ld(find x Type.Int regenv, find' y' regenv)), regenv)
-  | ILd(x, y') -> (Ans(ILd(find x Type.Int regenv, find' y' regenv)), regenv)
-  | St(x, y, z') -> (Ans(St(find x Type.Int regenv, find y Type.Int regenv, find' z' regenv)), regenv)
+  | SLLI(x,i) -> (Ans(SLLI(find x Type.Int regenv, i)), regenv)
+  (* | SLLI(_,V(_)) -> failwith "in RegAlloc.g': non immediate second argument to SLLI" *)
+  | Ld(mem, x, y') -> (Ans(Ld(mem, find x Type.Int regenv, find' y' regenv)), regenv)
+  (* | ILd(x, y') -> (Ans(ILd(find x Type.Int regenv, find' y' regenv)), regenv) *)
+  | St(mem, x, y, z') -> (Ans(St(mem, find x Type.Int regenv, find y Type.Int regenv, find' z' regenv)), regenv)
   | FMov(x) -> (Ans(FMov(find x Type.Float regenv)), regenv)
   | FNeg(x) -> (Ans(FNeg(find x Type.Float regenv)), regenv)
   | Ftoi(x) -> (Ans(Ftoi(find x Type.Float regenv)), regenv)
@@ -147,9 +147,9 @@ and g' dest cont regenv = function (* 各命令のレジスタ割り当て (caml2html: regal
   | FSub(x, y) -> (Ans(FSub(find x Type.Float regenv, find y Type.Float regenv)), regenv)
   | FMul(x, y) -> (Ans(FMul(find x Type.Float regenv, find y Type.Float regenv)), regenv)
   | FDiv(x, y) -> (Ans(FDiv(find x Type.Float regenv, find y Type.Float regenv)), regenv)
-  | LdF(x, y') -> (Ans(LdF(find x Type.Int regenv, find' y' regenv)), regenv)
-  | ILdF(x, y') -> (Ans(ILdF(find x Type.Int regenv, find' y' regenv)), regenv)
-  | StF(x, y, z') -> (Ans(StF(find x Type.Float regenv, find y Type.Int regenv, find' z' regenv)), regenv)
+  | LdF(mem, x, y') -> (Ans(LdF(mem, find x Type.Int regenv, find' y' regenv)), regenv)
+  (* | ILdF(x, y') -> (Ans(ILdF(find x Type.Int regenv, find' y' regenv)), regenv) *)
+  | StF(mem, x, y, z') -> (Ans(StF(mem, find x Type.Float regenv, find y Type.Int regenv, find' z' regenv)), regenv)
   | If(cmp,x,y,e1,e2) as exp ->
      g'_if dest cont regenv exp
        (fun e1' e2' -> If(cmp, find x Type.Int regenv, find y Type.Int regenv, e1', e2')) e1 e2

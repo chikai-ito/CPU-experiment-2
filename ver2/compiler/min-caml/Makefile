@@ -20,7 +20,7 @@ $(RESULT): debug-code top
 clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
-SOURCES = float.c type.ml id.ml m.ml s.ml \
+SOURCES = float.c type.ml h.ml id.ml m.ml s.ml \
 enums.mli enums.ml \
 syntax.ml parser.mly lexer.mll \
 typing.mli typing.ml kNormal.mli kNormal.ml aNormal.mli aNormal.ml \
@@ -28,7 +28,7 @@ alpha.mli alpha.ml inline2.mli inline2.ml beta.mli beta.ml assoc.mli assoc.ml \
 inline.ml inline.mli constFold.mli constFold.ml elim.mli elim.ml \
 lamlift.mli lamlift.ml lNormal.ml loop.ml linline.ml \
 closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
-closure2.ml asm2.ml virtual2.ml \
+closure2.ml asm2.ml virtual2.ml cfg.ml \
 simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml \
 main.mli main.ml
 

@@ -297,7 +297,7 @@ and print_kNormal =
       Id.print_id id;
       Printf.printf "\n"
     | In id ->
-      Printf.printf "IN ";
+      Printf.printf "INPUT ";
       Id.print_id id;
       Printf.printf "\n"
     | Out id ->
@@ -305,7 +305,7 @@ and print_kNormal =
       Id.print_id id;
       Printf.printf "\n"
     | Fin id ->
-      Printf.printf "FIN ";
+      Printf.printf "FINPUT ";
       Id.print_id id;
       Printf.printf "\n"
     | FNeg id ->

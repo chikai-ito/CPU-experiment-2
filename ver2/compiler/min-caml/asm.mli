@@ -14,16 +14,16 @@ and exp =
   | In of Id.t
   | Fin of Id.t
   | Out of Id.t
-  | AddI of Id.t * id_or_imm
+  | AddI of Id.t * int
   | Add of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
-  | SLLI of Id.t * id_or_imm
-  | Ld of Id.t * id_or_imm
-  | ILd of Id.t * id_or_imm
-  | St of Id.t * Id.t * id_or_imm
+  | SLLI of Id.t * int
+  | Ld of mem * Id.t * id_or_imm
+  (* | ILd of Id.t * id_or_imm *)
+  | St of mem * Id.t * Id.t * id_or_imm
   | FMov of Id.t
   | Ftoi of Id.t
   | FNeg of Id.t
@@ -33,9 +33,9 @@ and exp =
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
-  | LdF of Id.t * id_or_imm
-  | ILdF of Id.t * id_or_imm
-  | StF of Id.t * Id.t * id_or_imm
+  | LdF of mem * Id.t * id_or_imm
+  (* | ILdF of Id.t * id_or_imm *)
+  | StF of mem * Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t
