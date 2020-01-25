@@ -131,17 +131,13 @@ let rec subst env lenv = function
   | Put(x, y, z) -> Put(find x env, find y env, find z env)
   (* | Loop(L(x),e) -> Loop(L(find x lenv), subst env lenv e) *)
   | Loop(L(x),yts,zs,e) -> (* 変数の束縛 yts <- zs はLetやLetTupleを参考にした *)
-     let x' = find x lenv in (* 新しいラベルの値をlenvから引く *)
+     let x' = Id.genid x in (* ループを埋め込む度にラベルを新しくしてラベルの一意性を保証 *)
      let yts' = List.map (fun (y,t) -> (Id.genid y, t)) yts in
      let zs' = List.map (fun z -> find z env) zs in
      let env' = M.add_list2 (List.map fst yts) (List.map fst yts') env in
-     Loop(L(x'), yts', zs', subst env' lenv e) (* substはlenvを拡張しない *) (* ラベルの発行はloop_inlineの責任 *)
+     Loop(L(x'), yts', zs', subst env' (M.add x x' lenv) e)
+  (* substはlenvを拡張しない *) (* ラベルの発行はloop_inlineの責任 *)
   (* Loop.loop_inlineで埋め込むラベルを新しくlenvに束縛している *)
-  (* すでに埋め込まれたループのラベルの一意性は保証されている *)
-     (* let x' = Id.genid x in
-      * Loop(L(x'), subst env (M.add x x' lenv) e) *)
-  (* | Subst(x,y,e) -> Subst(find x env, find y env, subst env lenv e)
-   * | Jump(L(x)) -> Jump(L(find lenv x)) *)
   | Jump(yzs, L(x)) -> (* 上の２つの操作を合併 *)
      let yzs' = List.map (fun (y,z) -> (find y env, find z env)) yzs in
      Jump(yzs', L(find x lenv))

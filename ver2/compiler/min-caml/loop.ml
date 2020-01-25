@@ -67,20 +67,10 @@ let rec loop_inline loop e =
      LetRec({ name = xt; args = yts; body = loop_inline loop e1 }, loop_inline loop e2)
   | App(x,ys) when x = l -> (* メイン *) (* ラベルlとzsを外側で指定する必要性 *)
      (* Letの挿入に対応する操作はsubstがやってくれるようになった *)
-     (* let ys' = List.map Id.genid ys in
-      * let yts' = List.fold_right2 (\* Letの挿入のために変数の型情報が必要 *\)
-      *         (fun y t acc -> (y,t)::acc) ys' (List.map snd fn.args) [] in *)
      let env = M.add_list2 zs ys M.empty in
-       (* M.add_list2 (List.map fst fn.args) ys' M.empty in *)
-     let lenv = M.add l (Id.genid l) M.empty in (* ループを埋め込む度にラベルを新しくしてラベルの一意性を保証 *)
-     (* (match loop with 
-      *             | Loop(L(l), _) -> assert (x = l); M.add l (Id.genid l) M.empty
-      *             | _ -> assert false) in *)
-     (* let e = subst env lenv loop in (\* LNormal.subst *\) *)
-     subst env lenv loop
+     subst env M.empty loop
      (* ysを新しい変数ys'にLet束縛する *)
      (* ys'はループ中で代入されるので，こうしておかないとysのスコープがループ以降に続かない *)
-  (* List.fold_right2 (fun yt y m -> Let(yt,Var(y),m)) yts' ys e *)
   | LetTuple(xts,y,e) -> LetTuple(xts,y, loop_inline loop e)
   | e -> e
 

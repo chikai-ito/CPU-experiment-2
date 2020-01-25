@@ -28,7 +28,16 @@ let lexbuf2 l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main
   let lNormal = Loop.f (Linline.f lNormal) in
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
-  let _ = Cfg.f (Virtual2.f (Closure2.f lNormal)) in ()
+  let (_,fns,(b,_)) = Cfg.f (Virtual2.f (Closure2.f lNormal)) in
+  let block_list = Cfg_db.scan_cfg b in
+  (* Format.eprintf "----------@."; () *)
+  (* let _ = List.map (fun (b,_) -> Cfg_db.scan_cfg b) fns in *)
+  Format.eprintf "total number of blocks is %d@." (List.length block_list);
+  (* Format.eprintf "total number of toplevel functions is %d@." (List.length fns) *)
+  Format.eprintf "index of node_b is %d@." (H.find Id.idtbl "node_b");
+  Format.eprintf "index of tail_b is %d@." (H.find Id.idtbl "tail_b");
+  Format.eprintf "index of branching_b is %d@." (H.find Id.idtbl "branching_b")
+  
 
 let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
   Id.counter := 0;
@@ -74,7 +83,9 @@ let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
       "maximum number of optimizations involving recursive functions iterated");
      ("-argmax", Arg.Int(fun i -> Lamlift.argsize_max := i),
       "maximum number of arguments functions can have after lambda lifting");
-     ("-mode", Arg.Int(fun i -> compile_mode := 1), "compile mode")]
+     ("-m", Arg.Unit(fun _ -> compile_mode := 1), "compile mode");
+     ("-dfs", Arg.Unit(fun _ -> Cfg_db.scan_mode := 1), "scan mode: 0 -> bfs, 1 -> dfs");
+     ("-p", Arg.Unit(fun _ -> Cfg_db.print_mode := 1), "whether print blocks")]
     (fun s -> files := !files @ [s])
     ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^
      Printf.sprintf "usage: %s [-inline m] [-iter n] ...filenames without \".ml\"..." Sys.argv.(0));
