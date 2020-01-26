@@ -20,7 +20,9 @@ let print_xt (x,t) =
   colon ()
   (* print_type t *)
 let print_instr = function
-  | Phi(xt, ys) -> print_xt xt; print_op "Phi" ys; newline ()
+  | Phi(xt, yls) ->
+     let yls = List.concat (List.map (fun (y, L(l)) -> [y ^ " : " ^ l]) yls) in
+     print_xt xt; print_op "Phi" yls; newline ()
   | Nop -> Printf.printf "Nop\n"
   | Set(xt, i) -> print_xt xt; print_op "Set" []; Printf.printf "\bt(";
                   print_int i; print_string ")"; newline ()
@@ -94,8 +96,8 @@ let print_block block =
   Printf.printf "Label : %s\n" (let L(l) = block.label in l);
   Printf.printf "Prev : ";
   print_prev block.prev;
-  (* Printf.printf "Code :\n";
-   * print_code block.code; *)
+  Printf.printf "Code :\n";
+  print_code block.code;
   Printf.printf "Flow : ";
   print_next block.next;
   Printf.printf "----- end -----\n"

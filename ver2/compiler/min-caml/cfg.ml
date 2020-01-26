@@ -3,7 +3,7 @@ open Enums
 (* type data_t = I of int | F of float *)
 type code_t = instr list (* 単純命令のリストとしてブロック中の命令列を表現 *)
 and instr = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
-  | Phi of (Id.t * Type.t) * Id.t list
+  | Phi of (Id.t * Type.t) * (Id.t * Id.l) list
   | Nop
   | Set of (Id.t * Type.t) * int
   | SetL of (Id.t * Type.t) * Id.l
@@ -83,32 +83,72 @@ let nontail_simple_instr xt = function
   | _ -> assert false (* If, Loop are not simple & Jump isn't tail_instr *)
 
 type is_back_t = Id.l option
-
-let tail_simple_instr xt = function (* nontail_simple_instrと異なり, 返り値はinstr list型 *)
-  | Asm2.Jump(yzs, l) ->
-     (List.fold_right (fun (y,z) acc -> (Subst(y,z)) :: acc) yzs []), Some(l)
-  | e -> [nontail_simple_instr xt e], None
+type vars_t = (Id.t * (Id.t * Id.l) list) list (* refleshする前の変数名とrefleshした変数名とラベルの組 *)
+type flow_t = { b : block; bref : block ref; vars : vars_t }
+(* type flow_t = block * block ref (\* make_cfg等の関数の返り値のためのデータ型 *\) *)
 
 let dummy_block = { label = L("0"); code = []; prev = []; next = End } (*  領域を確保するためのダミーブロック *)
+            
+(* 末尾の単純命令が束縛変数の名前変えを担当する *)
+(* 末尾はブロックを生成する *)
+let tail_simple_exp_to_flow : (Id.t * Type.t) -> Asm2.exp -> flow_t =
+  fun (x, t) ->
+  function (* nontail_simple_instrと異なり, 返り値はinstr list型 *)
+  | Asm2.Jump(yzs, l) ->
+     let l' = Id.genid "tail_b" in
+     let new_vars = List.fold_right (fun (y, z) acc -> (y, [(z, Id.L(l'))]) :: acc) yzs [] in
+     let new_bref = ref dummy_block in
+     let new_b = {label = Id.L(l'); code = []; prev = []; next = Back(l, new_bref) } in
+     { b = new_b; bref = new_bref; vars = new_vars }
+  | e ->
+     let x' = Id.genid x in (* ここで末端の束縛変数をrenamesする -> 合流の時にphiで繋ぐ *)
+     let l = Id.genid "tail_b" in
+     let new_vars = [(x, [(x', Id.L(l))])] in (* rename前, rename後 *)
+     let new_bref = ref dummy_block in
+     let instr = nontail_simple_instr (x', t) e in
+     let new_b = { label = Id.L(l); code = [instr]; prev = []; next = Cnfl(new_bref) } in
+     { b = new_b; bref = new_bref; vars = new_vars }
 
-type flow_t = block * block ref (* make_cfg等の関数の返り値のためのデータ型 *)
+let minimize_phi = function (* phi命令の引数を必要最小限にする *)
+  | Phi((x, t), yls) ->
+     let yls' =  List.find_all (fun (y, _) -> y <> x) yls in
+     (match yls' with
+      | [] -> assert false (* loopブロックには最低でも上からの代入文が流れてきているはず *)
+      | [(y, _)] -> Mov((x, t), y) (* phiの引数が１つしかないということは上からの代入文 *)
+      | _ -> Phi((x, t), yls'))
+  | _ -> assert false
+    
+let phi_cnfl_if : (Id.t * Type.t) -> vars_t -> instr =
+  fun (x,t) vars ->
+  match vars with
+  | [(y, yls)] when x = y -> Phi((x, t), yls)
+  | _ -> assert false
+
+let phi_back_loop : (Id.t * Type.t) list -> Id.t list -> vars_t -> Id.l -> code_t =
+  (* labelは上からの流れ *)
+  fun xts ys vars label ->
+  List.iter2 (fun (x, _) (z, _) -> assert (x = z)) xts vars;
+  let yls = List.map (fun y -> (y, label)) ys in
+  let vars = List.map2 (fun yl (z, zls) -> (z, yl :: zls)) yls vars in
+  let phis = List.map2 (fun xt (_, zls) -> Phi(xt, zls)) xts vars in
+  List.map minimize_phi phis
+       
 
 let flow_classify : flow_t list -> (flow_t list * flow_t list) =
   fun flws -> (* cnfl, back に分解 *)
   List.fold_left
-    (fun (x,y) ((b, _) as flw) -> match b.next with
+    (fun (x,y) flw -> match (flw.b).next with
                     | Cnfl _ -> (flw :: x, y) (* Cnflは第一要素のリストに追加 *)
                     | Back _ -> (x, flw :: y) (* Backは第二要素 *)
-                    | _ -> assert false) ([],[]) flws
-
+                    | _ -> assert false) ([],[]) flws  
   
 let join_flows : flow_t list -> block -> unit =
   (* i.e., prsとnext_blockを繋ぐ *)
   (* これはmake_cfgのbase caseの役目 *)
   fun prs next_b ->
-  List.iter (fun (b, bref) ->
-      match b.next with
-      | Brc _ | Cnfl _ -> bref := next_b; next_b.prev <- b :: next_b.prev
+  List.iter (fun flw ->
+      match (flw.b).next with
+      | Brc _ | Cnfl _ -> flw.bref := next_b; next_b.prev <- flw.b :: next_b.prev
       | _ -> assert false) prs
 
 let join_back_flows : flow_t list -> block -> unit =
@@ -116,15 +156,41 @@ let join_back_flows : flow_t list -> block -> unit =
   fun backs loop_b ->
   let L(l) = loop_b.label in
   List.iter (* backsとloop_bを繋ぐ *)
-    (fun (b, bref) ->
-      match b.next with
-      | Back(L(l'), succ) when l = l' ->
-         bref := loop_b; loop_b.prev <- b :: loop_b.prev
-      | _ -> assert false) backs
-    (* (function
-     *  | (Some(self), Back(L(l'), succ)) when l = l' ->
-     *     succ := loop_b; loop_b.prev <- (self :: loop_b.prev)
-     *  | _ -> assert false (\* これには他のループへのbackが上がってきた場合も含まれる *\)) backs *)
+    (fun flw ->
+      match (flw.b).next with
+      | Back(L(l'), _) when l = l' ->
+         flw.bref := loop_b; loop_b.prev <- flw.b :: loop_b.prev
+      | _ -> assert false) backs (* これには他のループへのbackが上がってきた場合も含まれる *)  
+
+let collect_cnfl_vars cnfl vars =
+  let x, xls = (match vars with
+                | [(x, xls)] -> x, xls
+                | _ -> assert false) in
+  let vars = match (cnfl.b).next with Cnfl _ -> cnfl.vars | _ -> assert false in
+  match vars with
+  | [(y, yls)] when x = y -> [(x, yls @ xls)]
+  | _ -> assert false
+  
+let cnfl_return_vars : flow_t list -> vars_t =
+  function
+  | flw :: cnfls ->
+     let vars = flw.vars in
+     List.fold_right collect_cnfl_vars cnfls vars
+  | _ -> assert false
+
+let collect_back_vars back acc =
+  let vars = match (back.b).next with Back _ -> back.vars | _ -> assert false in
+  List.map2
+    (fun (x, lxs) (y, lys) ->
+      if x = y then (x, lxs @ lys)
+      else assert false) acc vars
+
+let back_return_vars : flow_t list -> vars_t =
+  fun backs ->
+  match backs with
+  | flw :: backs ->
+     List.fold_right (fun flw acc -> collect_back_vars flw acc) backs flw.vars
+  | _ -> assert false
 
 let make_block prs = (* ループの手前に挿入するブロックを新しく生成する *)
   let c = [] in
@@ -158,20 +224,25 @@ let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm2.t -> (block * flow_t l
   function (* xt is the variable to which the anser of a code should be bound *)
   | Asm2.Let(yt, ((Asm2.If _ | Asm2.FIf _) as exp), e) ->
      let new_b, bts = if_routine prs yt exp in
-     let cnfls, backs = flow_classify bts in 
+     let cnfls, backs = flow_classify bts in
      assert (backs = []);
      (* Ifの分岐の末端全てはconfl; c.f.１つ上の注意 *)
-     let _, bts' = make_cfg cnfls xt e in
+     let bh, bts' = make_cfg cnfls xt e in (* ここで帰ってきたbhの先頭にphi関数を挿入する *)
+     (* phi関数を挿入するブロックはcnflsを繋いだブロック. つまりbh *)
+     let vars = cnfl_return_vars cnfls in
+     let phi = phi_cnfl_if yt vars in
+     bh.code <- phi :: bh.code;
      new_b, bts' (* 入口ブロックはnew_b, 出口フローはeの出口フローのbts' *)
   | Asm2.Let(yt, (Asm2.Loop _ as exp) ,e) ->
      let bh, bts = loop_routine prs yt exp in
-     let cnfls, backs = flow_classify bts in (* ループのbodyから戻ってくるback flowは全てここで吸収して良い *)
+     let cnfls, backs = flow_classify bts in
+     assert (backs = []); (* 上がってくるbacksは全てloop_routine内で処理しているはずである *)
      (* 他のループのbackが帰ってくることがないことを保証したループ化を行なっている *)
-     join_back_flows backs bh;
+     (* join_back_flows backs bh; *)
      let _, bts' = make_cfg cnfls xt e in
      bh, bts'
   | Asm2.Let(yt, exp, e) -> (* expは非末尾の単純命令である *)
-     let instr = nontail_simple_instr yt exp in
+     let instr = nontail_simple_instr yt exp in (* nontail_simpa_instrは変数のrefleshの必要はない *)
      let bh, bts = make_cfg prs xt e in
      bh.code <- instr :: bh.code; (* codeの先頭に単純命令を追加する *)
      bh, bts
@@ -180,72 +251,73 @@ let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm2.t -> (block * flow_t l
   | Asm2.Ans(Asm2.Loop _ as exp) ->
      let bh, bts = loop_routine prs xt exp in
      let cnfls, backs = flow_classify bts in
-     join_back_flows backs bh;
+     assert (backs = []);
+     (* join_back_flows backs bh; *)
      bh, cnfls
   | Asm2.Ans(exp) -> (* 末尾の単純命令の時 *) (* これがbase case *)
-     let c, is_back = tail_simple_instr xt exp in
-     let l = Id.genid "tail_b" in
-     let bref = ref dummy_block in
-     let sc = (match is_back with (* 末尾命令がJumpの時はラベルへのBack *)
-               | Some(l) -> Back(l, bref)
-               | None -> Cnfl(bref)) in
-     let new_b = { label = L(l); code = c; prev = []; next = sc } in
-     join_flows prs new_b;
-     (* let flw = (match new_b.next with
-      *  | Back _ as b -> (Some(ref new_b), b)  (\* loop backの時は自身への参照を格納 *\)
-      *  | b -> (None, b)) in *)
-     (* List.iter (fun bref -> bref := new_b) prs; *)
-     new_b, [(new_b, bref)]
+     let flw = tail_simple_exp_to_flow xt exp in (* flw.b = new_b *)
+     (* let l = Id.genid "tail_b" in
+      * let bref = ref dummy_block in *)
+     (* let sc = (match is_back with (\* 末尾命令がJumpの時はラベルへのBack *\)
+      *           | Some(l) -> Back(l, bref)
+      *           | None -> Cnfl(bref)) in
+      * let new_b = { label = L(l); code = c; prev = []; next = sc } in *)
+     (* join_flows prs new_b; *)
+     join_flows prs flw.b; (* 新しいブロックとprsを繋ぐ *)
+     flw.b, [flw]
 and if_routine prs yt exp =
   let ty = (match exp with If _ -> Type.Int | FIf _ -> Type.Float | _ -> assert false) in
   (match exp with
    | Asm2.If(cmp,z,w,e1,e2) | Asm2.FIf(cmp,z,w,e1,e2) ->
       let new_b, (b_l, b_r) = make_branching_block prs ty cmp z w in (* あとでphi関数を挿入するブロック *)
-      let _, bt1s = make_cfg [(new_b, b_l)] yt e1 in (* 答えを束縛する変数はyt *)
-      let _, bt2s = make_cfg [(new_b, b_r)] yt e2 in (* bt1s/bt2s : next_t list *)
-      (* bh1.prev <- new_b :: bh1.prev;
-       * bh2.prev <- new_b :: bh2.prev; *)
-      (* このIfはの答えは末尾ではないので, 下のbacksは空になるはず *)
+      let flw_l = { b = new_b; bref = b_l; vars = [] } in
+      let flw_r = { b = new_b; bref = b_r; vars = [] } in
+      let _, bt1s = make_cfg [flw_l] yt e1 in (* 答えを束縛する変数はyt *)
+      let _, bt2s = make_cfg [flw_r] yt e2 in (* bt1s/bt2s : next_t list *)
       new_b, (bt1s @ bt2s)
    | _ -> assert false)
 and loop_routine prs yt exp =
   (match exp with
    | Asm2.Loop(L(l), zts, ws, e') -> (* ループのラベルlをそのままブロックのラベルにすれば良い *)
-      let new_b, bref = make_block prs in
-      let bh, bts = make_cfg [(new_b, bref)] yt e' in (* 式eをcfgに変換した時の入口ブロックは１つであることが保証される *)
-      let c = (List.fold_right2 (* bhのcodeの先頭に変数の代入文を挿入する *)
-                 (fun zt w acc -> (Mov(zt,w))::acc) zts ws bh.code) in
-      let L(l') = bh.label in
-      Format.eprintf "changed label %s to %s@." l' l;
-      bh.label <- L(l); (* bhのラベルをループのラベルにする *)
-      bh.code <- c;
+      let new_b, new_bref = make_block prs in (* ループの前に挿入する新しいブロック *)
+      let flw = { b = new_b; bref = new_bref; vars = [] } in
+      let bh, bts = make_cfg [flw] yt e' in (* bhはループの入口ブロック. ここにphi関数を挿入 *)
       let cnfls, backs = flow_classify bts in
-      join_back_flows backs bh;
+      let vars = back_return_vars backs in (* 上がってきた代入をphiでbhに吸収 *)
+      let phis = phi_back_loop zts ws vars new_b.label in (* new_b.labelは上からの流れのラベル *)
+      (* let L(l') = bh.label in
+       * Format.eprintf "changed label %s to %s@." l' l; *)
+      bh.label <- L(l); (* bhのラベルをループのラベルにする *)
+      bh.code <- phis @ bh.code;
+      join_back_flows backs bh; (* backsをbhに繋ぐ *)
       new_b, cnfls
    | _ -> assert false)
 
 
 let e_to_cfg l xt int_args float_args e =
   let c = [Entry(int_args, float_args)] in
-  let bref = ref dummy_block in
-  let entry = { label = l; code = c; prev = []; next = Cnfl(bref) } in
-  let _, bts = make_cfg [(entry, bref)] xt e in
+  let new_bref = ref dummy_block in
+  let entry = { label = l; code = c; prev = []; next = Cnfl(new_bref) } in
+  let flw = { b = entry; bref = new_bref; vars = [] } in
+  let _, bts = make_cfg [flw] xt e in
   let cnfls, backs = flow_classify bts in 
   assert (backs = []); (* entry pointまでループバックが上がってくることはない *)
-  (* let prs =
-   *   List.map (function (_, Cnfl(bref)) -> bref | _ -> assert false) cnfls in *)
-  let return = { label = L(Id.genid "return_point"); code = [Return(xt)];
+  let vars = cnfl_return_vars cnfls in
+  let phi = phi_cnfl_if xt vars in
+  let return = { label = L(Id.genid "return_point"); code = phi :: [Return(xt)];
                  prev = []; next = End } in
   join_flows cnfls return;
   entry, return
 
+let g = List.map (fun fn ->
+            let ret_v = Id.genid "ret_val" in
+            e_to_cfg fn.Asm2.name (ret_v, fn.ret)
+              fn.Asm2.args fn.Asm2.fargs fn.Asm2.body)
+
 let f (Asm2.Prog(data, fundefs, e)) =
-  let fn_cfgs = List.map (fun fn ->
-                    let ret_v = Id.genid "ret_val" in
-                    e_to_cfg fn.Asm2.name (ret_v, fn.ret)
-                      fn.Asm2.args fn.Asm2.fargs fn.Asm2.body) fundefs in
+  (* let fn_cfgs = g fundefs in *)
   let l = Id.L(Id.genid "entry_point") in
   let xt = (Id.gentmp Type.Unit, Type.Unit) in
   let main_cfg = e_to_cfg l xt [] [] e in
-  (data, fn_cfgs , main_cfg)
+  (data, [](* fn_cfgs *), main_cfg)
 

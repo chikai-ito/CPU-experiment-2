@@ -16,11 +16,15 @@ let counter = ref 0
  *     | x::_ -> x
  *     | _ -> assert false) in
  *  Printf.sprintf "%s.%d" s !counter *)
+let get_body s = (match Str.split (Str.regexp "\\.") s with
+                     | x :: _ -> x
+                     | _ -> assert false)
 let idtbl = H.create 50000 (* idtblには各変数につき次に割り当て可能な整数が格納されている *)
 let genid s =
-  let s = (match Str.split (Str.regexp "\\.") s with
-           | x::_ -> x
-           | _ -> assert false) in
+  let s = get_body s in
+  (* let s = (match Str.split (Str.regexp "\\.") s with
+   *          | x::_ -> x
+   *          | _ -> assert false) in *)
   try
     let n = H.find idtbl s in
     (* (if s = "branching_b" then Format.eprintf "%d@." n); *)

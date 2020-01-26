@@ -71,6 +71,8 @@ let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file
   with e -> (close_in inchan; close_out outchan; raise e)
   else if !compile_mode = 1 then
     lexbuf2 (Lexing.from_channel inchan)
+  else if !compile_mode = 2 then
+    Lra.test_run ()
   else
     assert false
 
@@ -85,6 +87,7 @@ let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
       "maximum number of arguments functions can have after lambda lifting");
      ("-m", Arg.Unit(fun _ -> compile_mode := 1), "compile mode");
      ("-dfs", Arg.Unit(fun _ -> Cfg_db.scan_mode := 1), "scan mode: 0 -> bfs, 1 -> dfs");
+     ("-t", Arg.Unit(fun _ -> compile_mode := 2), "run tests");
      ("-p", Arg.Unit(fun _ -> Cfg_db.print_mode := 1), "whether print blocks")]
     (fun s -> files := !files @ [s])
     ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^

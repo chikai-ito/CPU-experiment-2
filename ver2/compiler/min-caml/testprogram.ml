@@ -1,8 +1,5 @@
 let x = create_array 1 1
 in
-let rec h q =
-  if q > 0 then q + h (q - 1) else 1
-in
 let rec g nn =
   if nn >= 0  then
     x.(0) + 9
@@ -25,4 +22,4 @@ let rec f n m =
 in
 let y = read_int () in
 let z = read_int () in
-1 + f y z + h 3
+1 + f y z
