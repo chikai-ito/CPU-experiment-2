@@ -16,6 +16,11 @@ bool floatreg_check(string fs){
   else {return false;}
 }
 
+bool immediate_check(string immediate){
+  if(immediate[0] != '%') { return true;}
+  else {return false;}
+}
+
 
 //option 0 is for execute, 1 is for core
 string assemble (string line, int option, int line_num){
@@ -70,12 +75,17 @@ string assemble (string line, int option, int line_num){
     if (!intreg_check(rs)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
-      cout << opcode <<" "<< rs <<" "<< rt << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< immediate << endl;
     }
     if (!intreg_check(rt)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
-      cout << opcode <<" "<< rs <<" "<< rt << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< immediate << endl;
+    }
+    if (!immediate_check(immediate)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< immediate << endl;
     }
 		string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
 		string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
@@ -127,6 +137,11 @@ string assemble (string line, int option, int line_num){
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
     }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
+    }
 		string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
 		string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
 		int offset_int = atoi(offset.c_str());
@@ -149,6 +164,11 @@ string assemble (string line, int option, int line_num){
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
     }
     if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
@@ -179,6 +199,11 @@ string assemble (string line, int option, int line_num){
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
     }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
+    }
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     int offset_int = atoi(offset.c_str());
@@ -201,6 +226,11 @@ string assemble (string line, int option, int line_num){
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
     }
     if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
@@ -231,6 +261,11 @@ string assemble (string line, int option, int line_num){
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
     }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
+    }
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     int offset_int = atoi(offset.c_str());
@@ -253,6 +288,11 @@ string assemble (string line, int option, int line_num){
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
     }
     if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< offset << endl;
@@ -329,6 +369,11 @@ string assemble (string line, int option, int line_num){
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
     }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
+    }
     string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
     string ft_s = decimal_to_binary(atoi(ft.substr(2,ft.length()-2).c_str()),5);
     int offset_int = atoi(offset.c_str());
@@ -355,6 +400,11 @@ string assemble (string line, int option, int line_num){
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
     }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
+    }
     string fs_s = decimal_to_binary(atoi(fs.substr(2,fs.length()-2).c_str()),5);
     string ft_s = decimal_to_binary(atoi(ft.substr(2,ft.length()-2).c_str()),5);
     int offset_int = atoi(offset.c_str());
@@ -377,6 +427,11 @@ string assemble (string line, int option, int line_num){
       cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
     }
     if (!floatreg_check(ft)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< fs <<" "<< ft <<" "<< offset << endl;
@@ -426,7 +481,17 @@ string assemble (string line, int option, int line_num){
     string rt;
     string offset;
     s >> base >> rt >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
     if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
@@ -448,7 +513,17 @@ string assemble (string line, int option, int line_num){
     string ft;
     string offset;
     s >> base >> ft >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
     if (!floatreg_check(ft)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
@@ -515,7 +590,17 @@ string assemble (string line, int option, int line_num){
 		string rt;
 		string offset;
 		s >> base >> rt >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
     if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
@@ -537,10 +622,20 @@ string assemble (string line, int option, int line_num){
     string ft;
     string offset;
     s >> base >> ft >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
     if (!floatreg_check(ft)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl; 
     }
     string base_s = decimal_to_binary(atoi(base.substr(2,base.length()-2).c_str()),5);
     string ft_s = decimal_to_binary(atoi(ft.substr(2,ft.length()-2).c_str()),5);
@@ -778,6 +873,11 @@ string assemble (string line, int option, int line_num){
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< rs <<" "<< rt <<" "<< immediate << endl;
     }
+    if (!immediate_check(immediate)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< rs <<" "<< rt <<" "<< immediate << endl;
+    }
     string rs_s = decimal_to_binary(atoi(rs.substr(2,rs.length()-2).c_str()),5);
     string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
     int immediate_int = atoi(immediate.c_str());
@@ -842,7 +942,17 @@ string assemble (string line, int option, int line_num){
     string rt;
     string offset;
     s >> base >> rt >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
     if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
@@ -864,7 +974,17 @@ string assemble (string line, int option, int line_num){
     string ft;
     string offset;
     s >> base >> ft >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
     if (!floatreg_check(ft)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
       cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
