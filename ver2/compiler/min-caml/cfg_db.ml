@@ -30,9 +30,9 @@ let print_instr = function
   | Mov(xt, y) -> print_xt xt; print_op "Mov" [y]; newline ()
   | Neg(xt, y) -> print_xt xt; print_op "Neg" [y]; newline ()
   | Itof(xt, y) -> print_xt xt; print_op "Itof" [y]; newline ()
-  | In(xt, y) -> print_xt xt; print_op "In" [y]; newline ()
+  | In(xt) -> print_xt xt; print_string " <- In\n"
   | Fin(xt, y) -> print_xt xt; print_op "Fin" [y]; newline ()
-  | Out(xt, y) -> print_xt xt; print_op "Out" [y]; newline ()
+  | Out(y) -> Printf.printf "Out(%s)\n" y
   | AddI(xt, y, i) -> print_xt xt; print_op "Add" [y];
                       space (); print_int i; newline ()
   | Add(xt, y, z) -> print_xt xt; print_op "Add" [y;z]; newline ()
@@ -62,7 +62,6 @@ let print_instr = function
   | StF(xt, _, y, z, Asm2.V(w)) -> print_xt xt; print_op "StF" [y;z;w]; newline ()
   | StF(xt, _, y, z, Asm2.C(i)) -> print_xt xt; print_op "StF" [y;z];
                                    space (); print_int i; newline ()
-  | Subst(x, y) -> Printf.printf "Subst %s <- %s\n" x y
   | CallCls(xt, f, ys, zs) -> print_xt xt;
                               print_op "CallCls" (((f ^ ";")::"int:"::ys) @ ("\b\b; float:"::zs)); newline ()
   | CallDir(xt, L(l), ys, zs) -> print_xt xt;
@@ -74,7 +73,13 @@ let print_instr = function
   | Restore(x) -> Printf.printf "Restore(%s)\n" x
 
 let indent _ = print_string "  "
-let print_code code = List.iter (fun instr -> indent(); print_instr instr) code
+let print_code code =
+  List.iter (fun instr ->
+      let id = instr.instr_id in
+      let op = instr.op in
+      indent();
+      Printf.printf "%s . " id;
+      print_instr op) code
 let print_prev prs =
   if prs = [] then
     Printf.printf "None\n"
@@ -82,7 +87,7 @@ let print_prev prs =
     (List.iter (fun b -> let L(l) = b.label in
                          Printf.printf "%s, " l) prs; newline ())
 let print_branch : compare_t -> unit =
-  fun { op = (t, cmp); args = (x,y) } ->
+  fun { branch = (t, cmp); args = (x,y) } ->
   if t = Type.Float then print_string "F";
   print_cmp cmp; Printf.printf "(%s, %s)\n" x y
 let print_next : next_t -> unit = function
@@ -103,7 +108,8 @@ let print_block block =
   Printf.printf "----- end -----\n"
 
 let print_mode = ref 0
-let is_visited tbl block =
+let is_visited tbl block = (* すでに訪れた頂点ならtrueを返し *)
+  (* そうでなければ表にtrueを書き込んでfalseを返す *)
   let L(l) = block.label in
   try
     H.find tbl l
@@ -119,7 +125,7 @@ let check_next color_tbl next =
   | End -> []
 let rec bfs queue color_tbl acc =
   if Queue.is_empty queue then
-    acc
+    List.rev acc
   else
     let b = Queue.pop queue in
     (if !print_mode = 1 then
@@ -130,7 +136,7 @@ let rec bfs queue color_tbl acc =
 
 let rec dfs stack color_tbl acc =
   if Stack.is_empty stack then
-    acc
+    List.rev acc
   else
     let b = Stack.pop stack in
     (if !print_mode = 1 then
@@ -139,21 +145,88 @@ let rec dfs stack color_tbl acc =
     List.iter (fun x -> Stack.push x stack) bs;
     dfs stack color_tbl (bs @ acc)
 
+let check_prev color_tbl prs =
+  let is_not_visited x = not (is_visited color_tbl x) in
+  List.filter is_not_visited prs
+
+let rec r_bfs queue color_tbl acc =
+  if Queue.is_empty queue then
+    List.rev acc
+  else
+    let b = Queue.pop queue in
+    (if !print_mode = 1 then
+       print_block b);
+    let bs = check_prev color_tbl b.prev in
+    List.iter (fun x -> Queue.push x queue) bs;
+    r_bfs queue color_tbl (bs @ acc)
+
+let rec r_dfs stack color_tbl acc =
+  if Stack.is_empty stack then
+    List.rev acc
+  else
+    let b = Stack.pop stack in
+    (if !print_mode = 1 then
+       print_block b);
+    let bs = check_prev color_tbl b.prev in
+    List.iter (fun x -> Stack.push x stack) bs;
+    r_dfs stack color_tbl (bs @ acc)
+
 let scan_mode = ref 0
-let scan_cfg block = (* 幅優先的にCFGを探索してブロックのリストを返す *)
+let is_reverse = ref 0
+let scan_cfg entry ret = (* 幅優先的にCFGを探索してブロックのリストを返す *)
   let color_tbl = H.create 50000 in
   if !scan_mode = 0 then
-    let queue = Queue.create () in
-    Queue.push block queue;
-    let L(l) = block.label in
-    H.add color_tbl l true;
-    bfs queue color_tbl [block]
+    (if !is_reverse = 0 then
+       (let queue = Queue.create () in
+        Queue.push entry queue;
+        let L(l) = entry.label in
+        H.add color_tbl l true;
+        bfs queue color_tbl [entry])
+     else
+       (let queue = Queue.create () in
+        Queue.push ret queue;
+        let L(l) = ret.label in
+        H.add color_tbl l true;
+        r_bfs queue color_tbl [ret]))
   else if !scan_mode = 1 then
-    let stack = Stack.create () in
-    Stack.push block stack;
-    let L(l) = block.label in
-    H.add color_tbl l true;
-    dfs stack color_tbl [block]
+    (if !is_reverse = 0 then
+       (let stack = Stack.create () in
+        Stack.push entry stack;
+        let L(l) = entry.label in
+        H.add color_tbl l true;
+        dfs stack color_tbl [entry])
+     else
+       (let stack = Stack.create () in
+        Stack.push ret stack;
+        let L(l) = entry.label in
+        H.add color_tbl l true;
+        r_dfs stack color_tbl [ret]))
   else
     assert false
   
+let check_prev color_tbl prs =
+  let is_not_visited x = not (is_visited color_tbl x) in
+  List.filter is_not_visited prs
+
+let rec r_bfs queue color_tbl acc =
+  if Queue.is_empty queue then
+    acc
+  else
+    let b = Queue.pop queue in
+    (if !print_mode = 1 then
+       print_block b);
+    let bs = check_prev color_tbl b.prev in
+    List.iter (fun x -> Queue.push x queue) bs;
+    r_bfs queue color_tbl (bs @ acc)
+
+
+let rec r_dfs stack color_tbl acc =
+  if Stack.is_empty stack then
+    acc
+  else
+    let b = Stack.pop stack in
+    (if !print_mode = 1 then
+       print_block b);
+    let bs = check_prev color_tbl b.prev in
+    List.iter (fun x -> Stack.push x stack) bs;
+    r_dfs stack color_tbl (bs @ acc)

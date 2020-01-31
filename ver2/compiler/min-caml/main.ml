@@ -28,11 +28,13 @@ let lexbuf2 l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main
   let lNormal = Loop.f (Linline.f lNormal) in
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
-  let (_,fns,(b,_)) = Cfg.f (Virtual2.f (Closure2.f lNormal)) in
-  let block_list = Cfg_db.scan_cfg b in
+  let (_, f_cfgs, cfg) = Cfg.f (Virtual2.f (Closure2.f lNormal)) in
+  let igraph = Lra2.build_igraph cfg in
+  let regtbl = RegAlloc2.f igraph in
+  (* List.iter Cfg_db.print_block cfg; *)
   (* Format.eprintf "----------@."; () *)
   (* let _ = List.map (fun (b,_) -> Cfg_db.scan_cfg b) fns in *)
-  Format.eprintf "total number of blocks is %d@." (List.length block_list);
+  Format.eprintf "total number of blocks is %d@." (List.length cfg);
   (* Format.eprintf "total number of toplevel functions is %d@." (List.length fns) *)
   Format.eprintf "index of node_b is %d@." (H.find Id.idtbl "node_b");
   Format.eprintf "index of tail_b is %d@." (H.find Id.idtbl "tail_b");
@@ -48,8 +50,8 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   let kNormal = Alpha.f (KNormal.f syntax) in
   let kNormal = iter !limit kNormal in
   let kNormal = ANormal.f (iter2 !limit2 kNormal) in
-  Printf.printf "----ANormal----\n";
-  KNormal.print_kNormal kNormal;
+  (* Printf.printf "----ANormal----\n";
+   * KNormal.print_kNormal kNormal; *)
   Emit.f outchan
     (RegAlloc.f
        (Simm.f
@@ -72,7 +74,7 @@ let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file
   else if !compile_mode = 1 then
     lexbuf2 (Lexing.from_channel inchan)
   else if !compile_mode = 2 then
-    Lra.test_run ()
+    Lra2.test_run ()
   else
     assert false
 
@@ -88,7 +90,8 @@ let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
      ("-m", Arg.Unit(fun _ -> compile_mode := 1), "compile mode");
      ("-dfs", Arg.Unit(fun _ -> Cfg_db.scan_mode := 1), "scan mode: 0 -> bfs, 1 -> dfs");
      ("-t", Arg.Unit(fun _ -> compile_mode := 2), "run tests");
-     ("-p", Arg.Unit(fun _ -> Cfg_db.print_mode := 1), "whether print blocks")]
+     ("-p", Arg.Unit(fun _ -> Cfg_db.print_mode := 1), "whether print blocks");
+    ("-r", Arg.Unit(fun _ -> Cfg_db.is_reverse := 1), "scan in reverse direction")]
     (fun s -> files := !files @ [s])
     ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^
      Printf.sprintf "usage: %s [-inline m] [-iter n] ...filenames without \".ml\"..." Sys.argv.(0));
