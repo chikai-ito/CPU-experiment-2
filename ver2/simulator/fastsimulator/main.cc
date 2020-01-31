@@ -127,13 +127,13 @@ int main(int argc, char**argv){
 		  ofstream writing_file;
 		  writing_file.open("machine_code.txt");
       // write jump to machine_code.txt
-      string one_machine_code = assemble(instruction_set[0],1);
+      string one_machine_code = assemble(instruction_set[0],1,0);
       writing_file << one_machine_code << endl;
       for(int i = 0; i < data_num; i++){
         writing_file << decimal_to_binary(inst_mem[i],32) << "  \\\\ " << "immediate" << endl;
       }
 		  for(int i=1; i<line_num - data_num; i++){
-			  string one_machine_code = assemble(instruction_set[i],1);
+			  string one_machine_code = assemble(instruction_set[i],1,data_num*2+i);
 			  writing_file << one_machine_code << endl;
 		  }
 	  writing_file.close();
@@ -154,13 +154,13 @@ int main(int argc, char**argv){
 	ofstream writing_file;
   writing_file.open("machine_code.txt");
   // write jump to machine_code.txt
-  string one_machine_code = assemble(instruction_set[0],0);
+  string one_machine_code = assemble(instruction_set[0],0,0);
   writing_file << one_machine_code << endl;
   for(int i = 0; i < data_num; i++){
     writing_file << decimal_to_binary(inst_mem[i],32) << endl;
   }
   for(int i=1; i<line_num - data_num; i++){
-    string one_machine_code = assemble(instruction_set[i],0);
+    string one_machine_code = assemble(instruction_set[i],0,line_num*2+i);
     writing_file << one_machine_code << endl;
   }
   writing_file.close();

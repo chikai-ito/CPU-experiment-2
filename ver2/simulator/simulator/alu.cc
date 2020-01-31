@@ -49,7 +49,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg,ifst
       fs = (int)((code >> 21) & 0b11111);
       float f;
       (*fin) >> f;
-      cout << "fin " <<  f << endl;
+      //cout << "fin " <<  f << endl;
       freg[fs] = f;
       break;
     case 0b101010 :
@@ -57,7 +57,7 @@ void alu(unsigned int code, int pc, int* now, unsigned int* reg,float* freg,ifst
       rs = (int)((code >> 21) & 0b11111);
       int inp;
       (*fin) >> inp;
-      cout << inp << endl;
+      //cout << inp << endl;
       reg[rs] = (unsigned int)inp;
       //reg[rs] = convert.i;
       break;
