@@ -69,10 +69,15 @@ let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
   [| "%r1"; "%r2"; "%r3"; "%r4";
      "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
      "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
-     "%r19"; "%r20"; "%r21"; "%r22"; "%r23"; "%r24"|]
-let fregs = Array.init 32 (fun i -> Printf.sprintf "%%f%d" i)
+     "%r19"; "%r20"; "%r21"; "%r22"; "r23"; "r24"; "r29"|]
+(* %r23は即値のsetなどに使う *)
+let fregs = Array.init 30 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
+let reg_sub1 = "%r30"
+let reg_sub2 = "%r31"
+let freg_sub1 = "%f30"
+let freg_sub2 = "%f31"
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *) 
 let reg_sw = regs.(Array.length regs - 2) (* temporary for swap *) (* これemitとかで使っていいのでは？ *)
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *) (* これも．ssaとかでも使えそう *)
@@ -80,6 +85,7 @@ let reg_sp = "%r26" (* stack pointer *)
 let reg_hp = "%r27" (* heap pointer (caml2html: sparcasm_reghp) *)
 let reg_ra = "%r28" (* return address *)
 let is_reg x = (x.[0] = '%')
+let is_freg r = (is_reg r && r.[1] = 'f')
 
 (* super-tenuki *)
 (* リストysから集合xsの要素を除きつつ，重複のないリストにして返す *)

@@ -29,7 +29,8 @@ inline.ml inline.mli constFold.mli constFold.ml elim.mli elim.ml \
 lamlift.mli lamlift.ml lNormal.ml loop.ml linline.ml \
 closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
 closure2.ml asm2.ml virtual2.ml \
-cfg.ml cfg_db.ml lra.ml \
+cfg.ml cfg_db.ml igraph.mli igraph.ml lra.mli lra.ml lra2.ml \
+regAlloc2.mli regAlloc2.ml \
 simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml \
 main.mli main.ml
 
