@@ -7,8 +7,6 @@ type data_t = I of int | F of float
 type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Ans of exp
   | Let of (Id.t * Type.t) * exp * t
-  (* | Subst of Id.t * exp * t (\* expにはMov(x)しか入らない *\) *)
-(* Substは束縛ではないので変数の型の情報は必要ない *)
 and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | Nop
   | Set of int
@@ -27,7 +25,6 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | SLL of Id.t * Id.t
   | SLLI of Id.t * int
   | Ld of mem * Id.t * id_or_imm
-  (* | ILd of Id.t * id_or_imm *)
   | St of mem * Id.t * Id.t * id_or_imm
   | FMov of Id.t
   | Ftoi of Id.t
@@ -39,17 +36,14 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t  
   | LdF of mem * Id.t * id_or_imm
-  (* | ILdF of Id.t * id_or_imm *)
   | StF of mem * Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t (* これはブロックを生成する必要がある *)
   | FIf of cmp * Id.t * Id.t * t * t (* 上に同じ *)
-  (* | Loop of Id.l * t (\* asm.mlとのdiff *\) (\* これもブロックを生成する *\) *)
   | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t (* ブロックを生成 *)
   (* Loopには変数定義の機能がある!! *)
   (* レジスタ割り付けなどでこれを考慮することを忘れない!! *)
-  (* | Jump of Id.l (\* asm.mlとのdiff *\) *)
   | Jump of (Id.t * Id.t) list * Id.l (* JumpとSubstを統合した *)
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list (* これはブロック内でどういう命令なのか *)
@@ -66,10 +60,13 @@ let fletd(x, e1, e2) = Let((x, Type.Float), e1, e2) (* e1をfloat変数xに束�
 let seq(e1, e2) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2) (* Unit型の変数への束縛の形でe1とe2を継続 *)
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
-  [| "%r1"; "%r2"; "%r3"; "%r4";
-     "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
-     "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
-     "%r19"; "%r20"; "%r21"; "%r22"; "r23"; "r24"; "r29"|]
+  (* [|"%r1"; "%r2"; "%r3"|] *)
+    [|"%r1"; "%r2"; "%r3"; "%r4";
+     "%r5"; "%r6"; "%r7"|]
+  (* [|"%r1"; "%r2"; "%r3"; "%r4";
+   *    "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
+   *    "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
+   *    "%r19"; "%r20"; "%r21"; "%r22"; "r23"; "r24"; "r29"|] *)
 (* %r23は即値のsetなどに使う *)
 let fregs = Array.init 30 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
@@ -131,7 +128,6 @@ let rec concat e1 xt e2 =
   | Ans(Jump(_)) -> assert false (* 実験的にこの場合は例外にしておく *)
   | Ans(exp) -> Let(xt, exp, e2)
   | Let(yt, exp, e1') -> Let(yt, exp, concat e1' xt e2)
-(* | Subst(_) -> assert false (\* これも例外 *\) *)
                        
 (* alignment is not necessary for our target machine on FPGA *)
 let align i = i (* (if i mod 8 = 0 then i else i + 4) *)

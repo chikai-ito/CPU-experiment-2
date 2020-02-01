@@ -71,13 +71,7 @@ let merge_lr : lr_info H.t -> Cfg.instr -> unit =
 let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   fun lrtbl idset instr ->
   match instr.op with
-  (* | Phi (xt, yls) ->
-   *    let xs = (fst xt) :: (List.map fst yls) in
-   *    let idset = List.fold_left
-   *                  (fun acc x -> add_lr_tbl lrtbl x; S.add x acc) idset xs in
-   *    merge_on_phi lrtbl xs;
-   *    idset *)
-  | Phi((x,t), _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | Phi((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Nop -> idset
   | Set((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SetL((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -167,38 +161,45 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Fin((x, t), y) -> [x], [y]
   | Out (y) -> [], [y]
   | AddI((x, t), y, i) -> [x], [y]
-  | Add((x, t), y, z) -> [x], [y;z]
-  | Sub((x, t), y, z) -> [x], [y;z]
-  | Mul((x, t), y, z) -> [x], [y;z]
-  | Div((x, t), y, z) -> [x], [y;z]
-  | SLL((x, t), y, z) -> [x], [y;z]
+  | Add((x, t), y, z) -> [x], [y; z]
+  | Sub((x, t), y, z) -> [x], [y; z]
+  | Mul((x, t), y, z) -> [x], [y; z]
+  | Div((x, t), y, z) -> [x], [y; z]
+  | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
-  | Ld((x, t), mem, y, Asm2.V(z)) -> [x], [y;z]
+  | Ld((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
   | Ld((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | St((x, t), mem, y, z, Asm2.V(w)) -> [x], [y;z;w]
-  | St((x, t), mem, y, z, Asm2.C(i)) -> [x], [y;z]
+  | St((x, t), mem, y, z, Asm2.V(w)) -> [x], [y; z; w]
+  | St((x, t), mem, y, z, Asm2.C(i)) -> [x], [y; z]
   | FMov((x, t), y) -> [x], [y]
   | Ftoi((x, t), y) -> [x], [y]
   | FNeg((x, t), y) -> [x], [y]
   | Floor((x, t), y) -> [x], [y]
   | FSqrt((x, t), y) -> [x], [y]
-  | FAdd((x, t), y, z) -> [x], [y;z]
-  | FSub((x, t), y, z) -> [x], [y;z]
-  | FMul((x, t), y, z) -> [x], [y;z]
-  | FDiv((x, t), y, z) -> [x], [y;z]
-  | LdF((x, t), mem, y, Asm2.V(z)) -> [x], [y;z]
+  | FAdd((x, t), y, z) -> [x], [y; z]
+  | FSub((x, t), y, z) -> [x], [y; z]
+  | FMul((x, t), y, z) -> [x], [y; z]
+  | FDiv((x, t), y, z) -> [x], [y; z]
+  | LdF((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
   | LdF((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | StF((x, t), mem, y, z, Asm2.V(w)) -> [x], [y;z;w]
-  | StF((x, t), mem, y, z, Asm2.C(i)) -> [x], [y;z]
+  | StF((x, t), mem, y, z, Asm2.V(w)) -> [x], [y; z; w]
+  | StF((x, t), mem, y, z, Asm2.C(i)) -> [x], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(xs, ys) -> (xs @ ys), []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
   | _ -> assert false
+
+let uses_of_branch : block -> Id.t list =
+  fun block ->
+  match block.next with
+  | Brc (cmpr, _, _) ->
+     let x, y = cmpr.args in [x; y]
+  | _ -> []
   
 
 type lra_sets_t = { mutable use : S.t; mutable kill : S.t; mutable liveout : S.t }
-                
+
 let make_lrasets _ =
   let lrasets = { use = S.empty; kill = S.empty; liveout = S.empty } in
   lrasets
@@ -211,7 +212,7 @@ let lrasets_of_block lratbl block =
 
 let update_use : Id.t list -> lra_sets_t -> unit =
   fun xs lrasets ->
-  let xs' = List.filter (fun x -> S.mem x lrasets.kill) xs in
+  let xs' = List.filter (fun x -> not (S.mem x lrasets.kill)) xs in
   lrasets.use <- S.union (S.of_list xs') lrasets.use
 
 let update_kill : Id.t list -> lra_sets_t -> unit =
@@ -226,7 +227,9 @@ let update_use_kill : lra_sets_t -> instr -> unit =
 let setup_use_kill_of_block lratbl block = 
   let L(l) = block.label in
   let lrasets = try H.find lratbl l with Not_found -> assert false in
-  List.iter (update_use_kill lrasets) block.code
+  List.iter (update_use_kill lrasets) block.code;
+  let uses_brnc = uses_of_branch block in
+  update_use uses_brnc lrasets (* branchでのuseの情報を反映 *)
 
 let setup_use_kill lratbl blocks =
   List.iter (setup_use_kill_of_block lratbl) blocks
@@ -315,10 +318,12 @@ let build_livenow_tbl_of_block : lra_sets_t H.t -> S.t H.t ->  block -> unit =
   fun lra_tbl livenow_tbl block ->
   let lrasets = lrasets_of_block lra_tbl block in
   let rev_code = List.rev block.code in
+  let uses_brnc = uses_of_branch block in
+  let liveout = S.union lrasets.liveout (S.of_list uses_brnc) in
   let _ =
     List.fold_left
       (fun livenow instr -> set_livenow_at_instr livenow_tbl livenow instr)
-      lrasets.liveout rev_code in ()
+      liveout rev_code in ()
 
 let build_livenow_tbl_of_blocks : lra_sets_t H.t -> block list -> S.t H.t =
   fun lra_tbl blocks ->

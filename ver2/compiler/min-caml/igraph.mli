@@ -5,7 +5,8 @@ type liverange = Id.t
 type inter_graph = { mutable size : int;
                      deg_tbl : (int * Type.t) H.t;
                      adj_tbl : (S.t * Type.t) H.t }
-
+val print_graph : inter_graph -> unit
+                 
 val create_graph : int -> inter_graph
 
 val graph_copy : inter_graph -> inter_graph

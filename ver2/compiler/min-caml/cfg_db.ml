@@ -17,8 +17,8 @@ let print_op op ids =
   print_string ")"
 let print_xt (x,t) =
   print_id x;
-  colon ()
-  (* print_type t *)
+  colon ();
+  print_type t
 let print_instr = function
   | Phi(xt, yls) ->
      let yls = List.concat (List.map (fun (y, L(l)) -> [y ^ " : " ^ l]) yls) in
@@ -94,6 +94,7 @@ let print_next : next_t -> unit = function
   | Brc(cmpr, b1, b2) -> print_branch cmpr;
                          Printf.printf "to %s, %s\n" (let L(l) = !b1.label in l) (let L(l) = !b2.label in l)
   | Cnfl(b) -> Printf.printf "to %s\n" (let L(l) = !b.label in l)
+  | Loop(b) -> Printf.printf "to_loop %s\n" (let L(l) = !b.label in l)
   | Back(L(l), b) -> Printf.printf "Jump %s\n" l; Printf.printf "to %s\n" (let L(l) = !b.label in l)
   | End -> Printf.printf "End\n"
 let print_block block =
@@ -121,6 +122,7 @@ let check_next color_tbl next =
   match next with
   | Brc(_, b1, b2) -> List.filter is_not_visited [!b1; !b2]
   | Cnfl(b) -> List.filter is_not_visited [!b]
+  | Loop(b) -> List.filter is_not_visited [!b]
   | Back(_, b) -> List.filter is_not_visited [!b]
   | End -> []
 let rec bfs queue color_tbl acc =

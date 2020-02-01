@@ -13,6 +13,8 @@ val union_lr : lr_info H.t -> Id.t -> Id.t -> unit
 
 val defs_uses_of_instr : instr -> Id.t list * Id.t list
 
+val uses_of_branch : block -> Id.t list
+
 val lookup_livenow_tbl : S.t H.t -> Cfg.instr -> S.t
 
 val lookup_lr : lr_info H.t -> Id.t -> Id.t

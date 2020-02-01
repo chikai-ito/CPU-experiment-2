@@ -48,6 +48,7 @@ type block = { mutable label : Id.l; mutable code : code_t;
                mutable prev : block list; mutable next : next_t}
 and next_t = Brc of compare_t * block ref * block ref (* branch *)
            | Cnfl of block ref (* confluence *)
+           | Loop of block ref (* entering into loop *)
            | Back of Id.l * block ref (* loop back *)
            | End (* end of the flow *)
 and compare_t = { branch : Type.t * cmp; args : Id.t * Id.t } (* 比較分岐演算の種類と引数の情報をもつデータ型 *)
@@ -59,6 +60,7 @@ let next_blocks block =
   match block.next with
   | Brc (_, br1, br2) -> [!br1; !br2]
   | Cnfl (br) -> [!br]
+  | Loop (br) -> [!br]
   | Back (_, br) -> [!br]
   | End -> []
 
@@ -161,7 +163,8 @@ let join_flows : flow_t list -> block -> unit =
   fun prs next_b ->
   List.iter (fun flw ->
       match (flw.b).next with
-      | Brc _ | Cnfl _ -> flw.bref := next_b; next_b.prev <- flw.b :: next_b.prev
+      | Brc _ | Cnfl _ | Loop _ ->
+         flw.bref := next_b; next_b.prev <- flw.b :: next_b.prev
       | _ -> assert false) prs
 
 let join_back_flows : flow_t list -> block -> unit =
@@ -205,11 +208,11 @@ let back_return_vars : flow_t list -> vars_t =
      List.fold_right (fun flw acc -> collect_back_vars flw acc) backs flw.vars
   | _ -> assert false
 
-let make_block prs = (* ループの手前に挿入するブロックを新しく生成する *)
+let make_block_toloop prs = (* ループの手前に挿入するブロックを新しく生成する *)
   let c = [] in
   let l = Id.genid "node_b" in
   let bref = ref dummy_block in
-  let sc = Cnfl(bref) in
+  let sc = Loop(bref) in
   let new_b = { label = L(l); code = c; prev = []; next = sc } in
   join_flows prs new_b;
   new_b, bref
@@ -288,7 +291,7 @@ and if_routine prs yt exp =
 and loop_routine prs yt exp =
   (match exp with
    | Asm2.Loop(L(l), zts, ws, e') -> (* ループのラベルlをそのままブロックのラベルにすれば良い *)
-      let new_b, new_bref = make_block prs in (* ループの前に挿入する新しいブロック *)
+      let new_b, new_bref = make_block_toloop prs in (* ループの前に挿入する新しいブロック *)
       let flw = { b = new_b; bref = new_bref; vars = [] } in
       let bh, bts = make_cfg [flw] yt e' in (* bhはループの入口ブロック. ここにphi関数を挿入 *)
       let cnfls, backs = flow_classify bts in

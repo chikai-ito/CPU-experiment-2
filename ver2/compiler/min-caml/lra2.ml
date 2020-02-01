@@ -13,6 +13,9 @@ let print_lr_info { name = lr; size = n; set = s } =
     (fun x -> Printf.printf "%s, " x) (S.elements s);
   print_string "\b\b\n"
 
+let print_lr_tbl lr_tbl =
+  H.iter (fun _ lr_i -> print_lr_info lr_i) lr_tbl
+  
 let print_lr lr_tbl x =
   try
     let lr_ix = H.find lr_tbl x in
@@ -100,11 +103,24 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
      { instr_id = iid; op = Entry(List.map lu xs, List.map lu ys) }
   | Return((x, t)) -> rt x t; { instr_id = iid; op = Return((lu x, t)) }
   | _ -> assert false
+       
 
+let branch_replace_id_with_lr : lr_info H.t -> Cfg.block -> unit =
+  fun lrtbl block ->
+  match block.next with
+  | Brc(cmpr, br1, br2) ->
+     let x, y = cmpr.args in
+     let cmpr' = { branch = cmpr.branch;
+                   args = (lookup_lr lrtbl x, lookup_lr lrtbl y) } in
+     block.next <- Brc(cmpr', br1, br2)
+  | _ -> ()
+       
 
 let block_replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.block -> unit =
   fun lrtbl lr_ty_tbl block ->
-  block.code <- List.map (replace_id_with_lr lrtbl lr_ty_tbl) block.code
+  block.code <- List.map (replace_id_with_lr lrtbl lr_ty_tbl) block.code;
+  branch_replace_id_with_lr lrtbl block
+
 
 let cfg_replace_with_lr : lr_info H.t -> Cfg.block list -> Type.t H.t =
   fun lrtbl blocks ->
@@ -127,11 +143,17 @@ let separate_lr : Type.t H.t -> Id.t list -> Id.t list * Id.t list =
         | _ -> (lr :: i_acc, f_acc))
       ([], []) livenow in
   i_livenow, f_livenow
+  
 
 let add_interf_of_instr :
       Igraph.inter_graph -> S.t H.t -> Type.t H.t -> Cfg.instr -> unit =
   fun graph livenow_tbl lr_ty_tbl instr ->
   let defs, _ = defs_uses_of_instr instr in
+  List.iter
+    (fun x -> let t = try H.find lr_ty_tbl x with Not_found -> assert false in
+              match t with
+              | Type.Float -> add_node graph x Type.Float
+              | _ -> add_node graph x Type.Int) defs;
   let livelist = S.elements (Lra.lookup_livenow_tbl livenow_tbl instr) in
   let i_lives, f_lives = separate_lr lr_ty_tbl livelist in
   let interfs = List.concat
@@ -154,15 +176,22 @@ let add_interf_of_block :
     block.code
   
     
-let build_igraph : Cfg.block list -> Igraph.inter_graph =
+let build_igraph : Cfg.block list -> Igraph.inter_graph * S.t H.t =
   (* 副作用としてblock各命令の変数たちがLRに書き換わる *)
   fun blocks ->
+  List.iter Cfg_db.print_block blocks;
   let lrtbl, idset, lrset = Lra.blocklist_to_lrtbl blocks in
+  print_lr_tbl lrtbl;
   let lr_ty_tbl = cfg_replace_with_lr lrtbl blocks in (* ここで変数がLRに書き換わる *)
+  Format.eprintf "replaced variables with live ranges@.";
+  List.iter Cfg_db.print_block blocks;
   let lra_sets =  dfa_of_liveout blocks in
+  Format.eprintf "completed dfa of liveout@.";
   let livenow_tbl = build_livenow_tbl_of_blocks lra_sets blocks in
+  Format.eprintf "completed computation of livenow@.";
   let igraph = create_graph ((List.length blocks) * 100) in
+  Format.eprintf "constructed a interference graph@.";
   List.iter (add_interf_of_block igraph livenow_tbl lr_ty_tbl) blocks;
-  igraph
+  igraph, livenow_tbl
 
       

@@ -1,10 +1,8 @@
-let x = create_array 1 1
-in
-let rec g nn =
-  if nn >= 0  then
-    x.(0) + 9
+let rec g l =
+  if l >= 0  then
+    1
   else
-    g (nn - 1)
+    g (l - 1)
 in
 let rec f n m =
   if n = 0 then

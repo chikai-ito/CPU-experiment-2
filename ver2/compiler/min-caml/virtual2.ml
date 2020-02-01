@@ -15,7 +15,7 @@ let classify xts ini addf addi =
       | Type.Float -> addf acc x (* Floatの時はaddfでaccにxを追加 *)
       (* 下の場合は型の情報もaddiの引数に取れるようになってる *)
       | _ -> addi acc x t) (* その他の型の時はaddiでaccにxを追加 *)
-    ini (* accの初期値, initのこと *) (* 超わかりにくい *)
+    ini (* accの初期値, initのこと *)
     xts (* 変数と型のリスト *) (* 典型的には関数の引数 *)
 
 let separate xts = (* classifyを用いて変数をInt型とFloat型に分ける *)

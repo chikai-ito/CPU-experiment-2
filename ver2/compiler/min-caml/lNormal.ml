@@ -47,8 +47,6 @@ type t =
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 (* KNormal.tをLNormal.tに変換するための関数 *)
-(* 正直クソ無駄．こういう時のためのinheritanceなのか *)
-(* 勉強だと思って書いた *)
 let rec ktol = function
   | KNormal.Unit -> Unit
   | KNormal.Int(i) -> Int(i)
@@ -83,7 +81,7 @@ let rec ktol = function
   | KNormal.ExtArray(x) -> ExtArray(x)
   | KNormal.ExtFunApp(x,ys) -> ExtFunApp(x,ys)
 
-(* ループのインライン化に使う，Alpha.gを丸パクリした *)
+(* ループのインライン化に使う，Alpha.gとほぼ同じ *)
 let find x env = try M.find x env with Not_found -> x
 let rec subst env lenv = function
   | Unit -> Unit

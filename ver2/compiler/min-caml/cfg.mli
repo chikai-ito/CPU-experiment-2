@@ -48,6 +48,7 @@ type block = { mutable label : Id.l; mutable code : code_t;
                mutable prev : block list; mutable next : next_t }
 and next_t = Brc of compare_t * block ref * block ref (* branch *)
            | Cnfl of block ref (* confluence *)
+           | Loop of block ref (* entering into loop *)
            | Back of Id.l * block ref (* loop back *)
            | End (* end of the flow *)
 and compare_t = { branch : Type.t * cmp; args : Id.t * Id.t }

@@ -27,7 +27,22 @@ let deg_of_node : inter_graph -> liverange -> int * Type.t =
 let adjs_of_node : inter_graph -> liverange -> (S.t * Type.t) =
   fun graph node ->
   try H.find graph.adj_tbl node
-  with Not_found -> assert false
+  with Not_found ->
+    Format.eprintf "%s is not on the table@." node;
+    assert false
+
+
+let print_set set =
+  let list = S.elements set in
+  List.iter (Printf.printf "%s, ") list;
+  print_string "\n"
+
+let print_graph graph =
+  H.iter (fun x (s, t) ->
+      Printf.printf "%s, %d : " x (fst (deg_of_node graph x));
+      Type.print_type t;
+      print_string " : ";
+      print_set s) graph.adj_tbl
 
 let reset_node : inter_graph -> liverange -> int -> unit =
   fun graph node deg ->
@@ -44,7 +59,7 @@ let add_node : inter_graph -> liverange -> Type.t -> unit =
   if H.mem graph.deg_tbl node then () (* すでにnodeがある場合は何もしない *)
   else
     (graph.size <- graph.size + 1;
-     H.add graph.deg_tbl node (1, ty);
+     H.add graph.deg_tbl node (0, ty);
      H.add graph.adj_tbl node (S.empty, ty))
 
 let incr_deg : inter_graph -> liverange -> unit =
@@ -69,9 +84,10 @@ let addto_adj : inter_graph -> liverange -> liverange -> unit =
   fun graph node1 node2 ->
   let _, ty1 = adjs_of_node graph node1 in
   let adjs2, ty2 = adjs_of_node graph node2 in
-  assert (ty1 = ty2);
-  reset_adjs graph node2 (S.add node1 adjs2);
-  incr_deg graph node2 (* increase deg of node2 by 1 *)
+  if not (S.mem node1 adjs2) then
+    (assert (ty1 = ty2);
+     reset_adjs graph node2 (S.add node1 adjs2);
+     incr_deg graph node2 (* increase deg of node2 by 1 *))
 
 let remvfrm_adj : inter_graph -> liverange -> liverange -> unit =
   (* ndoe1をnode2のadj_tblから削除 *)
@@ -80,7 +96,7 @@ let remvfrm_adj : inter_graph -> liverange -> liverange -> unit =
   let _, ty1 = adjs_of_node graph node1 in
   let adjs2, ty2 = adjs_of_node graph node2 in
   assert (ty1 = ty2);
-  reset_adjs graph node2 (S.remove node2 adjs2);
+  reset_adjs graph node2 (S.remove node1 adjs2);
   decr_deg graph node2
 
 let add_edge : inter_graph -> liverange * Type.t ->
@@ -116,15 +132,20 @@ let search_colorable_node : inter_graph -> int -> int -> liverange * Type.t =
     nodelist
 
 exception Not_colorable
-  
+
 let color_graph : inter_graph -> int -> int -> (liverange * Type.t) Stack.t =
   fun graph imax fmax ->
   let stack = Stack.create () in
   let dup_graph = graph_copy graph in
+  Format.eprintf "ready to enter while loop of Igraph.color_graph@.";
   try
     (while dup_graph.size > 0 do
+       print_string "---------------\n";
+       print_graph dup_graph;
+       print_string "---------------\n";
        (* search_colorable_nodeからNot_found例外が出る *)
        let next_node, ty = search_colorable_node dup_graph imax fmax in
+       Format.eprintf "node %s is colorable@." next_node;
        Stack.push (next_node, ty) stack;
        delete_node dup_graph next_node
      done);

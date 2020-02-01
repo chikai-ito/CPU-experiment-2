@@ -15,7 +15,12 @@ let rec iter2 n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
     if e = e' then e else
       iter2 (n - 1) e'
 
-let lexbuf2 l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
+let print_set set =
+  let list = S.elements set in
+  List.iter (Printf.printf "%s, ") list;
+  print_string "\n"
+
+let lexbuf2 outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
   Id.counter := 0;
   Typing.extenv := M.empty;
   let syntax = Parser.exp Lexer.token l in
@@ -29,16 +34,22 @@ let lexbuf2 l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
   let (_, f_cfgs, cfg) = Cfg.f (Virtual2.f (Closure2.f lNormal)) in
-  let igraph = Lra2.build_igraph cfg in
+  let igraph, livenow_tbl = Lra2.build_igraph cfg in
+  H.iter (fun x y ->
+      Printf.printf "%s : " x;
+      print_set y) livenow_tbl;
   let regtbl = RegAlloc2.f igraph in
   (* List.iter Cfg_db.print_block cfg; *)
   (* Format.eprintf "----------@."; () *)
   (* let _ = List.map (fun (b,_) -> Cfg_db.scan_cfg b) fns in *)
   Format.eprintf "total number of blocks is %d@." (List.length cfg);
   (* Format.eprintf "total number of toplevel functions is %d@." (List.length fns) *)
-  Format.eprintf "index of node_b is %d@." (H.find Id.idtbl "node_b");
-  Format.eprintf "index of tail_b is %d@." (H.find Id.idtbl "tail_b");
-  Format.eprintf "index of branching_b is %d@." (H.find Id.idtbl "branching_b")
+  (* Format.eprintf "index of node_b is %d@." (H.find Id.idtbl "node_b");
+   * Format.eprintf "index of tail_b is %d@." (H.find Id.idtbl "tail_b");
+   * Format.eprintf "index of branching_b is %d@." (H.find Id.idtbl "branching_b"); *)
+  Format.eprintf "---- emit code ----@.";
+  Emit2.output_cfg outchan livenow_tbl regtbl cfg
+  
   
 
 let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
@@ -72,7 +83,7 @@ let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file
     close_out outchan;
   with e -> (close_in inchan; close_out outchan; raise e)
   else if !compile_mode = 1 then
-    lexbuf2 (Lexing.from_channel inchan)
+    lexbuf2 outchan (Lexing.from_channel inchan)
   else if !compile_mode = 2 then
     Lra2.test_run ()
   else
