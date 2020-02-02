@@ -1,4 +1,12 @@
 open KNormal
+
+let threshold = ref 0
+
+let rec size = function
+  | If(_, _, _, e1, e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) ->
+     1 + size e1 + size e2
+  | LetTuple(_, _, e) -> 1 + size e
+  | _ -> 1
    
 let rec exists_call x = function
   | If(_,_,_,e1,e2) | Let(_,e1,e2) ->
@@ -22,7 +30,8 @@ let rec inline2 fnlist = function
   | LetRec(fd,e2) ->
      let (x,_) = fd.name in
      let fnlist =
-       if not (is_recfun fd) then
+       if not (is_recfun fd)
+          && (size fd.body) <= !threshold then
          M.add x fd fnlist
        else
          fnlist in

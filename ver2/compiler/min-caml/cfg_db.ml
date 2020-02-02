@@ -31,7 +31,7 @@ let print_instr = function
   | Neg(xt, y) -> print_xt xt; print_op "Neg" [y]; newline ()
   | Itof(xt, y) -> print_xt xt; print_op "Itof" [y]; newline ()
   | In(xt) -> print_xt xt; print_string " <- In\n"
-  | Fin(xt, y) -> print_xt xt; print_op "Fin" [y]; newline ()
+  | Fin(xt) -> print_xt xt; print_string " <- Fin\n"
   | Out(y) -> Printf.printf "Out(%s)\n" y
   | AddI(xt, y, i) -> print_xt xt; print_op "Add" [y];
                       space (); print_int i; newline ()
@@ -44,9 +44,8 @@ let print_instr = function
   | Ld(xt, _, y, Asm2.V(z)) -> print_xt xt; print_op "Ld" [y;z]; newline ()
   | Ld(xt, _, y, Asm2.C(i)) -> print_xt xt; print_op "Ld" [y];
                                space (); print_int i; newline ()
-  | St(xt, _, y, z, Asm2.V(w)) -> print_xt xt; print_op "St" [y;z;w]; newline ()
-  | St(xt, _, y, z, Asm2.C(i)) -> print_xt xt; print_op "St" [y;z];
-                                  space (); print_int i; newline ()
+  | St(_, y, z, Asm2.V(w)) -> Printf.printf "St %s[%s] <- %s\n" y w z
+  | St(_, y, z, Asm2.C(i)) -> Printf.printf "St %s[%d] <- %s\n" y i z
   | FMov(xt, y) -> print_xt xt; print_op "FMov" [y]; newline ()
   | Ftoi(xt, y) -> print_xt xt; print_op "Ftoi" [y]; newline ()
   | FNeg(xt, y) -> print_xt xt; print_op "FNeg" [y]; newline ()
@@ -59,9 +58,8 @@ let print_instr = function
   | LdF(xt, _, y, Asm2.V(z)) -> print_xt xt; print_op "LdF" [y;z]; newline ()
   | LdF(xt, _, y, Asm2.C(i)) -> print_xt xt; print_op "LdF" [y];
                                 space (); print_int i; newline ()
-  | StF(xt, _, y, z, Asm2.V(w)) -> print_xt xt; print_op "StF" [y;z;w]; newline ()
-  | StF(xt, _, y, z, Asm2.C(i)) -> print_xt xt; print_op "StF" [y;z];
-                                   space (); print_int i; newline ()
+  | StF(_, y, z, Asm2.V(w)) -> Printf.printf "StF %s[%s] <- %s\n" y w z
+  | StF(_, y, z, Asm2.C(i)) -> Printf.printf "StF %s[%d] <- %s\n" y i z
   | CallCls(xt, f, ys, zs) -> print_xt xt;
                               print_op "CallCls" (((f ^ ";")::"int:"::ys) @ ("\b\b; float:"::zs)); newline ()
   | CallDir(xt, L(l), ys, zs) -> print_xt xt;
@@ -69,7 +67,7 @@ let print_instr = function
   | Entry(xs,ys) -> Printf.printf "Entry";
                     List.iter (fun x -> Printf.printf "%s, " x) ((" int:"::xs) @  ("\b\b; float:"::ys)); newline ()
   | Return(xt) -> Printf.printf "Return"; space (); print_xt xt; newline ()
-  | Save(x,y) -> Printf.printf "Save(%s, %s)\n" x y
+  | Save(x) -> Printf.printf "Save(%s)\n" x
   | Restore(x) -> Printf.printf "Restore(%s)\n" x
 
 let indent _ = print_string "  "
@@ -97,11 +95,14 @@ let print_next : next_t -> unit = function
   | Loop(b) -> Printf.printf "to_loop %s\n" (let L(l) = !b.label in l)
   | Back(L(l), b) -> Printf.printf "Jump %s\n" l; Printf.printf "to %s\n" (let L(l) = !b.label in l)
   | End -> Printf.printf "End\n"
+
 let print_block block =
   Printf.printf "---- block ----\n";
   Printf.printf "Label : %s\n" (let L(l) = block.label in l);
   Printf.printf "Prev : ";
   print_prev block.prev;
+  Printf.printf "depth : ";
+  Printf.printf "%d\n" block.l_dep;
   Printf.printf "Code :\n";
   print_code block.code;
   Printf.printf "Flow : ";

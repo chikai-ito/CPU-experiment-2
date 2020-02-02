@@ -3,6 +3,7 @@ open Lra
 open Enums
 open Cfg
 open Igraph
+open Collect_lr
    
 (* デバッグ用の関数たち *)
 let print_lr_info { name = lr; size = n; set = s } =
@@ -65,7 +66,7 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | Neg((x, t), y) -> rt x t; { instr_id = iid; op = Neg((lu x, t), lu y) }
   | Itof((x, t), y) -> rt x t; { instr_id = iid; op = Itof((lu x, t), lu y) }
   | In((x, t)) -> rt x t; { instr_id = iid; op = In((lu x, t)) }
-  | Fin((x, t), y) -> rt x t; { instr_id = iid; op = Fin((lu x, t), lu y) }
+  | Fin((x, t)) -> rt x t; { instr_id = iid; op = Fin((lu x, t)) }
   | Out (y) -> { instr_id = iid; op = Out(lu y) }
   | AddI((x, t), y, i) -> rt x t; { instr_id = iid; op = AddI((lu x, t), lu y, i) }
   | Add((x, t), y, z) -> rt x t; { instr_id = iid; op = Add((lu x, t), lu y, lu z) }
@@ -76,8 +77,8 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | SLLI((x, t), y, i) -> rt x t; { instr_id = iid; op = SLLI((lu x, t), lu y, i) }
   | Ld((x, t), mem, y, Asm2.V(z)) -> rt x t; { instr_id = iid; op = Ld((lu x, t), mem, lu y, Asm2.V(lu z)) }
   | Ld((x, t), mem, y, Asm2.C(i)) -> rt x t; { instr_id = iid; op = Ld((lu x, t), mem, lu y, Asm2.C(i)) }
-  | St((x, t), mem, y, z, Asm2.V(w)) -> rt x t; { instr_id = iid; op = St((lu x, t), mem, lu y, lu z, Asm2.V(lu w)) }
-  | St((x, t), mem, y, z, Asm2.C(i)) -> rt x t; { instr_id = iid; op = St((lu x, t), mem, lu y, lu z, Asm2.C(i)) }
+  | St(mem, y, z, Asm2.V(w)) -> { instr_id = iid; op = St(mem, lu y, lu z, Asm2.V(lu w)) }
+  | St(mem, y, z, Asm2.C(i)) -> { instr_id = iid; op = St(mem, lu y, lu z, Asm2.C(i)) }
   | FMov((x, t), y) -> rt x t; { instr_id = iid; op = FMov((lu x, t), lu y) }
   | Ftoi((x, t), y) -> rt x t; { instr_id = iid; op = Ftoi((lu x, t), lu y) }
   | FNeg((x, t), y) -> rt x t; { instr_id = iid; op = FNeg((lu x, t), lu y) }
@@ -89,8 +90,8 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | FDiv((x, t), y, z) -> rt x t; { instr_id = iid; op = FDiv((lu x, t), lu y, lu z) }
   | LdF((x, t), mem, y, Asm2.V(z)) -> rt x t; { instr_id = iid; op = LdF((lu x, t), mem, lu y, Asm2.V(lu z)) }
   | LdF((x, t), mem, y, Asm2.C(i)) -> rt x t; { instr_id = iid; op = LdF((lu x, t), mem, lu y, Asm2.C(i)) }
-  | StF((x, t), mem, y, z, Asm2.V(w)) -> rt x t; { instr_id = iid; op = StF((lu x, t), mem, lu y, lu z, Asm2.V(lu w)) }
-  | StF((x, t), mem, y, z, Asm2.C(i)) -> rt x t; { instr_id = iid; op = StF((lu x, t), mem, lu y, lu z, Asm2.C(i)) }
+  | StF(mem, y, z, Asm2.V(w)) -> { instr_id = iid; op = StF(mem, lu y, lu z, Asm2.V(lu w)) }
+  | StF(mem, y, z, Asm2.C(i)) -> { instr_id = iid; op = StF(mem, lu y, lu z, Asm2.C(i)) }
   | CallCls((x, t), f, ys, zs) ->
      rt x t;
      { instr_id = iid; op = CallCls((lu x, t), lu f, List.map lu ys, List.map lu zs) }
@@ -102,7 +103,8 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
      List.iter (fun x -> rt x Type.Float) ys;
      { instr_id = iid; op = Entry(List.map lu xs, List.map lu ys) }
   | Return((x, t)) -> rt x t; { instr_id = iid; op = Return((lu x, t)) }
-  | _ -> assert false
+  | Save(x) -> { instr_id = iid; op = Save(lu x) }
+  | Restore(x) -> { instr_id = iid; op = Restore(lu x) }
        
 
 let branch_replace_id_with_lr : lr_info H.t -> Cfg.block -> unit =
@@ -176,15 +178,17 @@ let add_interf_of_block :
     block.code
   
     
-let build_igraph : Cfg.block list -> Igraph.inter_graph * S.t H.t =
+let build_igraph : Cfg.block list -> Igraph.inter_graph * S.t H.t * lr_stat_tbl_t =
   (* 副作用としてblock各命令の変数たちがLRに書き換わる *)
   fun blocks ->
-  List.iter Cfg_db.print_block blocks;
+  (* List.iter Cfg_db.print_block blocks; *)
   let lrtbl, idset, lrset = Lra.blocklist_to_lrtbl blocks in
-  print_lr_tbl lrtbl;
+  (* print_lr_tbl lrtbl; *)
   let lr_ty_tbl = cfg_replace_with_lr lrtbl blocks in (* ここで変数がLRに書き換わる *)
   Format.eprintf "replaced variables with live ranges@.";
-  List.iter Cfg_db.print_block blocks;
+  (* List.iter Cfg_db.print_block blocks; *)
+  let stat_tbl = make_stat_tbl blocks in
+  Format.eprintf "collected statuses of live rages@.";
   let lra_sets =  dfa_of_liveout blocks in
   Format.eprintf "completed dfa of liveout@.";
   let livenow_tbl = build_livenow_tbl_of_blocks lra_sets blocks in
@@ -192,6 +196,6 @@ let build_igraph : Cfg.block list -> Igraph.inter_graph * S.t H.t =
   let igraph = create_graph ((List.length blocks) * 100) in
   Format.eprintf "constructed a interference graph@.";
   List.iter (add_interf_of_block igraph livenow_tbl lr_ty_tbl) blocks;
-  igraph, livenow_tbl
+  igraph, livenow_tbl, stat_tbl
 
       

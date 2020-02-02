@@ -31,7 +31,10 @@ let genid s =
     H.replace idtbl s (n+1);
     Printf.sprintf "%s.%d" s n
   with
-    Not_found -> H.add idtbl s 1; Printf.sprintf "%s.%d" s 0 
+    Not_found -> H.add idtbl s 1; Printf.sprintf "%s.%d" s 0
+
+let is_utmp x =
+  x.[0] = 'T' && x.[1] = 'u'
 
 let rec id_of_typ = function
   | Type.Unit -> "u"

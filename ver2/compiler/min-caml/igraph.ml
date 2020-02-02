@@ -140,12 +140,12 @@ let color_graph : inter_graph -> int -> int -> (liverange * Type.t) Stack.t =
   Format.eprintf "ready to enter while loop of Igraph.color_graph@.";
   try
     (while dup_graph.size > 0 do
-       print_string "---------------\n";
-       print_graph dup_graph;
-       print_string "---------------\n";
+       (* print_string "---------------\n";
+        * print_graph dup_graph;
+        * print_string "---------------\n"; *)
        (* search_colorable_nodeからNot_found例外が出る *)
        let next_node, ty = search_colorable_node dup_graph imax fmax in
-       Format.eprintf "node %s is colorable@." next_node;
+       (* Format.eprintf "node %s is colorable@." next_node; *)
        Stack.push (next_node, ty) stack;
        delete_node dup_graph next_node
      done);

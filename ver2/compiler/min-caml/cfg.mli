@@ -11,7 +11,7 @@ and op_t =
   | Neg of (Id.t * Type.t) * Id.t
   | Itof of (Id.t * Type.t) * Id.t
   | In of (Id.t * Type.t)
-  | Fin of (Id.t * Type.t) * Id.t
+  | Fin of (Id.t * Type.t)
   | Out of Id.t
   | AddI of (Id.t * Type.t) * Id.t * int
   | Add of (Id.t * Type.t) * Id.t * Id.t
@@ -21,7 +21,7 @@ and op_t =
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
   | Ld of (Id.t * Type.t) * mem * Id.t * Asm2.id_or_imm
-  | St of (Id.t * Type.t) * mem * Id.t * Id.t * Asm2.id_or_imm
+  | St of mem * Id.t * Id.t * Asm2.id_or_imm
   | FMov of (Id.t * Type.t) * Id.t
   | Ftoi of (Id.t * Type.t) * Id.t
   | FNeg of (Id.t * Type.t) * Id.t
@@ -32,19 +32,21 @@ and op_t =
   | FMul of (Id.t * Type.t) * Id.t * Id.t
   | FDiv of (Id.t * Type.t) * Id.t * Id.t
   | LdF of (Id.t * Type.t) * mem * Id.t * Asm2.id_or_imm
-  | StF of (Id.t * Type.t) * mem * Id.t * Id.t * Asm2.id_or_imm
+  | StF of mem * Id.t * Id.t * Asm2.id_or_imm
   | CallCls of (Id.t * Type.t) * Id.t * Id.t list * Id.t list
   | CallDir of (Id.t * Type.t) * Id.l * Id.t list * Id.t list
   | Entry of Id.t list * Id.t list
   | Return of (Id.t * Type.t) (* プログラムの答えを返す命令; ルーチンの最後につく *)
-  | Save of Id.t * Id.t (* regname * ident *)
+  | Save of Id.t (* regname * ident *)
   | Restore of Id.t
 
 val new_iid : unit -> Id.t
-  
+
 val new_instr : op_t -> instr
-             
-type block = { mutable label : Id.l; mutable code : code_t;
+
+type block = { mutable label : Id.l;
+               mutable l_dep : int;
+               mutable code : code_t;
                mutable prev : block list; mutable next : next_t }
 and next_t = Brc of compare_t * block ref * block ref (* branch *)
            | Cnfl of block ref (* confluence *)

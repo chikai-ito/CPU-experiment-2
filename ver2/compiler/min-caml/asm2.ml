@@ -48,8 +48,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list (* これはブロック内でどういう命令なのか *)
   | CallDir of Id.l * Id.t list * Id.t list
-  | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
-  (* Saveの第二引数は変数名，第一引数はその変数が実際に割り当てられているレジスタ *)
+  | Save of Id.t (* save, restoreはループの前後に用いる *)
   | Restore of Id.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 (* プログラム全体 = 浮動小数点数 & 大きな整数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
@@ -61,12 +60,12 @@ let seq(e1, e2) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2) (* Unit型の変
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
   (* [|"%r1"; "%r2"; "%r3"|] *)
-    [|"%r1"; "%r2"; "%r3"; "%r4";
-     "%r5"; "%r6"; "%r7"|]
-  (* [|"%r1"; "%r2"; "%r3"; "%r4";
-   *    "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
-   *    "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
-   *    "%r19"; "%r20"; "%r21"; "%r22"; "r23"; "r24"; "r29"|] *)
+    (* [|"%r1"; "%r2"; "%r3"; "%r4";
+     *  "%r5"; "%r6"; "%r7"|] *)
+  [|"%r1"; "%r2"; "%r3"; "%r4";
+     "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
+     "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
+     "%r19"; "%r20"; "%r21"; "%r22"; "r23"; "r24"; "r25"; "r29"|]
 (* %r23は即値のsetなどに使う *)
 let fregs = Array.init 30 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
@@ -76,7 +75,7 @@ let reg_sub2 = "%r31"
 let freg_sub1 = "%f30"
 let freg_sub2 = "%f31"
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *) 
-let reg_sw = regs.(Array.length regs - 2) (* temporary for swap *) (* これemitとかで使っていいのでは？ *)
+(* let reg_sw = regs.(Array.length regs - 2) (\* temporary for swap *\) (\* これemitとかで使っていいのでは？ *\) *)
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *) (* これも．ssaとかでも使えそう *)
 let reg_sp = "%r26" (* stack pointer *)
 let reg_hp = "%r27" (* heap pointer (caml2html: sparcasm_reghp) *)
@@ -96,7 +95,7 @@ let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
   | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) (* | Jump(_) (* diff *) *) -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
-    | FSqrt(x) | Floor(x) | Save(x, _) | AddI(x,_) | SLLI(x,_) -> [x]
+    | FSqrt(x) | Floor(x) | Save(x) | AddI(x,_) | SLLI(x,_) -> [x]
   | Ld(_, x, y') | LdF(_, x, y') (*| ILd(x,y') | ILdF(x,y')*) -> x :: fv_id_or_imm y'
     (* | AddI(x,y') | SLLI(x,y')  *)
   | St(_, x, y, z') | StF(_, x, y, z') -> x :: y :: fv_id_or_imm z'

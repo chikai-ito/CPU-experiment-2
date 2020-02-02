@@ -3,6 +3,7 @@ open Enums
 open Lra
 open Lra2
 open Igraph
+open Collect_lr
 
 type alloc_result = Alloc of Id.t | Spill of Type.t
 type alloc_tbl_t = alloc_result H.t
@@ -43,15 +44,21 @@ let make_reg_list : alloc_tbl_t -> S.t -> Id.t list =
     lr_list
 
 (* これを書き換えてcoalescingする *)
-let choose_reg allregs regs lr =
+let choose_reg stat_tbl allregs regs lr =
+  let targets = tar_list allregs (get_status stat_tbl lr).target in
   try
-    List.find (fun r -> not (List.mem r regs)) allregs
+    List.find (fun r -> not (List.mem r regs)) targets
   with
-    Not_found -> assert false
+    Not_found ->
+    (try
+       List.find (fun r -> not (List.mem r regs)) allregs
+     with
+       Not_found -> assert false)
 
-let assign_lr : alloc_tbl_t -> inter_graph -> (liverange * Type.t) Stack.t ->
-               Id.t list -> Id.t list -> unit =
-  fun regtbl graph stack allregs fallregs ->
+let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
+                (liverange * Type.t) Stack.t -> Id.t list -> Id.t list ->
+                unit =
+  fun regtbl stat_tbl graph stack allregs fallregs ->
   let allocated = ref [] in
   while not (Stack.is_empty stack) do
     let lr, ty = Stack.pop stack in
@@ -60,8 +67,8 @@ let assign_lr : alloc_tbl_t -> inter_graph -> (liverange * Type.t) Stack.t ->
     let adjs' = S.inter adjs (S.of_list !allocated) in
     let regs = make_reg_list regtbl adjs' in
     let reg = (match ty with
-               | Type.Float -> choose_reg fallregs regs lr
-               | _ -> choose_reg allregs regs lr) in
+               | Type.Float -> choose_reg stat_tbl fallregs regs lr
+               | _ -> choose_reg stat_tbl allregs regs lr) in
     Format.eprintf "assign register %s to live range %s@." reg lr;
     add_reg regtbl lr reg;
     allocated := lr :: !allocated
@@ -85,15 +92,20 @@ let rec spill_lr : alloc_tbl_t -> inter_graph -> (liverange * Type.t) list ->
      delete_node graph lr;
      spill_lr regtbl graph (List.tl spill_rank_list) imax fmax)
 
-let f : inter_graph -> alloc_tbl_t =
-  fun graph ->
+let f : lr_stat_tbl_t -> inter_graph -> alloc_tbl_t =
+  fun stat_tbl graph ->
   let allregs = Array.to_list Asm2.regs in
   let fallregs = Array.to_list Asm2.fregs in
   let regtbl : alloc_tbl_t = H.create graph.size in
-  let spill_rank_list = nodes_of_graph graph in
+  let spill_rank_list =
+    List.sort
+      (fun (x, _) (y, _) -> compare
+                    (get_status stat_tbl x).use_count
+                    (get_status stat_tbl y).use_count)
+    (nodes_of_graph graph) in
   let imax = List.length allregs in
   let fmax = List.length fallregs in
   Format.eprintf "setup completed in RegAlloc.f@.";
   let stack = spill_lr regtbl graph spill_rank_list imax fmax in
-  assign_lr regtbl graph stack allregs fallregs;
+  assign_lr regtbl stat_tbl graph stack allregs fallregs;
   regtbl

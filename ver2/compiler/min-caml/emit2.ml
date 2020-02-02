@@ -3,15 +3,29 @@ open Enums
 open RegAlloc2
 open Cfg
 
+external get : float -> int32 = "get"
+
 (* 現在のARのstacktopのoffset *)
 let stacktop = ref 0
 (* 変数からoffsetへのmap *)
 let stackmap = H.create 5000
+             
+(* loopの前後に上書きされる変数をsaveするmap *)
+let stackmap_sub = H.create 100
+
 
 let save x =
   if not (H.mem stackmap x) then
     (H.add stackmap x !stacktop;
      stacktop := !stacktop + 4)
+
+let save_sub x =
+  (* 以前のsaveの結果も後々必要になるので，stackに積み重ねていく *)
+  H.add stackmap_sub x !stacktop;
+  stacktop := !stacktop + 4
+let remov_sub x =
+  assert (H.mem stackmap_sub x);
+  H.remove stackmap_sub x
 
 let add_list_to_stackmap regtbl xs =
   let xs = List.map fst (* spillされた変数を集める *)
@@ -21,7 +35,11 @@ let add_list_to_stackmap regtbl xs =
   List.iter save xs
 
 let get_offset x =
-  try H.find stackmap x with Not_found -> assert false
+  H.find stackmap x
+  (* try H.find stackmap x with Not_found -> assert false *)
+
+let get_offset_sub x =
+  try H.find stackmap_sub x with Not_found -> assert false
 
                                         
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
@@ -86,7 +104,8 @@ let get_reg regtbl defs uses =
   let _, _, regmap, uspls =
     List.fold_left
       (add_regmap regtbl)
-      (spl_regs, fspl_regs, regmap, [])
+      ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], regmap, [])
+      (* (spl_regs, fspl_regs, regmap, []) *)
       uses in
   regmap, (List.rev dspls), (List.rev uspls)
 
@@ -97,7 +116,7 @@ let insert_restore oc regmap spilled =
   List.iter
     (fun (x, t) ->
       let reg = lookup_regmap regmap x in
-      let offset = get_offset x in
+      let offset = try get_offset x with Not_found -> assert false in
       if t = Type.Float then
         Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp reg offset
       else
@@ -108,7 +127,7 @@ let insert_save oc regmap spilled =
   List.iter
     (fun (x, t) ->
       let reg = lookup_regmap regmap x in
-      let offset = get_offset x in
+      let offset = try get_offset x with Not_found -> assert false in
       if t = Type.Float then
         Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp reg offset
       else
@@ -123,13 +142,13 @@ let output_simple_op oc regmap operation =
   | Set((x, _), i) ->
      Printf.fprintf oc "\taddi\t%%r0 %s %d\n" (lu x) i
   | SetL((x, _), (Id.L(l))) ->
-     Printf.fprintf oc "\taddi\t%%r0 %s %s\n" x l
+     Printf.fprintf oc "\taddi\t%%r0 %s %s\n" (lu x) l
   | Mov((x, _), y) when (lu x) = (lu y) -> ()
   | Mov((x, _), y) -> Printf.fprintf oc "\tmov\t%s %s\n" (lu y) (lu x)
   | Neg((x, _), y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" (lu y) (lu x)
   | Itof((x, _), y) -> Printf.fprintf oc "\tmtc1\t%s %s\n" (lu y) (lu x)
   | In((x, _)) -> Printf.fprintf oc "\tin\t%s\n" (lu x)
-  | Fin((x, _), _) -> Printf.fprintf oc "\tfin\t%s\n" (lu x)
+  | Fin((x, _)) -> Printf.fprintf oc "\tfin\t%s\n" (lu x)
   | Out(y) -> Printf.fprintf oc "\tout\t%s\n" (lu y)
   | AddI((x, _), y, i) -> Printf.fprintf oc "\taddi\t%s %s %d\n" (lu y) (lu x) i
   | Add((x, _), y, z) -> Printf.fprintf oc "\tadd\t%s %s %s\n" (lu y) (lu z) (lu x)
@@ -143,9 +162,9 @@ let output_simple_op oc regmap operation =
   | Ld((x, _), mem, y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld mem) (lu x)
-  | St(_, mem, x, y, C(i)) ->
+  | St(mem, x, y, C(i)) ->
      Printf.fprintf oc "\t%s\t%s %s %d\n" (st mem) (lu y) (lu x) i
-  | St(_, mem, x, y, V(z)) ->
+  | St(mem, x, y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st mem) (lu x)
   | FMov((x, _), y) when (lu x) = (lu y) -> ()
@@ -162,9 +181,9 @@ let output_simple_op oc regmap operation =
   | LdF((x, _), mem, y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld_s mem) (lu x)
-  | StF(_, mem, x, y, C(i)) ->
+  | StF(mem, x, y, C(i)) ->
      Printf.fprintf oc "\t%s\t%s %s %d\n" (st_s mem) (lu y) (lu x) i
-  | StF(_, mem, x, y, V(z)) ->
+  | StF(mem, x, y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st_s mem) (lu x)
      (* CallCls, CallDir, Entryはsimpleではない, 特別なルーチンで扱う *)
@@ -176,6 +195,7 @@ let output_simple_op oc regmap operation =
        (if (lu x) <> regs.(0) then
           Printf.fprintf oc "\tmov\t%s %s\n" (lu x) regs.(0))
   | _ -> assert false
+
 
 let output_save_op_restore oc regtbl oper defs uses =
   let regmap, dspls, uspls = get_reg regtbl defs uses in
@@ -195,7 +215,7 @@ let rec output_instr oc livenow_tbl regtbl instr =
   | Neg((x, _), y) -> out_sor oper [x] [y]
   | Itof((x, _), y) -> out_sor oper [x] [y]
   | In((x, _)) -> out_sor oper [x] []
-  | Fin((x, _), y) -> out_sor oper [x] [y]
+  | Fin((x, _)) -> out_sor oper [x] []
   | Out(y) -> out_sor oper [] [y]
   | AddI((x, _), y, _) -> out_sor oper [x] [y]
   | Add((x, _), y, z) -> out_sor oper [x] [y; z]
@@ -216,8 +236,8 @@ let rec output_instr oc livenow_tbl regtbl instr =
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld mem)
        (lookup_regmap regmap x);
      insert_save oc regmap dspls; (* save*)
-  | St(_, _, x, y, C(_)) -> out_sor oper [] [x; y]
-  | St(_, mem, x, y, V(z)) ->
+  | St(_, x, y, C(_)) -> out_sor oper [] [x; y]
+  | St(mem, x, y, V(z)) ->
      let regmap, dspls, uspls = get_reg regtbl [] [y; z] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* restore *)
@@ -249,8 +269,8 @@ let rec output_instr oc livenow_tbl regtbl instr =
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld_s mem)
        (lookup_regmap regmap x);
      insert_save oc regmap dspls; (* save*)
-  | StF(_, _, x, y, C(_)) -> out_sor oper [] [x; y]
-  | StF(_, mem, x, y, V(z)) ->
+  | StF(_, x, y, C(_)) -> out_sor oper [] [x; y]
+  | StF(mem, x, y, V(z)) ->
      let regmap, dspls, uspls = get_reg regtbl [] [y; z] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* restore *)
@@ -278,13 +298,50 @@ let rec output_instr oc livenow_tbl regtbl instr =
            ()
       | Spill(t') ->
          if t = Type.Float && t' = Type.Float then
-           insert_restore oc [(x, fregs.(0))] [(x, t)]
+           (save x;
+            insert_restore oc [(x, fregs.(0))] [(x, t)])
          else if t <> Type.Float && t' <> Type.Float then
-           insert_restore oc [(x, regs.(0))] [(x, t)]
+           (save x;
+            insert_restore oc [(x, regs.(0))] [(x, t)])
          else
            assert false)
-  | _ ->  assert false
-                           
+  | Save(x) -> (* これはループ前の変数の退避 *)
+     save_sub x; (* ループ前退避用のテーブルに記録 *)
+     let alloc = lookup_alloc regtbl x in
+     (match alloc with
+      | Alloc(r) ->
+         if is_freg r then
+           Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp r (get_offset_sub x)
+         else
+           Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp r (get_offset_sub x)
+      | Spill(t) ->
+         if t = Type.Float then
+           (Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp freg_sub1
+              (try get_offset x with Not_found -> assert false);
+            Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp freg_sub1 (get_offset_sub x))
+         else
+           (Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_sub1
+              (try get_offset x with Not_found -> assert false);
+            Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_sub1 (get_offset_sub x)))
+  | Restore(x) -> (* ループ後の変数の復帰 *)
+     let alloc = lookup_alloc regtbl x in
+     (match alloc with
+      | Alloc(r) ->
+         if is_freg r then
+           Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r (get_offset_sub x)
+         else
+           Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r (get_offset_sub x)
+      | Spill(t) ->
+         if t = Type.Float then
+           (Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp freg_sub1 (get_offset_sub x);
+            Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp freg_sub1
+              (try get_offset x with Not_found -> assert false))
+         else
+           (Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_sub1 (get_offset_sub x);
+            Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_sub1
+              (try get_offset x with Not_found -> assert false)));
+     remov_sub x (* ループ前退避用のoffset tableの一番上をクリア *)
+
 and ofs_live_regs saves top =
   let new_top, savemap =
     List.fold_left
@@ -386,16 +443,20 @@ and callcls_routine oc livenow_tbl regtbl instr =
                       livenow) in
      let new_top, savemap = ofs_live_regs saves !stacktop in
      let rrs, xrs = make_int_argmap regtbl ys in
+     let rrs, xrs = 
+       (match lookup_alloc regtbl f with
+        | Alloc(r) -> ((r, reg_cl) :: rrs), xrs
+        | Spill _ -> rrs, ((f, reg_cl) :: xrs)) in
      let frrs, fxrs = make_float_argmap regtbl zs in
      save_live_regs oc savemap;
-     insert_int_shuffle oc ((x, reg_sub1) :: rrs); (* reg_sub1をreg_clとする  *)
+     insert_int_shuffle oc rrs;
      insert_int_restore oc xrs;
      insert_float_shuffle oc frrs;
-     insert_float_shuffle oc fxrs;
+     insert_float_restore oc fxrs;
      Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra new_top;
-     Printf.fprintf oc "\tlw\t%s %s 0\n" reg_sub1 reg_sub2;
+     Printf.fprintf oc "\tlw\t%s %s 0\n" reg_cl reg_sub1;
      Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (new_top + 4);
-     Printf.fprintf oc "\tjalr\t%s\n" reg_sub2;
+     Printf.fprintf oc "\tjalr\t%s\n" reg_sub1;
      Printf.fprintf oc "\taddi\t%s %s -%d\n" reg_sp reg_sp (new_top + 4);
      Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
      (if t = Type.Float then
@@ -404,6 +465,7 @@ and callcls_routine oc livenow_tbl regtbl instr =
             Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) r
          | Alloc _ -> ()
          | Spill _ ->
+            save x;
             Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp fregs.(0) (get_offset x))
       else
         (match lookup_alloc regtbl x with
@@ -411,6 +473,7 @@ and callcls_routine oc livenow_tbl regtbl instr =
             Printf.fprintf oc "\tmov\t%s %s\n" regs.(0) r
          | Alloc _ -> ()
          | Spill _ ->
+            save x;
             Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp regs.(0) (get_offset x)));
      restore_live_regs oc savemap
   | _ -> assert false
@@ -440,7 +503,7 @@ and calldir_routine oc livenow_tbl regtbl instr =
      insert_float_restore oc fxrs;
      Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra new_top;
      Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (new_top + 4);
-     Printf.fprintf oc "\tjal\t%s\n" x;
+     Printf.fprintf oc "\tjal\t%s\n" l;
      Printf.fprintf oc "\taddi\t%s %s -%d\n" reg_sp reg_sp (new_top + 4);
      Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
      (if t = Type.Float then
@@ -449,6 +512,7 @@ and calldir_routine oc livenow_tbl regtbl instr =
             Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) r
          | Alloc _ -> ()
          | Spill _ ->
+            save x;
             Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp fregs.(0) (get_offset x))
       else
         (match lookup_alloc regtbl x with
@@ -456,6 +520,7 @@ and calldir_routine oc livenow_tbl regtbl instr =
             Printf.fprintf oc "\tmov\t%s %s\n" regs.(0) r
          | Alloc _ -> ()
          | Spill _ ->
+            save x;
             Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp regs.(0) (get_offset x)));
      restore_live_regs oc savemap
   | _ -> assert false
@@ -501,7 +566,7 @@ let is_done tbl block =
   with
     Not_found -> H.add tbl l true; false
 
-let check_next oc livenow_tbl regtbl work_tbl block stack =
+let check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf =
   let is_not_done = (fun x -> not (is_done work_tbl x)) in
   output_block oc livenow_tbl regtbl block;
   match block.next with
@@ -515,56 +580,74 @@ let check_next oc livenow_tbl regtbl work_tbl block stack =
      let lu = lookup_regmap regmap in
      insert_restore oc regmap uspls;
      Printf.fprintf oc "\t%s\t%s %s %s\n" brnc (lu x) (lu y) l1;
-     (if is_not_done b1 then Stack.push (true, b1) stack);
-     if is_not_done b2 then
-       (* ここのfalseはわかりにくいので課題提出の際にはtrueにする *)
-       (* Stack.push (false, b2) stack *)
-       Stack.push (true, b2) stack
+     if is_not_done b1 && is_not_done b2 then
+       (Stack.push (true, b1) stack_bl;
+        Stack.push (false, b2) stack_bl) (* branchせずにまっすぐ降りた時にb2へ遷移 *)
      else
-       Printf.fprintf oc "\tj\t%s\n" l2
+       assert false (* program_startからbranch後のブロックへは *)
+         (* branching blockを経由しなければいけないはず...? *)
+     (* (if is_not_done b1 then Stack.push (true, b1) stack);
+      * if is_not_done b2 then
+      *   (\* ここのfalseはわかりにくいので課題提出の際にはtrueにする *\)
+      *   (\* Stack.push (false, b2) stack *\)
+      *   Stack.push (true, b2) stack
+      * else
+      *   Printf.fprintf oc "\tj\t%s\n" l2 *)
   | Cnfl(bref) ->
      let b = !bref in
      let l = Cfg.label_of_block b in
      if is_not_done b then
-       Stack.push (true, b) stack
+       (if Stack.is_empty stack_bl then (* この時に限りcnfl blockを真下にかけるのでjumpがいらない *)
+          Stack.push (true, b) stack_cf
+        else (* 次に書かれるのはstack_blのトップだからjumpがいる *)
+          (Stack.push (true, b) stack_cf;
+           Printf.fprintf oc "\tj\t%s\n" l))
      else
        Printf.fprintf oc "\tj\t%s\n" l
   | Loop(bref) ->
      let b = !bref in
      (* let l = Cfg.label_of_block b in *)
      if is_not_done b then
-       Stack.push (true, b) stack
+       Stack.push (true, b) stack_bl
      else
-       assert false
+       assert false (* program startからloop前ブロックを経由せずにループブロックへはいけない *)
   | Back(_, bref) ->
      let b = !bref in
      let l = Cfg.label_of_block b in
      (* (if is_not_done b then Stack.pop (true, b) stack); *)
-     (if is_not_done b then assert false);
+     (if is_not_done b then assert false); (* jumpへはループブロックを経由しないと行けない *)
      Printf.fprintf oc "\tj\t%s\n" l
   | End ->
      Printf.fprintf oc "\tret\n"
 
 
-let rec out_dfs oc livenow_tbl regtbl work_tbl stack =
-  if Stack.is_empty stack then
+let rec out_scan oc livenow_tbl regtbl work_tbl stack_bl stack_cf =
+  if Stack.is_empty stack_bl && Stack.is_empty stack_cf then
     ()
-  else
-    let print_label, block = Stack.pop stack in
-    (if print_label then
+  else if not (Stack.is_empty stack_bl) then
+    let whether_print_label, block = Stack.pop stack_bl in
+    (if whether_print_label then
        let l = label_of_block block in
        Printf.fprintf oc "%s :\n" l);
-    check_next oc livenow_tbl regtbl work_tbl block stack;
-    out_dfs oc livenow_tbl regtbl work_tbl stack
+    check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf;
+    out_scan oc livenow_tbl regtbl work_tbl stack_bl stack_cf
+  else (* stack_cf is not empty *)
+    let whether_print_label, block = Stack.pop stack_cf in
+    (if whether_print_label then
+       let l = label_of_block block in
+       Printf.fprintf oc "%s :\n" l);
+    check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf;
+    out_scan oc livenow_tbl regtbl work_tbl stack_bl stack_cf
 
 let output_cfg oc livenow_tbl regtbl blocks =
   let work_tbl = H.create (List.length blocks) in
-  let stack = Stack.create () in
+  let stack_lb = Stack.create () in (* loop, branch blocksのリスト *)
+  let stack_cf = Stack.create () in (* cnfl blocksのリスト *)
   let b = List.hd blocks in
   let l = Cfg.label_of_block b in
-  Stack.push (true, b) stack;
+  Stack.push (true, b) stack_lb;
   H.add work_tbl l true;
-  out_dfs oc livenow_tbl regtbl work_tbl stack;
+  out_scan oc livenow_tbl regtbl work_tbl stack_lb stack_cf;
   assert ((H.length work_tbl) = (List.length blocks));
   try
     List.iter
@@ -572,3 +655,17 @@ let output_cfg oc livenow_tbl regtbl blocks =
                 let _ = H.find work_tbl l in ()) blocks
   with
     Not_found -> assert false
+
+
+let arrange_data oc data =
+  Printf.fprintf oc "#data_section\n";
+  List.iter
+    (fun (Id.L(x), d') ->
+      match d' with
+      | F (d) ->
+         Printf.fprintf oc "%s :\t# %f\n" x d;
+         Printf.fprintf oc "\t.float\t0x%lx\n" (get d);
+      | I (d) ->
+         Printf.fprintf oc "%s :\t# %d\n" x d;
+         Printf.fprintf oc "\t.int\t%d\n" d)
+    data

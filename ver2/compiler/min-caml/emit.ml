@@ -2,10 +2,10 @@ open Asm
 open Enums
 
 external get : float -> int32 = "get"
-(*
-external gethi : float -> int32 = "gethi"
-external getlo : float -> int32 = "getlo"
-*)
+
+(* external gethi : float -> int32 = "gethi"
+ * external getlo : float -> int32 = "getlo" *)
+
 let stackset = ref S.empty (* すでにSaveされた変数の集合 (caml2html: emit_stackset) *)
 let stackmap = ref [] (* Saveされた変数の、スタックにおける位置 (caml2html: emit_stackmap) *)
 let save x =
@@ -82,15 +82,15 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), Ld(mem, y, z') ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" y (pp_id_or_imm z');
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld mem) x
-     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_sw;
-      * Printf.fprintf oc "\t%s\t%s %s 0\n" (ld mem) reg_sw x *)
+     (* printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_sw;
+      * printf.fprintf oc "\t%s\t%s %s 0\n" (ld mem) reg_sw x *)
   | NonTail(_), St(mem, x, y, C(i)) ->
      Printf.fprintf oc "\t%s\t%s %s %s\n" (st mem) y x (pp_id_or_imm (C(i)))
   | NonTail(_), St(mem, x, y, z') ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" y (pp_id_or_imm z');
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st mem) x
-     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_sw;
-      * Printf.fprintf oc "\t%s\t%s %s 0\n" (st mem) reg_sw x *)
+     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_cl;
+      * Printf.fprintf oc "\t%s\t%s %s 0\n" (st mem) reg_cl x *)
   | NonTail(x), FMov(y) when x = y -> ()
   | NonTail(x), FMov(y) ->
       Printf.fprintf oc "\tmov.s\t%s %s\n" y x;
@@ -110,15 +110,15 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), LdF(mem, y, z') ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" y (pp_id_or_imm z');
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld_s mem) x
-     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_sw;
-      * Printf.fprintf oc "\t%s\t%s %s 0\n" (ld_s mem) reg_sw x *)
+     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_cl;
+      * printf.fprintf oc "\t%s\t%s %s 0\n" (ld_s mem) reg_cl x *)
   | NonTail(_), StF(mem, x, y, C(i)) ->
      Printf.fprintf oc "\t%s\t%s %s %s\n" (st_s mem) y x (pp_id_or_imm (C(i)))
   | NonTail(_), StF(mem, x, y, z') ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" y (pp_id_or_imm z');
      Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st_s mem) x
-     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_sw;
-      * Printf.fprintf oc "\t%s\t%s %s 0\n" (st_s mem) reg_sw x *)
+     (* Printf.fprintf oc "\tadd\t%s %s %s\n" y (pp_id_or_imm z') reg_cl;
+      * Printf.fprintf oc "\t%s\t%s %s 0\n" (st_s mem) reg_cl x *)
   | NonTail(_), Comment(s) -> Printf.fprintf oc "\t# %s\n" s
   (* 退避の仮想命令の実装 (caml2html: emit_save) *)
   | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
@@ -273,7 +273,7 @@ let f oc (Prog(data, fundefs, e)) =
        match d' with
          F (d) ->
          Printf.fprintf oc "%s :\t# %f\n" x d;
-         Printf.fprintf oc "\t.long\t0x%lx\n" (get d);
+         Printf.fprintf oc "\t.float\t0x%lx\n" (get d);
        | I (d) ->
          Printf.fprintf oc "%s :\t# %d\n" x d;
          Printf.fprintf oc "\t.int\t%d\n" d)

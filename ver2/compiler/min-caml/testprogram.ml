@@ -13,8 +13,9 @@ let rec f n m =
         m + 5)
     in g a
   else
-    (if n = 0 then 
-      f (n-1) (m-1)
+    (if n = 0 then
+       let c = m in
+       f (n-1) c
     else
       n + 20)
 in

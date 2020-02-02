@@ -4,6 +4,15 @@
 open Enums
 open LNormal
 
+let loop_threshold = ref 20
+
+(* sizeが一定以下の関数のみループにする *)
+let rec size = function
+  | If(_, _, _, e1, e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) ->
+     1 + size e1 + size e2
+  | LetTuple(_, _, e) | Loop(_, _, _, e) -> 1 + size e
+  | _ -> 1
+
 (* ループの中には関数呼び出し，つまりAppが無いという条件を仮定する *)
 (* さらにループ中には関数定義も存在しないと仮定する *)
 
@@ -80,14 +89,18 @@ let rec f = function
   | If(cmp,x,y,e1,e2) -> If(cmp,x,y, f e1, f e2)
   | Let(xt,e1,e2) -> Let(xt, f e1, f e2)
   | LetRec({ name = (x,t); args = yts; body = e1 }, e2) ->
-     if tail_call_exists x e1 && convertible x e1 then (* もともとループ化可能な関数の場合 *)
+     if tail_call_exists x e1
+        && convertible x e1
+        && (size e1) <= !loop_threshold then (* もともとループ化可能な関数の場合 *)
        (Format.eprintf "convert function %s into a loop@." x;
         let ys' = List.map (fun (y,t) -> Id.genid y) yts in (* 変数束縛のためのプレースホルダ *)
         let loop = Loop(L(x), yts, ys', loop_conv x (List.map fst yts) e1) in
         f (loop_inline loop e2))
      else
        (let e1' = f e1 in
-        if tail_call_exists x e1 && convertible x e1 then
+        if tail_call_exists x e1
+           && convertible x e1
+           && (size e1) <= !loop_threshold then
           ((* 内側をループ化するとループ化できるようになる可能性がある *)
            Format.eprintf "convert function %s into a loop@." x;
            let ys' = List.map (fun (y,t) -> Id.genid y) yts in (* 変数束縛のためのプレースホルダ *)

@@ -1,4 +1,4 @@
-let limit = ref 25
+let limit = ref 1
 let limit2 = ref 0
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
@@ -30,15 +30,16 @@ let lexbuf2 outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2ht
   let kNormal = iter !limit kNormal in
   let kNormal = ANormal.f (iter2 !limit2 kNormal) in
   let lNormal = Loop.f (LNormal.ktol kNormal) in
-  let lNormal = Loop.f (Linline.f lNormal) in
+  (* let lNormal = Loop.f (Linline.f lNormal) in *)
+  let virtCode = Simm2.f (Virtual2.f (Closure2.f lNormal)) in
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
-  let (_, f_cfgs, cfg) = Cfg.f (Virtual2.f (Closure2.f lNormal)) in
-  let igraph, livenow_tbl = Lra2.build_igraph cfg in
-  H.iter (fun x y ->
-      Printf.printf "%s : " x;
-      print_set y) livenow_tbl;
-  let regtbl = RegAlloc2.f igraph in
+  let (_, f_cfgs, cfg) = Cfg.f virtCode in
+  let igraph, livenow_tbl, stat_tbl = Lra2.build_igraph cfg in
+  (* H.iter (fun x y ->
+   *     Printf.printf "%s : " x;
+   *     print_set y) livenow_tbl; *)
+  let regtbl = RegAlloc2.f stat_tbl igraph in
   (* List.iter Cfg_db.print_block cfg; *)
   (* Format.eprintf "----------@."; () *)
   (* let _ = List.map (fun (b,_) -> Cfg_db.scan_cfg b) fns in *)

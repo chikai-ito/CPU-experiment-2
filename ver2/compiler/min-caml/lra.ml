@@ -40,7 +40,9 @@ let union_lr lr_tbl x y = (* xとyの生存区間をmergeする *)
     (try
        (H.find lr_tbl x), (H.find lr_tbl y)
      with
-       Not_found -> assert false) in
+       Not_found ->
+       Format.eprintf "%s or %s is not on the lr_tbl@." x y;
+       assert false) in
   let lr_i, modify_list =
     (if lr_ix.size >= lr_iy.size then
        lr_info_union lr_ix lr_iy
@@ -79,7 +81,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Neg((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Itof((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | In((x, t)) -> add_lr_tbl lrtbl x t; S.add x idset
-  | Fin((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | Fin((x, t)) -> add_lr_tbl lrtbl x t; S.add x idset
   | Out _ -> idset
   | AddI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Add((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -89,7 +91,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | SLL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ld((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | St((x, t), _, _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | St _ -> idset
   | FMov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ftoi((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | FNeg((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -100,7 +102,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | FMul((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | FDiv((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | LdF((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | StF((x, t), _, _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | StF _ -> idset
   | CallCls((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | CallDir((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Entry(xs, ys) ->
@@ -110,7 +112,8 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
      List.fold_left
        (fun acc y -> add_lr_tbl lrtbl y Type.Float; S.add y acc) idset' ys
   | Return((x, t)) -> add_lr_tbl lrtbl x t; S.add x idset
-  | _ -> assert false
+  | Save _ -> idset
+  | Restore _ -> idset
 
 let collect_lr_of_block : lr_info H.t -> S.t -> Cfg.block -> S.t =
   fun lrtbl idset block ->
@@ -158,7 +161,7 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Neg((x, t), y) -> [x], [y]
   | Itof((x, t), y) -> [x], [y]
   | In((x, t)) -> [x], []
-  | Fin((x, t), y) -> [x], [y]
+  | Fin((x, t)) -> [x], []
   | Out (y) -> [], [y]
   | AddI((x, t), y, i) -> [x], [y]
   | Add((x, t), y, z) -> [x], [y; z]
@@ -169,8 +172,8 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | SLLI((x, t), y, i) -> [x], [y]
   | Ld((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
   | Ld((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | St((x, t), mem, y, z, Asm2.V(w)) -> [x], [y; z; w]
-  | St((x, t), mem, y, z, Asm2.C(i)) -> [x], [y; z]
+  | St(mem, y, z, Asm2.V(w)) -> [], [y; z; w]
+  | St(mem, y, z, Asm2.C(i)) -> [], [y; z]
   | FMov((x, t), y) -> [x], [y]
   | Ftoi((x, t), y) -> [x], [y]
   | FNeg((x, t), y) -> [x], [y]
@@ -182,13 +185,14 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | FDiv((x, t), y, z) -> [x], [y; z]
   | LdF((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
   | LdF((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | StF((x, t), mem, y, z, Asm2.V(w)) -> [x], [y; z; w]
-  | StF((x, t), mem, y, z, Asm2.C(i)) -> [x], [y; z]
+  | StF(mem, y, z, Asm2.V(w)) -> [], [y; z; w]
+  | StF(mem, y, z, Asm2.C(i)) -> [], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(xs, ys) -> (xs @ ys), []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
-  | _ -> assert false
+  | Save(x) -> [], [x]
+  | Restore(x) -> [], [x]
 
 let uses_of_branch : block -> Id.t list =
   fun block ->
