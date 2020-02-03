@@ -9,6 +9,6 @@ rm ./result.bin
 
 make
 
-./simulator ./test/$1.s
+./simulator ./test/$1.s $2 $3
 
 cp ./result.bin ../../compiler/min-caml/result.txt

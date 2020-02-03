@@ -1,6 +1,6 @@
 open KNormal
 
-let threshold = ref 30
+let threshold = ref 100
 
 let rec size = function
   | If(_, _, _, e1, e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) ->

@@ -101,7 +101,7 @@ let add_regmap regtbl =
      
 
 let get_reg regtbl defs uses =
-  let spl_regs, fspl_regs, regmap, dspls =
+  let _, _, regmap, dspls =
     List.fold_left
       (add_regmap regtbl)
       ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], [], [])
@@ -110,7 +110,6 @@ let get_reg regtbl defs uses =
     List.fold_left
       (add_regmap regtbl)
       ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], regmap, [])
-      (* (spl_regs, fspl_regs, regmap, []) *)
       uses in
   regmap, (List.rev dspls), (List.rev uspls)
 
@@ -611,7 +610,9 @@ let return_block block =
 
 let unnecessary_return block =
   match block.next with
-  | End _ -> List.for_all call_at_tail block.prev
+  | End prog_end when prog_end = false ->
+     List.for_all call_at_tail block.prev
+  | End _ -> false
   | _ -> assert false
 
 let output_block oc livenow_tbl regtbl block =
@@ -710,9 +711,10 @@ let check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf =
      Printf.fprintf oc "\tj\t%s\n" l
   | End (is_ret) ->
      if is_ret then
-       Printf.fprintf oc "\tret\n"
+       (Printf.fprintf oc "\tadd\t%%r0 %%r0 %%r0\n";
+        Printf.fprintf oc "\tret\n")
      else
-       Printf.fprintf oc "\tretl\t\n"
+       Printf.fprintf oc "\tretl\n"
 
 
 let rec out_scan oc livenow_tbl regtbl work_tbl stack_bl stack_cf =

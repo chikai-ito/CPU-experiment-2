@@ -4,7 +4,7 @@
 open Enums
 open LNormal
 
-let loop_threshold = ref 100
+let loop_threshold = ref 500
 
 (* sizeが一定以下の関数のみループにする *)
 let rec size = function
