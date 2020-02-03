@@ -33,7 +33,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 15000;
+	localparam inst_size	 = 5000;
 	localparam buffer_size	 = 5000;
 
 	// 状態変数
@@ -48,10 +48,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
     localparam s_6 = 6;
 
     reg [3:0]             err;
-    
-    // retを読み終わったか？
-    // もし読み終わっているならもう何もしない
-    reg                   inst_stop;
 
     // 命令コード一覧
     localparam special  	= 6'b000000;
@@ -192,14 +188,19 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // 分岐用レジスタ
     reg [31:0] argument3;
 
+    reg [31:0] iteration;
+
     // 演算結果
     reg [31:0] result;
-
     // 分岐命令フラグ
     reg jump;
+    // 終了処理
+    reg inst_stop;
 
     initial begin
         // 各種初期化
+        inst_stop <= 1'b0;
+        iteration <= 32'b0;
         buffer_valid_idx <= 32'b0;
         buffer_reading_idx <= 32'b0;
         for(i=0;i<32;i=i+1) begin
@@ -207,7 +208,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
             register_float[i] <= 32'b0;
         end
         register_int[27] <= 32'b00000000000000001000000000000000;
-        inst_stop <= 1'b0;
     	status <= s_1;
     	complete <= 4'b0;
     	pc <= 32'b0;
@@ -229,8 +229,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // in命令で4バイト分の入力が終わっているか？
     reg finished_write;
 
-
-
     always @(posedge clk) begin
         if (first_send && status == s_2) begin
             first_send <= 1'b0;
@@ -243,6 +241,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
         	reading <= 1'b0;
         end
         if (~rstn) begin
+            inst_stop <= 1'b0;
+            iteration <= 32'b0;
             finished_write <= 1'b0;
             first_send <= 1'b1;
             writing_byte <= 2'b0;
@@ -254,7 +254,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
             buffer_valid_idx <= 32'b0;
             buffer_reading_idx <= 32'b0;
             register_int[27] <= 32'b00000000000000001000000000000000;
-            inst_stop <= 1'b0;
             status <= s_1;
             err <= 4'b0000;
             complete <= 4'b0000;
@@ -264,21 +263,21 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
         end else if (status == s_1) begin
             // フェッチフェーズ
-
-            if (inst_stop == 1'b0) begin
+            if(inst_stop) begin
+                status <= s_idle;
+            end else begin
             	now_inst <= inst[pc];
             	// プログラムカウンタは常に次の命令の値を格納している
             	// そのため、相対的にジャンプするときには注意が必要
             	pc <= pc + 1;
+                iteration <= iteration + 1;
                 
                 // 分岐命令フラグはtrueにしか更新しないため、
                 // ここで初期化しておく 
                 jump <= 1'b0;
-            end else begin
-                status <= s_idle;
-            end
 
-        	status <= s_2;
+            	status <= s_2;
+            end
 
         end else if (status == s_2) begin
             // デコードフェーズ
@@ -290,25 +289,31 @@ module top #(CLK_PER_HALF_BIT = 520) (
                             argument1 <= register_int[now_inst[25:21]];
                             argument2 <= register_int[now_inst[20:16]];
                         end
-                        s_mov:
+                        //s_mov:
 
-                        s_retl:
+                        s_retl: begin
                             jump <= 1'b1;
                             argument3 <= register_int[28];
-                        s_jr:
+                        end
+                        s_jr: begin
                             jump <= 1'b1;
                             argument3 <= register_int[now_inst[25:21]];
+                        end
                         s_ret:
-                        s_in:
-                        s_fin:
+                            inst_stop <= 1'b1;
+                        //s_in:
+                        //s_fin:
 
                     endcase // now_inst[5:0]
-                cop1:
-                addi:
-                lw:
-                ilw:
-                lws:
-                ilws:
+                //cop1:
+                addi: begin
+                    argument1 <= register_int[now_inst[25:21]];
+                    argument2 <= {16'b0, now_inst[15:0]};
+                end
+                //lw:
+                //ilw:
+                //lws:
+                //ilws:
                 j: begin
                     jump <= 1'b1;
                     argument3 <= {6'b0, now_inst[25:0]};
@@ -317,7 +322,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
                     jump <= 1'b1;
                     argument1 <= register_int[now_inst[25:21]];
                     argument2 <= register_int[now_inst[20:16]];
-                    argument3 <= pc + {16'b0, now_inst[15:0]};
+                    argument3 <= pc + {{16{now_inst[15]}}, now_inst[15:0]};
                 end
                 jal: begin
                     jump <= 1'b1;
@@ -329,9 +334,12 @@ module top #(CLK_PER_HALF_BIT = 520) (
                     register_int[28] <= pc;
                     argument3 <= register_int[now_inst[25:21]];
                 end
-                fbne:
-                fbg:
-                sll:
+                //fbne:
+                //fbg:
+                sll: begin
+                    argument1 <= register_int[now_inst[20:16]];
+                    argument2 <= register_int[now_inst[10:6]];
+                end
             endcase // now_inst[31:26]
 
             status <= s_3;
@@ -348,34 +356,38 @@ module top #(CLK_PER_HALF_BIT = 520) (
                             result <= argument1 - argument2;
                         s_mult:
                             result <= argument1 * argument2;
+                            
                         s_div:
                             result <= argument1 / argument2;
+                            /*
                         s_mod:
                             result <= argument1 % argument2;
+                            */
                         s_mov:
                             result <= register_int[now_inst[25:21]];
                         s_retl:
                             result <= argument3;
                         s_jr:
                             result <= argument3;
-                        s_ret:
-                        s_in:
-                        s_fin:
+                        //s_ret:
+                        //s_in:
+                        //s_fin:
 
                     endcase // now_inst[5:0]
-                cop1:
+                //cop1:
                 addi:
-                lw:
-                ilw:
-                lws:
-                ilws:
+                    result <= argument1 + argument2;
+                //lw:
+                //ilw:
+                //lws:
+                //ilws:
                 j: begin
                     result <= argument3;
                 end
                 beq: begin
                     if (argument1 == argument2) begin
-                        result <= argument3;
-                    else begin
+                        result <= argument3 - 1;
+                    end else begin
                         result <= pc;
                     end
                 end
@@ -387,35 +399,37 @@ module top #(CLK_PER_HALF_BIT = 520) (
                 end
                 bne: begin
                     if (argument1 != argument2) begin
-                        result <= argument3;
-                    else begin
+                        result <= argument3 - 1;
+                    end else begin
                         result <= pc;
                     end
                 end
                 bl: begin
                     if (argument1 < argument2) begin
-                        result <= argument3;
-                    else begin
+                        result <= argument3 - 1;
+                    end else begin
                         result <= pc;
                     end
                 end
                 bg: begin
                     if(argument1 > argument2) begin
-                        result <= argument3;
-                    else begin
+                        result <= argument3 - 1;
+                    end else begin
                         result <= pc;
                     end
                 end
-                fbne:
-                fbg:
-                sll:
+                //fbne:
+                //fbg:
+                sll: begin
+                    result <= argument1 << argument2;
+                end
             endcase // now_inst[31:26]
 
             status <= s_4;
 
         end else if (status == s_4) begin
             // 実行フェーズその2
-            if (flag) begin
+            if (jump) begin
                 pc <= result;
                 status <= s_1;
             end else begin
@@ -423,30 +437,29 @@ module top #(CLK_PER_HALF_BIT = 520) (
                     // special命令群の実行
                     special:
                         case (now_inst[5:0])
-                            s_mov:
-                                register_int[now_inst[20:16]] <= result;
-                            s_ret:
-                            s_in:
-                            s_fin:
+                            //s_mov:
+                            //s_ret:
+                            //s_in:
+                            //s_fin:
 
                         endcase // now_inst[5:0]
-                    cop1:
-                    addi:
-                    lw:
-                    ilw:
-                    lws:
-                    ilws:
-                    jal:
-                    jalr:
-                    fbne:
-                    fbg:
-                    sll:
+                    //cop1:
+                    //addi:
+                    //lw:
+                    //ilw:
+                    //lws:
+                    //ilws:
+                    //jal:
+                    //jalr:
+                    //fbne:
+                    //fbg:
                 endcase // now_inst[31:26]
                 status <= s_5;
             end
 
         end else if (status == s_5) begin
             // 実行フェーズその3
+            status <= s_6;
         end else begin
             // 格納フェーズ
             case (now_inst[31:26])
@@ -456,30 +469,29 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         s_add, s_sub, s_mult, s_div, s_mod:
                             register_int[now_inst[15:11]] <= result;
                         s_mov:
-                        s_retl:
-                        s_jr:
-                        s_ret:
-                        s_in:
-                        s_fin:
+                            register_int[now_inst[20:16]] <= result;
+                        //s_retl:
+                        //s_jr:
+                        //s_ret:
+                        //s_in:
+                        //s_fin:
 
                     endcase // now_inst[5:0]
-                cop1:
+                //cop1:
                 addi:
+                    register_int[now_inst[20:16]] <= result;
                 lw:
-                ilw:
-                lws:
-                ilws:
-                j:
-                beq:
-                jal:
-                jalr:
-                bne:
-                bl:
-                bg:
-                fbne:
-                fbg:
+                    register_int[now_inst[20:16]] <= read_data;
+                //ilw:
+                //lws:
+               // ilws:
+                //fbne:
+                //fbg:
                 sll:
+                    register_int[now_inst[15:11]] <= result;
             endcase // now_inst[31:26]
+            status <= s_1;
+        end
 
     end
    
