@@ -198,13 +198,21 @@ let f e =
   (match deref_typ (g M.empty e) with
   | Type.Unit -> ()
   | _ -> Format.eprintf "warning: final result does not have type unit@.");
-*)
-  (try unify Type.Unit (g M.empty e)
-   with Unify _ ->
-     (try unify Type.Int (g M.empty e)
-      with Unify _ ->
-        (try unify Type.Float (g M.empty e)
-         with Unify _ ->
-               failwith "top level does not have type unit")));
+ *)
+  let t =
+    (try unify Type.Float (g M.empty e);
+         Format.eprintf "top level is of type float@.";
+         Type.Float
+     with Unify _ ->
+       (try
+          unify Type.Unit (g M.empty e);
+          Format.eprintf "top level is of type unit@.";
+          Type.Unit
+        with Unify _ ->
+          (try unify Type.Int (g M.empty e);
+               Format.eprintf "top level is of type int@.";
+               Type.Int
+           with Unify _ ->
+             failwith "top level does not have type unit"))) in
   extenv := M.map deref_typ !extenv;
-  deref_term e
+  deref_term e, t

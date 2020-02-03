@@ -36,7 +36,7 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | StF of mem * Id.t * Id.t * Asm2.id_or_imm
   | CallCls of (Id.t * Type.t) * Id.t * Id.t list * Id.t list
   | CallDir of (Id.t * Type.t) * Id.l * Id.t list * Id.t list
-  | Entry of Id.t list * Id.t list (* 関数のentry point; int_arg_list, float_arg_list *)
+  | Entry of Id.t * Id.t list * Id.t list (* 関数のentry point; int_arg_list, float_arg_list *)
   | Return of (Id.t * Type.t) (* プログラムの答えを返す命令; ルーチンの最後につく *)
   | Save of Id.t (* regname * ident *)
   | Restore of Id.t
@@ -51,9 +51,11 @@ type block = { mutable label : Id.l;
                mutable next : next_t }
 and next_t = Brc of compare_t * block ref * block ref (* branch *)
            | Cnfl of block ref (* confluence *)
-           | Loop of block ref (* entering into loop *)
+           | Loop of block ref * block ref
+           (* next block * the first block after loop *)
+           (* entering into loop *)
            | Back of Id.l * block ref (* loop back *)
-           | End (* end of the flow *)
+           | End of bool (* end of the flow *) (* retかretlかのbool値をもつ *)
 and compare_t = { branch : Type.t * cmp; args : Id.t * Id.t } (* 比較分岐演算の種類と引数の情報をもつデータ型 *)
 
 let loop_depth = ref 0 (* これを参照してブロックを作る *)
@@ -65,9 +67,9 @@ let next_blocks block =
   match block.next with
   | Brc (_, br1, br2) -> [!br1; !br2]
   | Cnfl (br) -> [!br]
-  | Loop (br) -> [!br]
+  | Loop (br, _) -> [!br]
   | Back (_, br) -> [!br]
-  | End -> []
+  | End _ -> []
 
 let nontail_simple_instr xt = function
   | Asm2.Nop -> new_instr Nop
@@ -107,7 +109,12 @@ let nontail_simple_instr xt = function
 type equiv_ids_t = (Id.t * (Id.t * Id.l) list) list (* refleshする前の変数名とrefleshした変数名とラベルの組 *)
 type flow_t = { b : block; bref : block ref; equiv_ids : equiv_ids_t } (* make_cfgなどの関数の返り値のためのデータ型 *)
 
-let dummy_block = { label = L("0"); l_dep = 0; code = []; prev = []; next = End } (*  領域を確保するためのダミーブロック *)
+let rename_equiv_ids equiv_ids x =
+  match equiv_ids with
+  | [(y, zls)] -> [(x, zls)]
+  | _ -> assert false
+            
+let dummy_block = { label = L("0"); l_dep = 0; code = []; prev = []; next = End(false) } (*  領域を確保するためのダミーブロック *)
             
 (* 末尾の単純命令が束縛変数の名前変えを担当する *)
 (* 末尾はブロックを生成する *)
@@ -201,7 +208,8 @@ let collect_cnfl_equiv_ids cnfl equiv_ids =
   let equiv_ids = match (cnfl.b).next with Cnfl _ -> cnfl.equiv_ids | _ -> assert false in
   match equiv_ids with
   | [(y, yls)] when x = y -> [(x, yls @ xls)]
-  | _ -> assert false
+(* | _ -> assert false *)
+  | _ -> raise Not_found
 
 let cnfl_return_equiv_ids : flow_t list -> equiv_ids_t =
   function
@@ -224,14 +232,25 @@ let back_return_equiv_ids : flow_t list -> equiv_ids_t =
      List.fold_right (fun flw acc -> collect_back_equiv_ids flw acc) backs flw.equiv_ids
   | _ -> assert false
 
-let make_block_toloop prs = (* ループの手前に挿入するブロックを新しく生成する *)
+let make_block_prel prs = (* ループの手前に挿入するブロックを新しく生成する *)
   let c = [] in
-  let l = Id.genid "node_b" in
-  let bref = ref dummy_block in
-  let sc = Loop(bref) in
-  let new_b = { label = L(l); l_dep = !loop_depth; code = c; prev = []; next = sc } in
+  let l = Id.genid "preloop_b" in
+  let br1 = ref dummy_block in
+  let br2 = ref dummy_block in
+  let sc = Loop(br1, br2) in
+  let new_b = { label = L(l); l_dep = !loop_depth;
+                code = c; prev = []; next = sc } in
   join_flows prs new_b;
-  new_b, bref
+  new_b, br1, br2
+
+let make_block_postl prs restores = (* ループの直後に挿入するブロックを新しく生成 *)
+  let l = Id.genid "postloop_b" in
+  let br = ref dummy_block in
+  let sc = Cnfl(br) in
+  let new_b = { label = L(l); l_dep = !loop_depth;
+                code = restores; prev = []; next = sc } in
+  join_flows prs new_b;
+  new_b, br
   
 let make_branching_block prs ty cmp x y = (* 分岐の起点となるbranching blockを新しく生成して *)
   (* それとprsを双方向に繋ぎ, 分岐先2つへの参照とともに返す *)
@@ -248,7 +267,7 @@ let make_branching_block prs ty cmp x y = (* 分岐の起点となるbranching b
   join_flows prs new_b; (* ここで, prs -> new_bを繋ぐ *)
   new_b, (b_l, b_r)  (* new_bと2つの分岐先への参照を返す *)
 
-let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm2.t -> (block * flow_t list) =
+let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm2.t -> block * flow_t list  =
   (* prsは出口ブロックと出口ブロッックの下に繋ぐブロックへの参照の組みのリスト*)
   (* Asm2.t型の値からcfgを構成し, １つの入口ブロックと出口フロー(next_t型)のリストを返す *)
   (* 出口フローとして帰ってくるのはCnflとBackのみ. それ以外はassertする *)
@@ -266,30 +285,34 @@ let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm2.t -> (block * flow_t l
      bh.code <- phi @ bh.code;
      new_b, bts' (* 入口ブロックはnew_b, 出口フローはeの出口フローのbts' *)
   | Asm2.Let(yt, (Asm2.Loop _ as exp) ,e) ->
-     let bh, bts, saves, restores = loop_routine prs yt exp in (* bh = new_b in loop_routine *)
-     bh.code <- bh.code @ saves; (* 直前にsaveを挿入 *)
+     let pre_l, bts = loop_routine prs yt exp in
+     (* pre_l is a preloop block -> c.f. loop_routine *)
      let cnfls, backs = flow_classify bts in
      assert (backs = []); (* 上がってくるbacksは全てloop_routine内で処理しているはずである *)
      (* 他のループのbackが帰ってくることがないことを保証したループ化を行なっている *)
-     (* join_back_flows backs bh; *)
+     (* let bh', bts' = make_cfg cnfls xt e in
+      * let equiv_ids = cnfl_return_equiv_ids cnfls in
+      * let phi = phi_cnfl_if yt equiv_ids in
+      * bh'.code <- phi @ bh'.code; (\* ループの直後に合流のphiとrestoreを挿入 *\)
+      * bh, bts' *)
      let bh', bts' = make_cfg cnfls xt e in
      let equiv_ids = cnfl_return_equiv_ids cnfls in
      let phi = phi_cnfl_if yt equiv_ids in
-     bh'.code <- phi @ restores @ bh'.code; (* ループの直後に合流のphiとrestoreを挿入 *)
-     bh, bts'
+     bh'.code <- phi @ bh'.code; (* loop_routine内で合流させた分を直列に繋ぐ *)
+     pre_l, bts'
   | Asm2.Let(yt, exp, e) -> (* expは非末尾の単純命令である *)
-     let instr = nontail_simple_instr yt exp in (* nontail_simpa_instrは変数のrefleshの必要はない *)
+     let instr = nontail_simple_instr yt exp in
+     (* nontail_simple_instrは変数のrefleshの必要はない *)
      let bh, bts = make_cfg prs xt e in
      bh.code <- instr :: bh.code; (* codeの先頭に単純命令を追加する *)
      bh, bts
   | Asm2.Ans((Asm2.If _ | Asm2.FIf _) as exp) ->
      if_routine prs xt exp 
   | Asm2.Ans(Asm2.Loop _ as exp) ->
-     let bh, bts, _, _ = loop_routine prs xt exp in (* 末尾のループはsave, restoreする必要がない *)
+     let pre_l, bts = loop_routine prs xt exp in
      let cnfls, backs = flow_classify bts in
      assert (backs = []);
-     (* join_back_flows backs bh; *)
-     bh, cnfls
+     pre_l, cnfls
   | Asm2.Ans(exp) -> (* 末尾の単純命令の時 *) (* これがbase case *)
      let flw = tail_simple_exp_to_flow xt exp in (* flw.b = new_b *)
      join_flows prs flw.b; (* 新しいブロックとprsを繋ぐ *)
@@ -337,21 +360,44 @@ and resolve_phis phis zts ws = (* 不必要なphi命令を削除し，必要なs
 and loop_routine prs yt exp =
   (match exp with
    | Asm2.Loop(L(l), zts, ws, e') -> (* ループのラベルlをそのままブロックのラベルにすれば良い *)
+      let pre_b, br1, br2 = make_block_prel prs in (* ループの前に挿入する新しいブロック *)
+      (* ---- loop start ---- *)
       incr loop_depth; (* loop_depthを１つ上げる *)
-      let new_b, new_bref = make_block_toloop prs in (* ループの前に挿入する新しいブロック *)
-      let flw = { b = new_b; bref = new_bref; equiv_ids = [] } in
-      let bh, bts = make_cfg [flw] yt e' in (* bhはループの入口ブロック. ここにphi関数を挿入 *)
+      let flw = { b = pre_b; bref = br1; equiv_ids = [] } in
+      let looptop, bts = make_cfg [flw] yt e' in
+      (* looptopはループの入口ブロック. ここにloopbackのphi関数を挿入 *)
       let cnfls, backs = flow_classify bts in
-      let equiv_ids = back_return_equiv_ids backs in (* 上がってきた代入をphiでbhに吸収 *)
-      let phis = phi_back_loop zts ws equiv_ids new_b.label in (* new_b.labelは上からの流れのラベル *)
+      let equiv_ids = back_return_equiv_ids backs in
+      (* 上がってきた代入をphiでlooptopに吸収 *)
+      let phis = phi_back_loop zts ws equiv_ids pre_b.label in
+      (* pre_b.labelは上からの流れのラベル, この情報だけflowにはない *)
       let phis, saves, restores = resolve_phis phis zts ws in
-      (* let L(l') = bh.label in
+      (* let L(l') = looptop.label in
        * Format.eprintf "changed label %s to %s@." l' l; *)
-      bh.label <- L(l); (* bhのラベルをループのラベルにする *)
-      bh.code <- phis @ bh.code;
-      join_back_flows backs bh; (* backsをbhに繋ぐ *)
+      pre_b.code <- pre_b.code @ saves; (* preloop blockにsaveを挿入する *)
+      looptop.label <- L(l); (* looptopのラベルをループのラベルにする *)
+      looptop.code <- phis @ looptop.code;
+      join_back_flows backs looptop; (* backsをlooptopに繋ぐ *)
       decr loop_depth; (* もとのルーチンに復帰する前にloop_depthを戻す *)
-      new_b, cnfls, saves, restores (* save, restoreを挿入するのはスーパールーチンの役目 *)
+      (* ---- loop end ---- *)
+      let post_b, br = make_block_postl cnfls restores in
+      (* ループ後の処理を担当するブロック *)
+      br2 := post_b;
+      let equiv_ids =
+        try cnfl_return_equiv_ids cnfls
+        with Not_found -> assert false in
+      let y', _ as yt' = (fun (y, t) -> (Id.genid y, t)) yt in
+      let equiv_ids' = rename_equiv_ids equiv_ids y' in
+      (* equiv_idsの代表元をy'に変更 *)
+      (* 一旦y'に集約する *)
+      let phi = phi_cnfl_if yt' equiv_ids' in
+      (* let phi = phi_cnfl_if yt equiv_ids in *)
+      post_b.code <- (new_instr Nop) :: phi @ post_b.code;
+      (* post_bの先頭にloop後の合流のphiを挿入 *)
+      (* このNopからループ後の生存変数の情報を取る *)
+      let flw' = { b = post_b; bref = br;
+                   equiv_ids = [(fst yt, [y', L(label_of_block post_b)])] } in
+      pre_b, [flw'] (* save, restoreは処理したので，あとはこの2つを繋いでもらう *)
    | _ -> assert false)
 
 
@@ -387,11 +433,15 @@ let scan_cfg entry ret =
 (* ---- from cfg_db.ml ---- *)
 
 
-let e_to_cfg l xt int_args float_args e =
+let e_to_cfg l xt int_args float_args e is_ret =
   assert (!loop_depth = 0);
-  let c = [new_instr (Entry(int_args, float_args))] in
+  let return_label = Id.genid "return_point" in
+  let c = if is_ret then
+            [new_instr (SetL((Asm2.reg_ra, Type.Int), L(return_label)))]
+          else
+            [new_instr (Entry(l, int_args, float_args))] in
   let new_bref = ref dummy_block in
-  let entry = { label = l;
+  let entry = { label = Id.L(l);
                 l_dep = !loop_depth;
                 code = c;
                 prev = [];
@@ -403,25 +453,25 @@ let e_to_cfg l xt int_args float_args e =
   let equiv_ids = cnfl_return_equiv_ids cnfls in
   let phi = phi_cnfl_if xt equiv_ids in
   assert (!loop_depth = 0);
-  let return = { label = L("return_point"); (* 他のblock labelはId.genidを通しているのでかぶる心配はない *)
+  let return = { label = L(return_label); (* 他のblock labelはId.genidを通しているのでかぶる心配はない *)
                  l_dep = !loop_depth;
                  code = phi @ [new_instr (Return(xt))];
                  prev = [];
-                 next = End } in
+                 next = End(is_ret) } in
   join_flows cnfls return;
   let blocks =  scan_cfg entry return in
-  assert ((List.hd blocks).label = l);
+  assert ((List.hd blocks).label = Id.L(l));
   blocks
 
 let g = List.map (* 関数をcfgに変換する *)
-          (fun fn ->
+          (fun { Asm2.name = Id.L(l); Asm2.args = xs;
+                 Asm2.fargs = ys; Asm2.body = e; Asm2.ret = t } ->
             let ret_v = Id.genid "ret_val" in
-            e_to_cfg fn.Asm2.name (ret_v, fn.ret)
-              fn.Asm2.args fn.Asm2.fargs fn.Asm2.body)
+            e_to_cfg l (ret_v, t) xs ys e false)
 
-let f (Asm2.Prog(data, fundefs, e)) =
+let f (Asm2.Prog(data, fundefs, e)) ty =
   let fn_cfgs = g fundefs in
-  let l = Id.L("program_start") in (* return_pointと同じくかぶる心配はない *)
-  let xt = (Id.gentmp Type.Unit, Type.Unit) in
-  let main_cfg = e_to_cfg l xt [] [] e in
+  let l = "program_start" in (* return_pointと同じくかぶる心配はない *)
+  let xt = (Id.gentmp ty, ty) in
+  let main_cfg = e_to_cfg l xt [] [] e true in
   (data, fn_cfgs, main_cfg)

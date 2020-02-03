@@ -144,8 +144,8 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2
   | LNormal.ExtArray(x) -> ExtArray(Id.L(x))
   | LNormal.ExtFunApp(x, ys) -> AppDir(Id.L("min_caml_" ^ x), ys)
   (* 以降diff *)
-  | LNormal.Loop(L(x),yts,zs,e) -> (* zsの扱いはVar(x)と同じ．つまり何もしなくていい *)
-     Loop(L(x),yts,zs, g (M.add_list yts env) known e)
+  | LNormal.Loop(L(x), yts, zs, e) -> (* zsの扱いはVar(x)と同じ．つまり何もしなくていい *)
+     Loop(L(x), yts, zs, g (M.add_list yts env) known e)
   | LNormal.Jump(yzs,l) -> Jump(yzs,l)
 
 let f e =

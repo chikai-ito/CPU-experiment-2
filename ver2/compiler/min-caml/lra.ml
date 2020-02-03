@@ -33,7 +33,7 @@ let add_lr_tbl lr_tbl x t =
     (let lr_i = { name = new_lr_label (); ty = t;
                   size = 1; set = S.singleton x } in
      H.add lr_tbl x lr_i)
-      
+
 
 let union_lr lr_tbl x y = (* xとyの生存区間をmergeする *)
   let lr_ix, lr_iy = (* この関数を呼ぶ前にadd_lr_tbl x/yをしておく *)
@@ -105,10 +105,10 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | StF _ -> idset
   | CallCls((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | CallDir((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | Entry(xs, ys) ->
-     let idset' = 
+  | Entry(l, xs, ys) ->
+     let idset' =
      List.fold_left
-       (fun acc x -> add_lr_tbl lrtbl x Type.Int; S.add x acc) idset xs in
+       (fun acc x -> add_lr_tbl lrtbl x Type.Int; S.add x acc) idset (l :: xs) in
      List.fold_left
        (fun acc y -> add_lr_tbl lrtbl y Type.Float; S.add y acc) idset' ys
   | Return((x, t)) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -126,12 +126,14 @@ let merge_lr_on_block : lr_info H.t -> Cfg.block -> unit =
   List.iter (merge_lr lrtbl) code
 
 let lookup_lr lrtbl x =
-  try
-    let lr_i = H.find lrtbl x in
-    lr_i.name
-  with
-    Not_found -> Format.eprintf "%s does not have lrname@." x;
-    assert false (* エラーはここで処理してしまう *)
+  if Asm2.is_reg x then x
+  else
+    (try
+       let lr_i = H.find lrtbl x in
+       lr_i.name
+     with
+       Not_found -> Format.eprintf "%s does not have lrname@." x;
+                    assert false (* エラーはここで処理してしまう *))
 
 (* 入力は!scan_mode = 0, !is_reverse = 0でscan_cfgを適用した結果のリスト *)
 let blocklist_to_lrtbl : Cfg.block list -> lr_info H.t * S.t * S.t =
@@ -189,7 +191,7 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | StF(mem, y, z, Asm2.C(i)) -> [], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
-  | Entry(xs, ys) -> (xs @ ys), []
+  | Entry(l, xs, ys) -> (l :: (xs @ ys)), []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
   | Save(x) -> [], [x]
   | Restore(x) -> [], [x]
@@ -292,33 +294,52 @@ let dfa_of_liveout : block list -> lra_sets_t H.t =
 
 (* 以降はlivenowの計算に関係するもの *)
   
-  
+
+
+type instr_info_t = { livn : S.t; is_tl : bool }
 
 (* functions to compute livenow of the instructions *)
-let lookup_livenow_tbl : S.t H.t -> Cfg.instr -> S.t =
-  fun livenow_tbl instr ->
+let lookup_livenow : instr_info_t H.t -> Id.t -> S.t =
+  fun livenow_tbl iid ->
   (try
-     H.find livenow_tbl instr.instr_id
+     (H.find livenow_tbl iid).livn
    with
      Not_found -> assert false)
+
+let lookup_is_tail : instr_info_t H.t -> Id.t -> bool =
+  fun livenow_tbl iid ->
+  (try
+     (H.find livenow_tbl iid).is_tl
+   with
+     Not_found -> assert false)
+
+let set_is_tl : instr_info_t H.t -> Cfg.instr -> bool -> unit =
+  fun livenow_tbl instr is_tail ->
+  let iid = instr.instr_id in
+  if H.mem livenow_tbl iid then
+    H.replace livenow_tbl iid
+      { livn = lookup_livenow livenow_tbl iid ; is_tl = is_tail }
+  else
+    assert false
   
 let make_livenow_tbl n =
-  let livenow_tbl : S.t H.t = H.create n in livenow_tbl
+  let livenow_tbl : instr_info_t H.t = H.create n in livenow_tbl
 
 let compute_livenow : S.t -> Cfg.instr -> S.t =
   fun livenow instr ->
   let defs, uses = defs_uses_of_instr instr in
   S.union (S.of_list uses) (S.diff livenow (S.of_list defs))
 
-let set_livenow_at_instr : S.t H.t -> S.t -> Cfg.instr -> S.t =
+let set_livenow_at_instr : instr_info_t H.t -> S.t -> Cfg.instr -> S.t =
   (* livenowを元にinstrの時点のlivenow集合を追加し *)
   (* １つ上の時点でのlivenow集合を返す *)
   fun livenow_tbl livenow instr ->
   assert (not (H.mem livenow_tbl instr.instr_id));
-  H.add livenow_tbl instr.instr_id livenow;
+  H.add livenow_tbl instr.instr_id { livn = livenow; is_tl = false };
   compute_livenow livenow instr
 
-let build_livenow_tbl_of_block : lra_sets_t H.t -> S.t H.t ->  block -> unit =
+let build_livenow_tbl_of_block : lra_sets_t H.t -> instr_info_t H.t ->
+                                 block -> unit =
   fun lra_tbl livenow_tbl block ->
   let lrasets = lrasets_of_block lra_tbl block in
   let rev_code = List.rev block.code in
@@ -327,12 +348,21 @@ let build_livenow_tbl_of_block : lra_sets_t H.t -> S.t H.t ->  block -> unit =
   let _ =
     List.fold_left
       (fun livenow instr -> set_livenow_at_instr livenow_tbl livenow instr)
-      liveout rev_code in ()
+      liveout rev_code in
+  if rev_code <> [] then
+    (let tail_instr = List.hd rev_code in
+     match block.next with
+     | Cnfl(br) ->
+        (match !br.next with (* return blockへと合流するブロックの最後の命令が末尾命令 *)
+         | End _ -> set_is_tl livenow_tbl tail_instr true
+         | _ -> ())
+     | _ -> ())
+  else
+    ()
 
-let build_livenow_tbl_of_blocks : lra_sets_t H.t -> block list -> S.t H.t =
+let build_livenow_tbl_of_blocks : lra_sets_t H.t -> block list -> instr_info_t H.t =
   fun lra_tbl blocks ->
   let livenow_tbl = make_livenow_tbl (20 * (List.length blocks)) in
   List.iter
     (build_livenow_tbl_of_block lra_tbl livenow_tbl) blocks;
   livenow_tbl
-

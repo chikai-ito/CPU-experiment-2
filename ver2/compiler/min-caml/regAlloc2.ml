@@ -45,15 +45,17 @@ let make_reg_list : alloc_tbl_t -> S.t -> Id.t list =
 
 (* これを書き換えてcoalescingする *)
 let choose_reg stat_tbl allregs regs lr =
-  let targets = tar_list allregs (get_status stat_tbl lr).target in
-  try
-    List.find (fun r -> not (List.mem r regs)) targets
-  with
-    Not_found ->
-    (try
-       List.find (fun r -> not (List.mem r regs)) allregs
+  if Asm2.is_reg lr then lr
+  else
+    (let targets = tar_list allregs (get_status stat_tbl lr).target in
+     try
+       List.find (fun r -> not (List.mem r regs)) targets
      with
-       Not_found -> assert false)
+       Not_found ->
+       (try
+          List.find (fun r -> not (List.mem r regs)) allregs
+        with
+          Not_found -> assert false))
 
 let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
                 (liverange * Type.t) Stack.t -> Id.t list -> Id.t list ->

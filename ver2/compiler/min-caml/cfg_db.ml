@@ -64,7 +64,7 @@ let print_instr = function
                               print_op "CallCls" (((f ^ ";")::"int:"::ys) @ ("\b\b; float:"::zs)); newline ()
   | CallDir(xt, L(l), ys, zs) -> print_xt xt;
                                  print_op "CallDir" (((l ^ ";")::"int:"::ys) @ ("\b\b; float:"::zs)); newline ()
-  | Entry(xs,ys) -> Printf.printf "Entry";
+  | Entry(l, xs,ys) -> Printf.printf "Entry %s : " l;
                     List.iter (fun x -> Printf.printf "%s, " x) ((" int:"::xs) @  ("\b\b; float:"::ys)); newline ()
   | Return(xt) -> Printf.printf "Return"; space (); print_xt xt; newline ()
   | Save(x) -> Printf.printf "Save(%s)\n" x
@@ -92,9 +92,10 @@ let print_next : next_t -> unit = function
   | Brc(cmpr, b1, b2) -> print_branch cmpr;
                          Printf.printf "to %s, %s\n" (let L(l) = !b1.label in l) (let L(l) = !b2.label in l)
   | Cnfl(b) -> Printf.printf "to %s\n" (let L(l) = !b.label in l)
-  | Loop(b) -> Printf.printf "to_loop %s\n" (let L(l) = !b.label in l)
+  | Loop(b1, b2) -> Printf.printf "to_loop %s\n" (let L(l) = !b1.label in l);
+                   Printf.printf "the block after loop is %s\n" (label_of_block !b2)
   | Back(L(l), b) -> Printf.printf "Jump %s\n" l; Printf.printf "to %s\n" (let L(l) = !b.label in l)
-  | End -> Printf.printf "End\n"
+  | End _ -> Printf.printf "End\n"
 
 let print_block block =
   Printf.printf "---- block ----\n";
@@ -123,9 +124,9 @@ let check_next color_tbl next =
   match next with
   | Brc(_, b1, b2) -> List.filter is_not_visited [!b1; !b2]
   | Cnfl(b) -> List.filter is_not_visited [!b]
-  | Loop(b) -> List.filter is_not_visited [!b]
+  | Loop(b, _) -> List.filter is_not_visited [!b]
   | Back(_, b) -> List.filter is_not_visited [!b]
-  | End -> []
+  | End _ -> []
 let rec bfs queue color_tbl acc =
   if Queue.is_empty queue then
     List.rev acc

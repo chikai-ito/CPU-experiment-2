@@ -98,10 +98,11 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | CallDir((x, t), l, ys, zs) ->
      rt x t;
      { instr_id = iid; op = CallDir((lu x, t), l, List.map lu ys, List.map lu zs) }
-  | Entry(xs, ys) ->
+  | Entry(l, xs, ys) ->
+     rt l Type.Int;
      List.iter (fun x -> rt x Type.Int) xs;
      List.iter (fun x -> rt x Type.Float) ys;
-     { instr_id = iid; op = Entry(List.map lu xs, List.map lu ys) }
+     { instr_id = iid; op = Entry(lu l, List.map lu xs, List.map lu ys) }
   | Return((x, t)) -> rt x t; { instr_id = iid; op = Return((lu x, t)) }
   | Save(x) -> { instr_id = iid; op = Save(lu x) }
   | Restore(x) -> { instr_id = iid; op = Restore(lu x) }
@@ -145,10 +146,11 @@ let separate_lr : Type.t H.t -> Id.t list -> Id.t list * Id.t list =
         | _ -> (lr :: i_acc, f_acc))
       ([], []) livenow in
   i_livenow, f_livenow
-  
+
 
 let add_interf_of_instr :
-      Igraph.inter_graph -> S.t H.t -> Type.t H.t -> Cfg.instr -> unit =
+      Igraph.inter_graph -> instr_info_t H.t ->
+      Type.t H.t -> Cfg.instr -> unit =
   fun graph livenow_tbl lr_ty_tbl instr ->
   let defs, _ = defs_uses_of_instr instr in
   List.iter
@@ -156,7 +158,7 @@ let add_interf_of_instr :
               match t with
               | Type.Float -> add_node graph x Type.Float
               | _ -> add_node graph x Type.Int) defs;
-  let livelist = S.elements (Lra.lookup_livenow_tbl livenow_tbl instr) in
+  let livelist = S.elements (Lra.lookup_livenow livenow_tbl instr.instr_id) in
   let i_lives, f_lives = separate_lr lr_ty_tbl livelist in
   let interfs = List.concat
                   (List.map
@@ -171,22 +173,24 @@ let add_interf_of_instr :
   List.iter (fun (x, y, ty) -> add_edge graph (x, ty) (y, ty)) interfs
 
 let add_interf_of_block :
-      Igraph.inter_graph -> S.t H.t -> Type.t H.t -> Cfg.block -> unit =
+      Igraph.inter_graph -> instr_info_t H.t ->
+      Type.t H.t -> Cfg.block -> unit =
   fun graph livenow_tbl lr_ty_tbl block ->
   List.iter
     (add_interf_of_instr graph livenow_tbl lr_ty_tbl)
     block.code
   
     
-let build_igraph : Cfg.block list -> Igraph.inter_graph * S.t H.t * lr_stat_tbl_t =
+let build_igraph : Cfg.block list ->
+                   Igraph.inter_graph * instr_info_t H.t * lr_stat_tbl_t =
   (* 副作用としてblock各命令の変数たちがLRに書き換わる *)
   fun blocks ->
-  (* List.iter Cfg_db.print_block blocks; *)
+  List.iter Cfg_db.print_block blocks;
   let lrtbl, idset, lrset = Lra.blocklist_to_lrtbl blocks in
   (* print_lr_tbl lrtbl; *)
   let lr_ty_tbl = cfg_replace_with_lr lrtbl blocks in (* ここで変数がLRに書き換わる *)
   Format.eprintf "replaced variables with live ranges@.";
-  (* List.iter Cfg_db.print_block blocks; *)
+  List.iter Cfg_db.print_block blocks;
   let stat_tbl = make_stat_tbl blocks in
   Format.eprintf "collected statuses of live rages@.";
   let lra_sets =  dfa_of_liveout blocks in

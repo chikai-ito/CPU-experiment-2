@@ -35,7 +35,7 @@ and op_t =
   | StF of mem * Id.t * Id.t * Asm2.id_or_imm
   | CallCls of (Id.t * Type.t) * Id.t * Id.t list * Id.t list
   | CallDir of (Id.t * Type.t) * Id.l * Id.t list * Id.t list
-  | Entry of Id.t list * Id.t list
+  | Entry of Id.t * Id.t list * Id.t list
   | Return of (Id.t * Type.t) (* プログラムの答えを返す命令; ルーチンの最後につく *)
   | Save of Id.t (* regname * ident *)
   | Restore of Id.t
@@ -50,14 +50,14 @@ type block = { mutable label : Id.l;
                mutable prev : block list; mutable next : next_t }
 and next_t = Brc of compare_t * block ref * block ref (* branch *)
            | Cnfl of block ref (* confluence *)
-           | Loop of block ref (* entering into loop *)
+           | Loop of block ref * block ref (* entering into loop *)
            | Back of Id.l * block ref (* loop back *)
-           | End (* end of the flow *)
+           | End of bool (* end of the flow *)
 and compare_t = { branch : Type.t * cmp; args : Id.t * Id.t }
 
 val label_of_block : block -> Id.t
   
 val next_blocks : block -> block list
 
-val f : Asm2.prog -> (Id.l * Asm2.data_t) list * (block list) list * block list
+val f : Asm2.prog -> Type.t -> (Id.l * Asm2.data_t) list * (block list) list * block list
                                 

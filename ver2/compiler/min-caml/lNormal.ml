@@ -36,11 +36,8 @@ type t =
   | Put of Id.t * Id.t * Id.t
   (* Loopの取り扱いはひとまずIfに準じることにする *)
   (* 型の情報は必要ないはず *)
-  (* | Loop of Id.l * t (\* ループはコードと番地の組として表現 *\) *)
   | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t
   (* ループ前のループ内変数への束縛の情報もデータ型に含めることにした *)
-  (* | Subst of Id.t * Id.t * t (\* ループ構造のための変数の上書きに必要 *\)
-   * | Jump of Id.l (\* ジャンプ命令 *\) *)
   | Jump of (Id.t * Id.t) list * Id.l (* 上のJumpとSubstを合わせた *)
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list

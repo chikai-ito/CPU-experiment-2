@@ -1,15 +1,14 @@
 #!/bin/bash
 
-./min-caml $1
-
 cp ./$1.s ../../simulator/simulator/test/$1.s
 
+cat ./input.txt > ../../simulator/simulator/input.txt
+
 cd ../../simulator/simulator
+rm ./result.bin
 
 make
 
 ./simulator ./test/$1.s
 
-echo -ne '\n' >> ./result.bin 
-
-cp ./result.bin ../compiler/min-caml/result.txt
+cp ./result.bin ../../compiler/min-caml/result.txt
