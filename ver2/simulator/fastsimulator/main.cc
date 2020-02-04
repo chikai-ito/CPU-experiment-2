@@ -32,7 +32,7 @@ int main(int argc, char**argv){
   memset(freg, 0, 32 * sizeof(float));
 
   reg[0] = 0;
-  reg[27] = 10000;
+  reg[26] = 10000;
 
 
 
