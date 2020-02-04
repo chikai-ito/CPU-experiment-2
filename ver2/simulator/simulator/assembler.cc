@@ -513,6 +513,8 @@ string assemble (string line, int option, int line_num){
     string ft;
     string offset;
     s >> base >> ft >> offset;
+    cout << base << " " << ft << " ";
+    cout << offset << endl;
     if (!intreg_check(base)){
       cout << "something wrong with the instruction " << opcode << endl;
       cout << "line number is near " << line_num << endl;
@@ -538,6 +540,7 @@ string assemble (string line, int option, int line_num){
     }else{
       offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
     }
+    cout << offset_s << endl;
     return_code = "100111" + base_s + ft_s + offset_s;
   }
   else if (opcode == "isw"){

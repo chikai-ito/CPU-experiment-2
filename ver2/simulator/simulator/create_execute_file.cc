@@ -93,15 +93,25 @@ void create_execute_file(string* execute_instruction, pair<string,int>* label_li
       string base, rt;
       string jump_to;
       s >> base >> rt >> jump_to;
-      int jump_to_num = find_value_from_pair(label_list,jump_to,array_num) - i;
-      writing_file << jump << " " << base << " " << rt << " " << jump_to_num << endl;
+      int jump_to_num = find_value_from_pair(label_list,jump_to,array_num);
+      // 0 is impossible if label is not included in label_list
+      if(jump_to_num == 0) {
+        writing_file << jump << " " << base << " " << rt << " " << jump_to << endl;
+      } else {
+        writing_file << jump << " " << base << " " << rt << " " << jump_to_num << endl;
+      }
     }
     else if(jump == "ilw.s"){
       string base, ft;
       string jump_to;
       s >> base >> ft >> jump_to;
-      int jump_to_num = find_value_from_pair(label_list,jump_to,array_num) - i;
-      writing_file << jump << " " << base << " " << ft << " " << jump_to_num << endl;
+      int jump_to_num = find_value_from_pair(label_list,jump_to,array_num);
+      // 0 is impossible if label is not included in label_list
+      if(jump_to_num == 0) {
+        writing_file << jump << " " << base << " " << ft << " " << jump_to << endl;
+      } else {
+        writing_file << jump << " " << base << " " << ft << " " << jump_to_num << endl;
+      }
     }
     else if(jump == "addi"){
       string rt, rd;

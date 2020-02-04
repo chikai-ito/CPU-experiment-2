@@ -143,8 +143,13 @@ void exec_normal_code(unsigned int code, int pc, unsigned int* reg, float* freg,
       //exec ilw.s instruction
       base = (int)((code >> 21) & 0b11111);
       ft = (int)((code >> 16) & 0b11111);
-      x.i = inst_mem[(int)reg[base]];
-      freg[ft] = x.f;
+      if((code>>15)&0b1){
+        x.i = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+        freg[ft] = x.f;
+      }else{
+        x.i = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
+        freg[ft] = x.f;
+      }
       break;
     case 0b110111 :
       //exec isw instruction
