@@ -8,6 +8,7 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | Nop
   | Set of (Id.t * Type.t) * int
   | SetL of (Id.t * Type.t) * Id.l
+  | ILd of (Id.t * Type.t) * Id.l
   | Mov of (Id.t * Type.t) * Id.t
   | Neg of (Id.t * Type.t) * Id.t
   | Itof of (Id.t * Type.t) * Id.t
@@ -21,8 +22,8 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | Div of (Id.t * Type.t) * Id.t * Id.t
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
-  | Ld of (Id.t * Type.t) * mem * Id.t * Asm2.id_or_imm (* Ld(x,y,id/imm) = x <- y + id/imm << 2 *)
-  | St of mem * Id.t * Id.t * Asm2.id_or_imm
+  | Ld of (Id.t * Type.t) * Id.t * Asm2.id_or_imm (* Ld(x,y,id/imm) = x <- y + id/imm << 2 *)
+  | St of Id.t * Id.t * Asm2.id_or_imm
   | FMov of (Id.t * Type.t) * Id.t
   | Ftoi of (Id.t * Type.t) * Id.t
   | FNeg of (Id.t * Type.t) * Id.t
@@ -32,8 +33,8 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | FSub of (Id.t * Type.t) * Id.t * Id.t
   | FMul of (Id.t * Type.t) * Id.t * Id.t
   | FDiv of (Id.t * Type.t) * Id.t * Id.t
-  | LdF of (Id.t * Type.t) * mem * Id.t * Asm2.id_or_imm (* Ld(x,y,id/imm) = x <- y + id/imm << 2 *)
-  | StF of mem * Id.t * Id.t * Asm2.id_or_imm
+  | LdF of (Id.t * Type.t) * Id.t * Asm2.id_or_imm (* Ld(x,y,id/imm) = x <- y + id/imm << 2 *)
+  | StF of Id.t * Id.t * Asm2.id_or_imm
   | CallCls of (Id.t * Type.t) * Id.t * Id.t list * Id.t list
   | CallDir of (Id.t * Type.t) * Id.l * Id.t list * Id.t list
   | Entry of Id.t * Id.t list * Id.t list (* 関数のentry point; int_arg_list, float_arg_list *)
@@ -75,6 +76,7 @@ let nontail_simple_instr xt = function
   | Asm2.Nop -> new_instr Nop
   | Asm2.Set(i) -> new_instr (Set(xt,i))
   | Asm2.SetL(l) -> new_instr (SetL(xt,l))
+  | Asm2.ILd(l) -> new_instr (ILd(xt,l))
   | Asm2.Mov(y) -> new_instr (Mov(xt,y))
   | Asm2.Neg(y) -> new_instr (Neg(xt,y))
   | Asm2.Itof(y) -> new_instr (Itof(xt,y))
@@ -88,8 +90,8 @@ let nontail_simple_instr xt = function
   | Asm2.Div(y,z) -> new_instr (Div(xt,y,z))
   | Asm2.SLL(y,z) -> new_instr (SLL(xt,y,z))
   | Asm2.SLLI(y,i) -> new_instr (SLLI(xt,y,i))
-  | Asm2.Ld(mem, y, z') -> new_instr (Ld(xt,mem,y,z'))
-  | Asm2.St(mem, y, z, w') -> new_instr (St(mem,y,z,w'))
+  | Asm2.Ld(y, z') -> new_instr (Ld(xt,y,z'))
+  | Asm2.St(y, z, w') -> new_instr (St(y,z,w'))
   | Asm2.FMov(y) -> new_instr (FMov(xt,y))
   | Asm2.Ftoi(y) -> new_instr (Ftoi(xt,y))
   | Asm2.FNeg(y) -> new_instr (FNeg(xt,y))
@@ -99,8 +101,8 @@ let nontail_simple_instr xt = function
   | Asm2.FSub(y,z) -> new_instr (FSub(xt,y,z))
   | Asm2.FMul(y,z) -> new_instr (FMul(xt,y,z))
   | Asm2.FDiv(y,z) -> new_instr (FDiv(xt,y,z))
-  | Asm2.LdF(mem, y, z') -> new_instr (LdF(xt,mem,y,z'))
-  | Asm2.StF(mem, y, z, w') -> new_instr (StF(mem,y,z,w'))
+  | Asm2.LdF(y, z') -> new_instr (LdF(xt,y,z'))
+  | Asm2.StF(y, z, w') -> new_instr (StF(y,z,w'))
   | Asm2.CallCls(y,zs,ws) -> new_instr (CallCls(xt,y,zs,ws))
   | Asm2.CallDir(l,ys,zs) -> new_instr (CallDir(xt,l,ys,zs))
   | _ -> assert false (* If, Loop are not simple & Jump isn't tail_instr *)

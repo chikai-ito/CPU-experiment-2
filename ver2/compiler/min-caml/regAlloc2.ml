@@ -64,7 +64,7 @@ let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
   let allocated = ref [] in
   while not (Stack.is_empty stack) do
     let lr, ty = Stack.pop stack in
-    let adjs, _ = adjs_of_node graph lr in
+    let adjs = adjs_of_node graph lr in
     (* すでに割り付けたLRと干渉グラフ中で接続するLRの共通部分 *)
     let adjs' = S.inter adjs (S.of_list !allocated) in
     let regs = make_reg_list regtbl adjs' in
