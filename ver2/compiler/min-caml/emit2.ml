@@ -62,13 +62,6 @@ let rec shuffle sw xys =
                                          xys)
   | xys, acyc -> acyc @ shuffle sw xys
 
-
-let ld mem = match mem with I -> "ilw" | M -> "lw"
-let ld mem = match mem with I -> "ilw" | M -> "lw"
-let ld_s mem = match mem with I -> "ilw.s" | M -> "lw.s"
-let st mem = match mem with I -> "isw" | M -> "sw"
-let st_s mem = match mem with I -> "isw.s" | M -> "sw.s"
-
 let add_regmap regtbl =
   fun (spl_regs, fspl_regs, regmap, spilled) x ->
   match lookup_alloc regtbl x with
@@ -148,6 +141,13 @@ let output_simple_op oc regmap operation =
      Printf.fprintf oc "\taddi\t%%r0 %s %d\n" (lu x) i
   | SetL((x, _), (Id.L(l))) ->
      Printf.fprintf oc "\taddi\t%%r0 %s %s\n" (lu x) l
+  | ILd((x, _), (Id.L(l))) ->
+     Printf.fprintf oc "\taddi\t%%r0 %%r31 %s\n" l;
+     let r = lu x in
+     if is_freg r then
+       Printf.fprintf oc "\tilw.s\t%%r31 %s 0\n" r
+     else
+       Printf.fprintf oc "\tilw\t%%r31 %s 0\n" r
   | Mov((x, _), y) when (lu x) = (lu y) -> ()
   | Mov((x, _), y) -> Printf.fprintf oc "\tmov\t%s %s\n" (lu y) (lu x)
   | Neg((x, _), y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" (lu y) (lu x)
@@ -162,16 +162,16 @@ let output_simple_op oc regmap operation =
   | Div((x, _), y, z) -> Printf.fprintf oc "\tdiv\t%s %s %s\n" (lu y) (lu z) (lu x)
   | SLLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s %d\n" (lu y) (lu x) i
   | SLL((x, _), y, z) -> Printf.fprintf oc "\tsll\t%s %s %s\n" (lu y) (lu x) (lu z)
-  | Ld((x, _), mem, y, C(i)) ->
-     Printf.fprintf oc "\t%s\t%s %s %d\n" (ld mem) (lu y) (lu x) i
-  | Ld((x, _), mem, y, V(z)) ->
+  | Ld((x, _), y, C(i)) ->
+     Printf.fprintf oc "\tlw\t%s %s %d\n" (lu y) (lu x) i
+  | Ld((x, _), y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld mem) (lu x)
-  | St(mem, x, y, C(i)) ->
-     Printf.fprintf oc "\t%s\t%s %s %d\n" (st mem) (lu y) (lu x) i
-  | St(mem, x, y, V(z)) ->
+     Printf.fprintf oc "\tlw\t%%r31 %s 0\n" (lu x)
+  | St(x, y, C(i)) ->
+     Printf.fprintf oc "\tsw\t%s %s %d\n" (lu y) (lu x) i
+  | St(x, y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st mem) (lu x)
+     Printf.fprintf oc "\tsw\t%%r31 %s 0\n" (lu x)
   | FMov((x, _), y) when (lu x) = (lu y) -> ()
   | FMov((x, _), y) -> Printf.fprintf oc "\tmov.s\t%s %s\n" (lu y) (lu x)
   | FNeg((x, _), y) -> Printf.fprintf oc "\tneg.s\t%s %s\n" (lu y) (lu x)
@@ -182,16 +182,16 @@ let output_simple_op oc regmap operation =
   | FSub((x, _), y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" (lu z) (lu y) (lu x)
   | FMul((x, _), y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" (lu z) (lu y) (lu x)
   | FDiv((x, _), y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" (lu z) (lu y) (lu x)
-  | LdF((x, _), mem, y, C(i)) ->
-     Printf.fprintf oc "\t%s\t%s %s %d\n" (ld_s mem) (lu y) (lu x) i
-  | LdF((x, _), mem, y, V(z)) ->
+  | LdF((x, _), y, C(i)) ->
+     Printf.fprintf oc "\tlw.s\t%s %s %d\n" (lu y) (lu x) i
+  | LdF((x, _), y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld_s mem) (lu x)
-  | StF(mem, x, y, C(i)) ->
-     Printf.fprintf oc "\t%s\t%s %s %d\n" (st_s mem) (lu y) (lu x) i
-  | StF(mem, x, y, V(z)) ->
+     Printf.fprintf oc "\tlw.s\t%%r31 %s 0\n" (lu x)
+  | StF(x, y, C(i)) ->
+     Printf.fprintf oc "\tsw.s\t%s %s %d\n" (lu y) (lu x) i
+  | StF(x, y, V(z)) ->
      Printf.fprintf oc "\tadd\t%s %s %%r31\n" (lu y) (lu z);
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st_s mem) (lu x)
+     Printf.fprintf oc "\tsw.s\t%%r31 %s 0\n" (lu x)
      (* CallCls, CallDir, Entryはsimpleではない, 特別なルーチンで扱う *)
   | Return((x, t)) ->
      if t = Type.Float then
@@ -218,6 +218,7 @@ let rec output_instr oc livenow_tbl regtbl instr =
   | Nop -> false
   | Set((x, _), _) -> out_sor oper [x] []; false
   | SetL((x, _), _) -> out_sor oper [x] []; false
+  | ILd((x, _), _) -> out_sor oper [x] []; false
   | Mov((x, _), y) -> out_sor oper [x] [y]; false
   | Neg((x, _), y) -> out_sor oper [x] [y]; false
   | Itof((x, _), y) -> out_sor oper [x] [y]; false
@@ -231,8 +232,8 @@ let rec output_instr oc livenow_tbl regtbl instr =
   | Div((x, _), y, z) -> out_sor oper [x] [y; z]; false
   | SLLI((x, _), y, _) -> out_sor oper [x] [y]; false
   | SLL((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | Ld((x, _), _, y, C(_)) -> out_sor oper [x] [y]; false
-  | Ld((x, _), mem, y, V(z)) ->
+  | Ld((x, _), y, C(_)) -> out_sor oper [x] [y]; false
+  | Ld((x, _), y, V(z)) ->
      let regmap, dspls, uspls = get_reg regtbl [] [y; z] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* restore *)
@@ -240,12 +241,11 @@ let rec output_instr oc livenow_tbl regtbl instr =
        (lookup_regmap regmap y) (lookup_regmap regmap z);
      let regmap, dspls, uspls = get_reg regtbl [x] [] in
      assert (uspls = []);
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld mem)
-       (lookup_regmap regmap x);
+     Printf.fprintf oc "\tlw\t%%r31 %s 0\n" (lookup_regmap regmap x);
      insert_save oc regmap dspls; (* save*)
      false
-  | St(_, x, y, C(_)) -> out_sor oper [] [x; y]; false
-  | St(mem, x, y, V(z)) ->
+  | St(x, y, C(_)) -> out_sor oper [] [x; y]; false
+  | St(x, y, V(z)) ->
      let regmap, dspls, uspls = get_reg regtbl [] [y; z] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* restore *)
@@ -254,8 +254,7 @@ let rec output_instr oc livenow_tbl regtbl instr =
      let regmap, dspls, uspls = get_reg regtbl [] [x] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* storeするxをrestore *)
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st mem)
-       (lookup_regmap regmap x);
+     Printf.fprintf oc "\tsw\t%%r31 %s 0\n" (lookup_regmap regmap x);
      false
   | FMov((x, _), y) -> out_sor oper [x] [y]; false
   | FNeg((x, _), y) -> out_sor oper [x] [y]; false
@@ -266,8 +265,8 @@ let rec output_instr oc livenow_tbl regtbl instr =
   | FSub((x, _), y, z) -> out_sor oper [x] [y; z]; false
   | FMul((x, _), y, z) -> out_sor oper [x] [y; z]; false
   | FDiv((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | LdF((x, _), _, y, C(_)) -> out_sor oper [x] [y]; false
-  | LdF((x, _), mem, y, V(z)) ->
+  | LdF((x, _), y, C(_)) -> out_sor oper [x] [y]; false
+  | LdF((x, _), y, V(z)) ->
      let regmap, dspls, uspls = get_reg regtbl [] [y; z] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* restore *)
@@ -275,12 +274,11 @@ let rec output_instr oc livenow_tbl regtbl instr =
        (lookup_regmap regmap y) (lookup_regmap regmap z);
      let regmap, dspls, uspls = get_reg regtbl [x] [] in
      assert (uspls = []);
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (ld_s mem)
-       (lookup_regmap regmap x);
+     Printf.fprintf oc "\tlw.s\t%%r31 %s 0\n" (lookup_regmap regmap x);
      insert_save oc regmap dspls; (* save*)
      false
-  | StF(_, x, y, C(_)) -> out_sor oper [] [x; y]; false
-  | StF(mem, x, y, V(z)) ->
+  | StF(x, y, C(_)) -> out_sor oper [] [x; y]; false
+  | StF(x, y, V(z)) ->
      let regmap, dspls, uspls = get_reg regtbl [] [y; z] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* restore *)
@@ -289,8 +287,7 @@ let rec output_instr oc livenow_tbl regtbl instr =
      let regmap, dspls, uspls = get_reg regtbl [] [x] in
      assert (dspls = []);
      insert_restore oc regmap uspls; (* storeするxをrestore *)
-     Printf.fprintf oc "\t%s\t%%r31 %s 0\n" (st_s mem)
-       (lookup_regmap regmap x);
+     Printf.fprintf oc "\tsw.s\t%%r31 %s 0\n" (lookup_regmap regmap x);
      false
   | CallCls _ ->
      callcls_routine oc livenow_tbl regtbl instr

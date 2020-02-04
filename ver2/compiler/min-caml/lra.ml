@@ -77,6 +77,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Nop -> idset
   | Set((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SetL((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | ILd((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Mov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Neg((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Itof((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -90,7 +91,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Div((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | Ld((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | Ld((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | St _ -> idset
   | FMov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ftoi((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -101,7 +102,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | FSub((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | FMul((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | FDiv((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | LdF((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | LdF((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | StF _ -> idset
   | CallCls((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | CallDir((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -159,6 +160,7 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Nop -> [], []
   | Set((x, t), i) -> [x], []
   | SetL((x, t), l) -> [x], []
+  | ILd((x, t), l) -> [x], []
   | Mov((x, t), y) -> [x], [y]
   | Neg((x, t), y) -> [x], [y]
   | Itof((x, t), y) -> [x], [y]
@@ -172,10 +174,10 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Div((x, t), y, z) -> [x], [y; z]
   | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
-  | Ld((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
-  | Ld((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | St(mem, y, z, Asm2.V(w)) -> [], [y; z; w]
-  | St(mem, y, z, Asm2.C(i)) -> [], [y; z]
+  | Ld((x, t), y, Asm2.V(z)) -> [x], [y; z]
+  | Ld((x, t), y, Asm2.C(i)) -> [x], [y]
+  | St(y, z, Asm2.V(w)) -> [], [y; z; w]
+  | St(y, z, Asm2.C(i)) -> [], [y; z]
   | FMov((x, t), y) -> [x], [y]
   | Ftoi((x, t), y) -> [x], [y]
   | FNeg((x, t), y) -> [x], [y]
@@ -185,10 +187,10 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | FSub((x, t), y, z) -> [x], [y; z]
   | FMul((x, t), y, z) -> [x], [y; z]
   | FDiv((x, t), y, z) -> [x], [y; z]
-  | LdF((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
-  | LdF((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | StF(mem, y, z, Asm2.V(w)) -> [], [y; z; w]
-  | StF(mem, y, z, Asm2.C(i)) -> [], [y; z]
+  | LdF((x, t), y, Asm2.V(z)) -> [x], [y; z]
+  | LdF((x, t), y, Asm2.C(i)) -> [x], [y]
+  | StF(y, z, Asm2.V(w)) -> [], [y; z; w]
+  | StF(y, z, Asm2.C(i)) -> [], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(l, xs, ys) -> (l :: (xs @ ys)), []

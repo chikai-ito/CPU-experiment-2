@@ -27,6 +27,7 @@ let print_instr = function
   | Set(xt, i) -> print_xt xt; print_op "Set" []; Printf.printf "\bt(";
                   print_int i; print_string ")"; newline ()
   | SetL(xt, L(l)) -> print_xt xt; print_op "SetL" [l]; newline ()
+  | ILd(xt, L(l)) -> print_xt xt; print_op "ILd" [l]; newline ()
   | Mov(xt, y) -> print_xt xt; print_op "Mov" [y]; newline ()
   | Neg(xt, y) -> print_xt xt; print_op "Neg" [y]; newline ()
   | Itof(xt, y) -> print_xt xt; print_op "Itof" [y]; newline ()
@@ -41,11 +42,11 @@ let print_instr = function
   | Div(xt, y, z) -> print_xt xt; print_op "Div" [y;z]; newline ()
   | SLL(xt, y, z) -> print_xt xt; print_op "SLL" [y;z]; newline ()
   | SLLI(xt, y, i) -> print_xt xt; print_op "SLLI" [y]; Printf.printf "\b, %d)\n" i;
-  | Ld(xt, _, y, Asm2.V(z)) -> print_xt xt; print_op "Ld" [y;z]; newline ()
-  | Ld(xt, _, y, Asm2.C(i)) -> print_xt xt; print_op "Ld" [y];
+  | Ld(xt, y, Asm2.V(z)) -> print_xt xt; print_op "Ld" [y;z]; newline ()
+  | Ld(xt, y, Asm2.C(i)) -> print_xt xt; print_op "Ld" [y];
                                space (); print_int i; newline ()
-  | St(_, y, z, Asm2.V(w)) -> Printf.printf "St %s[%s] <- %s\n" y w z
-  | St(_, y, z, Asm2.C(i)) -> Printf.printf "St %s[%d] <- %s\n" y i z
+  | St(y, z, Asm2.V(w)) -> Printf.printf "St %s[%s] <- %s\n" y w z
+  | St(y, z, Asm2.C(i)) -> Printf.printf "St %s[%d] <- %s\n" y i z
   | FMov(xt, y) -> print_xt xt; print_op "FMov" [y]; newline ()
   | Ftoi(xt, y) -> print_xt xt; print_op "Ftoi" [y]; newline ()
   | FNeg(xt, y) -> print_xt xt; print_op "FNeg" [y]; newline ()
@@ -55,11 +56,11 @@ let print_instr = function
   | FSub(xt, y, z) -> print_xt xt; print_op "FSub" [y;z]; newline ()
   | FMul(xt, y, z) -> print_xt xt; print_op "FMul" [y;z]; newline ()
   | FDiv(xt, y, z) -> print_xt xt; print_op "FDiv" [y;z]; newline ()
-  | LdF(xt, _, y, Asm2.V(z)) -> print_xt xt; print_op "LdF" [y;z]; newline ()
-  | LdF(xt, _, y, Asm2.C(i)) -> print_xt xt; print_op "LdF" [y];
+  | LdF(xt, y, Asm2.V(z)) -> print_xt xt; print_op "LdF" [y;z]; newline ()
+  | LdF(xt, y, Asm2.C(i)) -> print_xt xt; print_op "LdF" [y];
                                 space (); print_int i; newline ()
-  | StF(_, y, z, Asm2.V(w)) -> Printf.printf "StF %s[%s] <- %s\n" y w z
-  | StF(_, y, z, Asm2.C(i)) -> Printf.printf "StF %s[%d] <- %s\n" y i z
+  | StF(y, z, Asm2.V(w)) -> Printf.printf "StF %s[%s] <- %s\n" y w z
+  | StF(y, z, Asm2.C(i)) -> Printf.printf "StF %s[%d] <- %s\n" y i z
   | CallCls(xt, f, ys, zs) -> print_xt xt;
                               print_op "CallCls" (((f ^ ";")::"int:"::ys) @ ("\b\b; float:"::zs)); newline ()
   | CallDir(xt, L(l), ys, zs) -> print_xt xt;
@@ -108,7 +109,8 @@ let print_block block =
   print_code block.code;
   Printf.printf "Flow : ";
   print_next block.next;
-  Printf.printf "----- end -----\n"
+  Printf.printf "----- end -----\n";
+  print_string "\n"
 
 let print_mode = ref 0
 let is_visited tbl block = (* すでに訪れた頂点ならtrueを返し *)
