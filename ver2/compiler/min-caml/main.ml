@@ -35,22 +35,6 @@ let lexbuf2 outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2ht
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
   Emit2.f outchan virtCode ty
-  (* let (_, f_cfgs, cfg) = Cfg.f virtCode in
-   * let igraph, livenow_tbl, stat_tbl = Lra2.build_igraph cfg in
-   * (\* H.iter (fun x y ->
-   *  *     Printf.printf "%s : " x;
-   *  *     print_set y) livenow_tbl; *\)
-   * let regtbl = RegAlloc2.f stat_tbl igraph in
-   * (\* List.iter Cfg_db.print_block cfg; *\)
-   * (\* Format.eprintf "----------@."; () *\)
-   * (\* let _ = List.map (fun (b,_) -> Cfg_db.scan_cfg b) fns in *\)
-   * Format.eprintf "total number of blocks is %d@." (List.length cfg);
-   * (\* Format.eprintf "total number of toplevel functions is %d@." (List.length fns) *\)
-   * (\* Format.eprintf "index of node_b is %d@." (H.find Id.idtbl "node_b");
-   *  * Format.eprintf "index of tail_b is %d@." (H.find Id.idtbl "tail_b");
-   *  * Format.eprintf "index of branching_b is %d@." (H.find Id.idtbl "branching_b"); *\)
-   * Format.eprintf "---- emit code ----@.";
-   * Emit2.output_cfg outchan livenow_tbl regtbl cfg *)
   
   
 
@@ -104,7 +88,7 @@ let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
      ("-dfs", Arg.Unit(fun _ -> Cfg_db.scan_mode := 1), "scan mode: 0 -> bfs, 1 -> dfs");
      ("-t", Arg.Unit(fun _ -> compile_mode := 2), "run tests");
      ("-p", Arg.Unit(fun _ -> Cfg_db.print_mode := 1), "whether print blocks");
-    ("-r", Arg.Unit(fun _ -> Cfg_db.is_reverse := 1), "scan in reverse direction")]
+     ("-r", Arg.Unit(fun _ -> Cfg_db.is_reverse := 1), "scan in reverse direction")]
     (fun s -> files := !files @ [s])
     ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^
      Printf.sprintf "usage: %s [-inline m] [-iter n] ...filenames without \".ml\"..." Sys.argv.(0));

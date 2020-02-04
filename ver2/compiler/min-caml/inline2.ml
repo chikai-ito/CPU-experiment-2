@@ -1,6 +1,7 @@
 open KNormal
 
 let threshold = ref 100
+let unlimited = ref true
 
 let rec size = function
   | If(_, _, _, e1, e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) ->
@@ -31,7 +32,8 @@ let rec inline2 fnlist = function
      let (x,_) = fd.name in
      let fnlist =
        if not (is_recfun fd)
-          && (size fd.body) <= !threshold then
+          && ((size fd.body) <= !threshold
+              || !unlimited) then
          M.add x fd fnlist
        else
          fnlist in

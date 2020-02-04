@@ -4,7 +4,9 @@
 open Enums
 open LNormal
 
-let loop_threshold = ref 500
+let loop_threshold = ref 100
+let unlimited = ref true
+                   
 
 (* sizeが一定以下の関数のみループにする *)
 let rec size = function
@@ -109,7 +111,8 @@ let rec f = function
      let e1' = f e1 in
      if tail_call_exists x e1'
         && convertible x e1'
-        && (size e1') <= !loop_threshold then
+        && ((size e1') <= !loop_threshold
+            || !unlimited) then
        (Format.eprintf "convert function %s into a loop@." x;
         let ys' = List.map (fun (y,t) -> Id.genid y) yts in (* 変数束縛のためのプレースホルダ *)
         let loop = Loop(L(x), yts, ys', loop_conv x (List.map fst yts) e1') in

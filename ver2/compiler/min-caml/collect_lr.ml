@@ -98,7 +98,8 @@ let collect_stats_from_instr stat_tbl dep instr =
      add_ofs_deps stat_tbl dep ys;
      add_ofs_deps stat_tbl dep zs;
      add_tar_to_stat stat_tbl x (0, dep);
-     add_tar_to_stat stat_tbl f (-1, dep)
+     add_tar_to_stat stat_tbl f (-1, dep);
+     (* add_use_to_stat stat_tbl f (-1000) *)
   | CallDir((x, _), _, ys, zs) ->
      add_ofs_deps stat_tbl dep ys;
      add_ofs_deps stat_tbl dep zs;
