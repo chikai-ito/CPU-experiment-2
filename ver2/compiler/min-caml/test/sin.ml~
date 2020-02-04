@@ -70,12 +70,11 @@ let rec cos x =
 in
 
 let a0 = read_float () in
-sin a0
-(* let a1 = read_float () in
- * let a2 = read_float () in
- * let a3 = read_float () in
- * let a4 = read_float () in
- * let a5 = read_float () in
- * let x = sin a0 +. cos a1 +. cos a3 in
- * let y = x *. sin a4 +. cos a5 +. sin a2 in
- * y *)
+let a1 = read_float () in
+let a2 = read_float () in
+let a3 = read_float () in
+let a4 = read_float () in
+let a5 = read_float () in
+let x = sin a0 +. cos a1 +. cos a3 in
+let y = x *. sin a4 +. cos a5 +. sin a2 in
+y

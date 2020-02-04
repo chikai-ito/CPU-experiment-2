@@ -197,10 +197,12 @@ let build_igraph : Cfg.block list ->
   let lra_sets =  dfa_of_liveout blocks in
   Format.eprintf "completed dfa of liveout@.";
   let livenow_tbl = build_livenow_tbl_of_blocks lra_sets blocks in
+  (* print_livenow livenow_tbl; *)
   Format.eprintf "completed computation of livenow@.";
   let igraph = create_graph ((List.length blocks) * 100) in
   Format.eprintf "constructed a interference graph@.";
   List.iter (add_interf_of_block igraph livenow_tbl lr_tp_tbl) blocks;
+  (* print_graph igraph; *)
   igraph, livenow_tbl, stat_tbl
 
       
