@@ -27,4 +27,7 @@ val delete_node : inter_graph -> liverange -> unit
 
 exception Not_colorable
 
-val color_graph : inter_graph -> int -> int -> (liverange * Type.t) Stack.t
+val color_graph : inter_graph -> int -> int -> (liverange * Type.t) list ->
+                  (liverange * Type.t) Stack.t * (liverange * Type.t) list
+  
+(* val color_graph : inter_graph -> int -> int -> (liverange * Type.t) Stack.t *)

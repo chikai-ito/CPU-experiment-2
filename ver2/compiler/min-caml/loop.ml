@@ -4,7 +4,7 @@
 open Enums
 open LNormal
 
-let loop_threshold = ref 100
+let loop_threshold = ref 500
 let unlimited = ref true
                    
 

@@ -168,24 +168,78 @@ let search_colorable_node : inter_graph -> int -> int -> liverange * Type.t =
   
 
 exception Not_colorable
+
+
+let rec choose_spill : node_t H.t -> (liverange * Type.t) list ->
+                       (liverange * Type.t) * (liverange * Type.t) list =
+  fun node_tbl spill_rank_list ->
+  match spill_rank_list with
+  | (l, t) :: lts -> if H.mem node_tbl l then (l, t), lts
+                     else choose_spill node_tbl lts
+  | [] -> assert false (* グラフが空でなければこれはあり得ない *)
         
 
-let color_graph : inter_graph -> int -> int -> (liverange * Type.t) Stack.t =
-  fun graph imax fmax ->
+let rec color_graph : inter_graph -> int -> int -> (liverange * Type.t) list ->
+                  (liverange * Type.t) Stack.t * (liverange * Type.t) list =
+  fun graph imax fmax spill_rank_list ->
   let stack = Stack.create () in
   let dup_graph = graph_copy graph in
   Format.eprintf "ready to enter while loop of Igraph.color_graph@.";
-  try
-    (while dup_graph.size > 0 do
-       (* print_string "---------------\n";
-        * print_graph dup_graph;
-        * print_string "---------------\n"; *)
-       (* search_colorable_nodeからNot_found例外が出る *)
-       let next_node, tp = search_colorable_node dup_graph imax fmax in
-       (* Format.eprintf "node %s is colorable@." next_node; *)
-       Stack.push (next_node, tp) stack;
-       delete_node dup_graph next_node
-     done);
-    stack
-  with
-    Not_found -> raise Not_colorable
+  color_routine stack [] graph dup_graph imax fmax spill_rank_list
+  (* while dup_graph.size > 0 do
+   *   (\* print_string "---------------\n";
+   *    * print_graph dup_graph;
+   *    * print_string "---------------\n"; *\)
+   *   (\* search_colorable_nodeからNot_found例外が出る *\)
+   *   let next_node, tp = search_colorable_node dup_graph imax fmax in
+   *   (\* Format.eprintf "node %s is colorable@." next_node; *\)
+   *   Stack.push (next_node, tp) stack;
+   *   delete_node dup_graph next_node
+   * done;
+   * stack *)
+
+and color_routine =
+  fun stack spls graph dup_graph imax fmax spill_rank_list ->
+  if dup_graph.size = 0 then
+    stack, spls
+  else
+    (
+     (*  print_string "-----------\n";
+      * print_graph dup_graph;
+      * print_string "------------\n"; *)
+     let stack, spls, graph, dup_graph, srl = 
+       (try
+          let lr, tp = search_colorable_node dup_graph imax fmax in
+          Format.eprintf "node %s is colorable@." lr;
+          Stack.push (lr, tp) stack;
+          delete_node dup_graph lr;
+          stack, spls, graph, dup_graph, spill_rank_list
+        with
+          Not_found ->
+          let (lr, tp), srl = choose_spill dup_graph.node_tbl spill_rank_list in
+          Format.eprintf "spill live range : %s@." lr;
+          delete_node graph lr; (* spillするので元の干渉グラフからも消す *)
+          delete_node dup_graph lr;
+          stack, ((lr, tp) :: spls), graph, dup_graph, srl) in
+     color_routine stack spls graph dup_graph imax fmax srl)
+
+
+(* let color_graph : inter_graph -> int -> int -> (liverange * Type.t) Stack.t =
+ *   fun graph imax fmax ->
+ *   let stack = Stack.create () in
+ *   let dup_graph = graph_copy graph in
+ *   Format.eprintf "ready to enter while loop of Igraph.color_graph@.";
+ *   try
+ *     (while dup_graph.size > 0 do
+ *        (\* print_string "---------------\n";
+ *         * print_graph dup_graph;
+ *         * print_string "---------------\n"; *\)
+ *        (\* search_colorable_nodeからNot_found例外が出る *\)
+ *        let next_node, tp = search_colorable_node dup_graph imax fmax in
+ *        (\* Format.eprintf "node %s is colorable@." next_node; *\)
+ *        Stack.push (next_node, tp) stack;
+ *        delete_node dup_graph next_node
+ *      done);
+ *     stack
+ *   with
+ *     Not_found -> raise Not_colorable *)

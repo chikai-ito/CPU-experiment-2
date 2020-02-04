@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cp ./$1.s ../../simulator/simulator/test/$1.s
+cp ./test/$1.s ../../simulator/simulator/test/$1.s
 
 cat ./input.txt > ../../simulator/simulator/input.txt
 

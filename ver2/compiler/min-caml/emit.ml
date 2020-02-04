@@ -59,12 +59,14 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   | NonTail(x), Set(i) -> Printf.fprintf oc "\taddi\t%%r0 %s %d\n" x i
   | NonTail(x), SetL(Id.L(y)) -> Printf.fprintf oc "\taddi\t%%r0 %s %s\n" x y
   | NonTail(x), ILd(Id.L(y)) ->
-     if is_freg x then
-       (Printf.fprintf oc "\taddi\t%%r0 %%r31 %s\n" y;
-        Printf.fprintf oc "\tilw.s\t%%r31 %s 0\n" x)
-     else
-       (Printf.fprintf oc "\taddi\t%%r0 %%r31 %s\n" y;
-        Printf.fprintf oc "\tilw\t%%r31 %s 0\n" x)
+     if is_freg x then Printf.fprintf oc "\tilw.s\t%%r0 %s %s\n" x y
+     else Printf.fprintf oc "\tilw\t%%r0 %s %s\n" x y
+     (* if is_freg x then
+      *   (Printf.fprintf oc "\taddi\t%%r0 %%r31 %s\n" y;
+      *    Printf.fprintf oc "\tilw.s\t%%r31 %s 0\n" x)
+      * else
+      *   (Printf.fprintf oc "\taddi\t%%r0 %%r31 %s\n" y;
+      *    Printf.fprintf oc "\tilw\t%%r31 %s 0\n" x) *)
   | NonTail(x), Mov(y) when x = y -> ()
   | NonTail(x), Mov(y) -> Printf.fprintf oc "\tmov\t%s %s\n" y x
   | NonTail(x), Neg(y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" y x
@@ -191,7 +193,7 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       let ss = stacksize () in
       Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra (ss - 4);
       Printf.fprintf oc "\tlw\t%s %s 0\n" reg_cl reg_sw;
-      Printf.fprintf oc "\taddi\t%s %s %d\t\n" reg_sp reg_sp ss;
+      Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp ss;
       Printf.fprintf oc "\tjalr\t%s\n" reg_sw;
       Printf.fprintf oc "\taddi\t%s %s -%d\n" reg_sp reg_sp ss;
       Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra (ss - 4);

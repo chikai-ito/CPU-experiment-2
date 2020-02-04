@@ -300,6 +300,17 @@ let dfa_of_liveout : block list -> lra_sets_t H.t =
 
 type instr_info_t = { livn : S.t; is_tl : bool }
 
+let print_set set =
+  let list = S.elements set in
+  List.iter (Printf.printf "%s, ") list;
+  print_string "\n"
+
+let print_livenow livenow_tbl =
+  H.iter (fun iid info ->
+      Printf.printf "%s : " iid;
+      print_set info.livn) livenow_tbl;
+  print_string "\n"
+
 (* functions to compute livenow of the instructions *)
 let lookup_livenow : instr_info_t H.t -> Id.t -> S.t =
   fun livenow_tbl iid ->
@@ -337,7 +348,10 @@ let set_livenow_at_instr : instr_info_t H.t -> S.t -> Cfg.instr -> S.t =
   (* １つ上の時点でのlivenow集合を返す *)
   fun livenow_tbl livenow instr ->
   assert (not (H.mem livenow_tbl instr.instr_id));
+  (* let defs, uses = defs_uses_of_instr instr in *)
+  (* let livenow = S.diff livenow (S.of_list defs) in *)
   H.add livenow_tbl instr.instr_id { livn = livenow; is_tl = false };
+  (* (S.union (S.of_list uses) livenow) *)
   compute_livenow livenow instr
 
 let build_livenow_tbl_of_block : lra_sets_t H.t -> instr_info_t H.t ->
@@ -368,3 +382,4 @@ let build_livenow_tbl_of_blocks : lra_sets_t H.t -> block list -> instr_info_t H
   List.iter
     (build_livenow_tbl_of_block lra_tbl livenow_tbl) blocks;
   livenow_tbl
+
