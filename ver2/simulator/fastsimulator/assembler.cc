@@ -540,6 +540,70 @@ string assemble (string line, int option, int line_num){
     }
     return_code = "100111" + base_s + ft_s + offset_s;
   }
+  else if (opcode == "isw"){
+    string base;
+    string rt;
+    string offset;
+    s >> base >> rt >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!intreg_check(rt)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< rt <<" "<< offset << endl;
+    }
+    string base_s = decimal_to_binary(atoi(base.substr(2,base.length()-2).c_str()),5);
+    string rt_s = decimal_to_binary(atoi(rt.substr(2,rt.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "110111" + base_s + rt_s + offset_s;
+  }
+  else if (opcode == "isw.s"){
+    string base;
+    string ft;
+    string offset;
+    s >> base >> ft >> offset;
+    if (!intreg_check(base)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
+    if (!floatreg_check(ft)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
+    if (!immediate_check(offset)){
+      cout << "something wrong with the instruction " << opcode << endl;
+      cout << "line number is near " << line_num << endl;
+      cout << opcode <<" "<< base <<" "<< ft <<" "<< offset << endl;
+    }
+    string base_s = decimal_to_binary(atoi(base.substr(2,base.length()-2).c_str()),5);
+    string ft_s = decimal_to_binary(atoi(ft.substr(2,ft.length()-2).c_str()),5);
+    int offset_int = atoi(offset.c_str());
+    string offset_s;
+    if(offset_int < 0){
+      offset_int = offset_int + power(2,15);
+      offset_s = "1" + decimal_to_binary(atoi(offset.c_str()),15);
+    }else{
+      offset_s = "0" + decimal_to_binary(atoi(offset.c_str()),15);
+    }
+    return_code = "111011" + base_s + ft_s + offset_s;
+  }
   else if (opcode == "in"){
     string rs;
     s >> rs;
