@@ -28,6 +28,8 @@ val dfa_of_liveout : block list -> lra_sets_t H.t
 
 type instr_info_t = { livn : S.t; is_tl : bool }
 
+val print_livenow : instr_info_t H.t -> unit
+
 val lookup_livenow : instr_info_t H.t -> Id.t -> S.t
 
 val lookup_is_tail : instr_info_t H.t -> Id.t -> bool

@@ -1,6 +1,5 @@
 open Enums
-(* type id_or_imm = V of Id.t | C of int *)
-(* type data_t = I of int | F of float *)
+
 type code_t = instr list (* 単純命令のリストとしてブロック中の命令列を表現 *)
 and instr = { instr_id : Id.t; op : op_t}
 and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
@@ -9,7 +8,7 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | Set of (Id.t * Type.t) * int
   | SetL of (Id.t * Type.t) * Id.l
   | ILd of (Id.t * Type.t) * Id.l
-  | Mov of (Id.t * Type.t) * Id.t
+  | Mov of (Id.t * Type.t) * Id.t       
   | Neg of (Id.t * Type.t) * Id.t
   | Itof of (Id.t * Type.t) * Id.t
   | In of (Id.t * Type.t)
@@ -117,17 +116,31 @@ let rename_equiv_ids equiv_ids x =
   | _ -> assert false
             
 let dummy_block = { label = L("0"); l_dep = 0; code = []; prev = []; next = End(false) } (*  領域を確保するためのダミーブロック *)
+
+
+let insert_moves yzts =
+  List.fold_right
+    (fun (y, z, t) (yzs', substs) ->
+      let z' = Id.genid y in
+      ((y, z') :: yzs', (new_instr (Mov((z', t), z))) :: substs))
+    yzts ([], [])
+                
             
 (* 末尾の単純命令が束縛変数の名前変えを担当する *)
 (* 末尾はブロックを生成する *)
 let tail_simple_exp_to_flow : (Id.t * Type.t) -> Asm2.exp -> flow_t =
   fun (x, t) ->
   function (* nontail_simple_instrと異なり, 返り値はinstr list型 *)
-  | Asm2.Jump(yzs, l) ->
+  | Asm2.Jump(yzts, l) ->
+     (* JumpはMov命令+ブロックのjump backフローになる *)
+     let yzs', moves = insert_moves yzts in
      let l' = Id.genid "tail_b" in
-     let new_equiv_ids = List.fold_right (fun (y, z) acc -> (y, [(z, Id.L(l'))]) :: acc) yzs [] in
+     let new_equiv_ids = List.fold_right
+                           (fun (y, z) acc -> (y, [(z, Id.L(l'))]) :: acc)
+                           yzs' [] in
      let new_bref = ref dummy_block in
-     let new_b = { label = Id.L(l'); l_dep = !loop_depth; code = []; prev = []; next = Back(l, new_bref) } in
+     let new_b = { label = Id.L(l'); l_dep = !loop_depth;
+                   code = moves; prev = []; next = Back(l, new_bref) } in
      { b = new_b; bref = new_bref; equiv_ids = new_equiv_ids }
   | e ->
      let x' = Id.genid x in (* ここで末端の束縛変数をrenamesする -> 合流の時にphiで繋ぐ *)
@@ -135,17 +148,14 @@ let tail_simple_exp_to_flow : (Id.t * Type.t) -> Asm2.exp -> flow_t =
      let new_equiv_ids = [(x, [(x', Id.L(l))])] in (* rename前, rename後 *)
      let new_bref = ref dummy_block in
      let instr = nontail_simple_instr (x', t) e in
-     let new_b = { label = Id.L(l); l_dep = !loop_depth; code = [instr]; prev = []; next = Cnfl(new_bref) } in
+     let new_b = { label = Id.L(l); l_dep = !loop_depth;
+                   code = [instr]; prev = []; next = Cnfl(new_bref) } in
      { b = new_b; bref = new_bref; equiv_ids = new_equiv_ids }
 
 let minimize_phi = function (* phi命令の引数を必要最小限にする *)
   | Phi((x, t), yls) ->
      let yls' =  List.find_all (fun (y, _) -> y <> x) yls in
      Phi((x, t), yls') (* ここで，yls'の長さが2以上である時は，ループ中での代入が起こるのでsave, restoreが必要 *)
-     (* (match yls' with
-      *  | [] -> [] (\* 流れのない時はphi命令を削除 *\)
-      *  | [(y, _)] -> [new_instr (Mov((x, t), y))] (\* phiの引数が１つしかないということは上からの代入文 *\)
-      *  | _ -> [new_instr (Phi((x, t), yls'))]) *)
   | _ -> assert false
 
 let eliminate_phi = function (* 不必要なphi命令を削除する *)
@@ -292,11 +302,6 @@ let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm2.t -> block * flow_t li
      let cnfls, backs = flow_classify bts in
      assert (backs = []); (* 上がってくるbacksは全てloop_routine内で処理しているはずである *)
      (* 他のループのbackが帰ってくることがないことを保証したループ化を行なっている *)
-     (* let bh', bts' = make_cfg cnfls xt e in
-      * let equiv_ids = cnfl_return_equiv_ids cnfls in
-      * let phi = phi_cnfl_if yt equiv_ids in
-      * bh'.code <- phi @ bh'.code; (\* ループの直後に合流のphiとrestoreを挿入 *\)
-      * bh, bts' *)
      let bh', bts' = make_cfg cnfls xt e in
      let equiv_ids = cnfl_return_equiv_ids cnfls in
      let phi = phi_cnfl_if yt equiv_ids in

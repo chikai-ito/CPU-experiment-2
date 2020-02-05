@@ -91,17 +91,9 @@ let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing
       r2 := Some(t1)
   | _, _ -> raise (Unify(t1, t2))
 
-(* let const_typing = function
- *   | Unit -> Type.Unit
- *   | Bool _ -> Type.Bool
- *   | Int _ -> Type.Int
- *   | Float _ -> Type.Bool
- *   | _ -> assert false (\* 型チェックの段階ではまだdata_arrayは出てこない *\) *)
-
 let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
   try
     match e with
-    (* | Const(c) -> const_typing c *)
     | Unit -> Type.Unit
     | Bool(_) -> Type.Bool
     | Int(_) -> Type.Int

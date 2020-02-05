@@ -1,20 +1,18 @@
-(* DArrayの中身でconstFoldするのは絶対にダメ *)
-
 open KNormal
 open Enums
 
 let memi x env =
-  try (match M.find x env with Const(Int(_)) -> true | _ -> false)
+  try (match M.find x env with Int(_) -> true | _ -> false)
   with Not_found -> false
 let memf x env =
-  try (match M.find x env with Const(Float(_)) -> true | _ -> false)
+  try (match M.find x env with Float(_) -> true | _ -> false)
   with Not_found -> false
 let memt x env =
-  try (match M.find x env with Const(Tuple(_)) -> true | _ -> false)
+  try (match M.find x env with Tuple(_) -> true | _ -> false)
   with Not_found -> false
 
-let findi x env = (match M.find x env with Const(Int(i)) -> i | _ -> raise Not_found)
-let findf x env = (match M.find x env with Const(Float(f)) -> f | _ -> raise Not_found)
+let findi x env = (match M.find x env with Int(i) -> i | _ -> raise Not_found)
+let findf x env = (match M.find x env with Float(f) -> f | _ -> raise Not_found)
 let findt x env = (match M.find x env with Tuple(ys) -> ys | _ -> raise Not_found)
 
 let cmp_fold cmp x y e1 e2 =
@@ -41,11 +39,11 @@ let rec g env = function (* 定数畳み込みルーチン本体 (caml2html: constfold_g) *)
   | If(cmp,x,y,e1,e2) when memi x env && memi y env ->
      let valx = findi x env in
      let valy = findi y env in
-     cmp_fold cmp valx valy (g env e1) (g env e2)
-  | If(cmp,x,y,e1,e2) when memf x env && memf y env ->
+     cmp_fold cmp valx valy e1 e2
+  | If(cmp,x,y,e1,e2) when memf x env && memi y env ->
      let valx = findf x env in
      let valy = findf y env in
-     cmp_fold cmp valx valy (g env e1) (g env e2)
+     cmp_fold cmp valx valy e1 e2
   | If(cmp,x,y,e1,e2) -> If(cmp,x,y, g env e1, g env e2)
   | Let((x, t), e1, e2) -> (* letのケース (caml2html: constfold_let) *)
       let e1' = g env e1 in
@@ -54,7 +52,6 @@ let rec g env = function (* 定数畳み込みルーチン本体 (caml2html: constfold_g) *)
   | LetRec({ name = x; args = ys; body = e1 }, e2) ->
       LetRec({ name = x; args = ys; body = g env e1 }, g env e2)
   | LetTuple(xts, y, e) when memt y env ->
-     (* これは要するに無駄なロード命令をなくすということ *)
       List.fold_left2
         (fun e' xt z -> Let(xt, Var(z), e'))
         (g env e)

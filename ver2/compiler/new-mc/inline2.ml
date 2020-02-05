@@ -1,7 +1,6 @@
-(* 再帰関数を展開しないようにしたinline化 *)
 open KNormal
 
-let threshold = ref 100
+let threshold = ref 30
 let unlimited = ref true
 
 let rec size = function
@@ -33,7 +32,8 @@ let rec inline2 fnlist = function
      let (x,_) = fd.name in
      let fnlist =
        if not (is_recfun fd)
-          && ((size fd.body) <= !threshold || !unlimited) then
+          && ((size fd.body) <= !threshold
+              || !unlimited) then
          M.add x fd fnlist
        else
          fnlist in

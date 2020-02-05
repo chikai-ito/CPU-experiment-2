@@ -45,7 +45,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t (* ブロックを生成 *)
   (* Loopには変数定義の機能がある!! *)
   (* レジスタ割り付けなどでこれを考慮することを忘れない!! *)
-  | Jump of (Id.t * Id.t) list * Id.l (* JumpとSubstを統合した *)
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l (* JumpとSubstを統合した *)
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list (* これはブロック内でどういう命令なのか *)
   | CallDir of Id.l * Id.t list * Id.t list
@@ -104,8 +104,10 @@ let rec fv_exp = function
   | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2)
     -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
   | Loop(_,yts,zs,e) -> zs @ remove_and_uniq (S.of_list (List.map fst yts)) (fv e)
-  | Jump(yzs,_) -> remove_and_uniq S.empty
-                     (List.fold_right (fun (y,z) acc -> z :: y :: acc) yzs [])
+  | Jump(yzts,_) -> remove_and_uniq S.empty
+                      (List.fold_right
+                         (fun (y, z, t) acc -> z :: y :: acc)
+                         yzts [])
   | CallCls(x, ys, zs) -> x :: ys @ zs
   | CallDir(_, ys, zs) -> ys @ zs
 and fv = function

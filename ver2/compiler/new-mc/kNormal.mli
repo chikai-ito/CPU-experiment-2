@@ -1,6 +1,8 @@
 open Enums
 type t =
-  | Const of const
+  | Unit
+  | Int of int
+  | Float of float
   | Neg of Id.t
   | Itof of Id.t
   | In of Id.t
@@ -29,8 +31,6 @@ type t =
   | Put of Id.t * Id.t * Id.t
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
-and const = Unit | Bool of bool | Int of int | Float of float
-and darray = CArr of int * const | AArr of int * darray
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 val print_kNormal : t -> unit

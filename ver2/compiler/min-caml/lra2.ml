@@ -180,25 +180,38 @@ let add_interf_of_block :
   List.iter
     (add_interf_of_instr graph livenow_tbl lr_tp_tbl)
     block.code
-  
+
+let print_option = ref false
     
 let build_igraph : Cfg.block list ->
                    Igraph.inter_graph * instr_info_t H.t * lr_stat_tbl_t =
   (* 副作用としてblock各命令の変数たちがLRに書き換わる *)
   fun blocks ->
-  List.iter Cfg_db.print_block blocks;
+  (if !print_option then
+    (Printf.printf "------------------------------------------\n\n";
+     List.iter Cfg_db.print_block blocks;
+     Printf.printf "------------------------------------------\n\n"));
   let lrtbl, idset, lrset = Lra.blocklist_to_lrtbl blocks in
   (* print_lr_tbl lrtbl; *)
   let lr_tp_tbl = cfg_replace_with_lr lrtbl blocks in (* ここで変数がLRに書き換わる *)
-  Format.eprintf "replaced variables with live ranges@.";
-  List.iter Cfg_db.print_block blocks;
+  (if !print_option then
+     (Format.eprintf "replaced variables with live ranges@.";
+      Printf.printf "-------------------------------------------\n\n";
+      List.iter Cfg_db.print_block blocks;
+      Printf.printf "-------------------------------------------\n\n"));
   let stat_tbl = make_stat_tbl blocks in
   Format.eprintf "collected statuses of live rages@.";
   let lra_sets =  dfa_of_liveout blocks in
   Format.eprintf "completed dfa of liveout@.";
   let livenow_tbl = build_livenow_tbl_of_blocks lra_sets blocks in
-  (* print_livenow livenow_tbl; *)
+  (if !print_option then
+     print_livenow livenow_tbl);
   Format.eprintf "completed computation of livenow@.";
+  Cfg_elim.elim_save livenow_tbl blocks;
+  (if !print_option then
+     (Printf.printf "-------------------------------------------\n\n";
+      List.iter Cfg_db.print_block blocks;
+      Printf.printf "-------------------------------------------\n\n"));
   let igraph = create_graph ((List.length blocks) * 100) in
   Format.eprintf "constructed a interference graph@.";
   List.iter (add_interf_of_block igraph livenow_tbl lr_tp_tbl) blocks;

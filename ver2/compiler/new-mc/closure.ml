@@ -1,11 +1,9 @@
 open Enums
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
-  | Const of const
-  | DArray of darray
-  (* | Unit
-   * | Int of int
-   * | Float of float *)
+  | Unit
+  | Int of int
+  | Float of float
   | Neg of Id.t
   | Itof of Id.t
   | In of Id.t
@@ -32,12 +30,8 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Tuple of Id.t list
   | LetTuple of (Id.t * Type.t) list * Id.t * t
   | Get of Id.t * Id.t
-  | DGet of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
-  | DPut of Id.l * Id.t * Id.t
   | ExtArray of Id.l
-and const = Unit | Int of int | Float of float
-and darray = CArr of Id.t * int * const | AArr of Id.l of int * darray
 type fundef = { name : Id.l * Type.t;
                 args : (Id.t * Type.t) list;
                 formal_fv : (Id.t * Type.t) list;
@@ -45,12 +39,12 @@ type fundef = { name : Id.l * Type.t;
 type prog = Prog of fundef list * t
 
 let rec fv = function
-  | Const _ | DArray _ | ExtArray(_) -> S.empty
-  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | DGet(x)
+  | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
+  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x)
     | FNeg(x) | Ftoi(x) | Floor(x) | FSqrt(x) -> S.singleton x
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) 
-    | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y)
-    | Get(x, y) | DPut(_, x, y) -> S.of_list [x; y]
+    | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y)
+    -> S.of_list [x; y]
   | If(_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x, t), e1, e2) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x) -> S.singleton x
@@ -63,21 +57,10 @@ let rec fv = function
 
 let toplevel : fundef list ref = ref []
 
-let g_const = function
+let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
   | KNormal.Unit -> Unit
   | KNormal.Int(i) -> Int(i)
   | KNormal.Float(f) -> Float(f)
-
-let rec g_darray = function
-  | KNormal.CArr(l, n, cns) -> CArr(l, n, g_const cns)
-  | KNormal.AArr(l, n, da) -> AArr(l, n, g_darray da)
-                      
-let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
-  | KNormal.Const(cns) -> Const(g_const cns)
-  (* | KNormal.Unit -> Unit
-   * | KNormal.Int(i) -> Int(i)
-   * | KNormal.Float(f) -> Float(f) *)
-  | KNormal.DArray(da) -> DArray(g_darray da)
   | KNormal.Neg(x) -> Neg(x)
   | KNormal.Itof(x) -> Itof(x)
   | KNormal.In(x) -> In(x)
@@ -138,9 +121,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.Tuple(xs) -> Tuple(xs)
   | KNormal.LetTuple(xts, y, e) -> LetTuple(xts, y, g (M.add_list xts env) known e)
   | KNormal.Get(x, y) -> Get(x, y)
-  | KNormal.DGet(l, y) -> DGet(l, y)
   | KNormal.Put(x, y, z) -> Put(x, y, z)
-  | KNormal.DPut(l, y, z) -> DPut(l, y, z)
   | KNormal.ExtArray(x) -> ExtArray(Id.L(x))
   | KNormal.ExtFunApp(x, ys) -> AppDir(Id.L("min_caml_" ^ x), ys)
 

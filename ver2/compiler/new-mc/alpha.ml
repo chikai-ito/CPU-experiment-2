@@ -5,11 +5,9 @@ open KNormal
 let find x env = try M.find x env with Not_found -> x
 
 let rec g env = function (* α変換ルーチン本体 (caml2html: alpha_g) *)
-  | Const(c) -> Const(c)
-  | DArray(da) -> DArray(da)
-  (* | Unit -> Unit
-   * | Int(i) -> Int(i)
-   * | Float(d) -> Float(d) *)
+  | Unit -> Unit
+  | Int(i) -> Int(i)
+  | Float(d) -> Float(d)
   | Neg(x) -> Neg(find x env)
   | Itof(x) -> Itof(find x env)
   | In(x) -> In(find x env)
@@ -50,8 +48,6 @@ let rec g env = function (* α変換ルーチン本体 (caml2html: alpha_g) *)
                g env' e)
   | Get(x, y) -> Get(find x env, find y env)
   | Put(x, y, z) -> Put(find x env, find y env, find z env)
-  | DGet(l, y) -> Get(l, find y env)
-  | DPut(l, y, z) -> Put(l, find y env, find z env)
   | ExtArray(x) -> ExtArray(x)
   | ExtFunApp(x, ys) -> ExtFunApp(x, List.map (fun y -> find y env) ys)
 

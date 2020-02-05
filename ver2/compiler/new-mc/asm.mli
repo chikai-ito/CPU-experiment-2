@@ -8,6 +8,7 @@ and exp =
   | Nop
   | Set of int
   | SetL of Id.l
+  | ILd of Id.l
   | Mov of Id.t
   | Neg of Id.t
   | Itof of Id.t
@@ -21,9 +22,8 @@ and exp =
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
   | SLLI of Id.t * int
-  | Ld of mem * Id.t * id_or_imm
-  (* | ILd of Id.t * id_or_imm *)
-  | St of mem * Id.t * Id.t * id_or_imm
+  | Ld of Id.t * id_or_imm
+  | St of Id.t * Id.t * id_or_imm
   | FMov of Id.t
   | Ftoi of Id.t
   | FNeg of Id.t
@@ -33,9 +33,8 @@ and exp =
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
-  | LdF of mem * Id.t * id_or_imm
-  (* | ILdF of Id.t * id_or_imm *)
-  | StF of mem * Id.t * Id.t * id_or_imm
+  | LdF of Id.t * id_or_imm
+  | StF of Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t
@@ -62,6 +61,7 @@ val reg_ra : Id.t
 val reg_hp : Id.t
 val reg_sp : Id.t
 val is_reg : Id.t -> bool
+val is_freg : Id.t -> bool
 (* val co_freg : Id.t -> Id.t *)
 
 val fv : t -> Id.t list

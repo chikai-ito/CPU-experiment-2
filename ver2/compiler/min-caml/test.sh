@@ -2,7 +2,25 @@
 
 cp ./test/$1.s ../../simulator/simulator/test/$1.s
 
-cat ./input.txt > ../../simulator/simulator/input.txt
+INPUT=FALSE
+
+while :
+do
+    case $1 in
+	-i) INPUT=TRUE
+	     shift
+	     ;;
+	--) shift
+	    break
+	    ;;
+	*) break
+	   ;;
+    esac
+done
+
+if [ "$INPUT" = "TRUE" ]; then
+    cat ./input.txt > ../../simulator/simulator/input.txt
+fi
 
 cd ../../simulator/simulator
 rm ./result.bin

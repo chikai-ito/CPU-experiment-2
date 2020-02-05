@@ -76,32 +76,6 @@ let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
     allocated := lr :: !allocated
   done
 
-
-(* 干渉グラフをSpillによって彩色可能なものにする
- * 削除したnodeはregtblにSpillとして記録する
- * spill_rank_listの順序を調節してspill strategyを変更する *)
-(* let rec spill_lr : alloc_tbl_t -> inter_graph -> (liverange * Type.t) list ->
- *                    int -> int -> (liverange * Type.t) Stack.t =
- *   fun regtbl graph spill_rank_list imax fmax ->
- *   try
- *     color_graph graph imax fmax
- *   with
- *     Not_colorable ->
- *     (assert (not (spill_rank_list = []));
- *      let lr, tp = List.hd spill_rank_list in
- *      Format.eprintf "spill live range : %s@." lr;
- *      add_spill regtbl (lr,tp);
- *      delete_node graph lr;
- *      spill_lr regtbl graph (List.tl spill_rank_list) imax fmax) *)
-     (* let rf = ref spill_rank_list in
-      * for i = 1 to 10 do
-      *   let lr, tp = List.hd !rf in
-      *    Format.eprintf "spill live range : %s@." lr;
-      *    add_spill regtbl lr tp;
-      *    delete_node graph lr;
-      *    rf := List.tl !rf
-      * done;
-      * spill_lr regtbl graph !rf imax fmax *)
      
 let f : lr_stat_tbl_t -> inter_graph -> alloc_tbl_t =
   fun stat_tbl graph ->
@@ -109,6 +83,7 @@ let f : lr_stat_tbl_t -> inter_graph -> alloc_tbl_t =
   let fallregs = Array.to_list Asm2.fregs in
   let regtbl : alloc_tbl_t = H.create graph.size in
   let spill_rank_list =
+    (* spill_rank_listの順番を調節してspill strategyを変更 *)
     List.sort
       (fun (x, _) (y, _) -> compare
                     (compute_score (get_status stat_tbl x))
@@ -119,25 +94,7 @@ let f : lr_stat_tbl_t -> inter_graph -> alloc_tbl_t =
   Format.eprintf "setup completed in RegAlloc.f@.";
   (* let stack = spill_lr regtbl graph spill_rank_list imax fmax in *)
   let stack, spls = color_graph graph imax fmax spill_rank_list in
+  (* spillしたnodeをregtblに記録する *)
   List.iter (add_spill regtbl) spls;
   assign_lr regtbl stat_tbl graph stack allregs fallregs;
   regtbl
-
-
-(* let f : lr_stat_tbl_t -> inter_graph -> alloc_tbl_t =
- *   fun stat_tbl graph ->
- *   let allregs = Array.to_list Asm2.regs in
- *   let fallregs = Array.to_list Asm2.fregs in
- *   let regtbl : alloc_tbl_t = H.create graph.size in
- *   let spill_rank_list =
- *     List.sort
- *       (fun (x, _) (y, _) -> compare
- *                               (get_status stat_tbl x).use_count
- *                               (get_status stat_tbl y).use_count)
- *       (nodes_of_graph graph) in
- *   let imax = List.length allregs in
- *   let fmax = List.length fallregs in
- *   Format.eprintf "setup completed in RegAlloc.f@.";
- *   let stack = spill_lr regtbl graph spill_rank_list imax fmax in
- *   assign_lr regtbl stat_tbl graph stack allregs fallregs;
- *   regtbl *)

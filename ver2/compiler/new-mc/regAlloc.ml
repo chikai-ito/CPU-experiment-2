@@ -119,7 +119,8 @@ and g'_and_restore dest cont regenv exp = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥¯¤«¤é¥ì¥¸¥¹¥
      g dest cont regenv (Let((x, t), Restore(x), Ans(exp))))
 and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_gprime) *)
     (* ¤³¤ì¤é¤ÎÌ¿Îá¤Ï¥ì¥¸¥¹¥¿¤ò»È¤ï¤Ê¤¤ *)
-  | Nop | Set _ | SetL _ | Comment _ | Restore _ as exp -> (Ans(exp), regenv)
+  | Nop | Set _ | SetL _ | Comment _ | Restore _ | ILd _ as exp ->
+     (Ans(exp), regenv)
   | Mov(x) -> (Ans(Mov(find x Type.Int regenv)), regenv)
   | Neg(x) -> (Ans(Neg(find x Type.Int regenv)), regenv)
   | Itof(x) -> (Ans(Itof(find x Type.Int regenv)), regenv)
@@ -135,9 +136,8 @@ and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regal
   | SLL(x,y) -> (Ans(SLL(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | SLLI(x,i) -> (Ans(SLLI(find x Type.Int regenv, i)), regenv)
   (* | SLLI(_,V(_)) -> failwith "in RegAlloc.g': non immediate second argument to SLLI" *)
-  | Ld(mem, x, y') -> (Ans(Ld(mem, find x Type.Int regenv, find' y' regenv)), regenv)
-  (* | ILd(x, y') -> (Ans(ILd(find x Type.Int regenv, find' y' regenv)), regenv) *)
-  | St(mem, x, y, z') -> (Ans(St(mem, find x Type.Int regenv, find y Type.Int regenv, find' z' regenv)), regenv)
+  | Ld(x, y') -> (Ans(Ld(find x Type.Int regenv, find' y' regenv)), regenv)
+  | St(x, y, z') -> (Ans(St(find x Type.Int regenv, find y Type.Int regenv, find' z' regenv)), regenv)
   | FMov(x) -> (Ans(FMov(find x Type.Float regenv)), regenv)
   | FNeg(x) -> (Ans(FNeg(find x Type.Float regenv)), regenv)
   | Ftoi(x) -> (Ans(Ftoi(find x Type.Float regenv)), regenv)
@@ -147,9 +147,8 @@ and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regal
   | FSub(x, y) -> (Ans(FSub(find x Type.Float regenv, find y Type.Float regenv)), regenv)
   | FMul(x, y) -> (Ans(FMul(find x Type.Float regenv, find y Type.Float regenv)), regenv)
   | FDiv(x, y) -> (Ans(FDiv(find x Type.Float regenv, find y Type.Float regenv)), regenv)
-  | LdF(mem, x, y') -> (Ans(LdF(mem, find x Type.Int regenv, find' y' regenv)), regenv)
-  (* | ILdF(x, y') -> (Ans(ILdF(find x Type.Int regenv, find' y' regenv)), regenv) *)
-  | StF(mem, x, y, z') -> (Ans(StF(mem, find x Type.Float regenv, find y Type.Int regenv, find' z' regenv)), regenv)
+  | LdF(x, y') -> (Ans(LdF(find x Type.Int regenv, find' y' regenv)), regenv)
+  | StF(x, y, z') -> (Ans(StF(find x Type.Float regenv, find y Type.Int regenv, find' z' regenv)), regenv)
   | If(cmp,x,y,e1,e2) as exp ->
      g'_if dest cont regenv exp
        (fun e1' e2' -> If(cmp, find x Type.Int regenv, find y Type.Int regenv, e1', e2')) e1 e2

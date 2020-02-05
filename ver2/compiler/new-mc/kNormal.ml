@@ -1,8 +1,9 @@
 (* give names to intermediate values (K-normalization) *)
 open Enums
 type t = (* K正規化後の式 (caml2html: knormal_t) *)
-  | Const of const
-  | DArray of darray
+  | Unit
+  | Int of int
+  | Float of float
   | Neg of Id.t
   | Itof of Id.t
   | In of Id.t
@@ -28,22 +29,18 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Tuple of Id.t list
   | LetTuple of (Id.t * Type.t) list * Id.t * t
   | Get of Id.t * Id.t
-  | DGet of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
-  | DPut of Id.l * Id.t * Id.t
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
-and const = Unit | Int of int | Float of float
-and darray = CArr of Id.l * int * const | AArr Id.l of int * darray
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
-  | Const _ | DArr _ | ExtArray(_) -> S.empty
-  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x)
-    | FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) DGet(_, x) -> S.singleton x
+  | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
+  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) |
+      FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
   | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y)
     | FAdd(x,y) | FSub(x,y) | FMul(x,y) | FDiv(x,y)
-    | Get(x,y) | DPut(_, x, y) -> S.of_list [x;y]
+    | Get(x,y) -> S.of_list [x;y]
   | If (_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x,t),e1,e2) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x) -> S.singleton x
@@ -64,11 +61,11 @@ let insert_let (e, t) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *
       Let((x, t), e, e'), t'
 
 let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
-  | Syntax.Unit -> Const(Unit), Type.Unit
+  | Syntax.Unit -> Unit, Type.Unit
   (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
-  | Syntax.Bool(b) -> Const(Int(if b then 1 else 0)), Type.Int
-  | Syntax.Int(i) -> Const(Int(i)), Type.Int
-  | Syntax.Float(f) -> Const(Float(f)), Type.Float
+  | Syntax.Bool(b) -> Int(if b then 1 else 0), Type.Int
+  | Syntax.Int(i) -> Int(i), Type.Int
+  | Syntax.Float(f) -> Float(f), Type.Float
   | Syntax.Not(e) -> g env (Syntax.If(e, Syntax.Bool(false), Syntax.Bool(true)))
   | Syntax.Neg(e) ->
       insert_let (g env e)
@@ -260,22 +257,13 @@ let rec print_fundef fundef =
   print_kNormal body;
   depth := !depth - 1
 
-and print_const = function
-  | Unit -> Printf.printf "UNIT\n"
-  | Int x -> Printf.printf "INT %d" x
-  | Float x -> Printf.printf "FLOAT %f\n" x
-
-and print_darray = function
-  | CArr (n, c) -> Printf.printf "CArr %d " n;
-                   print_const c
-  | DArr (n, _) -> Printf.printf "DArr %d" n
-
 and print_kNormal =
   fun t ->
     indent !depth;
     match t with
-    | Const (c) -> print_const c
-    | DArr(a) -> print_darray a
+    | Unit -> Printf.printf "Unit\n"
+    | Int x -> Printf.printf "INT %d\n" x
+    | Float x -> Printf.printf "FLOAT %f\n" x
     | Neg id ->
       Printf.printf "NEG ";
       Id.print_id id;
@@ -445,10 +433,6 @@ and print_kNormal =
       Printf.printf " ";
       Id.print_id id3;
       Printf.printf "\n"
-    | DGet _ ->
-       Printf.printf "DGET\n"
-    | DPut _ ->
-       Printf.printf "DPUT\n"
     | ExtArray id ->
       Printf.printf "EXTARRAY ";
       Id.print_id id;
