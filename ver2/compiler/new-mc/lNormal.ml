@@ -35,10 +35,10 @@ type t =
   | Get of Id.t * Id.t
   | Put of Id.t * Id.t * Id.t
   (* Loopの取り扱いはひとまずIfに準じることにする *)
-  (* 型の情報は必要ないはず *)
+(* やっぱり型の情報が必要そう *)
   | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t
   (* ループ前のループ内変数への束縛の情報もデータ型に含めることにした *)
-  | Jump of (Id.t * Id.t) list * Id.l (* 上のJumpとSubstを合わせた *)
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
@@ -133,9 +133,9 @@ let rec subst env lenv = function
      Loop(L(x'), yts', zs', subst env' (M.add x x' lenv) e)
   (* substはlenvを拡張しない *) (* ラベルの発行はloop_inlineの責任 *)
   (* Loop.loop_inlineで埋め込むラベルを新しくlenvに束縛している *)
-  | Jump(yzs, L(x)) -> (* 上の２つの操作を合併 *)
-     let yzs' = List.map (fun (y,z) -> (find y env, find z env)) yzs in
-     Jump(yzs', L(find x lenv))
+  | Jump(yzts, L(x)) -> (* 上の２つの操作を合併 *)
+     let yzts' = List.map (fun (y, z, t) -> (find y env, find z env, t)) yzts in
+     Jump(yzts', L(find x lenv))
   | ExtArray(x) -> ExtArray(x)
   | ExtFunApp(x, ys) -> ExtFunApp(x, List.map (fun y -> find y env) ys)
 

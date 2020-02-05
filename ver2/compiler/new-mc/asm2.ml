@@ -11,6 +11,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | Nop
   | Set of int
   | SetL of Id.l
+  | ILd of Id.l
   | Mov of Id.t
   | Neg of Id.t
   | Itof of Id.t
@@ -24,8 +25,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
   | SLLI of Id.t * int
-  | Ld of mem * Id.t * id_or_imm
-  | St of mem * Id.t * Id.t * id_or_imm
+  | Ld of Id.t * id_or_imm
+  | St of Id.t * Id.t * id_or_imm
   | FMov of Id.t
   | Ftoi of Id.t
   | FNeg of Id.t
@@ -35,8 +36,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t  
-  | LdF of mem * Id.t * id_or_imm
-  | StF of mem * Id.t * Id.t * id_or_imm
+  | LdF of Id.t * id_or_imm
+  | StF of Id.t * Id.t * id_or_imm
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t (* これはブロックを生成する必要がある *)
@@ -44,7 +45,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
   | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t (* ブロックを生成 *)
   (* Loopには変数定義の機能がある!! *)
   (* レジスタ割り付けなどでこれを考慮することを忘れない!! *)
-  | Jump of (Id.t * Id.t) list * Id.l (* JumpとSubstを統合した *)
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l (* JumpとSubstを統合した *)
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list (* これはブロック内でどういう命令なのか *)
   | CallDir of Id.l * Id.t list * Id.t list
@@ -93,27 +94,26 @@ let rec remove_and_uniq xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
-  | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) (* | Jump(_) (* diff *) *) -> []
+  | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) | ILd _ -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
     | FSqrt(x) | Floor(x) | Save(x) | AddI(x,_) | SLLI(x,_) -> [x]
-  | Ld(_, x, y') | LdF(_, x, y') (*| ILd(x,y') | ILdF(x,y')*) -> x :: fv_id_or_imm y'
-    (* | AddI(x,y') | SLLI(x,y')  *)
-  | St(_, x, y, z') | StF(_, x, y, z') -> x :: y :: fv_id_or_imm z'
+  | Ld(x, y') | LdF(x, y') -> x :: fv_id_or_imm y'
+  | St(x, y, z') | StF(x, y, z') -> x :: y :: fv_id_or_imm z'
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
   | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2)
     -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  (* | Loop(_,e) -> remove_and_uniq S.empty (fv e) (\* diff *\) *)
   | Loop(_,yts,zs,e) -> zs @ remove_and_uniq (S.of_list (List.map fst yts)) (fv e)
-  | Jump(yzs,_) -> remove_and_uniq S.empty
-                     (List.fold_right (fun (y,z) acc -> z :: y :: acc) yzs [])
+  | Jump(yzts,_) -> remove_and_uniq S.empty
+                      (List.fold_right
+                         (fun (y, z, t) acc -> z :: y :: acc)
+                         yzts [])
   | CallCls(x, ys, zs) -> x :: ys @ zs
   | CallDir(_, ys, zs) -> ys @ zs
 and fv = function
   | Ans(exp) -> fv_exp exp
   | Let((x, t), exp, e) ->
      fv_exp exp @ remove_and_uniq (S.singleton x) (fv e)
-(* | Subst(x,exp,e) -> fv_exp exp @ remove_and_uniq S.empty (x :: fv e) *)
 let fv e = remove_and_uniq S.empty (fv e)
 
 (* e1の最後のAnsをxtに束縛してe2を実行するプログラムに変換 *)

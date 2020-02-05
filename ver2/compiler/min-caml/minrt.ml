@@ -2566,6 +2566,6 @@ let rec rt size_x size_y =
 in
 
 let _ =
-  rt 128 128
+  rt 512 512
 
 in 0

@@ -52,17 +52,18 @@ let rec convertible x = function
 (* i.e., replace App(x,zs) with a jump back to the starting point *)
 (* i.e., insertion of Jump in the place where App was *)
 (* l = fundef.name, ys = List.map fst fundef.args *)
-let rec loop_conv l ys = function
+let rec loop_conv l yts = function
   | If(cmp, x, y, e1, e2) ->
-     If(cmp, x, y, loop_conv l ys e1, loop_conv l ys e2)
-  | Let(xt, e1, e2) -> Let(xt, e1, loop_conv l ys e2) (* e1中には自身の呼び出しはない *)
-  | LetRec({ name = xt; args = yts; body = e1 }, e2) ->
+     If(cmp, x, y, loop_conv l yts e1, loop_conv l yts e2)
+  | Let(xt, e1, e2) -> Let(xt, e1, loop_conv l yts e2) (* e1中には自身の呼び出しはない *)
+  | LetRec({ name = xt; args = yts'; body = e1 }, e2) ->
      (* Letの場合と同様に，e1中には自身の呼び出しはない *)
-     LetRec({ name = xt; args = yts; body = e1 }, loop_conv l ys e2)
+     LetRec({ name = xt; args = yts'; body = e1 }, loop_conv l yts e2)
   | App(x, zs) when x = l -> (* 自身の末尾呼び出しの時 *)
-     let yzs = List.fold_right2 (fun y z acc -> (y,z)::acc) ys zs [] in
-     Jump(yzs, L(l)) (* スタート地点へのjump back *)
-  | LetTuple(xts, y, e) -> LetTuple(xts, y, loop_conv l ys e)
+     let yzts = List.fold_right2 (fun (y, t) z acc -> (y, z, t) :: acc)
+                  yts zs [] in
+     Jump(yzts, L(l)) (* スタート地点へのjump back *)
+  | LetTuple(xts, y, e) -> LetTuple(xts, y, loop_conv l yts e)
   | e -> e (* Loop中には自身の末尾呼び出しはないと仮定してよい *)
 (* 上の場合には自分自身以外の関数呼び出しも含まれる *)
        
@@ -115,7 +116,7 @@ let rec f = function
             || !unlimited) then
        (Format.eprintf "convert function %s into a loop@." x;
         let ys' = List.map (fun (y,t) -> Id.genid y) yts in (* 変数束縛のためのプレースホルダ *)
-        let loop = Loop(L(x), yts, ys', loop_conv x (List.map fst yts) e1') in
+        let loop = Loop(L(x), yts, ys', loop_conv x yts e1') in
         f (loop_inline loop e2))
      else
         LetRec({ name = (x,t); args = yts; body = e1' }, f e2)

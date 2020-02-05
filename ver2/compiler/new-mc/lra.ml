@@ -77,6 +77,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Nop -> idset
   | Set((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SetL((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | ILd((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Mov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Neg((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Itof((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -90,7 +91,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Div((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | Ld((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | Ld((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | St _ -> idset
   | FMov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ftoi((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -101,7 +102,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | FSub((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | FMul((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | FDiv((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | LdF((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | LdF((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | StF _ -> idset
   | CallCls((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | CallDir((x, t), _, _, _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -154,11 +155,12 @@ let blocklist_to_lrtbl : Cfg.block list -> lr_info H.t * S.t * S.t =
 let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   fun instr ->
   match instr.op with
-  | Phi ((x, t), yls) ->
-     let ys = List.map fst yls in [x], ys
+  | Phi ((x, t), yls) -> [x], [] (* これが正解? *)
+     (* let ys = List.map fst yls in [x], ys *)
   | Nop -> [], []
   | Set((x, t), i) -> [x], []
   | SetL((x, t), l) -> [x], []
+  | ILd((x, t), l) -> [x], []
   | Mov((x, t), y) -> [x], [y]
   | Neg((x, t), y) -> [x], [y]
   | Itof((x, t), y) -> [x], [y]
@@ -172,10 +174,10 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Div((x, t), y, z) -> [x], [y; z]
   | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
-  | Ld((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
-  | Ld((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | St(mem, y, z, Asm2.V(w)) -> [], [y; z; w]
-  | St(mem, y, z, Asm2.C(i)) -> [], [y; z]
+  | Ld((x, t), y, Asm2.V(z)) -> [x], [y; z]
+  | Ld((x, t), y, Asm2.C(i)) -> [x], [y]
+  | St(y, z, Asm2.V(w)) -> [], [y; z; w]
+  | St(y, z, Asm2.C(i)) -> [], [y; z]
   | FMov((x, t), y) -> [x], [y]
   | Ftoi((x, t), y) -> [x], [y]
   | FNeg((x, t), y) -> [x], [y]
@@ -185,16 +187,16 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | FSub((x, t), y, z) -> [x], [y; z]
   | FMul((x, t), y, z) -> [x], [y; z]
   | FDiv((x, t), y, z) -> [x], [y; z]
-  | LdF((x, t), mem, y, Asm2.V(z)) -> [x], [y; z]
-  | LdF((x, t), mem, y, Asm2.C(i)) -> [x], [y]
-  | StF(mem, y, z, Asm2.V(w)) -> [], [y; z; w]
-  | StF(mem, y, z, Asm2.C(i)) -> [], [y; z]
+  | LdF((x, t), y, Asm2.V(z)) -> [x], [y; z]
+  | LdF((x, t), y, Asm2.C(i)) -> [x], [y]
+  | StF(y, z, Asm2.V(w)) -> [], [y; z; w]
+  | StF(y, z, Asm2.C(i)) -> [], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(l, xs, ys) -> (l :: (xs @ ys)), []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
-  | Save(x) -> [], [x]
-  | Restore(x) -> [], [x]
+  | Save(x) -> [], []
+  | Restore(x) -> [], []
 
 let uses_of_branch : block -> Id.t list =
   fun block ->
@@ -298,6 +300,17 @@ let dfa_of_liveout : block list -> lra_sets_t H.t =
 
 type instr_info_t = { livn : S.t; is_tl : bool }
 
+let print_set set =
+  let list = S.elements set in
+  List.iter (Printf.printf "%s, ") list;
+  print_string "\n"
+
+let print_livenow livenow_tbl =
+  H.iter (fun iid info ->
+      Printf.printf "%s : " iid;
+      print_set info.livn) livenow_tbl;
+  print_string "\n"
+
 (* functions to compute livenow of the instructions *)
 let lookup_livenow : instr_info_t H.t -> Id.t -> S.t =
   fun livenow_tbl iid ->
@@ -335,7 +348,10 @@ let set_livenow_at_instr : instr_info_t H.t -> S.t -> Cfg.instr -> S.t =
   (* １つ上の時点でのlivenow集合を返す *)
   fun livenow_tbl livenow instr ->
   assert (not (H.mem livenow_tbl instr.instr_id));
+  (* let defs, uses = defs_uses_of_instr instr in *)
+  (* let livenow = S.diff livenow (S.of_list defs) in *)
   H.add livenow_tbl instr.instr_id { livn = livenow; is_tl = false };
+  (* (S.union (S.of_list uses) livenow) *)
   compute_livenow livenow instr
 
 let build_livenow_tbl_of_block : lra_sets_t H.t -> instr_info_t H.t ->
@@ -366,3 +382,4 @@ let build_livenow_tbl_of_blocks : lra_sets_t H.t -> block list -> instr_info_t H
   List.iter
     (build_livenow_tbl_of_block lra_tbl livenow_tbl) blocks;
   livenow_tbl
+

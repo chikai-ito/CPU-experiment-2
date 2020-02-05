@@ -7,6 +7,7 @@ and op_t =
   | Nop
   | Set of (Id.t * Type.t) * int
   | SetL of (Id.t * Type.t) * Id.l
+  | ILd of (Id.t * Type.t) * Id.l
   | Mov of (Id.t * Type.t) * Id.t
   | Neg of (Id.t * Type.t) * Id.t
   | Itof of (Id.t * Type.t) * Id.t
@@ -20,8 +21,8 @@ and op_t =
   | Div of (Id.t * Type.t) * Id.t * Id.t
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
-  | Ld of (Id.t * Type.t) * mem * Id.t * Asm2.id_or_imm
-  | St of mem * Id.t * Id.t * Asm2.id_or_imm
+  | Ld of (Id.t * Type.t) * Id.t * Asm2.id_or_imm
+  | St of Id.t * Id.t * Asm2.id_or_imm
   | FMov of (Id.t * Type.t) * Id.t
   | Ftoi of (Id.t * Type.t) * Id.t
   | FNeg of (Id.t * Type.t) * Id.t
@@ -31,8 +32,8 @@ and op_t =
   | FSub of (Id.t * Type.t) * Id.t * Id.t
   | FMul of (Id.t * Type.t) * Id.t * Id.t
   | FDiv of (Id.t * Type.t) * Id.t * Id.t
-  | LdF of (Id.t * Type.t) * mem * Id.t * Asm2.id_or_imm
-  | StF of mem * Id.t * Id.t * Asm2.id_or_imm
+  | LdF of (Id.t * Type.t) * Id.t * Asm2.id_or_imm
+  | StF of Id.t * Id.t * Asm2.id_or_imm
   | CallCls of (Id.t * Type.t) * Id.t * Id.t list * Id.t list
   | CallDir of (Id.t * Type.t) * Id.l * Id.t list * Id.t list
   | Entry of Id.t * Id.t list * Id.t list

@@ -189,7 +189,7 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: vir
       | _ -> assert false)
   | Closure2.Loop(l, yts, zs, e) -> Ans(Loop(l, yts, zs, g (M.add_list yts env) e))
   (* | Closure2.Loop(l, yts, zs, e) -> Ans(Loop(l, yts, zs, Ans(Nop))) *)
-  | Closure2.Jump(yzs, l) -> Ans(Jump(yzs, l)) (* これでいいはず...? *)
+  | Closure2.Jump(yzts, l) -> Ans(Jump(yzts, l)) (* これでいいはず...? *)
   (* JumpはLetLoopの最深部にしかない *)
   (* 従って，Ans(Jump _)が直接コードに束縛されるようなコードにはならないはず *)
   (* 以降ではJumpに束縛された変数はassertする *)

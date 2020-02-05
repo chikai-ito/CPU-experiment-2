@@ -35,7 +35,7 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Put of Id.t * Id.t * Id.t
   | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t
   (* ループ前のLetもデータ型に含める *)
-  | Jump of (Id.t * Id.t) list * Id.l (* closure.mlとのdiff *)
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l (* closure.mlとのdiff *)
   | ExtArray of Id.l
 type fundef = { name : Id.l * Type.t;
                 args : (Id.t * Type.t) list;
@@ -61,7 +61,8 @@ let rec fv = function
   | Put(x, y, z) -> S.of_list [x; y; z]
   (* 以降diff *)
   | Loop(_,yts,zs,e) -> S.union (S.of_list zs) (S.diff (fv e) (S.of_list (List.map fst yts)))
-  | Jump(yzs,_) -> List.fold_left (fun acc (y,z) -> S.add y (S.add z acc)) S.empty yzs
+  | Jump(yzts,_) -> List.fold_left
+                      (fun acc (y, z, _) -> S.add y (S.add z acc)) S.empty yzts
 
 let toplevel : fundef list ref = ref []
 
@@ -146,7 +147,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2
   (* 以降diff *)
   | LNormal.Loop(L(x), yts, zs, e) -> (* zsの扱いはVar(x)と同じ．つまり何もしなくていい *)
      Loop(L(x), yts, zs, g (M.add_list yts env) known e)
-  | LNormal.Jump(yzs,l) -> Jump(yzs,l)
+  | LNormal.Jump(yzts,l) -> Jump(yzts,l)
 
 let f e =
   toplevel := [];

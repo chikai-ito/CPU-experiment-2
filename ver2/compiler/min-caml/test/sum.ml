@@ -1,4 +1,9 @@
-let rec sum x =
-  if x <= 0 then 0 else
-  sum (x - 1) + x in
-print_int (sum 10000)
+let rec sum x n acc =
+  if n <= 0 then acc
+  else sum x (n - 1) (x * n + acc)
+in
+let x = read_int ()
+in
+let y = read_int ()
+in
+y + sum x y 0

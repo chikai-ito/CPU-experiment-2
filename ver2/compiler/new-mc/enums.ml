@@ -1,5 +1,4 @@
 type cmp = Eq | NE | LE | Lt
-type mem = I | M
 
 let print_cmp = function
   | Eq -> print_string "Eq"

@@ -153,7 +153,11 @@ let output_simple_op oc dregmap uregmap operation =
      else
        Printf.fprintf oc "\tilw\t%%r0 %s %s\n" r l
   | Mov((x, _), y) when (dlu x) = (ulu y) -> ()
-  | Mov((x, _), y) -> Printf.fprintf oc "\tmov\t%s %s\n" (ulu y) (dlu x)
+  | Mov((x, t), y) ->
+     if t = Type.Float then
+       Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu y) (dlu x)
+     else
+       Printf.fprintf oc "\tmov\t%s %s\n" (ulu y) (dlu x)
   | Neg((x, _), y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" (ulu y) (dlu x)
   | Itof((x, _), y) -> Printf.fprintf oc "\tmtc1\t%s %s\n" (ulu y) (dlu x)
   | In((x, _)) -> Printf.fprintf oc "\tin\t%s\n" (dlu x)

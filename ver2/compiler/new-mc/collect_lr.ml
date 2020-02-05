@@ -33,96 +33,137 @@ let tar_list regs tarset =
 let scale = ref 3
 
 type lr_status_t = { target : TarS.t;
-                   use_count : int }
+                     use_count : int;
+                     lifespan : S.t }
+(* lifespanはLRが登場するブロックのラベルの集合で，これが大きいLRをspillしないと話にならない *)
 (* use_countは使用される命令の深さを加味して加算する *)
 (* use_count += !scale * depと更新 *)
 
+
+let compute_score { use_count = n; lifespan = ls } =
+  let ls = S.cardinal ls in
+  n - 4 * ls
+
+
+let new_status tar use ls =
+  { target = tar; use_count = use; lifespan = ls }
+  
+
 (* ofs_dep = (ofs, dep) *)
 let add_target ofs_dep stat =
-  { target = TarS.add ofs_dep stat.target; use_count = stat.use_count }
+  { target = TarS.add ofs_dep stat.target; use_count = stat.use_count;
+    lifespan = stat.lifespan }
+  
 
 let add_use_count dep stat =
-  { target = stat.target; use_count = (!scale * dep) + stat.use_count }
+  { target = stat.target; use_count = (!scale * dep) + stat.use_count;
+    lifespan = stat.lifespan }
+  
+
+let add_lifespan label stat =
+  let Id.L(l) = label in
+  { target = stat.target; use_count = stat.use_count;
+    lifespan = S.add l stat.lifespan }
+  
 
 type lr_stat_tbl_t = lr_status_t H.t
+                   
 
 let make_lr_stat_tbl n =
   let tbl : lr_stat_tbl_t = H.create n in tbl
+                                        
 
 let get_status stat_tbl lr =
   try
     H.find stat_tbl lr
   with
     Not_found -> assert false
+               
 
-let register_stat stat_tbl lr =
+let register_stat stat_tbl label lr =
   (if not (H.mem stat_tbl lr) then
-     let status = { target = TarS.empty; use_count = 0 } in
+     let Id.L(l) = label in
+     let status = new_status TarS.empty 0 (S.singleton l) in
+     (* let status = { target = TarS.empty; use_count = 0 } in *)
      H.add stat_tbl lr status)
+  
 
-let add_use_to_stat stat_tbl lr dep =
-  (if not (H.mem stat_tbl lr) then register_stat stat_tbl lr);
+let add_use_to_stat stat_tbl lr dep label =
+  (if not (H.mem stat_tbl lr) then register_stat stat_tbl label lr);
   let stat = H.find stat_tbl lr in
   H.replace stat_tbl lr (add_use_count dep stat)
+  
 
-let add_tar_to_stat stat_tbl lr ofs_dep =
-  (if not (H.mem stat_tbl lr) then register_stat stat_tbl lr);
+let add_tar_to_stat stat_tbl lr ofs_dep label =
+  (if not (H.mem stat_tbl lr) then register_stat stat_tbl label lr);
   let stat = H.find stat_tbl lr in
   H.replace stat_tbl lr (add_target ofs_dep stat)
+
+
+let add_ls_to_stat stat_tbl lr label =
+  if not (H.mem stat_tbl lr) then
+    register_stat stat_tbl label lr
+  else
+    let stat = H.find stat_tbl lr in
+    H.replace stat_tbl lr (add_lifespan label stat)
+  
   
 let compute_ofs_deps dep xs =
   snd
     (List.fold_left
        (fun (ofs, acc) x -> (ofs + 1, (x, (ofs, dep)) :: acc))
-    (0, []) xs)
+       (0, []) xs)
+  
 
-let add_ofs_deps stat_tbl dep xs =
+let add_ofs_deps stat_tbl dep label xs =
   let ofs_deps_map = compute_ofs_deps dep xs in
   List.iter
     (fun (x, ofs_dep) ->
-      add_tar_to_stat stat_tbl x ofs_dep)
+      add_tar_to_stat stat_tbl x ofs_dep label)
     ofs_deps_map
 
-let add_uses stat_tbl dep xs =
+let add_uses stat_tbl dep label xs =
   List.iter
-    (fun x -> add_use_to_stat stat_tbl x dep)
+    (fun x -> add_use_to_stat stat_tbl x dep label)
     xs
 
 
-let collect_stats_from_instr stat_tbl dep instr =
+let collect_stats_from_instr stat_tbl dep label instr =
   let defs, uses = Lra.defs_uses_of_instr instr in
-  List.iter (register_stat stat_tbl) defs;
-  add_uses stat_tbl dep uses; (* use count *)
+  List.iter (register_stat stat_tbl label) defs;
+  add_uses stat_tbl dep label uses; (* use count *)
   match instr.op with (* target *)
   | CallCls((x, _), f, ys, zs) ->
-     add_ofs_deps stat_tbl dep ys;
-     add_ofs_deps stat_tbl dep zs;
-     add_tar_to_stat stat_tbl x (0, dep);
-     add_tar_to_stat stat_tbl f (-1, dep)
+     add_ofs_deps stat_tbl dep label ys;
+     add_ofs_deps stat_tbl dep label zs;
+     add_tar_to_stat stat_tbl x (0, dep) label;
+     add_tar_to_stat stat_tbl f (-1, dep) label;
+     (* add_use_to_stat stat_tbl f (-1000) *)
   | CallDir((x, _), _, ys, zs) ->
-     add_ofs_deps stat_tbl dep ys;
-     add_ofs_deps stat_tbl dep zs;
-     add_tar_to_stat stat_tbl x (0, dep)
+     add_ofs_deps stat_tbl dep label ys;
+     add_ofs_deps stat_tbl dep label zs;
+     add_tar_to_stat stat_tbl x (0, dep) label
   | Entry(l, xs, ys) ->
-     add_tar_to_stat stat_tbl l (-1,dep);
-     add_ofs_deps stat_tbl dep xs;
-     add_ofs_deps stat_tbl dep ys
+     add_tar_to_stat stat_tbl l (-1,dep) label;
+     add_ofs_deps stat_tbl dep label xs;
+     add_ofs_deps stat_tbl dep label ys
   | Return((x, _)) ->
-     add_tar_to_stat stat_tbl x (0, dep)
+     add_tar_to_stat stat_tbl x (0, dep) label
   | _ -> ()
 
-let collect_stats_from_brnc stat_tbl dep = function
+let collect_stats_from_brnc stat_tbl dep label = function
   | Brc(cmpr, _, _) ->
      let x, y = cmpr.args in
-     add_uses stat_tbl dep [x; y]
+     add_uses stat_tbl dep label [x; y]
   | _ -> ()
 
 let collect_stats_from_block stat_tbl block =
   let dep = block.l_dep in
+  let label = block.label in
   List.iter
-    (collect_stats_from_instr stat_tbl dep)
+    (collect_stats_from_instr stat_tbl dep label)
     block.code;
-  collect_stats_from_brnc stat_tbl dep block.next
+  collect_stats_from_brnc stat_tbl dep label block.next
 
 let make_stat_tbl : Cfg.block list -> lr_stat_tbl_t =
   fun cfg ->

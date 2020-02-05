@@ -155,8 +155,8 @@ let blocklist_to_lrtbl : Cfg.block list -> lr_info H.t * S.t * S.t =
 let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   fun instr ->
   match instr.op with
-  | Phi ((x, t), yls) ->
-     let ys = List.map fst yls in [x], ys
+  | Phi ((x, t), yls) -> [x], [] (* これが正解? *)
+     (* let ys = List.map fst yls in [x], ys *)
   | Nop -> [], []
   | Set((x, t), i) -> [x], []
   | SetL((x, t), l) -> [x], []
@@ -195,8 +195,8 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(l, xs, ys) -> (l :: (xs @ ys)), []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
-  | Save(x) -> [], [x]
-  | Restore(x) -> [], [x]
+  | Save(x) -> [], []
+  | Restore(x) -> [], []
 
 let uses_of_branch : block -> Id.t list =
   fun block ->
