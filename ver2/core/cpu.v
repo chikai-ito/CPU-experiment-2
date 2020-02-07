@@ -167,8 +167,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
     
     
     // 即値として何を用いるか
-    assign immediate = (inst[pc][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + inst[pc][15:0]) : (inst[pc][15:0]);
-    assign minus_immediate = (inst[pc][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + inst[pc][15:0]) : (inst[pc][15:0] - 1);
+    assign immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + instr_reg[0][15:0]) : (instr_reg[0][15:0]);
+    assign minus_immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + instr_reg[0][15:0]) : (instr_reg[0][15:0] - 1);
     
     /* 
     // FPUに渡す引数
@@ -206,13 +206,13 @@ module top #(CLK_PER_HALF_BIT = 520) (
     
 
      // write-enable
-    assign we = (inst[pc][31:26] == sw || inst[pc][31:26] == sws);
+    assign we = (instr_reg[0][31:26] == sw || instr_reg[0][31:26] == sws);
     
     // 読み出し・書き出しに使うメモリアドレス
-    assign memory_addr = register_int[inst[pc][25:21]][31:2] + immediate[31:2];
+    assign memory_addr = register_int[instr_reg[0][25:21]][31:2] + immediate[31:2];
     
     // メモリ書き込みに用いるデータ
-    assign write_data = (inst[pc][31:26] == sw) ? register_int[inst[pc][20:16]] : register_float[instr_reg[0][20:16]];
+    assign write_data = (instr_reg[0][31:26] == sw) ? register_int[instr_reg[0][20:16]] : register_float[instr_reg[0][20:16]];
     
     // UART出力用のフラグ　これが立っていたら通信を開始
     // assign sender_ready = (now_inst[31:26] == special &&
@@ -278,21 +278,27 @@ module top #(CLK_PER_HALF_BIT = 520) (
         */
         if (~rstn) begin
             inst_stop <= 1'b0;
-            iteration <= 32'b0;
-            finished_write <= 1'b0;
-            first_send <= 1'b1;
-            writing_byte <= 2'b0;
-        	reading <= 1'b0;
-            for(i=0;i<32;i=i+1) begin
-                register_int[i] <= 32'b0;
-                register_float[i] <= 32'b0;
-            end
-            buffer_valid_idx <= 32'b0;
-            buffer_reading_idx <= 32'b0;
-            register_int[27] <= 32'b00000000000000001000000000000000;
-            err <= 4'b0000;
-            pc <= 0;
-    	    $readmemb("copy.mem", inst);
+	        iteration <= 32'b0;
+	        buffer_valid_idx <= 32'b0;
+	        buffer_reading_idx <= 32'b0;
+	        for(i=0;i<32;i=i+1) begin
+	            register_int[i] <= 32'b0;
+	            register_float[i] <= 32'b0;
+	            int_data_flag[i] <= 1'b0;
+	            float_data_flag[i] <= 1'b0;
+	        end
+	        for(i=0;i<5;i=i+1) begin
+	        	result[i] <= 32'b0;
+	        	argument1[i] <= 32'b0;
+	        	argument2[i] <= 32'b0;
+	        	argument3[i] <= 32'b0;
+	        	prop_pc[i] <= 32'b0;
+	        	validate_flag[i] <= 1'b0;
+	        end
+	        waiting <= 0;
+	        register_int[27] <= 32'b00000000000000001000000000000000;
+	    	pc <= 32'b0;
+	    	$readmemb("copy.mem", inst);
     	end else if (~inst_stop) begin
     		// パイプライン実装
 
@@ -386,7 +392,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         //s_fin:
                     endcase // instr_reg[0][5:0]
                 lw: begin
-                	stallflag = int_data_flag[register_int[instr_reg[0][25:21]]];
+                	stallflag = int_data_flag[instr_reg[0][25:21]];
                 	if (~stallflag) begin
 
                 		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
@@ -456,8 +462,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         s_mov:
                         	result[2] <= argument1[1];
                     endcase // instr_reg[1][5:0]
-                lw:
-                	result[2] <= read_data;
                 addi:
                 	result[2] <= argument1[1] + argument2[1];
                 jal, jalr: begin
@@ -501,7 +505,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
                 end
             endcase // instr_reg[1][31:26]
 
-            if (out == 1'b1) begin
+            if (out == 1'b1 && validate_flag[1]) begin
         		// 分岐予測が外れた場合
         		validate_flag[0] <= 1'b0;
         		validate_flag[1] <= 1'b0;
@@ -537,7 +541,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     							inst_stop <= 1'b1;
     					endcase // instr_reg[2][5:0]
     				lw: begin
-    					register_int[instr_reg[2][20:16]] <= result[2];
+    					register_int[instr_reg[2][20:16]] <= read_data;
     					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
     				end
     				addi: begin
