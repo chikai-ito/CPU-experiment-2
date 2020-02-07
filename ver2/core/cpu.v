@@ -36,9 +36,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
 	localparam inst_size	 = 5000;
 	localparam buffer_size	 = 5000;
 
-	// 状態変数
-	// 1:フェッチ 2:デコード 3:実行1 4:実行2 5:実行3 6:格納
-	reg [3:0]             status;
     localparam s_idle = 0;
     localparam s_1 = 1;
     localparam s_2 = 2;
@@ -84,6 +81,9 @@ module top #(CLK_PER_HALF_BIT = 520) (
     localparam fbne			= 6'b000011;
     localparam fbg			= 6'b000111;
     localparam sll 			= 6'b111111;
+    localparam ble			= 6'b001011;
+    localparam bge 			= 6'b001001;
+
 
     // レジスタ
     reg [31:0] register_int [0:31];
@@ -96,7 +96,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
     reg [31:0] inst [0:inst_size-1];
 
     // 今読んでいる命令
-    reg [31:0] now_inst;
 
     // *****************
     // バッファ
@@ -109,26 +108,69 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // バッファの中でコアが読み終えている部分
     reg [31:0] buffer_reading_idx;
 
-    // 各命令について、またなければいけないクロック数分待つための変数
-    reg [3:0] complete;
+    // 6クロック命令のためにパイプラインがストールするための時間
+    reg [2:0] waiting;
+
+    integer i;
+
+    // 32bit分のデータは4バイト分のreadによって完了する
+    // 何バイト目を読んでいるか
+    reg [1:0] writing_byte;
+
+    // 最初に送るバイトを送り終えたなら0
+    reg first_send;
+   
+    // RSレジスタ
+    reg [31:0] argument1 [0:4];
+    // RTレジスタ
+    reg [31:0] argument2 [0:4];
+    // 分岐用レジスタ
+    reg [31:0] argument3 [0:4];
+
+    reg [31:0] iteration;
+
+    // 演算結果
+    reg [31:0] result [0:4];
+    // 終了処理
+    reg inst_stop;
+
+    // 伝搬する命令
+    reg [31:0] instr_reg [0:4];
+
+    // 伝搬するプログラムカウンタ
+    reg [31:0] prop_pc [0:4];
+
+    // レジスタの値がいま計算中であるかどうかを保持するフラグ
+    reg [31:0] int_data_flag;
+    reg [31:0] float_data_flag;
+
+    // 伝搬する命令有効フラグ
+    reg [5:0] validate_flag;
 
     //*******************
     //FPU modules
+
+    /*
 
     wire ovf;
     wire [31:0] f_result;
     wire [3:0] f_exception;
     wire fequal_res;
     wire fless_res;
+
+
+    wire [31:0] f_argument;
+
+    */ 
     wire [31:0] immediate;
     wire [31:0] minus_immediate;
     
-    wire [31:0] f_argument;
     
     // 即値として何を用いるか
-    assign immediate = (now_inst[15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + now_inst[15:0]) : (now_inst[15:0]);
-    assign minus_immediate = (now_inst[15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + now_inst[15:0]) : (now_inst[15:0] - 1);
+    assign immediate = (inst[pc][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + inst[pc][15:0]) : (inst[pc][15:0]);
+    assign minus_immediate = (inst[pc][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + inst[pc][15:0]) : (inst[pc][15:0] - 1);
     
+    /* 
     // FPUに渡す引数
     assign f_argument = (now_inst[31:26] == cop1 && now_inst[25:21] == f_mtc1) ? (register_int[now_inst[20:16]]) : (register_float[now_inst[20:16]]);
     
@@ -156,46 +198,25 @@ module top #(CLK_PER_HALF_BIT = 520) (
     	register_float[now_inst[25:21]],
     	fless_res
     	);
+
+    */
     
     // ********************
 
-    integer i;
-
-    // 32bit分のデータは4バイト分のreadによって完了する
-    // 何バイト目を読んでいるか
-    reg [1:0] writing_byte;
-
-    // 最初に送るバイトを送り終えたなら0
-    reg first_send;
     
-    // write-enable
-    assign we = (now_inst[31:26] == sw || now_inst[31:26] == sws) && (status == s_1);
+
+     // write-enable
+    assign we = (inst[pc][31:26] == sw || inst[pc][31:26] == sws);
     
     // 読み出し・書き出しに使うメモリアドレス
-    assign memory_addr = register_int[now_inst[25:21]][31:2] + immediate[31:2];
+    assign memory_addr = register_int[inst[pc][25:21]][31:2] + immediate[31:2];
     
     // メモリ書き込みに用いるデータ
-    assign write_data = (now_inst[31:26] == sw) ? register_int[now_inst[20:16]] : register_float[now_inst[20:16]];
+    assign write_data = (inst[pc][31:26] == sw) ? register_int[inst[pc][20:16]] : register_float[instr_reg[0][20:16]];
     
     // UART出力用のフラグ　これが立っていたら通信を開始
-    assign sender_ready = (now_inst[31:26] == special &&
-                           now_inst[5:0] == s_out) || first_send;
-
-    // RSレジスタ
-    reg [31:0] argument1;
-    // RTレジスタ
-    reg [31:0] argument2;
-    // 分岐用レジスタ
-    reg [31:0] argument3;
-
-    reg [31:0] iteration;
-
-    // 演算結果
-    reg [31:0] result;
-    // 分岐命令フラグ
-    reg jump;
-    // 終了処理
-    reg inst_stop;
+    // assign sender_ready = (now_inst[31:26] == special &&
+    //                        now_inst[5:0] == s_out) || first_send;
 
     initial begin
         // 各種初期化
@@ -206,21 +227,30 @@ module top #(CLK_PER_HALF_BIT = 520) (
         for(i=0;i<32;i=i+1) begin
             register_int[i] <= 32'b0;
             register_float[i] <= 32'b0;
+            int_data_flag[i] <= 1'b0;
+            float_data_flag[i] <= 1'b0;
         end
+        for(i=0;i<5;i=i+1) begin
+        	result[i] <= 32'b0;
+        	argument1[i] <= 32'b0;
+        	argument2[i] <= 32'b0;
+        	argument3[i] <= 32'b0;
+        	prop_pc[i] <= 32'b0;
+        	validate_flag[i] <= 1'b0;
+        end
+        waiting <= 0;
         register_int[27] <= 32'b00000000000000001000000000000000;
-    	status <= s_1;
-    	complete <= 4'b0;
     	pc <= 32'b0;
     	$readmemb("copy.mem", inst);
     end
     
     // LEDに表示したいものをここでassignする
-    assign out_led = pc;
+    assign out_led = register_int[1];
 
     reg ferr;
 
     // 最初に送るのは決まったバイト、そうでなければ指定されたバイト
-    assign w_data = (first_send) ? 8'b10101010 : register_int[now_inst[25:21]][7:0];
+    // assign w_data = (first_send) ? 8'b10101010 : register_int[now_inst[25:21]][7:0];
 
     // 一つのデータを連続して読まないように立てるフラグ
     // 読むのを開始した瞬間に立てて、データが来なくなったら下ろす
@@ -229,7 +259,12 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // in命令で4バイト分の入力が終わっているか？
     reg finished_write;
 
+    reg stallflag;
+
+    reg out;
+
     always @(posedge clk) begin
+    	/*
         if (first_send && status == s_2) begin
             first_send <= 1'b0;
         end
@@ -240,6 +275,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
         end else if(!receiver_valid) begin 
         	reading <= 1'b0;
         end
+        */
         if (~rstn) begin
             inst_stop <= 1'b0;
             iteration <= 32'b0;
@@ -254,11 +290,282 @@ module top #(CLK_PER_HALF_BIT = 520) (
             buffer_valid_idx <= 32'b0;
             buffer_reading_idx <= 32'b0;
             register_int[27] <= 32'b00000000000000001000000000000000;
-            status <= s_1;
             err <= 4'b0000;
-            complete <= 4'b0000;
             pc <= 0;
     	    $readmemb("copy.mem", inst);
+    	end else if (~inst_stop) begin
+    		// パイプライン実装
+
+    		// ********************
+    		// フェッチフェーズ
+    		// ********************
+
+    		if (waiting == 3'b0) begin
+
+	    		instr_reg[0] <= inst[pc];
+	    		prop_pc[0] <= pc;
+	    		validate_flag[0] <= 1'b1;
+
+	    		
+				// pcの値を分岐するように予測します
+	    		if (inst[pc][31:26] == j) begin
+	    			pc <= {6'b0, inst[pc][25:0]};
+	    		end else if (inst[pc][31:26] == beq) begin
+	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
+
+	    		end else if (inst[pc][31:26] == bl) begin
+	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
+
+	    		end else if (inst[pc][31:26] == bg) begin
+	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
+
+	    		end else if (inst[pc][31:26] == special && inst[pc][5:0] == s_jr) begin
+	    			if (int_data_flag[inst[pc][25:21]]) begin
+	    				// Read After Writeハザードが発生
+	    				// パイプラインの伝搬を１つ遅らせる
+	    				validate_flag[0] <= 1'b0;
+	    				pc <= pc;
+	    			end else begin
+	    				pc <= register_int[inst[pc][25:21]];
+    				end
+
+    			end else if (inst[pc][31:26] == special && inst[pc][5:0] == s_retl) begin
+    				if (int_data_flag[28]) begin
+    					validate_flag[0] <= 1'b0;
+    					pc <= pc;
+    				end else begin
+    					pc <= register_int[28] + 1;
+    				end
+
+	    		end else if (inst[pc][31:26] == jalr) begin
+	    			if (int_data_flag[inst[pc][25:21]]) begin
+
+	    				validate_flag[0] <= 1'b0;
+	    				pc <= pc;
+	    			end else begin
+	    				pc <= register_int[inst[pc][25:21]];
+	    			end
+
+	    		end else if (inst[pc][31:26] == jal) begin
+	    			pc <= {6'b0, inst[pc][25:0]};
+
+	    		end else begin
+	    			pc <= pc + 1;
+	    		end
+	    	end else begin
+	    		waiting <= waiting - 1;
+	    	end
+
+    		iteration <= iteration + 1;
+
+    		// ********************
+    		// デコードフェーズ
+    		// ********************
+
+    		stallflag = 0;
+
+    		case (instr_reg[0][31:26])
+    			special:
+    				case (instr_reg[0][5:0])
+    					s_add, s_sub, s_mult, s_div: begin
+                            argument1[1] <= register_int[instr_reg[0][25:21]];
+                            argument2[1] <= register_int[instr_reg[0][20:16]];
+                            stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+                            if (~stallflag) begin
+								int_data_flag[instr_reg[0][15:11]] <= 1'b1;
+							end
+                        end
+                        s_mov: begin
+                        	argument1[1] <= register_int[instr_reg[0][25:21]];
+                        	stallflag = int_data_flag[instr_reg[0][25:21]];
+                        	if (~stallflag) begin
+		                    	int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+		                    end
+                        end
+                        //s_in:
+                        //s_fin:
+                    endcase // instr_reg[0][5:0]
+                lw: begin
+                	stallflag = int_data_flag[register_int[instr_reg[0][25:21]]];
+                	if (~stallflag) begin
+
+                		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                	end
+                end
+                addi: begin
+                    argument1[1] <= register_int[instr_reg[0][25:21]];
+                    argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
+                    stallflag = int_data_flag[instr_reg[0][25:21]];
+                    if (~stallflag) begin
+                		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                	end
+                end
+                j: begin
+                	stallflag = int_data_flag[instr_reg[0][25:21]];
+                end
+                jal: begin
+                	int_data_flag[28] <= 1'b1;
+                end
+                jalr: begin
+                	int_data_flag[28] <= 1'b1;
+                end
+                beq, bl, bg: begin
+                	argument1[1] <= register_int[instr_reg[0][25:21]];
+                	argument2[1] <= register_int[instr_reg[0][20:16]];
+                	stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+                end
+
+
+
+
+            endcase // now_inst[31:26]
+
+            // 全命令共通の伝搬処理
+            instr_reg[1] <= instr_reg[0];
+            prop_pc[1] <= prop_pc[0];
+            validate_flag[1] <= validate_flag[0];
+
+            if (stallflag) begin
+            	// Read After Writeハザードが発生する
+            	// パイプラインの伝搬を一つ遅らせる
+            	validate_flag[1] <= 1'b0;
+            	instr_reg[0] <= instr_reg[0];
+            	prop_pc[0] <= prop_pc[0];
+            	validate_flag[0] <= validate_flag[0];
+            	pc <= pc;
+            end
+
+    		// ********************
+    		// 実行フェーズその1
+    		// ********************
+
+
+            out = 1'b0;
+             
+    		case (instr_reg[1][31:26])
+    			special:
+    				case (instr_reg[1][5:0])
+    					s_add:
+                            result[2] <= argument1[1] + argument2[1];
+                        s_sub:
+                            result[2] <= argument1[1] - argument2[1];
+                        s_mult:
+                            result[2] <= argument1[1] * argument2[1];
+                        s_div:
+                            result[2] <= argument1[1] / argument2[1];
+                        s_mov:
+                        	result[2] <= argument1[1];
+                    endcase // instr_reg[1][5:0]
+                lw:
+                	result[2] <= read_data;
+                addi:
+                	result[2] <= argument1[1] + argument2[1];
+                jal, jalr: begin
+                	result[2] <= prop_pc[1];
+                end
+
+
+                beq: begin
+                	if (argument1[1] != argument2[1] && validate_flag[1]) begin
+                		// 分岐予測が外れた場合
+                		out = 1'b1;
+                	end
+                end
+
+                bl: begin
+                	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                		if (argument1[1] >= argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                		if (argument1[1] <= argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
+                		out = 1'b1;
+                	end
+                end
+                
+                bg: begin
+                	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                		if (argument1[1] <= argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                		if (argument1[1] >= argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
+                		out = 1'b1;
+                	end
+                end
+            endcase // instr_reg[1][31:26]
+
+            if (out == 1'b1) begin
+        		// 分岐予測が外れた場合
+        		validate_flag[0] <= 1'b0;
+        		validate_flag[1] <= 1'b0;
+        		validate_flag[2] <= 1'b0;
+        		for(i=0;i<32;i=i+1) begin
+        			int_data_flag[i] <= 1'b0;
+        			float_data_flag[i] <= 1'b0;
+        		end
+        		pc <= prop_pc[1] + 1;
+        	end
+
+            instr_reg[2] <= instr_reg[1];
+            prop_pc[2] <= prop_pc[1];
+            validate_flag[2] <= validate_flag[1];
+
+    		// ********************
+    		// 実行フェーズその2(レジスタへの書き込みは常にここで行う)
+    		// ********************
+
+    		if (validate_flag[2]) begin
+    			case (instr_reg[2][31:26])
+    				special:
+    					case (instr_reg[2][5:0])
+    						s_add, s_sub, s_mult, s_div: begin
+    							register_int[instr_reg[2][15:11]] <= result[2];
+    							int_data_flag[instr_reg[2][15:11]] <= 1'b0;
+    						end
+    						s_mov: begin
+    							register_int[instr_reg[2][20:16]] <= result[2];
+    							int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+    						end
+    						s_ret:
+    							inst_stop <= 1'b1;
+    					endcase // instr_reg[2][5:0]
+    				lw: begin
+    					register_int[instr_reg[2][20:16]] <= result[2];
+    					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+    				end
+    				addi: begin
+    					register_int[instr_reg[2][20:16]] <= result[2];
+    					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+    				end
+    				jal, jalr: begin
+	    				register_int[28] <= result[2];
+	    				int_data_flag[28] <= 1'b0;
+	    			end
+    			endcase // instr_reg[2][31:26]
+    			
+    		end
+
+    		// ********************
+    		// 実行フェーズその3
+    		// ********************
+
+
+
+    		// ********************
+    		// ストアフェーズ
+    		// ********************
+
+
+    	// ここからは過去の実装
+
+    	/* 
         end else if (status == s_idle) begin
 
         end else if (status == s_1) begin
@@ -359,10 +666,10 @@ module top #(CLK_PER_HALF_BIT = 520) (
                             
                         s_div:
                             result <= argument1 / argument2;
-                            /*
+                            
                         s_mod:
                             result <= argument1 % argument2;
-                            */
+                            
                         s_mov:
                             result <= register_int[now_inst[25:21]];
                         s_retl:
@@ -492,8 +799,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
             endcase // now_inst[31:26]
             status <= s_1;
         end
-
+        */
+    	end
     end
-   
 endmodule
 `default_nettype wire
