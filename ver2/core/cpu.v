@@ -80,6 +80,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     localparam bg 			= 6'b000110;
     localparam fbne			= 6'b000011;
     localparam fbg			= 6'b000111;
+    localparam fbge         = 6'b001110;
     localparam sll 			= 6'b111111;
     localparam ble			= 6'b001011;
     localparam bge 			= 6'b001001;
@@ -145,12 +146,19 @@ module top #(CLK_PER_HALF_BIT = 520) (
     reg [31:0] float_data_flag;
 
     // 伝搬する命令有効フラグ
-    reg [5:0] validate_flag;
+    reg [4:0] validate_flag;
 
-    //*******************
-    //FPU modules
-
-    /*
+    
+    wire [31:0] immediate;
+    wire [31:0] minus_immediate;
+    
+    
+    // 即値として何を用いるか
+    assign immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + instr_reg[0][15:0]) : (instr_reg[0][15:0]);
+    assign minus_immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + instr_reg[0][15:0]) : (instr_reg[0][15:0] - 1);
+    
+    // *******************
+    // FPU modules
 
     wire ovf;
     wire [31:0] f_result;
@@ -161,45 +169,38 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
     wire [31:0] f_argument;
 
-    */ 
-    wire [31:0] immediate;
-    wire [31:0] minus_immediate;
     
-    
-    // 即値として何を用いるか
-    assign immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + instr_reg[0][15:0]) : (instr_reg[0][15:0]);
-    assign minus_immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + instr_reg[0][15:0]) : (instr_reg[0][15:0] - 1);
-    
-    /* 
     // FPUに渡す引数
-    assign f_argument = (now_inst[31:26] == cop1 && now_inst[25:21] == f_mtc1) ? (register_int[now_inst[20:16]]) : (register_float[now_inst[20:16]]);
+    assign f_argument = (instr_reg[1][31:26] == cop1 && instr_reg[1][25:21] == f_mtc1) ? (register_int[instr_reg[1][20:16]]) : (register_float[instr_reg[1][20:16]]);
     
     // メインFPU
-    fpu1 fpu11(
-        now_inst[31:26],
-        now_inst[25:21],
-        register_float[now_inst[15:11]],
-        f_argument,
-        now_inst[5:0],
+    fpu2 fpu11(
+        instr_reg[1][31:26],
+        instr_reg[1][25:21],
+        argument2[1],
+        argument1[1],
+        instr_reg[1][5:0],
         f_result,
-        f_exception
+        f_exception,
+        clk,
+        rstn
     );
 
     // fequal(fbne用)
     fequal fequall(
-    	register_float[now_inst[25:21]],
-    	register_float[now_inst[20:16]],
+    	argument1[1],
+    	argument2[1],
     	fequal_res
-    	);
+    );
 
     // fless(fbg用)
     fless flessl(
-    	register_float[now_inst[20:16]],
-    	register_float[now_inst[25:21]],
+    	argument2[1],
+    	argument1[1],
     	fless_res
-    	);
+    );
 
-    */
+    
     
     // ********************
 
@@ -312,54 +313,58 @@ module top #(CLK_PER_HALF_BIT = 520) (
 	    		prop_pc[0] <= pc;
 	    		validate_flag[0] <= 1'b1;
 
-	    		
-				// pcの値を分岐するように予測します
-	    		if (inst[pc][31:26] == j) begin
-	    			pc <= {6'b0, inst[pc][25:0]};
-	    		end else if (inst[pc][31:26] == beq) begin
-	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
-
-	    		end else if (inst[pc][31:26] == bl) begin
-	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
-
-	    		end else if (inst[pc][31:26] == bg) begin
-	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
-
-	    		end else if (inst[pc][31:26] == special && inst[pc][5:0] == s_jr) begin
-	    			if (int_data_flag[inst[pc][25:21]]) begin
-	    				// Read After Writeハザードが発生
-	    				// パイプラインの伝搬を１つ遅らせる
-	    				validate_flag[0] <= 1'b0;
-	    				pc <= pc;
-	    			end else begin
-	    				pc <= register_int[inst[pc][25:21]];
-    				end
-
-    			end else if (inst[pc][31:26] == special && inst[pc][5:0] == s_retl) begin
-    				if (int_data_flag[28]) begin
-    					validate_flag[0] <= 1'b0;
-    					pc <= pc;
-    				end else begin
-    					pc <= register_int[28] + 1;
-    				end
-
-	    		end else if (inst[pc][31:26] == jalr) begin
-	    			if (int_data_flag[inst[pc][25:21]]) begin
-
-	    				validate_flag[0] <= 1'b0;
-	    				pc <= pc;
-	    			end else begin
-	    				pc <= register_int[inst[pc][25:21]];
+	    		// 分岐予測
+	    		// 常にジャンプするように予測
+	    		case (inst[pc][31:26])
+	    			special:
+	    				case (inst[pc][5:0])
+	    					s_jr: begin
+	    						if (int_data_flag[inst[pc][25:21]]) begin
+				    				// Read After Writeハザードが発生
+				    				// パイプラインの伝搬を１つ遅らせる
+				    				validate_flag[0] <= 1'b0;
+				    				pc <= pc;
+				    			end else begin
+				    				pc <= register_int[inst[pc][25:21]];
+			    				end
+			    			end
+			    			s_retl: begin
+			    				if (int_data_flag[28]) begin
+			    					validate_flag[0] <= 1'b0;
+			    					pc <= pc;
+			    				end else begin
+			    					pc <= register_int[28] + 1;
+			    				end
+			    			end
+			    			default:
+			    				pc <= pc + 1;
+			    		endcase // inst[pc][5:0]
+                    cop1: begin
+                        // 6クロック命令の実行
+                        // 待機カウンタをインクリメント
+                        pc <= pc + 1;
+                        waiting <= waiting + 2;
+                    end
+			    	j, jal:
+	    				pc <= {6'b0, inst[pc][25:0]};
+			    	jalr: begin
+			    		if (int_data_flag[inst[pc][25:21]]) begin
+		    				validate_flag[0] <= 1'b0;
+		    				pc <= pc;
+		    			end else begin
+		    				pc <= register_int[inst[pc][25:21]];
+		    			end
+		    		end
+		    		beq, bne, bl, ble, bg, bge, fbg, fbge, fbne: begin
+	    				pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
 	    			end
-
-	    		end else if (inst[pc][31:26] == jal) begin
-	    			pc <= {6'b0, inst[pc][25:0]};
-
-	    		end else begin
-	    			pc <= pc + 1;
-	    		end
+	    			default:
+	    				pc <= pc + 1;
+	    		endcase // inst[pc][5:0]
 	    	end else begin
 	    		waiting <= waiting - 1;
+
+                validate_flag[0] <= 1'b0;
 	    	end
 
     		iteration <= iteration + 1;
@@ -391,12 +396,64 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         //s_in:
                         //s_fin:
                     endcase // instr_reg[0][5:0]
+                cop1: begin
+                    if (instr_reg[0][5:0] == s_mov) begin
+                        // mov.s
+                        argument1[1] <= register_float[instr_reg[0][25:21]];
+                        stallflag = float_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
+                            float_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                        end
+
+                    end else if (instr_reg[0][25:21] == f_mtc1) begin
+                        // f_mtc1
+                        argument1[1] <= register_int[instr_reg[0][20:16]];
+                        argument2[1] <= register_float[instr_reg[0][15:11]];
+                        stallflag = int_data_flag[instr_reg[0][20:16]];
+                        if (~stallflag) begin
+                            float_data_flag[instr_reg[0][15:11]] <= 1'b1;
+                        end
+
+                    end else if (instr_reg[0][25:21] == f_mfc1) begin
+                        argument1[1] <= register_int[instr_reg[0][20:16]];
+                        argument2[1] <= register_float[instr_reg[0][15:11]];
+                        stallflag = float_data_flag[instr_reg[0][15:11]];
+                        if (~stallflag) begin
+                            int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                        end
+
+                    end else if (instr_reg[0][25:21] == f_others) begin
+                        argument1[1] <= register_float[instr_reg[0][20:16]];
+                        argument2[1] <= register_float[instr_reg[0][15:11]];
+                        // 本当は命令によって使うレジスタの場所は違うけどこれでも動きはするのでサボっている
+                        stallflag = float_data_flag[instr_reg[0][20:16]] | float_data_flag[instr_reg[0][15:11]];
+                        if (~stallflag) begin
+                            float_data_flag[instr_reg[0][10:6]] <= 1'b1;
+                        end
+
+                    end
+                end
                 lw: begin
                 	stallflag = int_data_flag[instr_reg[0][25:21]];
                 	if (~stallflag) begin
 
                 		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
                 	end
+                end
+                lws: begin
+                    stallflag = float_data_flag[instr_reg[0][25:21]];
+                    if (~stallflag) begin
+
+                        float_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                    end
+                end
+                ilws: begin
+                    argument1[1] <= inst[register_int[instr_reg[0][25:21]] + immediate];
+                    stallflag = int_data_flag[instr_reg[0][25:21]];
+                    if (~stallflag) begin
+
+                        float_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                    end
                 end
                 addi: begin
                     argument1[1] <= register_int[instr_reg[0][25:21]];
@@ -415,15 +472,16 @@ module top #(CLK_PER_HALF_BIT = 520) (
                 jalr: begin
                 	int_data_flag[28] <= 1'b1;
                 end
-                beq, bl, bg: begin
+                beq, bne, bl, ble, bg, bge: begin
                 	argument1[1] <= register_int[instr_reg[0][25:21]];
                 	argument2[1] <= register_int[instr_reg[0][20:16]];
                 	stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
                 end
-
-
-
-
+                fbne, fbg, fbge: begin
+                    argument1[1] <= register_float[instr_reg[0][25:21]];
+                    argument2[1] <= register_float[instr_reg[0][20:16]];
+                    stallflag = float_data_flag[instr_reg[0][25:21]] | float_data_flag[instr_reg[0][20:16]];
+                end
             endcase // now_inst[31:26]
 
             // 全命令共通の伝搬処理
@@ -431,7 +489,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
             prop_pc[1] <= prop_pc[0];
             validate_flag[1] <= validate_flag[0];
 
-            if (stallflag) begin
+            if (stallflag && validate_flag[0]) begin
             	// Read After Writeハザードが発生する
             	// パイプラインの伝搬を一つ遅らせる
             	validate_flag[1] <= 1'b0;
@@ -439,6 +497,8 @@ module top #(CLK_PER_HALF_BIT = 520) (
             	prop_pc[0] <= prop_pc[0];
             	validate_flag[0] <= validate_flag[0];
             	pc <= pc;
+                waiting <= waiting;
+                iteration <= iteration;
             end
 
     		// ********************
@@ -462,6 +522,13 @@ module top #(CLK_PER_HALF_BIT = 520) (
                         s_mov:
                         	result[2] <= argument1[1];
                     endcase // instr_reg[1][5:0]
+                cop1: begin
+                    if (instr_reg[1][5:0] == s_mov) begin
+                        result[2] <= argument1[1];
+                    end
+                end
+                ilws:
+                    argument1[2] <= argument1[1];
                 addi:
                 	result[2] <= argument1[1] + argument2[1];
                 jal, jalr: begin
@@ -470,8 +537,13 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
 
                 beq: begin
-                	if (argument1[1] != argument2[1] && validate_flag[1]) begin
-                		// 分岐予測が外れた場合
+                	if (argument1[1] != argument2[1]) begin
+                		out = 1'b1;
+                	end
+                end
+
+                bne: begin
+                	if (argument1[1] == argument2[1]) begin
                 		out = 1'b1;
                 	end
                 end
@@ -483,6 +555,20 @@ module top #(CLK_PER_HALF_BIT = 520) (
                 		end
                 	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
                 		if (argument1[1] <= argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
+                		out = 1'b1;
+                	end
+                end
+
+                ble: begin
+                	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                		if (argument1[1] > argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                		if (argument1[1] < argument2[1]) begin
                 			out = 1'b1;
                 		end
                 	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
@@ -503,6 +589,40 @@ module top #(CLK_PER_HALF_BIT = 520) (
                 		out = 1'b1;
                 	end
                 end
+
+                bge: begin
+                	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                		if (argument1[1] < argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                		if (argument1[1] > argument2[1]) begin
+                			out = 1'b1;
+                		end
+                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
+                		out = 1'b1;
+                	end
+                end
+
+                fbne: begin
+                    if (fequal_res) begin
+                        out = 1'b1;
+                    end
+                end
+
+                fbg: begin
+                    if (fequal_res | !fless_res) begin
+                        out = 1'b1;
+                    end
+                end
+
+                fbge: begin
+                    if (!fequal_res && !fless_res) begin
+                        out = 1'b1;
+                    end
+                end
+
+
             endcase // instr_reg[1][31:26]
 
             if (out == 1'b1 && validate_flag[1]) begin
@@ -525,285 +645,100 @@ module top #(CLK_PER_HALF_BIT = 520) (
     		// 実行フェーズその2(レジスタへの書き込みは常にここで行う)
     		// ********************
 
+            validate_flag[3] <= validate_flag[2];
+
     		if (validate_flag[2]) begin
+                // validate_flag[3]を下げる関係上、ここには6クロック命令を入れてはいけない
     			case (instr_reg[2][31:26])
     				special:
     					case (instr_reg[2][5:0])
     						s_add, s_sub, s_mult, s_div: begin
     							register_int[instr_reg[2][15:11]] <= result[2];
     							int_data_flag[instr_reg[2][15:11]] <= 1'b0;
+                                validate_flag[3] <= 1'b0;
     						end
     						s_mov: begin
     							register_int[instr_reg[2][20:16]] <= result[2];
     							int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                                validate_flag[3] <= 1'b0;
     						end
-    						s_ret:
+    						s_ret: begin
     							inst_stop <= 1'b1;
+                                validate_flag[3] <= 1'b0;
+                            end
     					endcase // instr_reg[2][5:0]
+                    cop1: begin
+                        if (instr_reg[2][5:0] == s_mov) begin
+                            register_float[instr_reg[2][20:16]] <= result[2];
+                            float_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                            validate_flag[3] <= 1'b0;
+                        end
+                    end
     				lw: begin
     					register_int[instr_reg[2][20:16]] <= read_data;
     					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
     				end
+                    lws: begin
+                        register_float[instr_reg[2][20:16]] <= read_data;
+                        float_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
+                    ilws: begin
+                        register_float[instr_reg[2][20:16]] <= argument1[2];
+                        float_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
     				addi: begin
     					register_int[instr_reg[2][20:16]] <= result[2];
     					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
     				end
     				jal, jalr: begin
 	    				register_int[28] <= result[2];
 	    				int_data_flag[28] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
 	    			end
     			endcase // instr_reg[2][31:26]
     			
     		end
+
+            instr_reg[3] <= instr_reg[2];
+            prop_pc[3] <= prop_pc[2];
 
     		// ********************
     		// 実行フェーズその3
     		// ********************
 
 
+            instr_reg[4] <= instr_reg[3];
+            prop_pc[4] <= prop_pc[3];
+            validate_flag[4] <= validate_flag[3];
+
 
     		// ********************
     		// ストアフェーズ
     		// ********************
 
+            if (validate_flag[4]) begin
+                case (instr_reg[4][31:26])
+                    cop1: begin
+                        if (instr_reg[4][25:21] == f_others) begin
+                            float_data_flag[instr_reg[4][10:6]] <= 1'b0;
+                            register_float[instr_reg[4][10:6]] <= f_result;
 
-    	// ここからは過去の実装
+                        end else if (instr_reg[4][25:21] == f_mfc1) begin
+                            float_data_flag[instr_reg[4][20:16]] <= 1'b0;
+                            register_int[instr_reg[4][20:16]] <= f_result;
 
-    	/* 
-        end else if (status == s_idle) begin
+                        end else if (instr_reg[4][25:21] == f_mtc1) begin
+                            float_data_flag[instr_reg[4][15:11]] <= 1'b0;
+                            register_float[instr_reg[4][15:11]] <= f_result;
 
-        end else if (status == s_1) begin
-            // フェッチフェーズ
-            if(inst_stop) begin
-                status <= s_idle;
-            end else begin
-            	now_inst <= inst[pc];
-            	// プログラムカウンタは常に次の命令の値を格納している
-            	// そのため、相対的にジャンプするときには注意が必要
-            	pc <= pc + 1;
-                iteration <= iteration + 1;
-                
-                // 分岐命令フラグはtrueにしか更新しないため、
-                // ここで初期化しておく 
-                jump <= 1'b0;
-
-            	status <= s_2;
+                        end
+                    end
+                endcase // instr_reg[4][31:26]
             end
-
-        end else if (status == s_2) begin
-            // デコードフェーズ
-            case (now_inst[31:26])
-                // special命令群の実行
-                special:
-                    case (now_inst[5:0])
-                        s_add, s_sub, s_mult, s_div, s_mod: begin
-                            argument1 <= register_int[now_inst[25:21]];
-                            argument2 <= register_int[now_inst[20:16]];
-                        end
-                        //s_mov:
-
-                        s_retl: begin
-                            jump <= 1'b1;
-                            argument3 <= register_int[28];
-                        end
-                        s_jr: begin
-                            jump <= 1'b1;
-                            argument3 <= register_int[now_inst[25:21]];
-                        end
-                        s_ret:
-                            inst_stop <= 1'b1;
-                        //s_in:
-                        //s_fin:
-
-                    endcase // now_inst[5:0]
-                //cop1:
-                addi: begin
-                    argument1 <= register_int[now_inst[25:21]];
-                    argument2 <= {16'b0, now_inst[15:0]};
-                end
-                //lw:
-                //ilw:
-                //lws:
-                //ilws:
-                j: begin
-                    jump <= 1'b1;
-                    argument3 <= {6'b0, now_inst[25:0]};
-                end
-                beq, bne, bl, bg: begin
-                    jump <= 1'b1;
-                    argument1 <= register_int[now_inst[25:21]];
-                    argument2 <= register_int[now_inst[20:16]];
-                    argument3 <= pc + {{16{now_inst[15]}}, now_inst[15:0]};
-                end
-                jal: begin
-                    jump <= 1'b1;
-                    register_int[28] <= pc;
-                    argument3 <= {6'b0, now_inst[25:0]};
-                end
-                jalr: begin
-                    jump <= 1'b1;
-                    register_int[28] <= pc;
-                    argument3 <= register_int[now_inst[25:21]];
-                end
-                //fbne:
-                //fbg:
-                sll: begin
-                    argument1 <= register_int[now_inst[20:16]];
-                    argument2 <= register_int[now_inst[10:6]];
-                end
-            endcase // now_inst[31:26]
-
-            status <= s_3;
-
-        end else if (status == s_3) begin
-            // 実行フェーズその1
-            case (now_inst[31:26])
-                // special命令群の実行
-                special:
-                    case (now_inst[5:0])
-                        s_add:
-                            result <= argument1 + argument2;
-                        s_sub:
-                            result <= argument1 - argument2;
-                        s_mult:
-                            result <= argument1 * argument2;
-                            
-                        s_div:
-                            result <= argument1 / argument2;
-                            
-                        s_mod:
-                            result <= argument1 % argument2;
-                            
-                        s_mov:
-                            result <= register_int[now_inst[25:21]];
-                        s_retl:
-                            result <= argument3;
-                        s_jr:
-                            result <= argument3;
-                        //s_ret:
-                        //s_in:
-                        //s_fin:
-
-                    endcase // now_inst[5:0]
-                //cop1:
-                addi:
-                    result <= argument1 + argument2;
-                //lw:
-                //ilw:
-                //lws:
-                //ilws:
-                j: begin
-                    result <= argument3;
-                end
-                beq: begin
-                    if (argument1 == argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                jal: begin
-                    result <= argument3;
-                end
-                jalr: begin
-                    result <= argument3;
-                end
-                bne: begin
-                    if (argument1 != argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                bl: begin
-                    if (argument1 < argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                bg: begin
-                    if(argument1 > argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                //fbne:
-                //fbg:
-                sll: begin
-                    result <= argument1 << argument2;
-                end
-            endcase // now_inst[31:26]
-
-            status <= s_4;
-
-        end else if (status == s_4) begin
-            // 実行フェーズその2
-            if (jump) begin
-                pc <= result;
-                status <= s_1;
-            end else begin
-                case (now_inst[31:26])
-                    // special命令群の実行
-                    special:
-                        case (now_inst[5:0])
-                            //s_mov:
-                            //s_ret:
-                            //s_in:
-                            //s_fin:
-
-                        endcase // now_inst[5:0]
-                    //cop1:
-                    //addi:
-                    //lw:
-                    //ilw:
-                    //lws:
-                    //ilws:
-                    //jal:
-                    //jalr:
-                    //fbne:
-                    //fbg:
-                endcase // now_inst[31:26]
-                status <= s_5;
-            end
-
-        end else if (status == s_5) begin
-            // 実行フェーズその3
-            status <= s_6;
-        end else begin
-            // 格納フェーズ
-            case (now_inst[31:26])
-                // special命令群の実行
-                special:
-                    case (now_inst[5:0])
-                        s_add, s_sub, s_mult, s_div, s_mod:
-                            register_int[now_inst[15:11]] <= result;
-                        s_mov:
-                            register_int[now_inst[20:16]] <= result;
-                        //s_retl:
-                        //s_jr:
-                        //s_ret:
-                        //s_in:
-                        //s_fin:
-
-                    endcase // now_inst[5:0]
-                //cop1:
-                addi:
-                    register_int[now_inst[20:16]] <= result;
-                lw:
-                    register_int[now_inst[20:16]] <= read_data;
-                //ilw:
-                //lws:
-               // ilws:
-                //fbne:
-                //fbg:
-                sll:
-                    register_int[now_inst[15:11]] <= result;
-            endcase // now_inst[31:26]
-            status <= s_1;
-        end
-        */
     	end
     end
 endmodule
