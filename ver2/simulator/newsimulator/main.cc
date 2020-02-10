@@ -280,6 +280,8 @@ if(argc==4){
     }
     if (end_flag == 1) { cout << "not reached this row" << endl; }
     else {
+      //初めのブロック場所をinit_blockという変数に保管しておく
+      int init_block = block;
     while(1){
       cout << "---------------------------" << endl;
       cout << "position is " << block; 
@@ -318,6 +320,57 @@ if(argc==4){
         cout << "" << endl;
         }
         block++;
+        continue;
+      }
+      else if (option == 'l') {
+        //pcの値はnowではなくblockを更新することで管理されていることに注意
+        //まず一行実行
+        unsigned int one_instruction = inst_mem[block];
+        if(one_instruction == 0) break;
+        if((block-data_num)>=0) {
+          cout << instruction_set[(block-data_num)] << " ";
+        }
+        switch(one_instruction >> 26){
+          case 0b000000 :
+          //最初のopecodeがspecialつまり000000だった場合
+            exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+            break;
+          case 0b010001 :
+            //code for fpu
+            exec_fpu_code(one_instruction,pc,reg,freg);
+            break;
+          default :
+            //最初の6文字で命令の判別が可能な場合
+            exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+              howmany_label,label_list,array_num);
+            break;
+        cout << "" << endl;
+        }
+        block++;
+        //その後にその行にくるまで実行
+        while(1)
+        {
+          if(block == init_block) break;
+          if(block == instr_num) {cout << "cannot reach this row again" << endl; break;}
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) {end_flag = 1; break;}
+          switch(one_instruction >> 26){
+            case 0b000000 :
+              //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+                howmany_label,label_list,array_num);
+              break;
+          }
+          block++;
+        }
         continue;
       }
       else if (option == '1') {
