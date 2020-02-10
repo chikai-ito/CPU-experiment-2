@@ -1,9 +1,10 @@
-(* give names to intermediate values (K-normalization) *)
+ (* give names to intermediate values (K-normalization) *)
 open Enums
 type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Unit
-  | Int of int
-  | Float of float
+  | Const of const
+  (* | Int of int
+   * | Float of float *)
   | Neg of Id.t
   | Itof of Id.t
   | In of Id.t
@@ -29,16 +30,56 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Tuple of Id.t list
   | LetTuple of (Id.t * Type.t) list * Id.t * t
   | Get of Id.t * Id.t
+  | GetL of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
+  | PutL of Id.l * Id.t * Id.t
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
+and const = Int of int | Float of float | Ptr of Id.l (* PrtはTupleに必要 *)
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
+type sarray = SArr of Id.l * int * const | STpl of Id.l * const list
+
+
+let rec print_sarray = function
+  | SArr(Id.L(l), n, cns) ->
+     Printf.printf "SArr %s of %d * " l n;
+     print_const cns;
+     print_string "\n"
+  | STpl(Id.L(l), cnss) ->
+     Printf.printf "STpl %s of " l;
+     List.iter print_const cnss;
+     print_string "\n"
+
+and print_const = function
+  | Int(i) -> Printf.printf "Int %d, " i
+  | Float(f) -> Printf.printf "Float %f, " f
+  | Ptr(Id.L(l)) -> Printf.printf "Ptr %s, " l
+  
+
+  
+
+let  label_of_sarray = function
+  | SArr(l, _, _) -> l
+  | STpl(l, _) -> l
+
+
+let lookup_sarray : sarray list -> Id.l -> sarray =
+  fun sarrays l ->
+  try
+    List.find
+      (function
+       | SArr(l', _, _) -> l = l'
+       | STpl(l', _) -> l = l')
+      sarrays
+  with
+    Not_found -> assert false
+           
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
-  | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
-  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) |
-      FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
-  | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y)
+  | Unit | Const _ | ExtArray(_) -> S.empty
+  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | GetL(_, x)
+    | FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
+  | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y) | PutL(_, x, y)
     | FAdd(x,y) | FSub(x,y) | FMul(x,y) | FDiv(x,y)
     | Get(x,y) -> S.of_list [x;y]
   | If (_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
@@ -63,9 +104,9 @@ let insert_let (e, t) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *
 let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Unit -> Unit, Type.Unit
   (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
-  | Syntax.Bool(b) -> Int(if b then 1 else 0), Type.Int
-  | Syntax.Int(i) -> Int(i), Type.Int
-  | Syntax.Float(f) -> Float(f), Type.Float
+  | Syntax.Bool(b) -> Const(Int(if b then 1 else 0)), Type.Int
+  | Syntax.Int(i) -> Const(Int(i)), Type.Int
+  | Syntax.Float(f) -> Const(Float(f)), Type.Float
   | Syntax.Not(e) -> g env (Syntax.If(e, Syntax.Bool(false), Syntax.Bool(true)))
   | Syntax.Neg(e) ->
       insert_let (g env e)
@@ -243,6 +284,8 @@ let indent n =
 
 let depth = ref 0
 
+let newline _ = print_string "\n"
+
 let rec print_fundef fundef =
   let (id,_) = fundef.name in
   let id_ty_lst = fundef.args in
@@ -257,13 +300,25 @@ let rec print_fundef fundef =
   print_kNormal body;
   depth := !depth - 1
 
+and print_const = function
+  | Int(i) -> Printf.printf "INT %d, " i
+  | Float(f) -> Printf.printf "FLOAT %f, " f
+  | Ptr(Id.L(l)) -> Printf.printf "PTR %s, " l
+and print_sarray = function
+  | SArr(Id.L(l), n, cns) ->
+     Printf.printf "SARR %s : %d, " l n;
+     print_const cns; newline ()
+  | STpl(Id.L(l), cnss) ->
+     Printf.printf "STPL %s : " l;
+     List.iter print_const cnss;
+     newline ()
+
 and print_kNormal =
   fun t ->
     indent !depth;
     match t with
     | Unit -> Printf.printf "Unit\n"
-    | Int x -> Printf.printf "INT %d\n" x
-    | Float x -> Printf.printf "FLOAT %f\n" x
+    | Const(cns) -> print_const cns
     | Neg id ->
       Printf.printf "NEG ";
       Id.print_id id;
@@ -425,9 +480,23 @@ and print_kNormal =
       Printf.printf " ";
       Id.print_id id2;
       Printf.printf "\n"
+    | GetL (Id.L(l),id2) ->
+      Printf.printf "GETL ";
+      Id.print_id l;
+      Printf.printf " ";
+      Id.print_id id2;
+      Printf.printf "\n"
     | Put (id1,id2,id3) ->
       Printf.printf "PUT ";
       Id.print_id id1;
+      Printf.printf " ";
+      Id.print_id id2;
+      Printf.printf " ";
+      Id.print_id id3;
+      Printf.printf "\n"
+    | PutL (Id.L(l),id2,id3) ->
+      Printf.printf "PUTL ";
+      Id.print_id l;
       Printf.printf " ";
       Id.print_id id2;
       Printf.printf " ";

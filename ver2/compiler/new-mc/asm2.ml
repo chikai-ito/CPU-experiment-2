@@ -61,14 +61,14 @@ let seq(e1, e2) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2) (* Unit型の変
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
   (* [|"%r1"; "%r2"; "%r3"|] *)
-    (* [|"%r1"; "%r2"; "%r3"; "%r4";
-     *  "%r5"; "%r6"; "%r7"|] *)
-  [|"%r1"; "%r2"; "%r3"; "%r4";
-     "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
-     "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
-     "%r19"; "%r20"; "%r21"; "%r22"; "%r23"; "%r24"; "%r25"; "%r29"|]
+    [|"%r1"; "%r2"; "%r3"; "%r4";
+     "%r5"; "%r6"; "%r7"|]
+  (* [|"%r1"; "%r2"; "%r3"; "%r4";
+   *    "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
+   *    "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
+   *    "%r19"; "%r20"; "%r21"; "%r22"; "%r23"; "%r24"; "%r25"; "%r29"|] *)
 (* %r23は即値のsetなどに使う *)
-let fregs = Array.init 30 (fun i -> Printf.sprintf "%%f%d" i)
+let fregs = Array.init 3 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
 let reg_sub1 = "%r30"

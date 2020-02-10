@@ -28,10 +28,12 @@ let genid s =
   try
     let n = H.find idtbl s in
     (* (if s = "branching_b" then Format.eprintf "%d@." n); *)
-    H.replace idtbl s (n+1);
+    H.replace idtbl s (n + 1);
     Printf.sprintf "%s.%d" s n
   with
     Not_found -> H.add idtbl s 1; Printf.sprintf "%s.%d" s 0
+
+let genlab l = L(genid l)
 
 let is_utmp x =
   x.[0] = 'T' && x.[1] = 'u'

@@ -444,7 +444,7 @@ let e_to_cfg l xt int_args float_args e is_ret =
   assert (!loop_depth = 0);
   let return_label = Id.genid "return_point" in
   let c = if is_ret then
-            [new_instr (SetL((Asm2.reg_ra, Type.Int), L(return_label)))]
+            []
           else
             [new_instr (Entry(l, int_args, float_args))] in
   let new_bref = ref dummy_block in
@@ -478,7 +478,7 @@ let g = List.map (* 関数をcfgに変換する *)
 
 let f (Asm2.Prog(data, fundefs, e)) ty =
   let fn_cfgs = g fundefs in
-  let l = "program_start" in (* return_pointと同じくかぶる心配はない *)
+  let l = Id.genid "main" in
   let xt = (Id.gentmp ty, ty) in
   let main_cfg = e_to_cfg l xt [] [] e true in
   (data, fn_cfgs, main_cfg)

@@ -1,152 +1,270 @@
 #data_section
+hp_init.0 :
+	.int	0x0
+sp_init.0 :
+	.int	0xffffff0
 #text_section
 program_start :
-	addi	%r0 %r28 return_point.1
+	ilw	%r0 %r26 sp_init.0
+	ilw	%r0 %r27 hp_init.0
+	ilw	%r0 %r28 program_end
+main.0 :
 tail_b.1 :
 	addi	%r0 %r1 1
 	addi	%r0 %r2 2
 	addi	%r0 %r3 3
 	addi	%r0 %r4 4
 	sw	%r26 %r28 0
-	addi	%r26 %r26 4
-	jal	f.0
 	addi	%r26 %r26 -4
+	jal	f.0
+	addi	%r26 %r26 4
 	lw	%r26 %r28 0
 	sub	%r0 %r1 %r1
 return_point.1 :
+program_end :
 	add	%r0 %r0 %r0
 	ret
 f.0 :
-	sw	%r26 %r2 0
-	mov	%r3 %r16
-	mov	%r1 %r10
+	sw	%r26 %r4 -12
+	sw	%r26 %r3 -8
+	sw	%r26 %r2 -4
+	sw	%r26 %r1 0
 tail_b.0 :
 	lw	%r26 %r30 0
-	add	%r10 %r30 %r30
-	sw	%r26 %r30 4
-	add	%r10 %r16 %r9
-	add	%r10 %r4 %r30
-	sw	%r26 %r30 8
+	lw	%r26 %r31 -4
+	add	%r30 %r31 %r3
 	lw	%r26 %r30 0
-	add	%r30 %r16 %r17
-	lw	%r26 %r30 0
-	add	%r30 %r4 %r30
-	sw	%r26 %r30 12
-	add	%r16 %r4 %r13
-	lw	%r26 %r30 4
-	add	%r30 %r9 %r11
-	lw	%r26 %r30 4
-	lw	%r26 %r31 8
-	add	%r30 %r31 %r15
-	lw	%r26 %r30 4
-	add	%r30 %r17 %r24
-	lw	%r26 %r30 4
-	lw	%r26 %r31 12
+	lw	%r26 %r31 -8
 	add	%r30 %r31 %r30
-	sw	%r26 %r30 16
-	lw	%r26 %r30 4
-	add	%r30 %r13 %r14
-	lw	%r26 %r30 8
-	add	%r9 %r30 %r21
-	add	%r9 %r17 %r30
-	sw	%r26 %r30 20
-	lw	%r26 %r30 12
-	add	%r9 %r30 %r30
-	sw	%r26 %r30 24
-	add	%r9 %r13 %r30
-	sw	%r26 %r30 28
-	lw	%r26 %r30 8
-	add	%r30 %r17 %r30
-	sw	%r26 %r30 32
-	lw	%r26 %r30 8
-	lw	%r26 %r31 12
-	add	%r30 %r31 %r6
-	lw	%r26 %r30 8
-	add	%r30 %r13 %r12
-	lw	%r26 %r30 12
-	add	%r17 %r30 %r30
-	sw	%r26 %r30 36
-	add	%r17 %r13 %r22
-	lw	%r26 %r30 12
-	add	%r30 %r13 %r23
-	add	%r11 %r15 %r7
-	add	%r11 %r24 %r20
-	lw	%r26 %r30 16
-	add	%r11 %r30 %r30
-	sw	%r26 %r30 40
-	add	%r11 %r14 %r25
-	add	%r11 %r21 %r1
-	lw	%r26 %r30 20
-	add	%r11 %r30 %r8
-	lw	%r26 %r30 24
-	add	%r11 %r30 %r5
-	lw	%r26 %r30 28
-	add	%r11 %r30 %r30
-	sw	%r26 %r30 44
-	lw	%r26 %r30 32
-	add	%r11 %r30 %r2
-	add	%r11 %r6 %r30
-	sw	%r26 %r30 48
-	add	%r11 %r12 %r18
-	lw	%r26 %r30 36
-	add	%r11 %r30 %r19
-	add	%r11 %r22 %r29
-	add	%r11 %r23 %r3
+	sw	%r26 %r30 -16
 	lw	%r26 %r30 0
-	add	%r10 %r30 %r30
-	sw	%r26 %r30 52
-	lw	%r26 %r30 52
-	add	%r30 %r16 %r10
-	add	%r10 %r4 %r4
-	lw	%r26 %r30 4
-	add	%r4 %r30 %r4
-	add	%r4 %r9 %r4
-	lw	%r26 %r30 8
-	add	%r4 %r30 %r4
-	add	%r4 %r17 %r4
-	lw	%r26 %r30 12
-	add	%r4 %r30 %r4
-	add	%r4 %r13 %r4
-	add	%r4 %r11 %r4
-	add	%r4 %r15 %r30
-	sw	%r26 %r30 56
-	lw	%r26 %r30 56
-	add	%r30 %r24 %r4
-	lw	%r26 %r30 16
-	add	%r4 %r30 %r4
-	add	%r4 %r14 %r4
-	add	%r4 %r21 %r4
-	lw	%r26 %r30 20
-	add	%r4 %r30 %r4
-	lw	%r26 %r30 24
-	add	%r4 %r30 %r4
-	lw	%r26 %r30 28
-	add	%r4 %r30 %r4
-	lw	%r26 %r30 32
-	add	%r4 %r30 %r4
-	add	%r4 %r6 %r4
-	add	%r4 %r12 %r4
-	lw	%r26 %r30 36
-	add	%r4 %r30 %r4
-	add	%r4 %r22 %r4
-	add	%r4 %r23 %r4
-	add	%r4 %r7 %r4
-	add	%r4 %r20 %r4
-	lw	%r26 %r30 40
-	add	%r4 %r30 %r4
-	add	%r4 %r25 %r4
-	add	%r4 %r1 %r1
-	add	%r1 %r8 %r1
+	lw	%r26 %r31 -12
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -20
+	lw	%r26 %r30 -4
+	lw	%r26 %r31 -8
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -24
+	lw	%r26 %r30 -4
+	lw	%r26 %r31 -12
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -28
+	lw	%r26 %r30 -8
+	lw	%r26 %r31 -12
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -32
+	lw	%r26 %r30 -16
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -36
+	lw	%r26 %r30 -20
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -40
+	lw	%r26 %r30 -24
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -44
+	lw	%r26 %r30 -28
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -48
+	lw	%r26 %r30 -32
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -52
+	lw	%r26 %r30 -16
+	lw	%r26 %r31 -20
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -56
+	lw	%r26 %r30 -16
+	lw	%r26 %r31 -24
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -60
+	lw	%r26 %r30 -16
+	lw	%r26 %r31 -28
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -64
+	lw	%r26 %r30 -16
+	lw	%r26 %r31 -32
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -68
+	lw	%r26 %r30 -20
+	lw	%r26 %r31 -24
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -72
+	lw	%r26 %r30 -20
+	lw	%r26 %r31 -28
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -76
+	lw	%r26 %r30 -20
+	lw	%r26 %r31 -32
+	add	%r30 %r31 %r6
+	lw	%r26 %r30 -24
+	lw	%r26 %r31 -28
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -80
+	lw	%r26 %r30 -24
+	lw	%r26 %r31 -32
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -84
+	lw	%r26 %r30 -28
+	lw	%r26 %r31 -32
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -88
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -40
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -92
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -44
+	add	%r30 %r31 %r7
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -48
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -96
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -52
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -100
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -56
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -104
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -60
+	add	%r30 %r31 %r1
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -64
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -108
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -68
+	add	%r30 %r31 %r5
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -72
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -112
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -76
+	add	%r30 %r31 %r2
+	lw	%r26 %r30 -36
+	add	%r30 %r6 %r30
+	sw	%r26 %r30 -116
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -80
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -120
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -84
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -124
+	lw	%r26 %r30 -36
+	lw	%r26 %r31 -88
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -128
+	lw	%r26 %r30 0
+	lw	%r26 %r31 -4
+	add	%r30 %r31 %r4
+	lw	%r26 %r30 -8
+	add	%r4 %r30 %r30
+	sw	%r26 %r30 -132
+	lw	%r26 %r30 -132
+	lw	%r26 %r31 -12
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -136
+	lw	%r26 %r30 -136
+	add	%r30 %r3 %r30
+	sw	%r26 %r30 -140
+	lw	%r26 %r30 -140
+	lw	%r26 %r31 -16
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -144
+	lw	%r26 %r30 -144
+	lw	%r26 %r31 -20
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -148
+	lw	%r26 %r30 -148
+	lw	%r26 %r31 -24
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -152
+	lw	%r26 %r30 -152
+	lw	%r26 %r31 -28
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -156
+	lw	%r26 %r30 -156
+	lw	%r26 %r31 -32
+	add	%r30 %r31 %r3
+	lw	%r26 %r30 -36
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -160
+	lw	%r26 %r30 -160
+	lw	%r26 %r31 -40
+	add	%r30 %r31 %r3
+	lw	%r26 %r30 -44
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -164
+	lw	%r26 %r30 -164
+	lw	%r26 %r31 -48
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -168
+	lw	%r26 %r30 -168
+	lw	%r26 %r31 -52
+	add	%r30 %r31 %r3
+	lw	%r26 %r30 -56
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -172
+	lw	%r26 %r30 -172
+	lw	%r26 %r31 -60
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -176
+	lw	%r26 %r30 -176
+	lw	%r26 %r31 -64
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -180
+	lw	%r26 %r30 -180
+	lw	%r26 %r31 -68
+	add	%r30 %r31 %r30
+	sw	%r26 %r30 -184
+	lw	%r26 %r30 -184
+	lw	%r26 %r31 -72
+	add	%r30 %r31 %r3
+	lw	%r26 %r30 -76
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -188
+	lw	%r26 %r30 -188
+	add	%r30 %r6 %r30
+	sw	%r26 %r30 -192
+	lw	%r26 %r30 -192
+	lw	%r26 %r31 -80
+	add	%r30 %r31 %r3
+	lw	%r26 %r30 -84
+	add	%r3 %r30 %r3
+	lw	%r26 %r30 -88
+	add	%r3 %r30 %r3
+	lw	%r26 %r30 -92
+	add	%r3 %r30 %r3
+	add	%r3 %r7 %r30
+	sw	%r26 %r30 -196
+	lw	%r26 %r30 -196
+	lw	%r26 %r31 -96
+	add	%r30 %r31 %r3
+	lw	%r26 %r30 -100
+	add	%r3 %r30 %r30
+	sw	%r26 %r30 -200
+	lw	%r26 %r30 -200
+	lw	%r26 %r31 -104
+	add	%r30 %r31 %r3
+	add	%r3 %r1 %r1
+	lw	%r26 %r30 -108
+	add	%r1 %r30 %r1
 	add	%r1 %r5 %r1
-	lw	%r26 %r30 44
+	lw	%r26 %r30 -112
 	add	%r1 %r30 %r1
 	add	%r1 %r2 %r1
-	lw	%r26 %r30 48
+	lw	%r26 %r30 -116
 	add	%r1 %r30 %r1
-	add	%r1 %r18 %r1
-	add	%r1 %r19 %r1
-	add	%r1 %r29 %r1
-	add	%r1 %r3 %r1
+	lw	%r26 %r30 -120
+	add	%r1 %r30 %r1
+	lw	%r26 %r30 -124
+	add	%r1 %r30 %r1
+	lw	%r26 %r30 -128
+	add	%r1 %r30 %r1
 	sub	%r0 %r1 %r1
 return_point.0 :
 	retl

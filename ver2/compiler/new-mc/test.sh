@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cp ./test/$1.s ../../simulator/simulator/test/$1.s
-
 INPUT=FALSE
 
 while :
@@ -19,14 +17,18 @@ do
 done
 
 if [ "$INPUT" = "TRUE" ]; then
-    cat ./input.txt > ../../simulator/simulator/input.txt
+    cat ./input.txt > ../../simulator/newsimulator/input.txt
 fi
 
-cd ../../simulator/simulator
+cp ./test/$1.s ../../simulator/newsimulator/test/$1.s
+
+cd ../../simulator/newsimulator
 rm ./result.bin
 
 make
 
 ./simulator ./test/$1.s $2 $3
 
-cp ./result.bin ../../compiler/min-caml/result.txt
+if [ -e "result.bin" ]; then
+    cp ./result.bin ../../compiler/new-mc/result.txt
+fi

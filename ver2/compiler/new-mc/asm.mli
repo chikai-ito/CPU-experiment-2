@@ -1,5 +1,6 @@
 open Enums
-type id_or_imm = V of Id.t | C of int
+(* open Mystub *)
+(* type id_or_imm = V of Id.t | C of int *)
 type data_t = I of int | F of float
 type t =
   | Ans of exp
@@ -9,6 +10,7 @@ and exp =
   | Set of int
   | SetL of Id.l
   | ILd of Id.l
+  | ILdF of Id.l
   | Mov of Id.t
   | Neg of Id.t
   | Itof of Id.t
@@ -22,8 +24,8 @@ and exp =
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
   | SLLI of Id.t * int
-  | Ld of Id.t * id_or_imm
-  | St of Id.t * Id.t * id_or_imm
+  | Ld of Id.t * int
+  | St of Id.t * Id.t * int
   | FMov of Id.t
   | Ftoi of Id.t
   | FNeg of Id.t
@@ -33,8 +35,8 @@ and exp =
   | FSub of Id.t * Id.t
   | FMul of Id.t * Id.t
   | FDiv of Id.t * Id.t
-  | LdF of Id.t * id_or_imm
-  | StF of Id.t * Id.t * id_or_imm
+  | LdF of Id.t * int
+  | StF of Id.t * Id.t * int
   | Comment of string
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t
@@ -45,7 +47,7 @@ and exp =
   | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 *)
   | Restore of Id.t (* スタック変数から値を復元 *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
-type prog = Prog of (Id.l * data_t) list * fundef list * t
+type prog = Prog of MemAlloc.t list * (Id.l * data_t) list * fundef list * t
 
 val fletd : Id.t * exp * t -> t (* shorthand of Let for float *)
 val seq : exp * t -> t (* shorthand of Let for unit *)
@@ -57,9 +59,11 @@ val allfregs : Id.t list
 val reg_cl : Id.t
 val reg_sw : Id.t
 val reg_fsw : Id.t
+val reg_zero : Id.t
 val reg_ra : Id.t
 val reg_hp : Id.t
 val reg_sp : Id.t
+val reg_sub : Id.t
 val is_reg : Id.t -> bool
 val is_freg : Id.t -> bool
 (* val co_freg : Id.t -> Id.t *)

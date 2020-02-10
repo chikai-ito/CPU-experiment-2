@@ -33,11 +33,10 @@ let rec kernel_cos x sgn =
   let a = 1. +. a *. y in
   a *. sgn
 in
-
-let pi = 3.141592653589793
-in
      
 let rec sin3 x sgn =
+  let pi = 3.141592653589793
+  in
   if x <= (pi /. 4.) then
     kernel_sin x sgn
   else
@@ -45,6 +44,8 @@ let rec sin3 x sgn =
 in
 
 let rec cos3 x sgn =
+  let pi = 3.141592653589793
+  in
   if x <= (pi /. 4.) then
     kernel_cos x sgn
   else
@@ -52,6 +53,8 @@ let rec cos3 x sgn =
 in
 
 let rec sin2 x sgn =
+  let pi = 3.141592653589793
+  in
   if x >= (pi /. 2.) then
     sin3 (pi -. x) sgn
   else
@@ -59,6 +62,8 @@ let rec sin2 x sgn =
 in
 
 let rec cos2 x sgn =
+  let pi = 3.141592653589793
+  in
   if x >= (pi /. 2.) then
     cos3 (pi -. x) (-.sgn)
   else
@@ -66,6 +71,8 @@ let rec cos2 x sgn =
 in
 
 let rec sin x =
+  let pi = 3.141592653589793
+  in
   if x >= pi *. 2. then
     sin (x -. pi *. 2.)
   else if x < 0. then
@@ -77,6 +84,8 @@ let rec sin x =
 in
 
 let rec cos x =
+  let pi = 3.141592653589793
+  in
   if x >= pi *. 2. then
     cos (x -. pi *. 2.)
   else if x < 0. then
@@ -100,6 +109,8 @@ let rec kernel_atan x sgn base =
 in
 
 let rec atan x =
+  let pi = 3.141592653589793
+  in
   if x >= 0. then
     if x < 0.4375 then
       kernel_atan x 1. 0.
@@ -229,7 +240,7 @@ let ptrace_dirvec  = create_array 3 0.0
 in
 
 (* 間接光サンプリングに使う方向ベクトル *)
-let dirvecs = 
+let dirvecs =
   let dummyf = create_array 0 0.0 in
   let dummyff = create_array 0 dummyf in
   let dummy_vs = create_array 0 (dummyf, dummyff) in
@@ -2566,6 +2577,6 @@ let rec rt size_x size_y =
 in
 
 let _ =
-  rt 512 512
+  rt 128 128
 
 in 0

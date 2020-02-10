@@ -1,38 +1,19 @@
 #data_section
 #text_section
 program_start :
+	addi	%r0 %r1 80
+	out	%r1
+	addi	%r0 %r1 51
+	out	%r1
 	addi	%r0 %r1 10
-	sw	%r26 %r28 4
-	addi	%r26 %r26 8
-	jal	fib.9
-	addi	%r26 %r26 -8
-	lw	%r26 %r28 4
+	out	%r1
+	addi	%r0 %r1 32
+	out	%r1
+	addi	%r0 %r1 32
+	out	%r1
+	addi	%r0 %r1 10
+	out	%r1
 	ret
-fib.9 :
-	addi	%r0 %r25 1
-	bg	%r1 %r25 ble_else.22
-	retl
-ble_else.22 :
-	addi	%r1 %r2 -1
-	sw	%r26 %r1 0
-	mov	%r2 %r1
-	sw	%r26 %r28 4
-	addi	%r26 %r26 8
-	jal	fib.9
-	addi	%r26 %r26 -8
-	lw	%r26 %r28 4
-	lw	%r26 %r2 0
-	addi	%r2 %r2 -2
-	sw	%r26 %r1 4
-	mov	%r2 %r1
-	sw	%r26 %r28 12
-	addi	%r26 %r26 16
-	jal	fib.9
-	addi	%r26 %r26 -16
-	lw	%r26 %r28 12
-	lw	%r26 %r2 4
-	add	%r2 %r1 %r1
-	retl
 #libraries
 min_caml_create_array :
 	mov	%r1 %r3
