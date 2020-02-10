@@ -88,10 +88,10 @@ let find x t regenv =
   if is_reg x then x else
   try M.find x regenv
   with Not_found -> raise (NoReg(x, t))
-let find' x' regenv =
-  match x' with
-  | V(x) -> V(find x Type.Int regenv)
-  | c -> c
+(* let find' x' regenv =
+ *   match x' with
+ *   | V(x) -> V(find x Type.Int regenv)
+ *   | c -> c *)
 
 let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)
   | Ans(exp) -> g'_and_restore dest cont regenv exp
@@ -119,7 +119,7 @@ and g'_and_restore dest cont regenv exp = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥¯¤«¤é¥ì¥¸¥¹¥
      g dest cont regenv (Let((x, t), Restore(x), Ans(exp))))
 and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_gprime) *)
     (* ¤³¤ì¤é¤ÎÌ¿Îá¤Ï¥ì¥¸¥¹¥¿¤ò»È¤ï¤Ê¤¤ *)
-  | Nop | Set _ | SetL _ | Comment _ | Restore _ | ILd _ as exp ->
+  | Nop | Set _ | SetL _ | Comment _ | Restore _ | ILd _ | ILdF _ as exp ->
      (Ans(exp), regenv)
   | Mov(x) -> (Ans(Mov(find x Type.Int regenv)), regenv)
   | Neg(x) -> (Ans(Neg(find x Type.Int regenv)), regenv)
@@ -136,8 +136,8 @@ and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regal
   | SLL(x,y) -> (Ans(SLL(find x Type.Int regenv, find y Type.Int regenv)), regenv)
   | SLLI(x,i) -> (Ans(SLLI(find x Type.Int regenv, i)), regenv)
   (* | SLLI(_,V(_)) -> failwith "in RegAlloc.g': non immediate second argument to SLLI" *)
-  | Ld(x, y') -> (Ans(Ld(find x Type.Int regenv, find' y' regenv)), regenv)
-  | St(x, y, z') -> (Ans(St(find x Type.Int regenv, find y Type.Int regenv, find' z' regenv)), regenv)
+  | Ld(x, i) -> (Ans(Ld(find x Type.Int regenv, i)), regenv)
+  | St(x, y, i) -> (Ans(St(find x Type.Int regenv, find y Type.Int regenv, i)), regenv)
   | FMov(x) -> (Ans(FMov(find x Type.Float regenv)), regenv)
   | FNeg(x) -> (Ans(FNeg(find x Type.Float regenv)), regenv)
   | Ftoi(x) -> (Ans(Ftoi(find x Type.Float regenv)), regenv)
@@ -147,8 +147,8 @@ and g' dest cont regenv = function (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regal
   | FSub(x, y) -> (Ans(FSub(find x Type.Float regenv, find y Type.Float regenv)), regenv)
   | FMul(x, y) -> (Ans(FMul(find x Type.Float regenv, find y Type.Float regenv)), regenv)
   | FDiv(x, y) -> (Ans(FDiv(find x Type.Float regenv, find y Type.Float regenv)), regenv)
-  | LdF(x, y') -> (Ans(LdF(find x Type.Int regenv, find' y' regenv)), regenv)
-  | StF(x, y, z') -> (Ans(StF(find x Type.Float regenv, find y Type.Int regenv, find' z' regenv)), regenv)
+  | LdF(x, i) -> (Ans(LdF(find x Type.Int regenv, i)), regenv)
+  | StF(x, y, i) -> (Ans(StF(find x Type.Float regenv, find y Type.Int regenv, i)), regenv)
   | If(cmp,x,y,e1,e2) as exp ->
      g'_if dest cont regenv exp
        (fun e1' e2' -> If(cmp, find x Type.Int regenv, find y Type.Int regenv, e1', e2')) e1 e2
@@ -229,8 +229,8 @@ let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì
   let (e', regenv') = g (a, t) (Ans(Mov(a))) regenv e in
   { name = Id.L(x); args = arg_regs; fargs = farg_regs; body = e'; ret = t }
 
-let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)
+let f (Prog(mems, data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)
   Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";
   let fundefs' = List.map h fundefs in
   let e', regenv' = g (Id.gentmp Type.Unit, Type.Unit) (Ans(Nop)) M.empty e in
-  Prog(data, fundefs', e')
+  Prog(mems, data, fundefs', e')

@@ -2,7 +2,7 @@ open KNormal
 
 (* インライン展開する関数の最大サイズ (caml2html: inline_threshold) *)
 let threshold = ref 0 (* Mainで-inlineオプションによりセットされる *)
-let unlimited = ref false
+let unlimited = ref true
 
 let rec size = function
   | If(_,_,_,e1,e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) -> 1 + size e1 + size e2

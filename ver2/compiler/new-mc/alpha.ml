@@ -6,8 +6,9 @@ let find x env = try M.find x env with Not_found -> x
 
 let rec g env = function (* α変換ルーチン本体 (caml2html: alpha_g) *)
   | Unit -> Unit
-  | Int(i) -> Int(i)
-  | Float(d) -> Float(d)
+  | Const(cns) -> Const(cns)
+  (* | Int(i) -> Int(i)
+   * | Float(d) -> Float(d) *)
   | Neg(x) -> Neg(find x env)
   | Itof(x) -> Itof(find x env)
   | In(x) -> In(find x env)
@@ -47,7 +48,9 @@ let rec g env = function (* α変換ルーチン本体 (caml2html: alpha_g) *)
                find y env,
                g env' e)
   | Get(x, y) -> Get(find x env, find y env)
+  | GetL(l, x) -> GetL(l, find x env)
   | Put(x, y, z) -> Put(find x env, find y env, find z env)
+  | PutL(l, x, y) -> PutL(l, find x env, find y env)
   | ExtArray(x) -> ExtArray(x)
   | ExtFunApp(x, ys) -> ExtFunApp(x, List.map (fun y -> find y env) ys)
 

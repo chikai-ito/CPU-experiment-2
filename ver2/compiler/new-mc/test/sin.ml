@@ -20,6 +20,8 @@ let pi = 3.141592653589793
 in
      
 let rec sin3 x sgn =
+  let pi = 3.141592653589793
+  in
   if x <= (pi /. 4.) then
     kernel_sin x sgn
   else
@@ -27,6 +29,8 @@ let rec sin3 x sgn =
 in
 
 let rec cos3 x sgn =
+  let pi = 3.141592653589793
+  in
   if x <= (pi /. 4.) then
     kernel_cos x sgn
   else
@@ -34,6 +38,8 @@ let rec cos3 x sgn =
 in
 
 let rec sin2 x sgn =
+  let pi = 3.141592653589793
+  in
   if x >= (pi /. 2.) then
     sin3 (pi -. x) sgn
   else
@@ -41,6 +47,8 @@ let rec sin2 x sgn =
 in
 
 let rec cos2 x sgn =
+  let pi = 3.141592653589793
+  in
   if x >= (pi /. 2.) then
     cos3 (pi -. x) (-.sgn)
   else
@@ -48,6 +56,8 @@ let rec cos2 x sgn =
 in
 
 let rec sin x =
+  let pi = 3.141592653589793
+  in
   if x >= pi *. 2. then
     sin (x -. pi *. 2.)
   else if x < 0. then
@@ -59,6 +69,8 @@ let rec sin x =
 in
 
 let rec cos x =
+  let pi = 3.141592653589793
+  in
   if x >= pi *. 2. then
     cos (x -. pi *. 2.)
   else if x < 0. then
@@ -69,14 +81,14 @@ let rec cos x =
     cos2 x 1.
 in
 
-(* let a0 = read_float () in
- * let a1 = read_float () in
- * let a2 = read_float () in
- * let a3 = read_float () in
- * let a4 = read_float () in
- * let a5 = read_float () in
- * let x = sin a0 +. cos a1 +. cos a3 in
- * let y = x *. sin a4 +. cos a5 +. sin a2 in
- * y *)
 let a0 = read_float () in
-sin a0
+let a1 = read_float () in
+let a2 = read_float () in
+let a3 = read_float () in
+let a4 = read_float () in
+let a5 = read_float () in
+let x = sin a0 +. cos a1 +. cos a3 in
+let y = x *. sin a4 +. cos a5 +. sin a2 in
+y
+(* let a0 = read_float () in
+ * sin a0 *)

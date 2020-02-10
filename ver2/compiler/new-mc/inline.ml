@@ -2,7 +2,7 @@ open KNormal
 
 (* インライン展開する関数の最大サイズ (caml2html: inline_threshold) *)
 let threshold = ref 0 (* Mainで-inlineオプションによりセットされる *)
-let unlimited = ref false
+let unlimited = ref true
 
 let rec size = function
   | If(_,_,_,e1,e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) -> 1 + size e1 + size e2
@@ -18,7 +18,7 @@ let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
       LetRec({ name = (x, t); args = yts; body = g env e1}, g env e2)
   | App(x, ys) when M.mem x env -> (* 関数適用の場合 (caml2html: inline_app) *)
       let (zs, e) = M.find x env in
-      Format.eprintf "inlining %s@." x;
+      (* Format.eprintf "inlining %s@." x; *)
       let env' =
         List.fold_left2
           (fun env' (z, t) y -> M.add z y env')

@@ -4,8 +4,8 @@
 open Enums
 open LNormal
 
-let loop_threshold = ref 500
-let unlimited = ref true
+let loop_threshold = ref 0
+let unlimited = ref false
                    
 
 (* sizeが一定以下の関数のみループにする *)

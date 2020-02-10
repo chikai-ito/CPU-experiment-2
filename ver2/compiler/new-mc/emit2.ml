@@ -22,12 +22,13 @@ let reset_ar _ =
 let save x =
   if not (H.mem stackmap x) then
     (H.add stackmap x !stacktop;
-     stacktop := !stacktop + 4)
+     stacktop := !stacktop - 4)
 
 let save_sub x =
   (* 以前のsaveの結果も後々必要になるので，stackに積み重ねていく *)
   H.add stackmap_sub x !stacktop;
-  stacktop := !stacktop + 4
+  stacktop := !stacktop - 4
+  
 let remov_sub x =
   assert (H.mem stackmap_sub x);
   H.remove stackmap_sub x
@@ -75,10 +76,6 @@ let add_regmap regtbl =
             match fspl_regs with
             | r :: rs -> (spl_regs, rs, (x, r) :: regmap, (x, t) :: spilled)
             | [] -> assert false (* spill regは２つあれば足りるはず *))
-         (* else if not (List.mem_assoc x spilled) then
-          *   (\* regmapに追加されているがspilledに追加されていない *\)
-          *   (\* これはdefsの後のusesのときの計算で起こりうる, get_reg中参照 *\)
-          *   (spl_regs, fspl_regs, regmap, (x, t) :: spilled) *)
          else (* すでにregmapに追加されているときは何もしない *)
            (spl_regs, fspl_regs, regmap, spilled)
       | _ -> (* その他の型の時 *)
@@ -87,8 +84,6 @@ let add_regmap regtbl =
             match spl_regs with
             | r :: rs -> (rs, fspl_regs, (x, r) :: regmap, (x, t) :: spilled)
             | [] -> assert false)
-         (* else if not (List.mem_assoc x spilled) then
-          *   (spl_regs, fspl_regs, regmap, (x, t) :: spilled) *)
          else
            (spl_regs, fspl_regs, regmap, spilled))
      
@@ -177,10 +172,6 @@ let output_simple_op oc dregmap uregmap operation =
      Printf.fprintf oc "\tlw\t%%r31 %s 0\n" (dlu x)
   | St(x, y, C(i)) ->
      Printf.fprintf oc "\tsw\t%s %s %d\n" (ulu y) (ulu x) i
-  (* | St(x, y, V(z)) ->
-   *    Printf.fprintf oc "\tadd\t%s %s %%r31\n" (ulu y) (ulu z);
-   *    Printf.fprintf oc "\tsw\t%%r31 %s 0\n" (ulu x)
-   * | FMov((x, _), y) when (dlu x) = (ulu y) -> () *)
   | FMov((x, _), y) -> Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu y) (dlu x)
   | FNeg((x, _), y) -> Printf.fprintf oc "\tneg.s\t%s %s\n" (ulu y) (dlu x)
   | Floor((x, _), y) -> Printf.fprintf oc "\tfloor.w.s\t%s %s\n" (ulu y) (dlu x)
@@ -197,10 +188,6 @@ let output_simple_op oc dregmap uregmap operation =
      Printf.fprintf oc "\tlw.s\t%%r31 %s 0\n" (dlu x)
   | StF(x, y, C(i)) ->
      Printf.fprintf oc "\tsw.s\t%s %s %d\n" (ulu y) (ulu x) i
-  (* | StF(x, y, V(z)) ->
-   *    Printf.fprintf oc "\tadd\t%s %s %%r31\n" (ulu y) (ulu z);
-   *    Printf.fprintf oc "\tsw.s\t%%r31 %s 0\n" (dlu x) *)
-     (* CallCls, CallDir, Entryはsimpleではない, 特別なルーチンで扱う *)
   | Return((x, t)) ->
      if t = Type.Float then
        (if (ulu x) <> fregs.(0) then
@@ -367,7 +354,7 @@ and ofs_live_regs saves top =
   let new_top, savemap =
     List.fold_left
       (fun (ofs, acc) r ->
-        (ofs + 4, (r, ofs) :: acc))
+        (ofs - 4, (r, ofs) :: acc))
       (top, []) saves in
   new_top, savemap
 
@@ -505,9 +492,9 @@ and callcls_routine oc livenow_tbl regtbl instr =
         align_args oc rrs xrs frrs fxrs;
         Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra new_top;
         Printf.fprintf oc "\tlw\t%s %s 0\n" reg_cl reg_sub1;
-        Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (new_top + 4);
+        Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (new_top - 4);
         Printf.fprintf oc "\tjalr\t%s\n" reg_sub1;
-        Printf.fprintf oc "\taddi\t%s %s -%d\n" reg_sp reg_sp (new_top + 4);
+        Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (- (new_top - 4));
         Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
         move_return_val oc regtbl x t;
         restore_live_regs oc savemap;
@@ -545,9 +532,9 @@ and calldir_routine oc livenow_tbl regtbl instr =
        (save_live_regs oc savemap;
         align_args oc rrs xrs frrs fxrs;
         Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_ra new_top;
-        Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (new_top + 4);
+        Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (new_top - 4);
         Printf.fprintf oc "\tjal\t%s\n" l;
-        Printf.fprintf oc "\taddi\t%s %s -%d\n" reg_sp reg_sp (new_top + 4);
+        Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (- (new_top - 4));
         Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
         move_return_val oc regtbl x t;
         restore_live_regs oc savemap;
@@ -716,7 +703,8 @@ let check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf =
      Printf.fprintf oc "\tj\t%s\n" l
   | End (is_ret) ->
      if is_ret then
-       (Printf.fprintf oc "\tadd\t%%r0 %%r0 %%r0\n";
+       (Printf.fprintf oc "program_end :\n";
+         Printf.fprintf oc "\tadd\t%%r0 %%r0 %%r0\n";
         Printf.fprintf oc "\tret\n")
      else
        Printf.fprintf oc "\tretl\n"
@@ -760,6 +748,12 @@ let output_cfg oc livenow_tbl regtbl blocks =
 
 let arrange_data oc data =
   Printf.fprintf oc "#data_section\n";
+  let hp = Id.genid "hp_init" in
+  let sp = Id.genid "sp_init" in
+  Printf.fprintf oc "%s :\n" hp;
+  Printf.fprintf oc "\t.int\t0x0\n";
+  Printf.fprintf oc "%s :\n" sp;
+  Printf.fprintf oc "\t.int\t0xffffff0\n";
   List.iter
     (fun (Id.L(x), d') ->
       match d' with
@@ -769,14 +763,19 @@ let arrange_data oc data =
       | I (d) ->
          Printf.fprintf oc "%s :\t# %d\n" x d;
          Printf.fprintf oc "\t.int\t%d\n" d)
-    data
+    data;
+  hp, sp
 
 
 let f : out_channel -> Asm2.prog -> Type.t -> unit =
   fun oc virtCode ty ->
   let (data, f_cfgs, cfg) = Cfg.f virtCode ty in
-  arrange_data oc data;
+  let hp, sp = arrange_data oc data in
   Printf.fprintf oc "#text_section\n";
+  Printf.fprintf oc "program_start :\n";
+  Printf.fprintf oc "\tilw\t%%r0 %%r26 %s\n" sp;
+  Printf.fprintf oc "\tilw\t%%r0 %%r27 %s\n" hp;
+  Printf.fprintf oc "\taddi\t%%r0 %%r28 program_end\n";
   List.iter
     (fun blocks ->
       let igraph, livenow_tbl, stat_tbl = Lra2.build_igraph blocks in

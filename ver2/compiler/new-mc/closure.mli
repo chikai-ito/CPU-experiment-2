@@ -2,8 +2,9 @@ open Enums
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t =
   | Unit
-  | Int of int
-  | Float of float
+  | Const of const
+  (* | Int of int
+   * | Float of float *)
   | Neg of Id.t
   | Itof of Id.t
   | In of Id.t
@@ -30,8 +31,11 @@ type t =
   | Tuple of Id.t list
   | LetTuple of (Id.t * Type.t) list * Id.t * t
   | Get of Id.t * Id.t
+  | GetL of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
+  | PutL of Id.l * Id.t * Id.t
   | ExtArray of Id.l
+and const = Int of int | Float of float | Ptr of Id.l
 type fundef = { name : Id.l * Type.t;
                 args : (Id.t * Type.t) list;
                 formal_fv : (Id.t * Type.t) list;

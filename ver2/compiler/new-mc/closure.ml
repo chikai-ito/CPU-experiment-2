@@ -2,8 +2,9 @@ open Enums
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Unit
-  | Int of int
-  | Float of float
+  | Const of const
+  (* | Int of int
+   * | Float of float *)
   | Neg of Id.t
   | Itof of Id.t
   | In of Id.t
@@ -30,8 +31,11 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Tuple of Id.t list
   | LetTuple of (Id.t * Type.t) list * Id.t * t
   | Get of Id.t * Id.t
+  | GetL of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
+  | PutL of Id.l * Id.t * Id.t
   | ExtArray of Id.l
+and const = Int of int | Float of float | Ptr of Id.l
 type fundef = { name : Id.l * Type.t;
                 args : (Id.t * Type.t) list;
                 formal_fv : (Id.t * Type.t) list;
@@ -39,10 +43,10 @@ type fundef = { name : Id.l * Type.t;
 type prog = Prog of fundef list * t
 
 let rec fv = function
-  | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
-  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x)
+  | Unit | Const _ | ExtArray(_) -> S.empty
+  | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | GetL(_, x)
     | FNeg(x) | Ftoi(x) | Floor(x) | FSqrt(x) -> S.singleton x
-  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) 
+  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | PutL(_, x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y)
     -> S.of_list [x; y]
   | If(_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
@@ -57,10 +61,16 @@ let rec fv = function
 
 let toplevel : fundef list ref = ref []
 
-let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
-  | KNormal.Unit -> Unit
+let g_const = function
   | KNormal.Int(i) -> Int(i)
   | KNormal.Float(f) -> Float(f)
+  | KNormal.Ptr(l) -> Ptr(l)
+
+let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
+  | KNormal.Unit -> Unit
+  | KNormal.Const(cns) -> Const(g_const cns)
+  (* | KNormal.Int(i) -> Int(i)
+   * | KNormal.Float(f) -> Float(f) *)
   | KNormal.Neg(x) -> Neg(x)
   | KNormal.Itof(x) -> Itof(x)
   | KNormal.In(x) -> In(x)
@@ -106,7 +116,8 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
          let e1' = g (M.add_list yts env') known e1 in
          known, e1') in
       let zs = S.elements (S.diff (fv e1') (S.add x (S.of_list (List.map fst yts)))) in (* 自由変数のリスト *)
-      let zts = List.map (fun z -> (z, M.find z env')) zs in (* ここで自由変数zの型を引くために引数envが必要 *)
+      let zts = List.map (fun z -> (z, try M.find z env' with Not_found ->
+                                         Format.eprintf "id %s was not found@." z; assert false)) zs in (* ここで自由変数zの型を引くために引数envが必要 *)
       toplevel := { name = (Id.L(x), t); args = yts; formal_fv = zts; body = e1' } :: !toplevel; (* トップレベル関数を追加 *)
       let e2' = g env' known' e2 in
       if S.mem x (fv e2') then (* xが変数としてe2'に出現するか *)
@@ -121,11 +132,14 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.Tuple(xs) -> Tuple(xs)
   | KNormal.LetTuple(xts, y, e) -> LetTuple(xts, y, g (M.add_list xts env) known e)
   | KNormal.Get(x, y) -> Get(x, y)
+  | KNormal.GetL(l, x) -> GetL(l, x)
   | KNormal.Put(x, y, z) -> Put(x, y, z)
+  | KNormal.PutL(l, x, y) -> PutL(l, x, y)
   | KNormal.ExtArray(x) -> ExtArray(Id.L(x))
   | KNormal.ExtFunApp(x, ys) -> AppDir(Id.L("min_caml_" ^ x), ys)
 
 let f e =
+  Format.eprintf "start Closure.f@.";
   toplevel := [];
   let e' = g M.empty S.empty e in
   Prog(List.rev !toplevel, e')

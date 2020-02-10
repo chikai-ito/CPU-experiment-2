@@ -818,13 +818,13 @@ program_start :
 	sw	%r29 %r30 0
 	sw	%r29 %r23 8
 	sw	%r29 %r14 4
-	addi	%r0 %r14 512
-	addi	%r0 %r23 512
+	addi	%r0 %r14 128
+	addi	%r0 %r23 128
 	sw	%r16 %r14 0
 	sw	%r16 %r23 4
-	addi	%r0 %r23 256
+	addi	%r0 %r23 64
 	sw	%r18 %r23 0
-	addi	%r0 %r23 256
+	addi	%r0 %r23 64
 	sw	%r18 %r23 4
 	ilw.s	%r0 %f0 l.59
 	mtc1	%r14 %f1
