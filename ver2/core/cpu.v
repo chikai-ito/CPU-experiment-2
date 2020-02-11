@@ -1,6 +1,6 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 520) (
+module top #(CLK_PER_HALF_BIT = 1041) (
     input wire clk,
     input wire rstn,
     
@@ -35,14 +35,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
 	localparam inst_size	 = 5000;
 	localparam buffer_size	 = 5000;
-
-    localparam s_idle = 0;
-    localparam s_1 = 1;
-    localparam s_2 = 2;
-    localparam s_3 = 3;
-    localparam s_4 = 4;
-    localparam s_5 = 5;
-    localparam s_6 = 6;
 
     reg [3:0]             err;
 
@@ -80,7 +72,9 @@ module top #(CLK_PER_HALF_BIT = 520) (
     localparam bg 			= 6'b000110;
     localparam fbne			= 6'b000011;
     localparam fbg			= 6'b000111;
+    localparam fbge         = 6'b001110;
     localparam sll 			= 6'b111111;
+    localparam slli         = 6'b111110;
     localparam ble			= 6'b001011;
     localparam bge 			= 6'b001001;
 
@@ -95,8 +89,6 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // 命令メモリ
     reg [31:0] inst [0:inst_size-1];
 
-    // 今読んでいる命令
-
     // *****************
     // バッファ
     // 入力データを格納する
@@ -107,9 +99,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
     // バッファの中でコアが読み終えている部分
     reg [31:0] buffer_reading_idx;
+    reg [31:0] prop_reading_idx [0:4];
 
     // 6クロック命令のためにパイプラインがストールするための時間
     reg [2:0] waiting;
+
+    // 分岐予測を何段しているか？
+    reg [3:0] prediction;
+    reg [3:0] prop_prediction [0:4];
 
     integer i;
 
@@ -133,6 +130,7 @@ module top #(CLK_PER_HALF_BIT = 520) (
     reg [31:0] result [0:4];
     // 終了処理
     reg inst_stop;
+    reg sw_waiting;
 
     // 伝搬する命令
     reg [31:0] instr_reg [0:4];
@@ -140,17 +138,33 @@ module top #(CLK_PER_HALF_BIT = 520) (
     // 伝搬するプログラムカウンタ
     reg [31:0] prop_pc [0:4];
 
+    // 伝搬する実行命令数
+    reg [31:0] prop_iteration [0:4];
+
     // レジスタの値がいま計算中であるかどうかを保持するフラグ
     reg [31:0] int_data_flag;
     reg [31:0] float_data_flag;
 
     // 伝搬する命令有効フラグ
-    reg [5:0] validate_flag;
+    reg [4:0] validate_flag;
 
-    //*******************
-    //FPU modules
+    
+    wire [31:0] immediate;
+    wire [31:0] minus_immediate;
 
-    /*
+    // OUT命令用のフラグ
+    reg output_flag;
+
+    // OUT命令で出力する中身
+    reg [31:0] output_content;
+    
+    
+    // 即値として何を用いるか
+    assign immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + instr_reg[0][15:0]) : (instr_reg[0][15:0]);
+    assign minus_immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + instr_reg[0][15:0]) : (instr_reg[0][15:0] - 1);
+    
+    // *******************
+    // FPU modules
 
     wire ovf;
     wire [31:0] f_result;
@@ -161,52 +175,45 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
     wire [31:0] f_argument;
 
-    */ 
-    wire [31:0] immediate;
-    wire [31:0] minus_immediate;
     
-    
-    // 即値として何を用いるか
-    assign immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + instr_reg[0][15:0]) : (instr_reg[0][15:0]);
-    assign minus_immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + instr_reg[0][15:0]) : (instr_reg[0][15:0] - 1);
-    
-    /* 
     // FPUに渡す引数
-    assign f_argument = (now_inst[31:26] == cop1 && now_inst[25:21] == f_mtc1) ? (register_int[now_inst[20:16]]) : (register_float[now_inst[20:16]]);
+    assign f_argument = (instr_reg[1][31:26] == cop1 && instr_reg[1][25:21] == f_mtc1) ? (register_int[instr_reg[1][20:16]]) : (register_float[instr_reg[1][20:16]]);
     
     // メインFPU
-    fpu1 fpu11(
-        now_inst[31:26],
-        now_inst[25:21],
-        register_float[now_inst[15:11]],
-        f_argument,
-        now_inst[5:0],
+    fpu2 fpu11(
+        instr_reg[1][31:26],
+        instr_reg[1][25:21],
+        argument2[1],
+        argument1[1],
+        instr_reg[1][5:0],
         f_result,
-        f_exception
+        f_exception,
+        clk,
+        rstn
     );
 
     // fequal(fbne用)
     fequal fequall(
-    	register_float[now_inst[25:21]],
-    	register_float[now_inst[20:16]],
+    	argument1[1],
+    	argument2[1],
     	fequal_res
-    	);
+    );
 
     // fless(fbg用)
     fless flessl(
-    	register_float[now_inst[20:16]],
-    	register_float[now_inst[25:21]],
+    	argument2[1],
+    	argument1[1],
     	fless_res
-    	);
+    );
 
-    */
+    
     
     // ********************
 
     
 
      // write-enable
-    assign we = (instr_reg[0][31:26] == sw || instr_reg[0][31:26] == sws);
+    assign we = (instr_reg[0][31:26] == sw || instr_reg[0][31:26] == sws) && (prediction == 3'b0) && validate_flag[0];
     
     // 読み出し・書き出しに使うメモリアドレス
     assign memory_addr = register_int[instr_reg[0][25:21]][31:2] + immediate[31:2];
@@ -215,15 +222,16 @@ module top #(CLK_PER_HALF_BIT = 520) (
     assign write_data = (instr_reg[0][31:26] == sw) ? register_int[instr_reg[0][20:16]] : register_float[instr_reg[0][20:16]];
     
     // UART出力用のフラグ　これが立っていたら通信を開始
-    // assign sender_ready = (now_inst[31:26] == special &&
-    //                        now_inst[5:0] == s_out) || first_send;
+    assign sender_ready = output_flag || first_send;
 
     initial begin
         // 各種初期化
         inst_stop <= 1'b0;
         iteration <= 32'b0;
+        first_send <= 1'b1;
         buffer_valid_idx <= 32'b0;
         buffer_reading_idx <= 32'b0;
+        sw_waiting <= 1'b0;
         for(i=0;i<32;i=i+1) begin
             register_int[i] <= 32'b0;
             register_float[i] <= 32'b0;
@@ -236,21 +244,25 @@ module top #(CLK_PER_HALF_BIT = 520) (
         	argument2[i] <= 32'b0;
         	argument3[i] <= 32'b0;
         	prop_pc[i] <= 32'b0;
+            prop_iteration[i] <= 32'b0;
+            prop_prediction[i] <= 3'b0;
+            prop_reading_idx[i] <= 32'b0;
         	validate_flag[i] <= 1'b0;
         end
-        waiting <= 0;
+        waiting <= 2;
+        prediction <= 3'b0;
         register_int[27] <= 32'b00000000000000001000000000000000;
     	pc <= 32'b0;
     	$readmemb("copy.mem", inst);
     end
     
     // LEDに表示したいものをここでassignする
-    assign out_led = register_int[1];
+    assign out_led = iteration[23:16];
 
     reg ferr;
 
     // 最初に送るのは決まったバイト、そうでなければ指定されたバイト
-    // assign w_data = (first_send) ? 8'b10101010 : register_int[now_inst[25:21]][7:0];
+    assign w_data = (first_send) ? 8'b10101010 : output_content[7:0];
 
     // 一つのデータを連続して読まないように立てるフラグ
     // 読むのを開始した瞬間に立てて、データが来なくなったら下ろす
@@ -264,10 +276,13 @@ module top #(CLK_PER_HALF_BIT = 520) (
     reg out;
 
     always @(posedge clk) begin
-    	/*
-        if (first_send && status == s_2) begin
+        // 一番最初に0xaaを送信するための処理
+        // 今考えるとコンパイラに頼んだほうが圧倒的に楽だったと思う
+        if (first_send && ~sender_sending) begin
             first_send <= 1'b0;
         end
+        
+        // データ入力のバッファ書き込み
         if (receiver_valid && !reading) begin
             buffer[buffer_valid_idx] <= r_data;
             buffer_valid_idx <= buffer_valid_idx + 1;
@@ -275,12 +290,14 @@ module top #(CLK_PER_HALF_BIT = 520) (
         end else if(!receiver_valid) begin 
         	reading <= 1'b0;
         end
-        */
+        
         if (~rstn) begin
             inst_stop <= 1'b0;
 	        iteration <= 32'b0;
+            first_send <= 1'b1;
 	        buffer_valid_idx <= 32'b0;
 	        buffer_reading_idx <= 32'b0;
+            sw_waiting <= 1'b0;
 	        for(i=0;i<32;i=i+1) begin
 	            register_int[i] <= 32'b0;
 	            register_float[i] <= 32'b0;
@@ -288,157 +305,405 @@ module top #(CLK_PER_HALF_BIT = 520) (
 	            float_data_flag[i] <= 1'b0;
 	        end
 	        for(i=0;i<5;i=i+1) begin
+                instr_reg[i] <= 32'b0;
 	        	result[i] <= 32'b0;
 	        	argument1[i] <= 32'b0;
 	        	argument2[i] <= 32'b0;
 	        	argument3[i] <= 32'b0;
 	        	prop_pc[i] <= 32'b0;
+                prop_iteration[i] <= 32'b0;
+                prop_prediction[i] <= 3'b0;
+                prop_reading_idx[i] <= 32'b0;
 	        	validate_flag[i] <= 1'b0;
 	        end
-	        waiting <= 0;
+            prediction <= 3'b0;
+	        waiting <= 2;
 	        register_int[27] <= 32'b00000000000000001000000000000000;
 	    	pc <= 32'b0;
 	    	$readmemb("copy.mem", inst);
-    	end else if (~inst_stop) begin
+    	end else if (~inst_stop && ~sender_sending) begin
     		// パイプライン実装
 
     		// ********************
     		// フェッチフェーズ
     		// ********************
+            if (waiting == 3'b0) begin 
 
-    		if (waiting == 3'b0) begin
+                
 
 	    		instr_reg[0] <= inst[pc];
 	    		prop_pc[0] <= pc;
-	    		validate_flag[0] <= 1'b1;
+                prop_iteration[0] <= iteration;
+                prop_prediction[0] <= prediction;
+                prop_reading_idx[0] <= reading_idx;
+                validate_flag[0] <= 1'b1;
 
-	    		
-				// pcの値を分岐するように予測します
-	    		if (inst[pc][31:26] == j) begin
-	    			pc <= {6'b0, inst[pc][25:0]};
-	    		end else if (inst[pc][31:26] == beq) begin
-	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
+	    		// 分岐予測
+	    		// 常にジャンプするように予測
+	    		case (inst[pc][31:26])
+	    			special:
+	    				case (inst[pc][5:0])
+	    					s_jr: begin
+	    						if (int_data_flag[inst[pc][25:21]]) begin
+				    				// Read After Writeハザードが発生
+				    				// パイプラインの伝搬を１つ遅らせる
+				    				validate_flag[0] <= 1'b0;
+                                    prediction <= prediction;
+                                    iteration <= iteration;
+				    				pc <= pc;
+				    			end else begin
+                                    iteration <= iteration + 1;
+				    				pc <= register_int[inst[pc][25:21]];
+			    				end
+			    			end
+			    			s_retl: begin
+			    				if (int_data_flag[28]) begin
+			    					validate_flag[0] <= 1'b0;
+                                    prediction <= prediction;
+                                    iteration <= iteration;
+			    					pc <= pc;
+			    				end else begin
+			    					pc <= register_int[28] + 1;
+                                    iteration <= iteration + 1;
+			    				end
+			    			end
+                            s_out: begin
+                                pc <= pc + 1;
+                                iteration <= iteration + 1;
+                                waiting <= waiting + 1;
+                            end
+			    			default: begin
+			    				pc <= pc + 1;
+                                iteration <= iteration + 1;
+                            end
+			    		endcase // inst[pc][5:0]
+                    cop1: begin
+                        // 6クロック命令の実行
+                        // 待機カウンタをインクリメント
+                        pc <= pc + 1;
+                        iteration <= iteration + 1;
+                        waiting <= waiting + 2;
+                    end
+			    	j, jal: begin
+	    				pc <= {6'b0, inst[pc][25:0]};
+                        iteration <= iteration + 1;
+                    end
+			    	jalr: begin
+			    		if (int_data_flag[inst[pc][25:21]]) begin
+		    				validate_flag[0] <= 1'b0;
+		    				pc <= pc;
+                            prediction <= prediction;
+                            iteration <= iteration;
+		    			end else begin
+		    				pc <= register_int[inst[pc][25:21]];
+                            iteration <= iteration + 1;
+		    			end
+		    		end
+		    		beq, bne, bl, ble, bg, bge, fbg, fbge, fbne: begin
 
-	    		end else if (inst[pc][31:26] == bl) begin
-	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
-
-	    		end else if (inst[pc][31:26] == bg) begin
-	    			pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
-
-	    		end else if (inst[pc][31:26] == special && inst[pc][5:0] == s_jr) begin
-	    			if (int_data_flag[inst[pc][25:21]]) begin
-	    				// Read After Writeハザードが発生
-	    				// パイプラインの伝搬を１つ遅らせる
-	    				validate_flag[0] <= 1'b0;
-	    				pc <= pc;
-	    			end else begin
-	    				pc <= register_int[inst[pc][25:21]];
-    				end
-
-    			end else if (inst[pc][31:26] == special && inst[pc][5:0] == s_retl) begin
-    				if (int_data_flag[28]) begin
-    					validate_flag[0] <= 1'b0;
-    					pc <= pc;
-    				end else begin
-    					pc <= register_int[28] + 1;
-    				end
-
-	    		end else if (inst[pc][31:26] == jalr) begin
-	    			if (int_data_flag[inst[pc][25:21]]) begin
-
-	    				validate_flag[0] <= 1'b0;
-	    				pc <= pc;
-	    			end else begin
-	    				pc <= register_int[inst[pc][25:21]];
+                        prediction <= prediction + 1;
+                        iteration <= iteration + 1;
+	    				pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
 	    			end
+                    sw: begin
+                        if (int_data_flag[inst[pc][20:16]] || int_data_flag[inst[pc][25:21]] || prediction != 3'b0 || validate_flag[0]) begin
+                            sw_waiting <= 1'b1;
+                            validate_flag[0] <= 1'b0;
+                            pc <= pc;
+                            prediction <= prediction;
+                            iteration <= iteration;
+                        end else begin
+                            sw_waiting <= 1'b0;
+                            iteration <= iteration + 1;
+                            pc <= pc + 1;
+                        end
+                    end
+                    sws: begin
+                        if (float_data_flag[inst[pc][20:16]] || float_data_flag[inst[pc][25:21]] || prediction != 3'b0 || validate_flag[0]) begin
+                            sw_waiting <= 1'b1;
+                            validate_flag[0] <= 1'b0;
+                            
+                            pc <= pc;
+                            prediction <= prediction;
+                            iteration <= iteration;
+                        end else begin
+                            sw_waiting <= 1'b0;
+                            iteration <= iteration + 1;
+                            pc <= pc + 1;
+                        end 
+                    end
 
-	    		end else if (inst[pc][31:26] == jal) begin
-	    			pc <= {6'b0, inst[pc][25:0]};
-
-	    		end else begin
-	    			pc <= pc + 1;
-	    		end
+	    			default: begin
+                        iteration <= iteration + 1;
+	    				pc <= pc + 1;
+	    		    end
+	    		endcase // inst[pc][5:0]
 	    	end else begin
 	    		waiting <= waiting - 1;
-	    	end
 
-    		iteration <= iteration + 1;
+                validate_flag[0] <= 1'b0;
+	    	end
 
     		// ********************
     		// デコードフェーズ
     		// ********************
 
     		stallflag = 0;
-
-    		case (instr_reg[0][31:26])
-    			special:
-    				case (instr_reg[0][5:0])
-    					s_add, s_sub, s_mult, s_div: begin
-                            argument1[1] <= register_int[instr_reg[0][25:21]];
-                            argument2[1] <= register_int[instr_reg[0][20:16]];
-                            stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+            if (validate_flag[0]) begin
+        		case (instr_reg[0][31:26])
+        			special:
+        				case (instr_reg[0][5:0])
+        					s_add, s_sub, s_mult, s_div: begin
+                                argument1[1] <= register_int[instr_reg[0][25:21]];
+                                argument2[1] <= register_int[instr_reg[0][20:16]];
+                                stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+                                if (~stallflag) begin
+    								int_data_flag[instr_reg[0][15:11]] <= 1'b1;
+    							end
+                            end
+                            s_mov: begin
+                            	argument1[1] <= register_int[instr_reg[0][25:21]];
+                            	stallflag = int_data_flag[instr_reg[0][25:21]];
+                            	if (~stallflag) begin
+    		                    	int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+    		                    end
+                            end
+                            s_jr: begin
+                                if (int_data_flag[instr_reg[0][25:21]]) begin
+                                    validate_flag[0] <= 1'b0;
+                                    validate_flag[1] <= 1'b0;
+                                    iteration <= prop_iteration[0];
+                                    pc <= prop_pc[0];
+                                    prediction <= prop_prediction[0];
+                                    buffer_reading_idx <= prop_reading_idx[0];
+                                end 
+                            end
+                            s_retl: begin
+                                if (int_data_flag[28]) begin
+                                    validate_flag[0] <= 1'b0;
+                                    validate_flag[1] <= 1'b0;
+                                    iteration <= prop_iteration[0];
+                                    pc <= prop_pc[0];
+                                    prediction <= prop_prediction[0];
+                                    buffer_reading_idx <= prop_reading_idx[0];
+                                end 
+                            end
+                            s_out: begin
+                                argument1[1] <= register_int[instr_reg[0][25:21]];
+                                stallflag = int_data_flag[instr_reg[0][25:21]] | sender_sending;
+                            end
+                            s_in: begin
+                                argument[1] <= {buffer[buffer_reading_idx+3], 
+                                                buffer[buffer_reading_idx+2],
+                                                buffer[buffer_reading_idx+1],
+                                                buffre[buffer_reading_idx]};
+                                stallflag = (buffer_reading_idx + 3 > buffer_valid_idx) | 
+                                            (buffer_reading_idx + 3 == buffer_valid_idx);
+                                if (~stallflag) begin
+                                    buffer_reading_idx <= buffer_reading_idx + 4;
+                                    register_int[instr_reg[0][25:21]] <= 1'b1;
+                                end
+                            end
+                            s_fin: begin
+                                argument[1] <= {buffer[buffer_reading_idx+3], 
+                                                buffer[buffer_reading_idx+2],
+                                                buffer[buffer_reading_idx+1],
+                                                buffre[buffer_reading_idx]};
+                                stallflag = (buffer_reading_idx + 3 > buffer_valid_idx) | 
+                                            (buffer_reading_idx + 3 == buffer_valid_idx);
+                                if (~stallflag) begin
+                                    buffer_reading_idx <= buffer_reading_idx + 4;
+                                    register_float[instr_reg[0][25:21]] <= 1'b1;
+                                end
+                            end
+                            //s_in:
+                            //s_fin:
+                        endcase // instr_reg[0][5:0]
+                    sw: begin
+                        if (int_data_flag[instr_reg[0][20:16]] || int_data_flag[instr_reg[0][25:21]]) begin
+                            validate_flag[0] <= 1'b0;
+                            validate_flag[1] <= 1'b0;
+                            iteration <= prop_iteration[0];
+                            pc <= prop_pc[0];
+                            prediction <= prop_prediction[0];
+                            buffer_reading_idx <= prop_reading_idx[0];
+                        end
+                    end
+                    sws: begin
+                        if (float_data_flag[instr_reg[0][20:16]] || float_data_flag[instr_reg[0][25:21]]) begin
+                            validate_flag[0] <= 1'b0;
+                            validate_flag[1] <= 1'b0;
+                            iteration <= prop_iteration[0];
+                            pc <= prop_pc[0];
+                            prediction <= prop_prediction[0];
+                            buffer_reading_idx <= prop_reading_idx[0];
+                        end 
+                    end
+                    cop1: begin
+                        if (instr_reg[0][5:0] == s_mov) begin
+                            // mov.s
+                            argument1[1] <= register_float[instr_reg[0][25:21]];
+                            stallflag = float_data_flag[instr_reg[0][25:21]];
                             if (~stallflag) begin
-								int_data_flag[instr_reg[0][15:11]] <= 1'b1;
-							end
+                                float_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                            end
+
+                        end else if (instr_reg[0][25:21] == f_mtc1) begin
+                            // f_mtc1
+                            argument1[1] <= register_int[instr_reg[0][20:16]];
+                            argument2[1] <= register_float[instr_reg[0][15:11]];
+                            stallflag = int_data_flag[instr_reg[0][20:16]];
+                            if (~stallflag) begin
+                                float_data_flag[instr_reg[0][15:11]] <= 1'b1;
+                            end
+
+                        end else if (instr_reg[0][25:21] == f_mfc1) begin
+                            argument1[1] <= register_int[instr_reg[0][20:16]];
+                            argument2[1] <= register_float[instr_reg[0][15:11]];
+                            stallflag = float_data_flag[instr_reg[0][15:11]];
+                            if (~stallflag) begin
+                                int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                            end
+
+                        end else if (instr_reg[0][25:21] == f_others) begin
+                            argument1[1] <= register_float[instr_reg[0][20:16]];
+                            argument2[1] <= register_float[instr_reg[0][15:11]];
+                            // 本当は命令によって使うレジスタの場所は違うけどこれでも動きはするのでサボっている
+                            stallflag = float_data_flag[instr_reg[0][20:16]] | float_data_flag[instr_reg[0][15:11]];
+                            if (~stallflag) begin
+                                float_data_flag[instr_reg[0][10:6]] <= 1'b1;
+                            end
+
                         end
-                        s_mov: begin
-                        	argument1[1] <= register_int[instr_reg[0][25:21]];
-                        	stallflag = int_data_flag[instr_reg[0][25:21]];
-                        	if (~stallflag) begin
-		                    	int_data_flag[instr_reg[0][20:16]] <= 1'b1;
-		                    end
+                    end
+                    lw: begin
+                    	stallflag = int_data_flag[instr_reg[0][25:21]];
+                    	if (~stallflag) begin
+
+                    		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                    	end
+                    end
+                    lws: begin
+                        stallflag = float_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
+
+                            float_data_flag[instr_reg[0][20:16]] <= 1'b1;
                         end
-                        //s_in:
-                        //s_fin:
-                    endcase // instr_reg[0][5:0]
-                lw: begin
-                	stallflag = int_data_flag[instr_reg[0][25:21]];
-                	if (~stallflag) begin
+                    end
+                    ilw: begin
+                        argument1[1] <= inst[register_int[instr_reg[0][25:21]] + immediate];
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
 
-                		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
-                	end
-                end
-                addi: begin
-                    argument1[1] <= register_int[instr_reg[0][25:21]];
-                    argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
-                    stallflag = int_data_flag[instr_reg[0][25:21]];
-                    if (~stallflag) begin
-                		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
-                	end
-                end
-                j: begin
-                	stallflag = int_data_flag[instr_reg[0][25:21]];
-                end
-                jal: begin
-                	int_data_flag[28] <= 1'b1;
-                end
-                jalr: begin
-                	int_data_flag[28] <= 1'b1;
-                end
-                beq, bl, bg: begin
-                	argument1[1] <= register_int[instr_reg[0][25:21]];
-                	argument2[1] <= register_int[instr_reg[0][20:16]];
-                	stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
-                end
+                            int_data_flag[register_int[20:16]] <= 1'b1;
+                        end
+                    end
+                    ilws: begin
+                        argument1[1] <= inst[register_int[instr_reg[0][25:21]] + immediate];
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
 
-
-
-
-            endcase // now_inst[31:26]
+                            float_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                        end
+                    end
+                    addi: begin
+                        argument1[1] <= register_int[instr_reg[0][25:21]];
+                        argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
+                    		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                    	end
+                    end
+                    sll: begin
+                        argument1[1] <= register_int[instr_reg[0][20:16]];
+                        argument2[1] <= register_int[instr_reg[0][10:6]];
+                        stallflag = int_data_flag[instr_reg[0][20:16]] | int_data_flag[instr_reg[0][10:6]];
+                        if (~stallflag) begin
+                            int_data_flag[instr_reg[0][15:11]] <= 1'b1;
+                        end 
+                    end
+                    slli: begin
+                        argument1[1] <= register_int[instr_reg[0][25:21]];
+                        argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
+                            int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                        end
+                    end
+                    j: begin
+                    	stallflag = int_data_flag[instr_reg[0][25:21]];
+                    end
+                    jal: begin
+                    	int_data_flag[28] <= 1'b1;
+                    end
+                    jalr: begin
+                        if (int_data_flag[instr_reg[0][25:21]]) begin
+                            // さっきした分岐は失敗だった
+                            validate_flag[0] <= 1'b0;
+                            validate_flag[1] <= 1'b0;
+                            iteration <= prop_iteration[0];
+                            pc <= prop_pc[0];
+                            prediction <= prop_prediction[0];
+                            buffer_reading_idx <= prop_reading_idx[0];
+                    	end else begin
+                            int_data_flag[28] <= 1'b1;
+                        end
+                    end
+                    beq, bne, bl, ble, bg, bge: begin
+                    	argument1[1] <= register_int[instr_reg[0][25:21]];
+                    	argument2[1] <= register_int[instr_reg[0][20:16]];
+                    	stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+                    end
+                    fbne, fbg, fbge: begin
+                        argument1[1] <= register_float[instr_reg[0][25:21]];
+                        argument2[1] <= register_float[instr_reg[0][20:16]];
+                        stallflag = float_data_flag[instr_reg[0][25:21]] | float_data_flag[instr_reg[0][20:16]];
+                    end
+                    sw: begin
+                        if (int_data_flag[instr_reg[0][20:16]]) begin
+                            validate_flag[0] <= 1'b0;
+                            validate_flag[1] <= 1'b0;
+                            iteration <= prop_iteration[0];
+                            pc <= prop_pc[0];
+                            prediction <= prop_prediction[0];
+                            buffer_reading_idx <= prop_reading_idx[0];
+                        end
+                    end
+                    sws: begin
+                        if (float_data_flag[instr_reg[0][20:16]]) begin
+                            validate_flag[0] <= 1'b0;
+                            validate_flag[1] <= 1'b0;
+                            iteration <= prop_iteration[0];
+                            pc <= prop_pc[0];
+                            prediction <= prop_prediction[0];
+                            buffer_reading_idx <= prop_reading_idx[0];
+                        end 
+                    end
+                endcase // now_inst[31:26]
+            end
 
             // 全命令共通の伝搬処理
             instr_reg[1] <= instr_reg[0];
             prop_pc[1] <= prop_pc[0];
+            prop_iteration[1] <= prop_iteration[0];
+            prop_prediction[1] <= prop_prediction[0];
+            prop_reading_idx[1] <= prop_reading_idx[0];
             validate_flag[1] <= validate_flag[0];
 
-            if (stallflag) begin
+            if (stallflag && validate_flag[0]) begin
             	// Read After Writeハザードが発生する
             	// パイプラインの伝搬を一つ遅らせる
             	validate_flag[1] <= 1'b0;
             	instr_reg[0] <= instr_reg[0];
             	prop_pc[0] <= prop_pc[0];
+                prop_iteration[0] <= prop_iteration[0];
+                prop_prediction[0] <= prop_prediction[0];
+                prop_reading_idx[0] <= prop_reading_idx[0];
             	validate_flag[0] <= validate_flag[0];
             	pc <= pc;
+                waiting <= waiting;
+                prediction <= prediction;
+                iteration <= iteration;
             end
 
     		// ********************
@@ -447,63 +712,164 @@ module top #(CLK_PER_HALF_BIT = 520) (
 
 
             out = 1'b0;
-             
-    		case (instr_reg[1][31:26])
-    			special:
-    				case (instr_reg[1][5:0])
-    					s_add:
-                            result[2] <= argument1[1] + argument2[1];
-                        s_sub:
-                            result[2] <= argument1[1] - argument2[1];
-                        s_mult:
-                            result[2] <= argument1[1] * argument2[1];
-                        s_div:
-                            result[2] <= argument1[1] / argument2[1];
-                        s_mov:
-                        	result[2] <= argument1[1];
-                    endcase // instr_reg[1][5:0]
-                addi:
-                	result[2] <= argument1[1] + argument2[1];
-                jal, jalr: begin
-                	result[2] <= prop_pc[1];
-                end
+            if (validate_flag[1]) begin
+        		case (instr_reg[1][31:26])
+        			special:
+        				case (instr_reg[1][5:0])
+        					s_add:
+                                result[2] <= argument1[1] + argument2[1];
+                            s_sub:
+                                result[2] <= argument1[1] - argument2[1];
+                            s_mult:
+                                result[2] <= argument1[1] * argument2[1];
+                            s_div:
+                                result[2] <= argument1[1] / argument2[1];
+                            s_mov:
+                            	result[2] <= argument1[1];
+                            s_out:
+                                result[2] <= argument1[1];
+                            s_in, s_fin:
+                                result[2] <= argument1[1];
+                        endcase // instr_reg[1][5:0]
+                    cop1: begin
+                        if (instr_reg[1][5:0] == s_mov) begin
+                            result[2] <= argument1[1];
+                        end
+                    end
+                    sll, slli:
+                        result[2] <= argument1[1] << argument2[1];
+                    ilw, ilws:
+                        argument1[2] <= argument1[1];
+                    addi:
+                    	result[2] <= argument1[1] + argument2[1];
+                    jal, jalr: begin
+                    	result[2] <= prop_pc[1];
+                    end
 
 
-                beq: begin
-                	if (argument1[1] != argument2[1] && validate_flag[1]) begin
-                		// 分岐予測が外れた場合
-                		out = 1'b1;
-                	end
-                end
+                    beq: begin
+                    	if (argument1[1] != argument2[1]) begin
+                    		out = 1'b1;
+                    	end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
 
-                bl: begin
-                	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
-                		if (argument1[1] >= argument2[1]) begin
-                			out = 1'b1;
-                		end
-                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
-                		if (argument1[1] <= argument2[1]) begin
-                			out = 1'b1;
-                		end
-                	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
-                		out = 1'b1;
-                	end
-                end
-                
-                bg: begin
-                	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
-                		if (argument1[1] <= argument2[1]) begin
-                			out = 1'b1;
-                		end
-                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
-                		if (argument1[1] >= argument2[1]) begin
-                			out = 1'b1;
-                		end
-                	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
-                		out = 1'b1;
-                	end
-                end
-            endcase // instr_reg[1][31:26]
+                    bne: begin
+                    	if (argument1[1] == argument2[1]) begin
+                    		out = 1'b1;
+                    	end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+                    bl: begin
+                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                    		if (argument1[1] >= argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                    		if (argument1[1] <= argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
+                    		out = 1'b1;
+                    	end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+                    ble: begin
+                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                    		if (argument1[1] > argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                    		if (argument1[1] < argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
+                    		out = 1'b1;
+                    	end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+                    
+                    bg: begin
+                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                    		if (argument1[1] <= argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                    		if (argument1[1] >= argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
+                    		out = 1'b1;
+                    	end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+                    bge: begin
+                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                    		if (argument1[1] < argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                    		if (argument1[1] > argument2[1]) begin
+                    			out = 1'b1;
+                    		end else begin
+                                prediction <= prediction - 1;
+                            end
+                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
+                    		out = 1'b1;
+                    	end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+                    fbne: begin
+                        if (fequal_res) begin
+                            out = 1'b1;
+                        end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+                    fbg: begin
+                        if (fequal_res | !fless_res) begin
+                            out = 1'b1;
+                        end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+                    fbge: begin
+                        if (!fequal_res && !fless_res) begin
+                            out = 1'b1;
+                        end else begin
+                            prediction <= prediction - 1;
+                        end
+                    end
+
+
+                endcase // instr_reg[1][31:26]
+            end
 
             if (out == 1'b1 && validate_flag[1]) begin
         		// 分岐予測が外れた場合
@@ -514,296 +880,156 @@ module top #(CLK_PER_HALF_BIT = 520) (
         			int_data_flag[i] <= 1'b0;
         			float_data_flag[i] <= 1'b0;
         		end
+                prediction <= 3'b0;
+                waiting <= 1'b0;
+                iteration <= prop_iteration[1] + 1;
         		pc <= prop_pc[1] + 1;
+                buffer_reading_idx <= prop_reading_idx[1];
         	end
 
             instr_reg[2] <= instr_reg[1];
             prop_pc[2] <= prop_pc[1];
+            prop_iteration[2] <= prop_iteration[1];
+            prop_prediction[2] <= prop_prediction[1];
+            prop_reading_idx[2] <= prop_reading_idx[1];
             validate_flag[2] <= validate_flag[1];
+
 
     		// ********************
     		// 実行フェーズその2(レジスタへの書き込みは常にここで行う)
     		// ********************
 
+            validate_flag[3] <= validate_flag[2];
+            output_flag <= 1'b0;
+
     		if (validate_flag[2]) begin
+                // validate_flag[3]を下げる関係上、ここには6クロック命令を入れてはいけない
     			case (instr_reg[2][31:26])
     				special:
     					case (instr_reg[2][5:0])
     						s_add, s_sub, s_mult, s_div: begin
     							register_int[instr_reg[2][15:11]] <= result[2];
     							int_data_flag[instr_reg[2][15:11]] <= 1'b0;
+                                validate_flag[3] <= 1'b0;
     						end
     						s_mov: begin
     							register_int[instr_reg[2][20:16]] <= result[2];
     							int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                                validate_flag[3] <= 1'b0;
     						end
-    						s_ret:
+    						s_ret: begin
     							inst_stop <= 1'b1;
+                                validate_flag[3] <= 1'b0;
+                            end
+                            s_out: begin
+                                output_content <= result[2];
+                                output_flag <= 1'b1;
+                                validate_flag[3] <= 1'b0;
+                            end
+                            s_in: begin
+                                register_int[instr_reg[2][25:21]] <= result[2];
+                                int_data_flag[isntr_reg[2][25:21]] <= 1'b0;
+                                validate_flag[3] <= 1'b0;
+                            end
+                            s_fin: begin
+                                register_float[instr_reg[2][25:21]] <= result[2];
+                                float_data_flag[instr_reg[2][25:21]] <= 1'b0;
+                                validate_flag[3] <= 1'b0;
+                            end
     					endcase // instr_reg[2][5:0]
+                    cop1: begin
+                        if (instr_reg[2][5:0] == s_mov) begin
+                            register_float[instr_reg[2][20:16]] <= result[2];
+                            float_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                            validate_flag[3] <= 1'b0;
+                        end
+                    end
+                    sll: begin
+                        register_int[instr_reg[2][15:11]] <= result[2];
+                        int_data_flag[instr_reg[2][15:11]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
+                    slli: begin
+                        register_int[instr_reg[2][20:16]] <= result[2];
+                        int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
     				lw: begin
     					register_int[instr_reg[2][20:16]] <= read_data;
     					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
     				end
+                    lws: begin
+                        register_float[instr_reg[2][20:16]] <= read_data;
+                        float_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
+                    ilw: begin
+                        register_int[instr_reg[2][20:16]] <= argument1[2];
+                        int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
+                    ilws: begin
+                        register_float[instr_reg[2][20:16]] <= argument1[2];
+                        float_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
+                    end
     				addi: begin
     					register_int[instr_reg[2][20:16]] <= result[2];
     					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
     				end
     				jal, jalr: begin
 	    				register_int[28] <= result[2];
 	    				int_data_flag[28] <= 1'b0;
+                        validate_flag[3] <= 1'b0;
 	    			end
     			endcase // instr_reg[2][31:26]
     			
     		end
+
+            instr_reg[3] <= instr_reg[2];
+            prop_pc[3] <= prop_pc[2];
+            prop_iteration[3] <= prop_iteration[2];
+            prop_prediction[3] <= prop_prediction[2];
+            prop_reading_idx[3] <= prop_reading_idx[2];
 
     		// ********************
     		// 実行フェーズその3
     		// ********************
 
 
+            instr_reg[4] <= instr_reg[3];
+            prop_pc[4] <= prop_pc[3];
+            validate_flag[4] <= validate_flag[3];
+            prop_iteration[4] <= prop_iteration[3];
+            prop_prediction[4] <= prop_prediction[3];
+            prop_reading_idx[4] <= prop_reading_idx[3];
+
 
     		// ********************
     		// ストアフェーズ
     		// ********************
 
+            if (validate_flag[4]) begin
+                case (instr_reg[4][31:26])
+                    cop1: begin
+                        if (instr_reg[4][25:21] == f_others) begin
+                            float_data_flag[instr_reg[4][10:6]] <= 1'b0;
+                            register_float[instr_reg[4][10:6]] <= f_result;
 
-    	// ここからは過去の実装
+                        end else if (instr_reg[4][25:21] == f_mfc1) begin
+                            float_data_flag[instr_reg[4][20:16]] <= 1'b0;
+                            register_int[instr_reg[4][20:16]] <= f_result;
 
-    	/* 
-        end else if (status == s_idle) begin
+                        end else if (instr_reg[4][25:21] == f_mtc1) begin
+                            float_data_flag[instr_reg[4][15:11]] <= 1'b0;
+                            register_float[instr_reg[4][15:11]] <= f_result;
 
-        end else if (status == s_1) begin
-            // フェッチフェーズ
-            if(inst_stop) begin
-                status <= s_idle;
-            end else begin
-            	now_inst <= inst[pc];
-            	// プログラムカウンタは常に次の命令の値を格納している
-            	// そのため、相対的にジャンプするときには注意が必要
-            	pc <= pc + 1;
-                iteration <= iteration + 1;
-                
-                // 分岐命令フラグはtrueにしか更新しないため、
-                // ここで初期化しておく 
-                jump <= 1'b0;
-
-            	status <= s_2;
+                        end
+                    end
+                endcase // instr_reg[4][31:26]
             end
-
-        end else if (status == s_2) begin
-            // デコードフェーズ
-            case (now_inst[31:26])
-                // special命令群の実行
-                special:
-                    case (now_inst[5:0])
-                        s_add, s_sub, s_mult, s_div, s_mod: begin
-                            argument1 <= register_int[now_inst[25:21]];
-                            argument2 <= register_int[now_inst[20:16]];
-                        end
-                        //s_mov:
-
-                        s_retl: begin
-                            jump <= 1'b1;
-                            argument3 <= register_int[28];
-                        end
-                        s_jr: begin
-                            jump <= 1'b1;
-                            argument3 <= register_int[now_inst[25:21]];
-                        end
-                        s_ret:
-                            inst_stop <= 1'b1;
-                        //s_in:
-                        //s_fin:
-
-                    endcase // now_inst[5:0]
-                //cop1:
-                addi: begin
-                    argument1 <= register_int[now_inst[25:21]];
-                    argument2 <= {16'b0, now_inst[15:0]};
-                end
-                //lw:
-                //ilw:
-                //lws:
-                //ilws:
-                j: begin
-                    jump <= 1'b1;
-                    argument3 <= {6'b0, now_inst[25:0]};
-                end
-                beq, bne, bl, bg: begin
-                    jump <= 1'b1;
-                    argument1 <= register_int[now_inst[25:21]];
-                    argument2 <= register_int[now_inst[20:16]];
-                    argument3 <= pc + {{16{now_inst[15]}}, now_inst[15:0]};
-                end
-                jal: begin
-                    jump <= 1'b1;
-                    register_int[28] <= pc;
-                    argument3 <= {6'b0, now_inst[25:0]};
-                end
-                jalr: begin
-                    jump <= 1'b1;
-                    register_int[28] <= pc;
-                    argument3 <= register_int[now_inst[25:21]];
-                end
-                //fbne:
-                //fbg:
-                sll: begin
-                    argument1 <= register_int[now_inst[20:16]];
-                    argument2 <= register_int[now_inst[10:6]];
-                end
-            endcase // now_inst[31:26]
-
-            status <= s_3;
-
-        end else if (status == s_3) begin
-            // 実行フェーズその1
-            case (now_inst[31:26])
-                // special命令群の実行
-                special:
-                    case (now_inst[5:0])
-                        s_add:
-                            result <= argument1 + argument2;
-                        s_sub:
-                            result <= argument1 - argument2;
-                        s_mult:
-                            result <= argument1 * argument2;
-                            
-                        s_div:
-                            result <= argument1 / argument2;
-                            
-                        s_mod:
-                            result <= argument1 % argument2;
-                            
-                        s_mov:
-                            result <= register_int[now_inst[25:21]];
-                        s_retl:
-                            result <= argument3;
-                        s_jr:
-                            result <= argument3;
-                        //s_ret:
-                        //s_in:
-                        //s_fin:
-
-                    endcase // now_inst[5:0]
-                //cop1:
-                addi:
-                    result <= argument1 + argument2;
-                //lw:
-                //ilw:
-                //lws:
-                //ilws:
-                j: begin
-                    result <= argument3;
-                end
-                beq: begin
-                    if (argument1 == argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                jal: begin
-                    result <= argument3;
-                end
-                jalr: begin
-                    result <= argument3;
-                end
-                bne: begin
-                    if (argument1 != argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                bl: begin
-                    if (argument1 < argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                bg: begin
-                    if(argument1 > argument2) begin
-                        result <= argument3 - 1;
-                    end else begin
-                        result <= pc;
-                    end
-                end
-                //fbne:
-                //fbg:
-                sll: begin
-                    result <= argument1 << argument2;
-                end
-            endcase // now_inst[31:26]
-
-            status <= s_4;
-
-        end else if (status == s_4) begin
-            // 実行フェーズその2
-            if (jump) begin
-                pc <= result;
-                status <= s_1;
-            end else begin
-                case (now_inst[31:26])
-                    // special命令群の実行
-                    special:
-                        case (now_inst[5:0])
-                            //s_mov:
-                            //s_ret:
-                            //s_in:
-                            //s_fin:
-
-                        endcase // now_inst[5:0]
-                    //cop1:
-                    //addi:
-                    //lw:
-                    //ilw:
-                    //lws:
-                    //ilws:
-                    //jal:
-                    //jalr:
-                    //fbne:
-                    //fbg:
-                endcase // now_inst[31:26]
-                status <= s_5;
-            end
-
-        end else if (status == s_5) begin
-            // 実行フェーズその3
-            status <= s_6;
-        end else begin
-            // 格納フェーズ
-            case (now_inst[31:26])
-                // special命令群の実行
-                special:
-                    case (now_inst[5:0])
-                        s_add, s_sub, s_mult, s_div, s_mod:
-                            register_int[now_inst[15:11]] <= result;
-                        s_mov:
-                            register_int[now_inst[20:16]] <= result;
-                        //s_retl:
-                        //s_jr:
-                        //s_ret:
-                        //s_in:
-                        //s_fin:
-
-                    endcase // now_inst[5:0]
-                //cop1:
-                addi:
-                    register_int[now_inst[20:16]] <= result;
-                lw:
-                    register_int[now_inst[20:16]] <= read_data;
-                //ilw:
-                //lws:
-               // ilws:
-                //fbne:
-                //fbg:
-                sll:
-                    register_int[now_inst[15:11]] <= result;
-            endcase // now_inst[31:26]
-            status <= s_1;
-        end
-        */
     	end
     end
 endmodule
