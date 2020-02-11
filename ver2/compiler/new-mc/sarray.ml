@@ -22,7 +22,6 @@ let dirty_all =
 let rec g oc env is_glbl = function
   | ExtFunApp(x, ys) when is_glbl
                           && is_create_array x ->
-     Format.eprintf "---- creating static array --------@.";
      assert (List.length ys = 2);
      (match ys with
       | [z; w] ->
@@ -87,7 +86,6 @@ let rec g oc env is_glbl = function
      LetRec({ name = xt; args = yts; body = e1' }, e2')
   | Tuple(xs) when is_glbl
                    && List.for_all (fun x -> M.mem x env) xs ->
-     Format.eprintf "---- creating static tuple --------@.";
      let l = Id.genlab "s_tuple" in
      let cnss =
        List.map
@@ -128,8 +126,9 @@ let rec g oc env is_glbl = function
 
 
 let f oc e  =
+  Format.eprintf "start Sarray.f : information will be in heap_map.txt@.";
   sarrs := [];
   let e' = g oc M.empty true e in
   let sarrs = List.rev !sarrs in
-  List.iter print_sarray sarrs;
+  (* List.iter print_sarray sarrs; *)
   e', sarrs

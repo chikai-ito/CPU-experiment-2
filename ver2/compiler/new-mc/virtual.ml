@@ -89,7 +89,7 @@ let rec g memtbl env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
       | Type.Float -> Ans(FMov(x))
       | _ -> Ans(Mov(x)))
   | Closure.MakeCls((x, t), { Closure.entry = l; Closure.actual_fv = ys }, e2) -> (* クロージャの生成 (caml2html: virtual_makecls) *)
-     Printf.printf "---- creating closure : %s ----\n" (let L(x) = l in x);
+     Format.eprintf "Virtual.g : creating closure %s\n" (let L(x) = l in x);
      (* Closureのアドレスをセットしてから、自由変数の値をストア *)
      let e2' = g memtbl (M.add x t env) e2 in
      let offset, store_fv =
