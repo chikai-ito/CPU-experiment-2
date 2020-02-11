@@ -11,7 +11,7 @@ let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
 let rec iter2 n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
   Format.eprintf "iteration %d@." n;
   if n = 0 then e else
-    let e' = Elim.f (ConstFold.f (Inline2.f (Assoc.f (Beta.f (ConstFold.f e))))) in
+    let e' = Elim.f (ConstFold.f (Inline2.f (Assoc.f (Beta.f e)))) in
     if e = e' then e else
       iter2 (n - 1) e'
 
@@ -43,7 +43,7 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   Id.counter := 0;
   Typing.extenv := M.empty;
   let syntax = Parser.exp Lexer.token l in
-  let syntax, _ = Typing.f syntax in
+  let syntax, tp = Typing.f syntax in
   (* Syntax.print_syntax syntax; *)
   let kNormal = Alpha.f (KNormal.f syntax) in
   let kNormal = iter !limit kNormal in
@@ -54,7 +54,7 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
    * KNormal.print_kNormal kNormal; *)
   Emit.f outchan memtbl
     (Load_imm.f 
-       (RegAlloc.f
+       (RegAlloc.f tp
           (Simm.f
              (Virtual.f memtbl mems
                 (Closure.f kNormal)))))

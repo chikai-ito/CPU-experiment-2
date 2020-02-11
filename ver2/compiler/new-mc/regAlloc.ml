@@ -110,6 +110,7 @@ let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: re
             with Not_found -> Nop in
           (seq(save, concat e1' (r, t) e2'), regenv2)
       | Alloc(r) ->
+         (* Format.eprintf "assign %s to %s@." r x; *)
           let (e2', regenv2) = g dest cont (add x r regenv1) e in
           (concat e1' (r, t) e2', regenv2))
 and g'_and_restore dest cont regenv exp = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥¯¤«¤é¥ì¥¸¥¹¥¿¤ØRestore (caml2html: regalloc_unspill) *)
@@ -177,7 +178,9 @@ and g'_if dest cont regenv exp constr e1 e2 = (* if¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html
           let r1 = M.find x regenv1 in
           let r2 = M.find x regenv2 in
           if r1 <> r2 then regenv' else
-          M.add x r1 regenv'
+            (
+              (* Format.eprintf "allocating register %s to %s@." r1 x; *)
+             M.add x r1 regenv')
         with Not_found -> regenv')
       M.empty
       (fv cont) in
@@ -200,6 +203,8 @@ and g'_call dest cont regenv exp constr ys zs = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤
    M.empty)
 
 let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)
+  (* Printf.printf "RegAlloc.h : function %s of return type " x; Type.print_type t;
+   * print_string "\n"; *)
   let regenv = M.add x reg_cl M.empty in
   let (i, arg_regs, regenv) =
     List.fold_left
@@ -221,7 +226,7 @@ let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì
           M.add z fr regenv)))
       (0, [], regenv)
       zs in
-  let a =
+  let a  =
     match t with
     | Type.Unit -> Id.gentmp Type.Unit
     | Type.Float -> fregs.(0)
@@ -229,8 +234,12 @@ let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì
   let (e', regenv') = g (a, t) (Ans(Mov(a))) regenv e in
   { name = Id.L(x); args = arg_regs; fargs = farg_regs; body = e'; ret = t }
 
-let f (Prog(mems, data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)
-  Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";
+let f tp (Prog(mems, data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)
+  (* Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";
+   * Printf.printf "in regalloc.f type is";
+   * Type.print_type tp;
+   * print_string "\n"; *)
   let fundefs' = List.map h fundefs in
-  let e', regenv' = g (Id.gentmp Type.Unit, Type.Unit) (Ans(Nop)) M.empty e in
+  let tmp = Id.gentmp tp in
+  let e', regenv' = g (tmp, tp) (Ans(Nop)) M.empty e in
   Prog(mems, data, fundefs', e')

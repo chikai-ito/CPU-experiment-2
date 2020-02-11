@@ -27,5 +27,5 @@ make
 ./simulator ./test/minrt.s $2 $3
 
 if [ -e "result.bin" ]; then
-    cp "result.bin" ../../compiler/new-mc/result.txt
+    cp "result.bin" ../../compiler/new-mc/result.ppm
 fi
