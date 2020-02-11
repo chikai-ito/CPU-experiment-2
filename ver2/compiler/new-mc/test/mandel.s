@@ -44,23 +44,35 @@ l.0 :	# 6.283185
 #text_section
 program_start :
 	ilw	%r0 %r26 stack_init.0
+	addi	%r0 %r1 0
+	bne	%r1 %r27 program_end
 	ilw.s	%r0 %f0 l.1
 	sw.s	%r27 %f0 0
 	ilw.s	%r0 %f0 l.1
 	sw.s	%r27 %f0 4
 	addi	%r27 %r27 8
+	addi	%r0 %r1 8
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 512
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
+	addi	%r0 %r1 2056
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 512
 	addi	%r0 %r2 8
 	jal	min_caml_create_array
+	addi	%r0 %r1 4104
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
+	addi	%r0 %r1 4116
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 512
 	addi	%r0 %r2 4104
 	jal	min_caml_create_array
+	addi	%r0 %r1 6164
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 512
 	addi	%r0 %r2 4116
 	jal	min_caml_create_array

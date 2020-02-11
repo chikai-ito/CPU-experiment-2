@@ -287,10 +287,12 @@ let depth = ref 0
 let newline _ = print_string "\n"
 
 let rec print_fundef fundef =
-  let (id,_) = fundef.name in
+  let (id,t) = fundef.name in
   let id_ty_lst = fundef.args in
   let body = fundef.body in
   Id.print_id id;
+  print_string " : ";
+  Type.print_type t;
   List.iter
     (fun (id,_) ->
        Printf.printf " ";
@@ -437,8 +439,8 @@ and print_kNormal =
       Id.print_id id;
       Printf.printf "\n"
     | LetRec (fundef,s) ->
-      Printf.printf "LETREC ";
-      print_fundef fundef;
+       Printf.printf "LETREC ";
+       print_fundef fundef;
       indent !depth;
       Printf.printf "IN\n";
       print_kNormal s;

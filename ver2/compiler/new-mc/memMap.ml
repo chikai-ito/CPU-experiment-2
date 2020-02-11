@@ -23,34 +23,32 @@ let f : out_channel -> memtbl_t -> MemAlloc.t list -> unit =
         let addr = lookup_addr memtbl l in
         (match cns with
          | I _ | IL _ ->
+            li "%r1" (I(addr));
+            Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
             li "%r1" (I(n));
             li "%r2" cns;
             Printf.fprintf oc "\tjal\tmin_caml_create_array\n";
-            li "%r2" (I(addr));
-            Printf.fprintf oc "\tbne\t%%r1 %%r2 program_end\n"
          | F _ | FL _ ->
+            li "%r1" (I(addr));
+            Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
             li "%r1" (I(n));
             li "%f0" cns;
-            Printf.fprintf oc "\tjal\tmin_caml_create_float_array\n";
-            li "%r2" (I(addr));
-            Printf.fprintf oc "\tbne\t%%r1 %%r2 program_end\n")
+            Printf.fprintf oc "\tjal\tmin_caml_create_float_array\n")
      | T(l, cnss) ->
         let addr = lookup_addr memtbl l in
+        li "%r1" (I(addr));
+        Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
         let top =
           List.fold_left
             (fun ofs cns ->
               match cns with
               | I _ | IL _ ->
-                 li "%r1" (I(addr));
-                 Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
                  li "%r1" cns;
-                 Printf.fprintf oc "\tsw\t%s %%r1 %d\n" reg_hp (addr + ofs);
+                 Printf.fprintf oc "\tsw\t%s %%r1 %d\n" reg_hp ofs;
                    (ofs + 4)
               | F _ | FL _ ->
-                 li "%r1" (I(addr));
-                 Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
                  li "%f0" cns;
-                 Printf.fprintf oc "\tsw.s\t%s %%f0 %d\n" reg_hp (addr + ofs);
+                 Printf.fprintf oc "\tsw.s\t%s %%f0 %d\n" reg_hp ofs;
                  (ofs + 4))
             0 cnss in
         Printf.fprintf oc "\taddi\t%s %s %d\n" reg_hp reg_hp top)

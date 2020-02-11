@@ -33,7 +33,10 @@ let rec kernel_cos x sgn =
   let a = 1. +. a *. y in
   a *. sgn
 in
-     
+
+(* let pi = 3.141592653589793
+ * in *)
+
 let rec sin3 x sgn =
   let pi = 3.141592653589793
   in
@@ -240,7 +243,7 @@ let ptrace_dirvec  = create_array 3 0.0
 in
 
 (* 間接光サンプリングに使う方向ベクトル *)
-let dirvecs =
+let dirvecs = 
   let dummyf = create_array 0 0.0 in
   let dummyff = create_array 0 dummyf in
   let dummy_vs = create_array 0 (dummyf, dummyff) in

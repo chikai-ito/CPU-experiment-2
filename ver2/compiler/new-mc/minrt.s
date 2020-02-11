@@ -102,809 +102,737 @@ l.13 :	# 3.141593
 #text_section
 program_start :
 	ilw	%r0 %r26 stack_init.0
+	addi	%r0 %r1 0
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 0
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 4
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 4
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 4
 	bne	%r1 %r27 program_end
+	addi	%r0 %r1 0
+	sw	%r27 %r1 0
 	addi	%r0 %r1 0
 	sw	%r27 %r1 4
-	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	sw	%r27 %r1 8
-	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	sw	%r27 %r1 12
 	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 0
 	sw	%r27 %r1 16
 	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 4
 	sw	%r27 %r1 20
-	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 4
+	addi	%r0 %r1 0
 	sw	%r27 %r1 24
 	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 0
 	sw	%r27 %r1 28
-	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
 	addi	%r0 %r1 4
 	sw	%r27 %r1 32
 	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 4
 	sw	%r27 %r1 36
 	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 4
 	sw	%r27 %r1 40
-	addi	%r0 %r1 4
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 4
-	sw	%r27 %r1 44
 	addi	%r27 %r27 44
+	addi	%r0 %r1 48
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 60
 	addi	%r0 %r2 4
 	jal	min_caml_create_array
-	addi	%r0 %r2 48
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 288
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 288
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 300
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 300
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 312
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 312
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 324
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	ilw.s	%r0 %f0 l.47
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 324
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 328
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 -1
 	jal	min_caml_create_array
-	addi	%r0 %r2 328
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 332
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 50
 	addi	%r0 %r2 328
 	jal	min_caml_create_array
-	addi	%r0 %r2 332
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 532
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 328
 	jal	min_caml_create_array
-	addi	%r0 %r2 532
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 536
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 532
 	jal	min_caml_create_array
-	addi	%r0 %r2 536
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 540
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 540
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 544
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 544
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 548
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	ilw.s	%r0 %f0 l.31
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 548
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 552
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 552
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 564
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 564
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 568
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 568
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 580
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 580
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 592
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 592
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 604
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 604
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 616
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 2
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 616
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 624
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 2
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 624
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 632
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 632
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 636
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 636
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 648
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 648
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 660
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 660
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 672
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 672
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 684
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 684
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 696
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 696
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 708
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 708
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 708
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	addi	%r0 %r2 708
 	jal	min_caml_create_array
-	addi	%r0 %r2 708
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 708
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 708
-	sw	%r27 %r1 708
+	sw	%r27 %r1 0
 	addi	%r0 %r1 708
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 708
-	sw	%r27 %r1 712
+	sw	%r27 %r1 4
 	addi	%r27 %r27 8
+	addi	%r0 %r1 716
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	addi	%r0 %r2 708
 	jal	min_caml_create_array
-	addi	%r0 %r2 716
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 716
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 716
 	jal	min_caml_create_array
-	addi	%r0 %r2 716
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 736
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 736
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 736
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 736
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 748
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 60
 	addi	%r0 %r2 736
 	jal	min_caml_create_array
-	addi	%r0 %r2 748
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 988
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 736
-	sw	%r27 %r1 988
-	addi	%r0 %r1 988
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 0
 	addi	%r0 %r1 748
-	sw	%r27 %r1 992
+	sw	%r27 %r1 4
 	addi	%r27 %r27 8
+	addi	%r0 %r1 996
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 996
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 996
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
 	addi	%r0 %r2 996
 	jal	min_caml_create_array
-	addi	%r0 %r2 996
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 996
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 996
-	sw	%r27 %r1 996
+	sw	%r27 %r1 0
 	addi	%r0 %r1 996
-	bne	%r1 %r27 program_end
-	addi	%r0 %r1 996
-	sw	%r27 %r1 1000
+	sw	%r27 %r1 4
 	addi	%r27 %r27 8
 	addi	%r0 %r1 1004
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 0
-	sw	%r27 %r1 1004
-	addi	%r0 %r1 1004
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 0
 	addi	%r0 %r1 996
-	sw	%r27 %r1 1008
-	addi	%r0 %r1 1004
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 4
 	ilw.s	%r0 %f0 l.15
-	sw.s	%r27 %f0 1012
+	sw.s	%r27 %f0 8
 	addi	%r27 %r27 12
+	addi	%r0 %r1 1016
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 180
 	addi	%r0 %r2 1004
 	jal	min_caml_create_array
-	addi	%r0 %r2 1016
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1736
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 1736
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1740
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1740
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1752
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1752
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1764
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 1752
 	jal	min_caml_create_array
-	addi	%r0 %r2 1764
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1784
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1784
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1796
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1796
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1808
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1808
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1820
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1820
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1832
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 1832
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1852
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 1852
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1872
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1872
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1884
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 1872
 	jal	min_caml_create_array
-	addi	%r0 %r2 1884
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1904
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1904
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1916
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1916
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1928
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1928
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1940
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1940
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1952
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1952
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1964
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 1952
 	jal	min_caml_create_array
-	addi	%r0 %r2 1964
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1984
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1984
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 1996
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 1996
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2008
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2008
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2020
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2020
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2032
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2032
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2036
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2036
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2048
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2036
 	jal	min_caml_create_array
-	addi	%r0 %r2 2048
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2068
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2068
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2080
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2080
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2092
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2092
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2104
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2104
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 2116
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1740
-	sw	%r27 %r1 2116
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 0
 	addi	%r0 %r1 1764
-	sw	%r27 %r1 2120
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 4
 	addi	%r0 %r1 1832
-	sw	%r27 %r1 2124
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 8
 	addi	%r0 %r1 1852
-	sw	%r27 %r1 2128
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 12
 	addi	%r0 %r1 1884
-	sw	%r27 %r1 2132
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 16
 	addi	%r0 %r1 1964
-	sw	%r27 %r1 2136
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 20
 	addi	%r0 %r1 2032
-	sw	%r27 %r1 2140
-	addi	%r0 %r1 2116
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 24
 	addi	%r0 %r1 2048
-	sw	%r27 %r1 2144
+	sw	%r27 %r1 28
 	addi	%r27 %r27 32
+	addi	%r0 %r1 2148
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2148
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2160
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2160
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2172
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2160
 	jal	min_caml_create_array
-	addi	%r0 %r2 2172
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2192
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2192
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2204
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2204
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2216
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2216
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2228
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2228
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2240
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2240
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2260
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2260
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2280
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2280
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2292
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2280
 	jal	min_caml_create_array
-	addi	%r0 %r2 2292
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2312
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2312
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2324
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2324
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2336
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2336
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2348
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2348
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2360
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2360
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2372
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2360
 	jal	min_caml_create_array
-	addi	%r0 %r2 2372
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2392
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2392
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2404
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2404
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2416
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2416
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2428
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2428
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2440
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2440
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2444
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2444
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2456
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2444
 	jal	min_caml_create_array
-	addi	%r0 %r2 2456
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2476
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2476
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2488
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2488
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2500
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2500
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2512
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2512
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 2524
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 2148
-	sw	%r27 %r1 2524
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 0
 	addi	%r0 %r1 2172
-	sw	%r27 %r1 2528
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 4
 	addi	%r0 %r1 2240
-	sw	%r27 %r1 2532
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 8
 	addi	%r0 %r1 2260
-	sw	%r27 %r1 2536
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 12
 	addi	%r0 %r1 2292
-	sw	%r27 %r1 2540
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 16
 	addi	%r0 %r1 2372
-	sw	%r27 %r1 2544
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 20
 	addi	%r0 %r1 2440
-	sw	%r27 %r1 2548
-	addi	%r0 %r1 2524
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 24
 	addi	%r0 %r1 2456
-	sw	%r27 %r1 2552
+	sw	%r27 %r1 28
 	addi	%r27 %r27 32
+	addi	%r0 %r1 2556
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2556
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2568
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2568
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2580
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2568
 	jal	min_caml_create_array
-	addi	%r0 %r2 2580
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2600
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2600
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2612
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2612
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2624
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2624
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2636
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2636
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2648
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2648
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2668
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2668
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2688
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2688
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2700
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2688
 	jal	min_caml_create_array
-	addi	%r0 %r2 2700
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2720
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2720
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2732
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2732
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2744
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2744
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2756
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2756
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2768
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2768
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2780
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2768
 	jal	min_caml_create_array
-	addi	%r0 %r2 2780
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2800
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2800
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2812
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2812
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2824
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2824
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2836
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2836
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2848
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 1
 	addi	%r0 %r2 0
 	jal	min_caml_create_array
-	addi	%r0 %r2 2848
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2852
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2852
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2864
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 5
 	addi	%r0 %r2 2852
 	jal	min_caml_create_array
-	addi	%r0 %r2 2864
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2884
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2884
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2896
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2896
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2908
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2908
-	bne	%r1 %r2 program_end
+	addi	%r0 %r1 2920
+	bne	%r1 %r27 program_end
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.15
 	jal	min_caml_create_float_array
-	addi	%r0 %r2 2920
-	bne	%r1 %r2 program_end
 	addi	%r0 %r1 2932
 	bne	%r1 %r27 program_end
 	addi	%r0 %r1 2556
-	sw	%r27 %r1 2932
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 0
 	addi	%r0 %r1 2580
-	sw	%r27 %r1 2936
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 4
 	addi	%r0 %r1 2648
-	sw	%r27 %r1 2940
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 8
 	addi	%r0 %r1 2668
-	sw	%r27 %r1 2944
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 12
 	addi	%r0 %r1 2700
-	sw	%r27 %r1 2948
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 16
 	addi	%r0 %r1 2780
-	sw	%r27 %r1 2952
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 20
 	addi	%r0 %r1 2848
-	sw	%r27 %r1 2956
-	addi	%r0 %r1 2932
-	bne	%r1 %r27 program_end
+	sw	%r27 %r1 24
 	addi	%r0 %r1 2864
-	sw	%r27 %r1 2960
+	sw	%r27 %r1 28
 	addi	%r27 %r27 32
 	ilw.s	%r0 %f0 l.15
 	ilw.s	%r0 %f0 l.15
@@ -1243,22 +1171,16 @@ program_start :
 	neg.s	%f3 %f0
 	mul.s	%f2 %f0 %f0
 	sw.s	%r0 %f0 680
-	addi	%r0 %r1 288
-	lw.s	%r1 %f0 288
-	addi	%r0 %r1 684
-	lw.s	%r1 %f1 684
+	lw.s	%r0 %f0 288
+	lw.s	%r0 %f1 684
 	sub.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 300
-	addi	%r0 %r1 292
-	lw.s	%r1 %f0 292
-	addi	%r0 %r1 688
-	lw.s	%r1 %f1 688
+	lw.s	%r0 %f0 292
+	lw.s	%r0 %f1 688
 	sub.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 304
-	addi	%r0 %r1 296
-	lw.s	%r1 %f0 296
-	addi	%r0 %r1 692
-	lw.s	%r1 %f1 692
+	lw.s	%r0 %f0 296
+	lw.s	%r0 %f1 692
 	sub.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 308
 	in	%r1
@@ -1435,14 +1357,11 @@ bl_cont.2 :
 	jal	init_vecset_constants.0 
 	addi	%r26 %r26 92
 	lw	%r26 %r28 -88
-	addi	%r0 %r1 312
-	lw.s	%r1 %f0 312
+	lw.s	%r0 %f0 312
 	sw.s	%r0 %f0 736
-	addi	%r0 %r1 316
-	lw.s	%r1 %f0 316
+	lw.s	%r0 %f0 316
 	sw.s	%r0 %f0 740
-	addi	%r0 %r1 320
-	lw.s	%r1 %f0 320
+	lw.s	%r0 %f0 320
 	sw.s	%r0 %f0 744
 	lw	%r0 %r1 0
 	addi	%r1 %r2 -1
@@ -1463,7 +1382,6 @@ bl_cont.2 :
 	addi	%r0 %r4 2
 	bne	%r3 %r4 beq_else.0 
 	lw	%r2 %r3 28
-	addi	%r3 %r3 0
 	lw.s	%r3 %f0 0
 	ilw.s	%r0 %f1 l.16
 	fbge	%f0 %f1 fbl_else.0 
@@ -1484,21 +1402,16 @@ beq_else.1 :
 	lw	%r0 %r3 1736
 	ilw.s	%r0 %f0 l.16
 	lw	%r2 %r2 28
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 312
-	lw.s	%r2 %f1 312
+	lw.s	%r0 %f1 312
 	neg.s	%f1 %f1
-	addi	%r0 %r2 316
-	lw.s	%r2 %f2 316
+	lw.s	%r0 %f2 316
 	neg.s	%f2 %f2
-	addi	%r0 %r2 320
-	lw.s	%r2 %f3 320
+	lw.s	%r0 %f3 320
 	neg.s	%f3 %f3
 	addi	%r1 %r2 1
-	addi	%r0 %r4 312
-	lw.s	%r4 %f4 312
+	lw.s	%r0 %f4 312
 	addi	%r0 %r4 3
 	ilw.s	%r0 %f5 l.15
 	sw.s	%r26 %f1 -88
@@ -1529,7 +1442,7 @@ beq_else.1 :
 	sw	%r2 %r1 4
 	lw	%r26 %r1 -144
 	sw	%r2 %r1 0
-	addi	%r1 %r3 0
+	mov	%r1 %r3
 	lw.s	%r26 %f0 -136
 	sw.s	%r3 %f0 0
 	addi	%r1 %r3 4
@@ -1564,8 +1477,7 @@ beq_else.1 :
 	addi	%r2 %r1 1
 	lw	%r26 %r3 -96
 	addi	%r3 %r4 2
-	addi	%r0 %r5 316
-	lw.s	%r5 %f1 316
+	lw.s	%r0 %f1 316
 	addi	%r0 %r5 3
 	ilw.s	%r0 %f2 l.15
 	sw	%r26 %r1 -152
@@ -1591,7 +1503,7 @@ beq_else.1 :
 	sw	%r2 %r1 4
 	lw	%r26 %r1 -168
 	sw	%r2 %r1 0
-	addi	%r1 %r3 0
+	mov	%r1 %r3
 	lw.s	%r26 %f0 -88
 	sw.s	%r3 %f0 0
 	addi	%r1 %r3 4
@@ -1627,8 +1539,7 @@ beq_else.1 :
 	addi	%r1 %r2 2
 	lw	%r26 %r3 -96
 	addi	%r3 %r3 3
-	addi	%r0 %r4 320
-	lw.s	%r4 %f1 320
+	lw.s	%r0 %f1 320
 	addi	%r0 %r4 3
 	ilw.s	%r0 %f2 l.15
 	sw	%r26 %r2 -176
@@ -1654,7 +1565,7 @@ beq_else.1 :
 	sw	%r2 %r1 4
 	lw	%r26 %r1 -192
 	sw	%r2 %r1 0
-	addi	%r1 %r3 0
+	mov	%r1 %r3
 	lw.s	%r26 %f0 -88
 	sw.s	%r3 %f0 0
 	addi	%r1 %r3 4
@@ -1699,35 +1610,29 @@ beq_else.2 :
 	lw	%r0 %r3 1736
 	ilw.s	%r0 %f0 l.16
 	lw	%r2 %r4 28
-	addi	%r4 %r4 0
 	lw.s	%r4 %f1 0
 	sub.s	%f1 %f0 %f0
 	lw	%r2 %r4 16
-	addi	%r0 %r5 312
-	lw.s	%r5 %f1 312
-	addi	%r4 %r5 0
+	lw.s	%r0 %f1 312
+	mov	%r4 %r5
 	lw.s	%r5 %f2 0
 	mul.s	%f2 %f1 %f1
-	addi	%r0 %r5 316
-	lw.s	%r5 %f2 316
+	lw.s	%r0 %f2 316
 	addi	%r4 %r5 4
 	lw.s	%r5 %f3 0
 	mul.s	%f3 %f2 %f2
 	add.s	%f2 %f1 %f1
-	addi	%r0 %r5 320
-	lw.s	%r5 %f2 320
+	lw.s	%r0 %f2 320
 	addi	%r4 %r4 8
 	lw.s	%r4 %f3 0
 	mul.s	%f3 %f2 %f2
 	add.s	%f2 %f1 %f1
 	ilw.s	%r0 %f2 l.27
 	lw	%r2 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	mul.s	%f3 %f2 %f2
 	mul.s	%f1 %f2 %f2
-	addi	%r0 %r4 312
-	lw.s	%r4 %f3 312
+	lw.s	%r0 %f3 312
 	sub.s	%f3 %f2 %f2
 	ilw.s	%r0 %f3 l.27
 	lw	%r2 %r4 16
@@ -1735,8 +1640,7 @@ beq_else.2 :
 	lw.s	%r4 %f4 0
 	mul.s	%f4 %f3 %f3
 	mul.s	%f1 %f3 %f3
-	addi	%r0 %r4 316
-	lw.s	%r4 %f4 316
+	lw.s	%r0 %f4 316
 	sub.s	%f4 %f3 %f3
 	ilw.s	%r0 %f4 l.27
 	lw	%r2 %r2 16
@@ -1744,8 +1648,7 @@ beq_else.2 :
 	lw.s	%r2 %f5 0
 	mul.s	%f5 %f4 %f4
 	mul.s	%f1 %f4 %f1
-	addi	%r0 %r2 320
-	lw.s	%r2 %f4 320
+	lw.s	%r0 %f4 320
 	sub.s	%f4 %f1 %f1
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f4 l.15
@@ -1775,7 +1678,7 @@ beq_else.2 :
 	sw	%r2 %r1 4
 	lw	%r26 %r1 -240
 	sw	%r2 %r1 0
-	addi	%r1 %r3 0
+	mov	%r1 %r3
 	lw.s	%r26 %f0 -232
 	sw.s	%r3 %f0 0
 	addi	%r1 %r3 4
@@ -1822,29 +1725,22 @@ ble_else.0 :
 ble_cont.0 :
 	addi	%r0 %r1 0
 	addi	%r0 %r3 0
-	addi	%r0 %r2 632
-	lw.s	%r2 %f0 632
+	lw.s	%r0 %f0 632
 	lw	%r0 %r2 628
 	sub	%r1 %r2 %r1
 	mtc1	%r1 %f1
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 672
-	lw.s	%r1 %f1 672
+	lw.s	%r0 %f1 672
 	mul.s	%f1 %f0 %f1
-	addi	%r0 %r1 684
-	lw.s	%r1 %f2 684
+	lw.s	%r0 %f2 684
 	add.s	%f2 %f1 %f1
-	addi	%r0 %r1 676
-	lw.s	%r1 %f2 676
+	lw.s	%r0 %f2 676
 	mul.s	%f2 %f0 %f2
-	addi	%r0 %r1 688
-	lw.s	%r1 %f3 688
+	lw.s	%r0 %f3 688
 	add.s	%f3 %f2 %f2
-	addi	%r0 %r1 680
-	lw.s	%r1 %f3 680
+	lw.s	%r0 %f3 680
 	mul.s	%f3 %f0 %f0
-	addi	%r0 %r1 692
-	lw.s	%r1 %f3 692
+	lw.s	%r0 %f3 692
 	add.s	%f3 %f0 %f0
 	lw	%r0 %r1 616
 	addi	%r1 %r2 -1
@@ -2255,7 +2151,7 @@ read_object.0 :
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
 	fin	%f0
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f0 0
 	fin	%f0
 	addi	%r1 %r2 4
@@ -2273,7 +2169,7 @@ read_object.0 :
 	addi	%r26 %r26 28
 	lw	%r26 %r28 -24
 	fin	%f0
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f0 0
 	fin	%f0
 	addi	%r1 %r2 4
@@ -2300,7 +2196,7 @@ fbl_cont.1 :
 	addi	%r26 %r26 36
 	lw	%r26 %r28 -32
 	fin	%f0
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f0 0
 	fin	%f0
 	addi	%r1 %r2 4
@@ -2315,7 +2211,7 @@ fbl_cont.1 :
 	addi	%r26 %r26 40
 	lw	%r26 %r28 -36
 	fin	%f0
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f0 0
 	fin	%f0
 	addi	%r1 %r2 4
@@ -2338,7 +2234,7 @@ fbl_cont.1 :
 	fin	%f0
 	ilw.s	%r0 %f1 l.26
 	mul.s	%f1 %f0 %f0
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f0 0
 	fin	%f0
 	ilw.s	%r0 %f1 l.26
@@ -2400,7 +2296,7 @@ beq_cont.4 :
 	sw	%r7 %r2 0
 	addi	%r0 %r2 3
 	bne	%r5 %r2 beq_else.5 
-	addi	%r3 %r2 0
+	mov	%r3 %r2
 	lw.s	%r2 %f0 0
 	ilw.s	%r0 %f1 l.15
 	fbne	%f0 %f1 fbeq_else.0 
@@ -2444,7 +2340,7 @@ beq_cont.7 :
 beq_else.6 :
 	ilw.s	%r0 %f0 l.15
 beq_cont.6 :
-	addi	%r3 %r2 0
+	mov	%r3 %r2
 	sw.s	%r2 %f0 0
 	addi	%r3 %r2 4
 	lw.s	%r2 %f0 0
@@ -2550,7 +2446,7 @@ beq_else.5 :
 beq_else.16 :
 	addi	%r0 %r2 0
 beq_cont.16 :
-	addi	%r3 %r5 0
+	mov	%r3 %r5
 	lw.s	%r5 %f0 0
 	mul.s	%f0 %f0 %f0
 	addi	%r3 %r5 4
@@ -2584,10 +2480,10 @@ beq_cont.18 :
 beq_else.17 :
 	ilw.s	%r0 %f0 l.16
 beq_cont.17 :
-	addi	%r3 %r2 0
+	mov	%r3 %r2
 	lw.s	%r2 %f1 0
 	mul.s	%f0 %f1 %f1
-	addi	%r3 %r2 0
+	mov	%r3 %r2
 	sw.s	%r2 %f1 0
 	addi	%r3 %r2 4
 	lw.s	%r2 %f1 0
@@ -2605,7 +2501,7 @@ beq_cont.15 :
 beq_cont.5 :
 	addi	%r0 %r2 0
 	beq	%r4 %r2 bne_else.2 
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	lw.s	%r2 %f0 0
 	sw	%r26 %r28 -48
 	addi	%r26 %r26 -52
@@ -2613,7 +2509,7 @@ beq_cont.5 :
 	addi	%r26 %r26 52
 	lw	%r26 %r28 -48
 	lw	%r26 %r1 -44
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	lw.s	%r2 %f1 0
 	sw.s	%r26 %f0 -48
 	mov.s	%f1 %f0
@@ -2689,7 +2585,7 @@ beq_cont.5 :
 	mul.s	%f2 %f5 %f4
 	mul.s	%f2 %f7 %f2
 	lw	%r26 %r1 -20
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	lw.s	%r2 %f5 0
 	addi	%r1 %r2 4
 	lw.s	%r2 %f7 0
@@ -2703,7 +2599,7 @@ beq_cont.5 :
 	mul.s	%f1 %f1 %f13
 	mul.s	%f13 %f11 %f13
 	add.s	%f13 %f12 %f12
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f12 0
 	mul.s	%f6 %f6 %f12
 	mul.s	%f12 %f5 %f12
@@ -2736,7 +2632,7 @@ beq_cont.5 :
 	add.s	%f14 %f13 %f13
 	mul.s	%f13 %f12 %f12
 	lw	%r26 %r1 -44
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f12 0
 	ilw.s	%r0 %f12 l.27
 	mul.s	%f3 %f5 %f13
@@ -2814,7 +2710,7 @@ read_or_network.0 :
 	addi	%r26 %r26 8
 	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	addi	%r2 %r1 0
+	mov	%r2 %r1
 	lw	%r1 %r1 0
 	addi	%r0 %r3 -1
 	bne	%r1 %r3 beq_else.21 
@@ -2846,7 +2742,7 @@ read_and_network.0 :
 	jal	read_net_item.0 
 	addi	%r26 %r26 8
 	lw	%r26 %r28 -4
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	lw	%r2 %r2 0
 	addi	%r0 %r3 -1
 	bne	%r2 %r3 beq_else.22 
@@ -2883,7 +2779,7 @@ iter_setup_dirvec_constants.0 :
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
 	lw	%r26 %r2 -16
-	addi	%r2 %r3 0
+	mov	%r2 %r3
 	lw.s	%r3 %f0 0
 	ilw.s	%r0 %f1 l.15
 	fbne	%f0 %f1 fbeq_else.7 
@@ -2896,7 +2792,7 @@ fbeq_cont.7 :
 	bne	%r3 %r4 beq_else.24 
 	lw	%r26 %r3 -12
 	lw	%r3 %r4 24
-	addi	%r2 %r5 0
+	mov	%r2 %r5
 	lw.s	%r5 %f0 0
 	ilw.s	%r0 %f1 l.15
 	fbge	%f0 %f1 fbl_else.7 
@@ -2919,7 +2815,6 @@ beq_else.26 :
 beq_cont.22 :
 beq_cont.21 :
 	lw	%r3 %r5 16
-	addi	%r5 %r5 0
 	lw.s	%r5 %f0 0
 	addi	%r0 %r5 0
 	bne	%r4 %r5 beq_else.27 
@@ -2927,10 +2822,10 @@ beq_cont.21 :
 	j	beq_cont.23 
 beq_else.27 :
 beq_cont.23 :
-	addi	%r1 %r4 0
+	mov	%r1 %r4
 	sw.s	%r4 %f0 0
 	ilw.s	%r0 %f0 l.16
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	lw.s	%r4 %f1 0
 	div.s	%f1 %f0 %f0
 	addi	%r1 %r4 4
@@ -3079,11 +2974,10 @@ beq_else.23 :
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
 	lw	%r26 %r2 -16
-	addi	%r2 %r3 0
+	mov	%r2 %r3
 	lw.s	%r3 %f0 0
 	lw	%r26 %r3 -12
 	lw	%r3 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f1 0
 	mul.s	%f1 %f0 %f0
 	addi	%r2 %r4 4
@@ -3110,16 +3004,15 @@ fbl_cont.8 :
 	addi	%r0 %r4 0
 	bne	%r2 %r4 beq_else.37 
 	ilw.s	%r0 %f0 l.15
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f0 0
 	j	beq_cont.33 
 beq_else.37 :
 	ilw.s	%r0 %f1 l.25
 	div.s	%f0 %f1 %f1
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f1 0
 	lw	%r3 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	div.s	%f0 %f1 %f1
 	neg.s	%f1 %f1
@@ -3160,7 +3053,7 @@ beq_else.36 :
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
 	lw	%r26 %r2 -16
-	addi	%r2 %r3 0
+	mov	%r2 %r3
 	lw.s	%r3 %f0 0
 	addi	%r2 %r3 4
 	lw.s	%r3 %f1 0
@@ -3169,7 +3062,6 @@ beq_else.36 :
 	mul.s	%f0 %f0 %f3
 	lw	%r26 %r3 -12
 	lw	%r3 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f4 0
 	mul.s	%f4 %f3 %f3
 	mul.s	%f1 %f1 %f4
@@ -3192,7 +3084,6 @@ beq_else.36 :
 beq_else.38 :
 	mul.s	%f2 %f1 %f4
 	lw	%r3 %r4 36
-	addi	%r4 %r4 0
 	lw.s	%r4 %f5 0
 	mul.s	%f5 %f4 %f4
 	add.s	%f4 %f3 %f3
@@ -3209,10 +3100,9 @@ beq_else.38 :
 	mul.s	%f1 %f0 %f0
 	add.s	%f0 %f2 %f0
 beq_cont.34 :
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	lw.s	%r4 %f1 0
 	lw	%r3 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f2 0
 	mul.s	%f2 %f1 %f1
 	neg.s	%f1 %f1
@@ -3230,7 +3120,7 @@ beq_cont.34 :
 	lw.s	%r4 %f4 0
 	mul.s	%f4 %f3 %f3
 	neg.s	%f3 %f3
-	addi	%r1 %r4 0
+	mov	%r1 %r4
 	sw.s	%r4 %f0 0
 	lw	%r3 %r4 12
 	addi	%r0 %r5 0
@@ -3256,10 +3146,9 @@ beq_cont.34 :
 	addi	%r2 %r4 8
 	lw.s	%r4 %f1 0
 	lw	%r3 %r4 36
-	addi	%r4 %r4 0
 	lw.s	%r4 %f4 0
 	mul.s	%f4 %f1 %f1
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	lw.s	%r4 %f4 0
 	lw	%r3 %r4 36
 	addi	%r4 %r4 8
@@ -3274,10 +3163,8 @@ beq_cont.34 :
 	addi	%r2 %r4 4
 	lw.s	%r4 %f1 0
 	lw	%r3 %r4 36
-	addi	%r4 %r4 0
 	lw.s	%r4 %f2 0
 	mul.s	%f2 %f1 %f1
-	addi	%r2 %r2 0
 	lw.s	%r2 %f2 0
 	lw	%r3 %r2 36
 	addi	%r2 %r2 4
@@ -3334,13 +3221,12 @@ setup_startp_constants.0 :
 	lw	%r3 %r3 0
 	lw	%r3 %r4 40
 	lw	%r3 %r5 4
-	addi	%r1 %r6 0
+	mov	%r1 %r6
 	lw.s	%r6 %f0 0
 	lw	%r3 %r6 20
-	addi	%r6 %r6 0
 	lw.s	%r6 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r4 %r6 0
+	mov	%r4 %r6
 	sw.s	%r6 %f0 0
 	addi	%r1 %r6 4
 	lw.s	%r6 %f0 0
@@ -3361,13 +3247,13 @@ setup_startp_constants.0 :
 	addi	%r0 %r6 2
 	bne	%r5 %r6 beq_else.40 
 	lw	%r3 %r3 16
-	addi	%r4 %r5 0
+	mov	%r4 %r5
 	lw.s	%r5 %f0 0
 	addi	%r4 %r5 4
 	lw.s	%r5 %f1 0
 	addi	%r4 %r5 8
 	lw.s	%r5 %f2 0
-	addi	%r3 %r5 0
+	mov	%r3 %r5
 	lw.s	%r5 %f3 0
 	mul.s	%f0 %f3 %f0
 	addi	%r3 %r5 4
@@ -3384,7 +3270,7 @@ setup_startp_constants.0 :
 beq_else.40 :
 	addi	%r0 %r6 2
 	bge	%r6 %r5 bl_else.5 
-	addi	%r4 %r6 0
+	mov	%r4 %r6
 	lw.s	%r6 %f0 0
 	addi	%r4 %r6 4
 	lw.s	%r6 %f1 0
@@ -3392,7 +3278,6 @@ beq_else.40 :
 	lw.s	%r6 %f2 0
 	mul.s	%f0 %f0 %f3
 	lw	%r3 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
 	mul.s	%f1 %f1 %f4
@@ -3415,7 +3300,6 @@ beq_else.40 :
 beq_else.41 :
 	mul.s	%f2 %f1 %f4
 	lw	%r3 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f5 0
 	mul.s	%f5 %f4 %f4
 	add.s	%f4 %f3 %f3
@@ -3462,7 +3346,6 @@ beq_else.43 :
 	addi	%r3 %r3 48
 	lw	%r3 %r3 0
 	lw	%r3 %r4 20
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	sub.s	%f3 %f0 %f3
 	lw	%r3 %r4 20
@@ -3483,7 +3366,6 @@ beq_else.43 :
 fbl_else.11 :
 fbl_cont.9 :
 	lw	%r3 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f6 0
 	fbge	%f3 %f6 fbl_else.12 
 	addi	%r0 %r4 1
@@ -3554,7 +3436,7 @@ beq_else.44 :
 	addi	%r0 %r5 2
 	bne	%r4 %r5 beq_else.49 
 	lw	%r3 %r4 16
-	addi	%r4 %r5 0
+	mov	%r4 %r5
 	lw.s	%r5 %f6 0
 	mul.s	%f3 %f6 %f3
 	addi	%r4 %r5 4
@@ -3597,7 +3479,6 @@ beq_cont.47 :
 beq_else.49 :
 	mul.s	%f3 %f3 %f6
 	lw	%r3 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f7 0
 	mul.s	%f7 %f6 %f6
 	mul.s	%f4 %f4 %f7
@@ -3620,7 +3501,6 @@ beq_else.49 :
 beq_else.53 :
 	mul.s	%f5 %f4 %f7
 	lw	%r3 %r4 36
-	addi	%r4 %r4 0
 	lw.s	%r4 %f8 0
 	mul.s	%f8 %f7 %f7
 	add.s	%f7 %f6 %f6
@@ -3697,20 +3577,16 @@ beq_else.59 :
 	slli	%r3 %r4 2
 	addi	%r4 %r4 48
 	lw	%r4 %r4 0
-	addi	%r0 %r5 552
-	lw.s	%r5 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r4 %r5 20
-	addi	%r5 %r5 0
 	lw.s	%r5 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r5 556
-	lw.s	%r5 %f1 556
+	lw.s	%r0 %f1 556
 	lw	%r4 %r5 20
 	addi	%r5 %r5 4
 	lw.s	%r5 %f2 0
 	sub.s	%f2 %f1 %f1
-	addi	%r0 %r5 560
-	lw.s	%r5 %f2 560
+	lw.s	%r0 %f2 560
 	lw	%r4 %r5 20
 	addi	%r5 %r5 8
 	lw.s	%r5 %f3 0
@@ -3721,14 +3597,13 @@ beq_else.59 :
 	lw	%r4 %r6 4
 	addi	%r0 %r7 1
 	bne	%r6 %r7 beq_else.60 
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f3 0
 	sub.s	%f0 %f3 %f3
 	addi	%r5 %r6 4
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
-	addi	%r0 %r6 740
-	lw.s	%r6 %f4 740
+	lw.s	%r0 %f4 740
 	mul.s	%f4 %f3 %f4
 	add.s	%f1 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -3751,8 +3626,7 @@ fbl_cont.18 :
 	addi	%r0 %r6 0
 	j	beq_cont.54 
 beq_else.61 :
-	addi	%r0 %r6 744
-	lw.s	%r6 %f4 744
+	lw.s	%r0 %f4 744
 	mul.s	%f4 %f3 %f4
 	add.s	%f2 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -3801,8 +3675,7 @@ beq_cont.54 :
 	addi	%r5 %r6 12
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
-	addi	%r0 %r6 736
-	lw.s	%r6 %f4 736
+	lw.s	%r0 %f4 736
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -3812,7 +3685,6 @@ beq_cont.54 :
 fbl_else.23 :
 fbl_cont.21 :
 	lw	%r4 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f5 0
 	fbge	%f4 %f5 fbl_else.24 
 	addi	%r0 %r6 1
@@ -3825,8 +3697,7 @@ fbl_cont.22 :
 	addi	%r0 %r6 0
 	j	beq_cont.58 
 beq_else.65 :
-	addi	%r0 %r6 744
-	lw.s	%r6 %f4 744
+	lw.s	%r0 %f4 744
 	mul.s	%f4 %f3 %f4
 	add.s	%f2 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -3875,8 +3746,7 @@ beq_cont.58 :
 	addi	%r5 %r6 20
 	lw.s	%r6 %f3 0
 	mul.s	%f3 %f2 %f2
-	addi	%r0 %r6 736
-	lw.s	%r6 %f3 736
+	lw.s	%r0 %f3 736
 	mul.s	%f3 %f2 %f3
 	add.s	%f0 %f3 %f0
 	ilw.s	%r0 %f3 l.15
@@ -3886,7 +3756,6 @@ beq_cont.58 :
 fbl_else.27 :
 fbl_cont.25 :
 	lw	%r4 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f3 0
 	fbge	%f0 %f3 fbl_else.28 
 	addi	%r0 %r6 1
@@ -3899,8 +3768,7 @@ fbl_cont.26 :
 	addi	%r0 %r4 0
 	j	beq_cont.62 
 beq_else.69 :
-	addi	%r0 %r6 740
-	lw.s	%r6 %f0 740
+	lw.s	%r0 %f0 740
 	mul.s	%f0 %f2 %f0
 	add.s	%f1 %f0 %f0
 	ilw.s	%r0 %f1 l.15
@@ -3963,7 +3831,7 @@ beq_cont.57 :
 beq_else.60 :
 	addi	%r0 %r7 2
 	bne	%r6 %r7 beq_else.73 
-	addi	%r5 %r4 0
+	mov	%r5 %r4
 	lw.s	%r4 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbge	%f3 %f4 fbl_else.31 
@@ -3993,7 +3861,7 @@ beq_else.74 :
 beq_cont.67 :
 	j	beq_cont.66 
 beq_else.73 :
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbne	%f3 %f4 fbeq_else.14 
@@ -4017,7 +3885,6 @@ fbeq_cont.14 :
 	add.s	%f5 %f4 %f4
 	mul.s	%f0 %f0 %f5
 	lw	%r4 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f6 0
 	mul.s	%f6 %f5 %f5
 	mul.s	%f1 %f1 %f6
@@ -4040,7 +3907,6 @@ fbeq_cont.14 :
 beq_else.76 :
 	mul.s	%f2 %f1 %f6
 	lw	%r4 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f7 0
 	mul.s	%f7 %f6 %f6
 	add.s	%f6 %f5 %f5
@@ -4106,8 +3972,7 @@ beq_else.75 :
 beq_cont.68 :
 beq_cont.66 :
 beq_cont.53 :
-	addi	%r0 %r5 540
-	lw.s	%r5 %f0 540
+	lw.s	%r0 %f0 540
 	addi	%r0 %r5 0
 	beq	%r4 %r5 bne_else.4 
 	ilw.s	%r0 %f1 l.28
@@ -4137,23 +4002,17 @@ beq_else.81 :
 beq_else.80 :
 	ilw.s	%r0 %f1 l.29
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r3 312
-	lw.s	%r3 %f1 312
+	lw.s	%r0 %f1 312
 	mul.s	%f0 %f1 %f1
-	addi	%r0 %r3 552
-	lw.s	%r3 %f2 552
+	lw.s	%r0 %f2 552
 	add.s	%f2 %f1 %f1
-	addi	%r0 %r3 316
-	lw.s	%r3 %f2 316
+	lw.s	%r0 %f2 316
 	mul.s	%f0 %f2 %f2
-	addi	%r0 %r3 556
-	lw.s	%r3 %f3 556
+	lw.s	%r0 %f3 556
 	add.s	%f3 %f2 %f2
-	addi	%r0 %r3 320
-	lw.s	%r3 %f3 320
+	lw.s	%r0 %f3 320
 	mul.s	%f0 %f3 %f0
-	addi	%r0 %r3 560
-	lw.s	%r3 %f3 560
+	lw.s	%r0 %f3 560
 	add.s	%f3 %f0 %f0
 	addi	%r0 %r3 0
 	sw	%r26 %r2 -0
@@ -4212,7 +4071,7 @@ shadow_check_one_or_matrix.0 :
 	slli	%r1 %r3 2
 	add	%r2 %r3 %r3
 	lw	%r3 %r3 0
-	addi	%r3 %r4 0
+	mov	%r3 %r4
 	lw	%r4 %r4 0
 	addi	%r0 %r5 -1
 	bne	%r4 %r5 beq_else.85 
@@ -4230,20 +4089,16 @@ beq_else.86 :
 	slli	%r4 %r5 2
 	addi	%r5 %r5 48
 	lw	%r5 %r5 0
-	addi	%r0 %r6 552
-	lw.s	%r6 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r5 %r6 20
-	addi	%r6 %r6 0
 	lw.s	%r6 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r6 556
-	lw.s	%r6 %f1 556
+	lw.s	%r0 %f1 556
 	lw	%r5 %r6 20
 	addi	%r6 %r6 4
 	lw.s	%r6 %f2 0
 	sub.s	%f2 %f1 %f1
-	addi	%r0 %r6 560
-	lw.s	%r6 %f2 560
+	lw.s	%r0 %f2 560
 	lw	%r5 %r6 20
 	addi	%r6 %r6 8
 	lw.s	%r6 %f3 0
@@ -4254,14 +4109,13 @@ beq_else.86 :
 	lw	%r5 %r6 4
 	addi	%r0 %r7 1
 	bne	%r6 %r7 beq_else.87 
-	addi	%r4 %r6 0
+	mov	%r4 %r6
 	lw.s	%r6 %f3 0
 	sub.s	%f0 %f3 %f3
 	addi	%r4 %r6 4
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
-	addi	%r0 %r6 740
-	lw.s	%r6 %f4 740
+	lw.s	%r0 %f4 740
 	mul.s	%f4 %f3 %f4
 	add.s	%f1 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -4284,8 +4138,7 @@ fbl_cont.33 :
 	addi	%r0 %r6 0
 	j	beq_cont.75 
 beq_else.88 :
-	addi	%r0 %r6 744
-	lw.s	%r6 %f4 744
+	lw.s	%r0 %f4 744
 	mul.s	%f4 %f3 %f4
 	add.s	%f2 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -4334,8 +4187,7 @@ beq_cont.75 :
 	addi	%r4 %r6 12
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
-	addi	%r0 %r6 736
-	lw.s	%r6 %f4 736
+	lw.s	%r0 %f4 736
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -4345,7 +4197,6 @@ beq_cont.75 :
 fbl_else.38 :
 fbl_cont.36 :
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f5 0
 	fbge	%f4 %f5 fbl_else.39 
 	addi	%r0 %r6 1
@@ -4358,8 +4209,7 @@ fbl_cont.37 :
 	addi	%r0 %r6 0
 	j	beq_cont.79 
 beq_else.92 :
-	addi	%r0 %r6 744
-	lw.s	%r6 %f4 744
+	lw.s	%r0 %f4 744
 	mul.s	%f4 %f3 %f4
 	add.s	%f2 %f4 %f4
 	ilw.s	%r0 %f5 l.15
@@ -4408,8 +4258,7 @@ beq_cont.79 :
 	addi	%r4 %r6 20
 	lw.s	%r6 %f3 0
 	mul.s	%f3 %f2 %f2
-	addi	%r0 %r6 736
-	lw.s	%r6 %f3 736
+	lw.s	%r0 %f3 736
 	mul.s	%f3 %f2 %f3
 	add.s	%f0 %f3 %f0
 	ilw.s	%r0 %f3 l.15
@@ -4419,7 +4268,6 @@ beq_cont.79 :
 fbl_else.42 :
 fbl_cont.40 :
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f3 0
 	fbge	%f0 %f3 fbl_else.43 
 	addi	%r0 %r6 1
@@ -4432,8 +4280,7 @@ fbl_cont.41 :
 	addi	%r0 %r4 0
 	j	beq_cont.83 
 beq_else.96 :
-	addi	%r0 %r6 740
-	lw.s	%r6 %f0 740
+	lw.s	%r0 %f0 740
 	mul.s	%f0 %f2 %f0
 	add.s	%f1 %f0 %f0
 	ilw.s	%r0 %f1 l.15
@@ -4496,7 +4343,7 @@ beq_cont.78 :
 beq_else.87 :
 	addi	%r0 %r7 2
 	bne	%r6 %r7 beq_else.100 
-	addi	%r4 %r5 0
+	mov	%r4 %r5
 	lw.s	%r5 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbge	%f3 %f4 fbl_else.46 
@@ -4526,7 +4373,7 @@ beq_else.101 :
 beq_cont.88 :
 	j	beq_cont.87 
 beq_else.100 :
-	addi	%r4 %r6 0
+	mov	%r4 %r6
 	lw.s	%r6 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbne	%f3 %f4 fbeq_else.18 
@@ -4550,7 +4397,6 @@ fbeq_cont.18 :
 	add.s	%f5 %f4 %f4
 	mul.s	%f0 %f0 %f5
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f6 0
 	mul.s	%f6 %f5 %f5
 	mul.s	%f1 %f1 %f6
@@ -4573,7 +4419,6 @@ fbeq_cont.18 :
 beq_else.103 :
 	mul.s	%f2 %f1 %f6
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f7 0
 	mul.s	%f7 %f6 %f6
 	add.s	%f6 %f5 %f5
@@ -4641,8 +4486,7 @@ beq_cont.87 :
 beq_cont.74 :
 	addi	%r0 %r5 0
 	beq	%r4 %r5 bne_else.5 
-	addi	%r0 %r4 540
-	lw.s	%r4 %f0 540
+	lw.s	%r0 %f0 540
 	ilw.s	%r0 %f1 l.30
 	fbge	%f0 %f1 fbl_else.48 
 	addi	%r0 %r4 1
@@ -4710,20 +4554,16 @@ beq_else.111 :
 	slli	%r4 %r5 2
 	addi	%r5 %r5 48
 	lw	%r5 %r5 0
-	addi	%r0 %r6 636
-	lw.s	%r6 %f0 636
+	lw.s	%r0 %f0 636
 	lw	%r5 %r6 20
-	addi	%r6 %r6 0
 	lw.s	%r6 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r6 640
-	lw.s	%r6 %f1 640
+	lw.s	%r0 %f1 640
 	lw	%r5 %r6 20
 	addi	%r6 %r6 4
 	lw.s	%r6 %f2 0
 	sub.s	%f2 %f1 %f1
-	addi	%r0 %r6 644
-	lw.s	%r6 %f2 644
+	lw.s	%r0 %f2 644
 	lw	%r5 %r6 20
 	addi	%r6 %r6 8
 	lw.s	%r6 %f3 0
@@ -4731,7 +4571,7 @@ beq_else.111 :
 	lw	%r5 %r6 4
 	addi	%r0 %r7 1
 	bne	%r6 %r7 beq_else.112 
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbne	%f3 %f4 fbeq_else.19 
@@ -4744,7 +4584,7 @@ fbeq_cont.19 :
 	bne	%r6 %r7 beq_else.113 
 	lw	%r5 %r6 16
 	lw	%r5 %r7 24
-	addi	%r3 %r8 0
+	mov	%r3 %r8
 	lw.s	%r8 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbge	%f3 %f4 fbl_else.49 
@@ -4766,7 +4606,7 @@ beq_else.115 :
 	addi	%r0 %r7 0
 beq_cont.99 :
 beq_cont.98 :
-	addi	%r6 %r8 0
+	mov	%r6 %r8
 	lw.s	%r8 %f3 0
 	addi	%r0 %r8 0
 	bne	%r7 %r8 beq_else.116 
@@ -4775,7 +4615,7 @@ beq_cont.98 :
 beq_else.116 :
 beq_cont.100 :
 	sub.s	%f0 %f3 %f3
-	addi	%r3 %r7 0
+	mov	%r3 %r7
 	lw.s	%r7 %f4 0
 	div.s	%f4 %f3 %f3
 	addi	%r3 %r7 4
@@ -4904,7 +4744,7 @@ fbl_cont.54 :
 	addi	%r0 %r6 0
 	j	beq_cont.108 
 beq_else.124 :
-	addi	%r3 %r7 0
+	mov	%r3 %r7
 	lw.s	%r7 %f4 0
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
@@ -4914,7 +4754,6 @@ beq_else.124 :
 	j	fbl_cont.55 
 fbl_else.57 :
 fbl_cont.55 :
-	addi	%r6 %r6 0
 	lw.s	%r6 %f5 0
 	fbge	%f4 %f5 fbl_else.58 
 	addi	%r0 %r6 1
@@ -4984,7 +4823,7 @@ beq_cont.114 :
 	addi	%r3 %r5 8
 	lw.s	%r5 %f3 0
 	div.s	%f3 %f2 %f2
-	addi	%r3 %r5 0
+	mov	%r3 %r5
 	lw.s	%r5 %f3 0
 	mul.s	%f3 %f2 %f3
 	add.s	%f0 %f3 %f0
@@ -4994,7 +4833,7 @@ beq_cont.114 :
 	j	fbl_cont.58 
 fbl_else.60 :
 fbl_cont.58 :
-	addi	%r6 %r5 0
+	mov	%r6 %r5
 	lw.s	%r5 %f3 0
 	fbge	%f0 %f3 fbl_else.61 
 	addi	%r0 %r5 1
@@ -5058,9 +4897,9 @@ beq_else.112 :
 	addi	%r0 %r7 2
 	bne	%r6 %r7 beq_else.134 
 	lw	%r5 %r5 16
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f3 0
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
 	addi	%r3 %r6 4
@@ -5087,7 +4926,7 @@ fbl_cont.62 :
 	addi	%r0 %r5 0
 	j	beq_cont.119 
 beq_else.135 :
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f4 0
 	mul.s	%f0 %f4 %f0
 	addi	%r5 %r6 4
@@ -5105,7 +4944,7 @@ beq_else.135 :
 beq_cont.119 :
 	j	beq_cont.118 
 beq_else.134 :
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f3 0
 	addi	%r3 %r6 4
 	lw.s	%r6 %f4 0
@@ -5113,7 +4952,6 @@ beq_else.134 :
 	lw.s	%r6 %f5 0
 	mul.s	%f3 %f3 %f6
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f7 0
 	mul.s	%f7 %f6 %f6
 	mul.s	%f4 %f4 %f7
@@ -5136,7 +4974,6 @@ beq_else.134 :
 beq_else.136 :
 	mul.s	%f5 %f4 %f7
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f8 0
 	mul.s	%f8 %f7 %f7
 	add.s	%f7 %f6 %f6
@@ -5162,7 +4999,7 @@ fbeq_else.22 :
 fbeq_cont.22 :
 	addi	%r0 %r7 0
 	bne	%r6 %r7 beq_else.137 
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f4 0
 	addi	%r3 %r6 4
 	lw.s	%r6 %f5 0
@@ -5170,7 +5007,6 @@ fbeq_cont.22 :
 	lw.s	%r6 %f6 0
 	mul.s	%f0 %f4 %f7
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f8 0
 	mul.s	%f8 %f7 %f7
 	mul.s	%f1 %f5 %f8
@@ -5195,7 +5031,6 @@ beq_else.138 :
 	mul.s	%f2 %f5 %f9
 	add.s	%f9 %f8 %f8
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f9 0
 	mul.s	%f9 %f8 %f8
 	mul.s	%f2 %f4 %f9
@@ -5220,7 +5055,6 @@ beq_else.138 :
 beq_cont.122 :
 	mul.s	%f0 %f0 %f5
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f6 0
 	mul.s	%f6 %f5 %f5
 	mul.s	%f1 %f1 %f6
@@ -5243,7 +5077,6 @@ beq_cont.122 :
 beq_else.139 :
 	mul.s	%f2 %f1 %f6
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f7 0
 	mul.s	%f7 %f6 %f6
 	add.s	%f6 %f5 %f5
@@ -5304,8 +5137,7 @@ beq_cont.118 :
 beq_cont.96 :
 	addi	%r0 %r6 0
 	beq	%r5 %r6 bne_else.6 
-	addi	%r0 %r6 540
-	lw.s	%r6 %f0 540
+	lw.s	%r0 %f0 540
 	ilw.s	%r0 %f1 l.15
 	fbge	%f1 %f0 fbl_else.66 
 	addi	%r0 %r6 1
@@ -5320,8 +5152,7 @@ fbl_cont.64 :
 	bne	%r6 %r7 beq_else.143 
 	j	beq_cont.127 
 beq_else.143 :
-	addi	%r0 %r6 548
-	lw.s	%r6 %f1 548
+	lw.s	%r0 %f1 548
 	fbge	%f0 %f1 fbl_else.67 
 	addi	%r0 %r6 1
 	j	fbl_cont.65 
@@ -5334,23 +5165,20 @@ fbl_cont.65 :
 beq_else.144 :
 	ilw.s	%r0 %f1 l.29
 	add.s	%f1 %f0 %f0
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f1 0
 	mul.s	%f0 %f1 %f1
-	addi	%r0 %r6 636
-	lw.s	%r6 %f2 636
+	lw.s	%r0 %f2 636
 	add.s	%f2 %f1 %f1
 	addi	%r3 %r6 4
 	lw.s	%r6 %f2 0
 	mul.s	%f0 %f2 %f2
-	addi	%r0 %r6 640
-	lw.s	%r6 %f3 640
+	lw.s	%r0 %f3 640
 	add.s	%f3 %f2 %f2
 	addi	%r3 %r6 8
 	lw.s	%r6 %f3 0
 	mul.s	%f0 %f3 %f3
-	addi	%r0 %r6 644
-	lw.s	%r6 %f4 644
+	lw.s	%r0 %f4 644
 	add.s	%f4 %f3 %f3
 	addi	%r0 %r6 0
 	sw	%r26 %r5 -12
@@ -5434,7 +5262,7 @@ trace_or_matrix.0 :
 	slli	%r1 %r4 2
 	add	%r2 %r4 %r4
 	lw	%r4 %r4 0
-	addi	%r4 %r5 0
+	mov	%r4 %r5
 	lw	%r5 %r5 0
 	addi	%r0 %r6 -1
 	bne	%r5 %r6 beq_else.147 
@@ -5458,20 +5286,16 @@ beq_else.148 :
 	slli	%r5 %r5 2
 	addi	%r5 %r5 48
 	lw	%r5 %r5 0
-	addi	%r0 %r6 636
-	lw.s	%r6 %f0 636
+	lw.s	%r0 %f0 636
 	lw	%r5 %r6 20
-	addi	%r6 %r6 0
 	lw.s	%r6 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r6 640
-	lw.s	%r6 %f1 640
+	lw.s	%r0 %f1 640
 	lw	%r5 %r6 20
 	addi	%r6 %r6 4
 	lw.s	%r6 %f2 0
 	sub.s	%f2 %f1 %f1
-	addi	%r0 %r6 644
-	lw.s	%r6 %f2 644
+	lw.s	%r0 %f2 644
 	lw	%r5 %r6 20
 	addi	%r6 %r6 8
 	lw.s	%r6 %f3 0
@@ -5479,7 +5303,7 @@ beq_else.148 :
 	lw	%r5 %r6 4
 	addi	%r0 %r7 1
 	bne	%r6 %r7 beq_else.149 
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbne	%f3 %f4 fbeq_else.23 
@@ -5492,7 +5316,7 @@ fbeq_cont.23 :
 	bne	%r6 %r7 beq_else.150 
 	lw	%r5 %r6 16
 	lw	%r5 %r7 24
-	addi	%r3 %r8 0
+	mov	%r3 %r8
 	lw.s	%r8 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbge	%f3 %f4 fbl_else.68 
@@ -5514,7 +5338,7 @@ beq_else.152 :
 	addi	%r0 %r7 0
 beq_cont.134 :
 beq_cont.133 :
-	addi	%r6 %r8 0
+	mov	%r6 %r8
 	lw.s	%r8 %f3 0
 	addi	%r0 %r8 0
 	bne	%r7 %r8 beq_else.153 
@@ -5523,7 +5347,7 @@ beq_cont.133 :
 beq_else.153 :
 beq_cont.135 :
 	sub.s	%f0 %f3 %f3
-	addi	%r3 %r7 0
+	mov	%r3 %r7
 	lw.s	%r7 %f4 0
 	div.s	%f4 %f3 %f3
 	addi	%r3 %r7 4
@@ -5652,7 +5476,7 @@ fbl_cont.73 :
 	addi	%r0 %r6 0
 	j	beq_cont.143 
 beq_else.161 :
-	addi	%r3 %r7 0
+	mov	%r3 %r7
 	lw.s	%r7 %f4 0
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
@@ -5662,7 +5486,6 @@ beq_else.161 :
 	j	fbl_cont.74 
 fbl_else.76 :
 fbl_cont.74 :
-	addi	%r6 %r6 0
 	lw.s	%r6 %f5 0
 	fbge	%f4 %f5 fbl_else.77 
 	addi	%r0 %r6 1
@@ -5732,7 +5555,7 @@ beq_cont.149 :
 	addi	%r3 %r5 8
 	lw.s	%r5 %f3 0
 	div.s	%f3 %f2 %f2
-	addi	%r3 %r5 0
+	mov	%r3 %r5
 	lw.s	%r5 %f3 0
 	mul.s	%f3 %f2 %f3
 	add.s	%f0 %f3 %f0
@@ -5742,7 +5565,7 @@ beq_cont.149 :
 	j	fbl_cont.77 
 fbl_else.79 :
 fbl_cont.77 :
-	addi	%r6 %r5 0
+	mov	%r6 %r5
 	lw.s	%r5 %f3 0
 	fbge	%f0 %f3 fbl_else.80 
 	addi	%r0 %r5 1
@@ -5806,9 +5629,9 @@ beq_else.149 :
 	addi	%r0 %r7 2
 	bne	%r6 %r7 beq_else.171 
 	lw	%r5 %r5 16
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f3 0
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f4 0
 	mul.s	%f4 %f3 %f3
 	addi	%r3 %r6 4
@@ -5835,7 +5658,7 @@ fbl_cont.81 :
 	addi	%r0 %r5 0
 	j	beq_cont.154 
 beq_else.172 :
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f4 0
 	mul.s	%f0 %f4 %f0
 	addi	%r5 %r6 4
@@ -5853,7 +5676,7 @@ beq_else.172 :
 beq_cont.154 :
 	j	beq_cont.153 
 beq_else.171 :
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f3 0
 	addi	%r3 %r6 4
 	lw.s	%r6 %f4 0
@@ -5861,7 +5684,6 @@ beq_else.171 :
 	lw.s	%r6 %f5 0
 	mul.s	%f3 %f3 %f6
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f7 0
 	mul.s	%f7 %f6 %f6
 	mul.s	%f4 %f4 %f7
@@ -5884,7 +5706,6 @@ beq_else.171 :
 beq_else.173 :
 	mul.s	%f5 %f4 %f7
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f8 0
 	mul.s	%f8 %f7 %f7
 	add.s	%f7 %f6 %f6
@@ -5910,7 +5731,7 @@ fbeq_else.26 :
 fbeq_cont.26 :
 	addi	%r0 %r7 0
 	bne	%r6 %r7 beq_else.174 
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f4 0
 	addi	%r3 %r6 4
 	lw.s	%r6 %f5 0
@@ -5918,7 +5739,6 @@ fbeq_cont.26 :
 	lw.s	%r6 %f6 0
 	mul.s	%f0 %f4 %f7
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f8 0
 	mul.s	%f8 %f7 %f7
 	mul.s	%f1 %f5 %f8
@@ -5943,7 +5763,6 @@ beq_else.175 :
 	mul.s	%f2 %f5 %f9
 	add.s	%f9 %f8 %f8
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f9 0
 	mul.s	%f9 %f8 %f8
 	mul.s	%f2 %f4 %f9
@@ -5968,7 +5787,6 @@ beq_else.175 :
 beq_cont.157 :
 	mul.s	%f0 %f0 %f5
 	lw	%r5 %r6 16
-	addi	%r6 %r6 0
 	lw.s	%r6 %f6 0
 	mul.s	%f6 %f5 %f5
 	mul.s	%f1 %f1 %f6
@@ -5991,7 +5809,6 @@ beq_cont.157 :
 beq_else.176 :
 	mul.s	%f2 %f1 %f6
 	lw	%r5 %r6 36
-	addi	%r6 %r6 0
 	lw.s	%r6 %f7 0
 	mul.s	%f7 %f6 %f6
 	add.s	%f6 %f5 %f5
@@ -6052,10 +5869,8 @@ beq_cont.153 :
 beq_cont.131 :
 	addi	%r0 %r6 0
 	beq	%r5 %r6 bne_else.8 
-	addi	%r0 %r5 540
-	lw.s	%r5 %f0 540
-	addi	%r0 %r5 548
-	lw.s	%r5 %f1 548
+	lw.s	%r0 %f0 540
+	lw.s	%r0 %f1 548
 	fbge	%f0 %f1 fbl_else.85 
 	addi	%r0 %r5 1
 	j	fbl_cont.83 
@@ -6097,7 +5912,7 @@ beq_else.181 :
 	addi	%r6 %r6 48
 	lw	%r6 %r6 0
 	lw	%r6 %r7 40
-	addi	%r7 %r8 0
+	mov	%r7 %r8
 	lw.s	%r8 %f0 0
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
@@ -6111,7 +5926,7 @@ beq_else.181 :
 	addi	%r0 %r10 1
 	bne	%r9 %r10 beq_else.182 
 	lw	%r3 %r7 0
-	addi	%r8 %r9 0
+	mov	%r8 %r9
 	lw.s	%r9 %f3 0
 	sub.s	%f0 %f3 %f3
 	addi	%r8 %r9 4
@@ -6191,7 +6006,7 @@ beq_cont.164 :
 	addi	%r8 %r9 12
 	lw.s	%r9 %f4 0
 	mul.s	%f4 %f3 %f3
-	addi	%r7 %r9 0
+	mov	%r7 %r9
 	lw.s	%r9 %f4 0
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
@@ -6202,7 +6017,6 @@ beq_cont.164 :
 fbl_else.90 :
 fbl_cont.88 :
 	lw	%r6 %r9 16
-	addi	%r9 %r9 0
 	lw.s	%r9 %f5 0
 	fbge	%f4 %f5 fbl_else.91 
 	addi	%r0 %r9 1
@@ -6265,7 +6079,7 @@ beq_cont.168 :
 	addi	%r8 %r9 20
 	lw.s	%r9 %f3 0
 	mul.s	%f3 %f2 %f2
-	addi	%r7 %r9 0
+	mov	%r7 %r9
 	lw.s	%r9 %f3 0
 	mul.s	%f3 %f2 %f3
 	add.s	%f0 %f3 %f0
@@ -6276,7 +6090,6 @@ beq_cont.168 :
 fbl_else.94 :
 fbl_cont.92 :
 	lw	%r6 %r9 16
-	addi	%r9 %r9 0
 	lw.s	%r9 %f3 0
 	fbge	%f0 %f3 fbl_else.95 
 	addi	%r0 %r9 1
@@ -6353,7 +6166,7 @@ beq_cont.167 :
 beq_else.182 :
 	addi	%r0 %r10 2
 	bne	%r9 %r10 beq_else.195 
-	addi	%r8 %r6 0
+	mov	%r8 %r6
 	lw.s	%r6 %f0 0
 	ilw.s	%r0 %f1 l.15
 	fbge	%f0 %f1 fbl_else.98 
@@ -6367,7 +6180,7 @@ fbl_cont.96 :
 	addi	%r0 %r6 0
 	j	beq_cont.177 
 beq_else.196 :
-	addi	%r8 %r6 0
+	mov	%r8 %r6
 	lw.s	%r6 %f0 0
 	addi	%r7 %r6 12
 	lw.s	%r6 %f1 0
@@ -6377,7 +6190,7 @@ beq_else.196 :
 beq_cont.177 :
 	j	beq_cont.176 
 beq_else.195 :
-	addi	%r8 %r9 0
+	mov	%r8 %r9
 	lw.s	%r9 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbne	%f3 %f4 fbeq_else.30 
@@ -6444,8 +6257,7 @@ beq_cont.176 :
 beq_cont.163 :
 	addi	%r0 %r7 0
 	beq	%r6 %r7 bne_else.9 
-	addi	%r0 %r7 540
-	lw.s	%r7 %f0 540
+	lw.s	%r0 %f0 540
 	ilw.s	%r0 %f1 l.15
 	fbge	%f1 %f0 fbl_else.100 
 	addi	%r0 %r7 1
@@ -6460,8 +6272,7 @@ fbl_cont.98 :
 	bne	%r7 %r8 beq_else.200 
 	j	beq_cont.181 
 beq_else.200 :
-	addi	%r0 %r7 548
-	lw.s	%r7 %f1 548
+	lw.s	%r0 %f1 548
 	fbge	%f0 %f1 fbl_else.101 
 	addi	%r0 %r7 1
 	j	fbl_cont.99 
@@ -6474,23 +6285,20 @@ fbl_cont.99 :
 beq_else.201 :
 	ilw.s	%r0 %f1 l.29
 	add.s	%f1 %f0 %f0
-	addi	%r4 %r7 0
+	mov	%r4 %r7
 	lw.s	%r7 %f1 0
 	mul.s	%f0 %f1 %f1
-	addi	%r0 %r7 648
-	lw.s	%r7 %f2 648
+	lw.s	%r0 %f2 648
 	add.s	%f2 %f1 %f1
 	addi	%r4 %r7 4
 	lw.s	%r7 %f2 0
 	mul.s	%f0 %f2 %f2
-	addi	%r0 %r7 652
-	lw.s	%r7 %f3 652
+	lw.s	%r0 %f3 652
 	add.s	%f3 %f2 %f2
 	addi	%r4 %r4 8
 	lw.s	%r4 %f3 0
 	mul.s	%f0 %f3 %f3
-	addi	%r0 %r4 656
-	lw.s	%r4 %f4 656
+	lw.s	%r0 %f4 656
 	add.s	%f4 %f3 %f3
 	addi	%r0 %r4 0
 	sw	%r26 %r6 -12
@@ -6574,7 +6382,7 @@ trace_or_matrix_fast.0 :
 	slli	%r1 %r4 2
 	add	%r2 %r4 %r4
 	lw	%r4 %r4 0
-	addi	%r4 %r5 0
+	mov	%r4 %r5
 	lw	%r5 %r5 0
 	addi	%r0 %r6 -1
 	bne	%r5 %r6 beq_else.204 
@@ -6599,7 +6407,7 @@ beq_else.205 :
 	addi	%r6 %r6 48
 	lw	%r6 %r6 0
 	lw	%r6 %r7 40
-	addi	%r7 %r8 0
+	mov	%r7 %r8
 	lw.s	%r8 %f0 0
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
@@ -6613,7 +6421,7 @@ beq_else.205 :
 	addi	%r0 %r9 1
 	bne	%r8 %r9 beq_else.206 
 	lw	%r3 %r7 0
-	addi	%r5 %r8 0
+	mov	%r5 %r8
 	lw.s	%r8 %f3 0
 	sub.s	%f0 %f3 %f3
 	addi	%r5 %r8 4
@@ -6693,7 +6501,7 @@ beq_cont.186 :
 	addi	%r5 %r8 12
 	lw.s	%r8 %f4 0
 	mul.s	%f4 %f3 %f3
-	addi	%r7 %r8 0
+	mov	%r7 %r8
 	lw.s	%r8 %f4 0
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
@@ -6704,7 +6512,6 @@ beq_cont.186 :
 fbl_else.106 :
 fbl_cont.104 :
 	lw	%r6 %r8 16
-	addi	%r8 %r8 0
 	lw.s	%r8 %f5 0
 	fbge	%f4 %f5 fbl_else.107 
 	addi	%r0 %r8 1
@@ -6767,7 +6574,7 @@ beq_cont.190 :
 	addi	%r5 %r8 20
 	lw.s	%r8 %f3 0
 	mul.s	%f3 %f2 %f2
-	addi	%r7 %r8 0
+	mov	%r7 %r8
 	lw.s	%r8 %f3 0
 	mul.s	%f3 %f2 %f3
 	add.s	%f0 %f3 %f0
@@ -6778,7 +6585,6 @@ beq_cont.190 :
 fbl_else.110 :
 fbl_cont.108 :
 	lw	%r6 %r8 16
-	addi	%r8 %r8 0
 	lw.s	%r8 %f3 0
 	fbge	%f0 %f3 fbl_else.111 
 	addi	%r0 %r8 1
@@ -6855,7 +6661,7 @@ beq_cont.189 :
 beq_else.206 :
 	addi	%r0 %r9 2
 	bne	%r8 %r9 beq_else.219 
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f0 0
 	ilw.s	%r0 %f1 l.15
 	fbge	%f0 %f1 fbl_else.114 
@@ -6869,7 +6675,6 @@ fbl_cont.112 :
 	addi	%r0 %r5 0
 	j	beq_cont.199 
 beq_else.220 :
-	addi	%r5 %r5 0
 	lw.s	%r5 %f0 0
 	addi	%r7 %r5 12
 	lw.s	%r5 %f1 0
@@ -6879,7 +6684,7 @@ beq_else.220 :
 beq_cont.199 :
 	j	beq_cont.198 
 beq_else.219 :
-	addi	%r5 %r8 0
+	mov	%r5 %r8
 	lw.s	%r8 %f3 0
 	ilw.s	%r0 %f4 l.15
 	fbne	%f3 %f4 fbeq_else.34 
@@ -6946,10 +6751,8 @@ beq_cont.198 :
 beq_cont.185 :
 	addi	%r0 %r6 0
 	beq	%r5 %r6 bne_else.11 
-	addi	%r0 %r5 540
-	lw.s	%r5 %f0 540
-	addi	%r0 %r5 548
-	lw.s	%r5 %f1 548
+	lw.s	%r0 %f0 540
+	lw.s	%r0 %f1 548
 	fbge	%f0 %f1 fbl_else.116 
 	addi	%r0 %r5 1
 	j	fbl_cont.114 
@@ -7003,8 +6806,7 @@ trace_reflections.0 :
 	jal	trace_or_matrix_fast.0 
 	addi	%r26 %r26 44
 	lw	%r26 %r28 -40
-	addi	%r0 %r1 548
-	lw.s	%r1 %f0 548
+	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f1 l.30
 	fbge	%f1 %f0 fbl_else.117 
 	addi	%r0 %r1 1
@@ -7049,19 +6851,16 @@ beq_else.226 :
 	bne	%r1 %r2 beq_else.228 
 	lw	%r26 %r1 -32
 	lw	%r1 %r2 0
-	addi	%r0 %r3 568
-	lw.s	%r3 %f0 568
-	addi	%r2 %r3 0
+	lw.s	%r0 %f0 568
+	mov	%r2 %r3
 	lw.s	%r3 %f1 0
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r3 572
-	lw.s	%r3 %f1 572
+	lw.s	%r0 %f1 572
 	addi	%r2 %r3 4
 	lw.s	%r3 %f2 0
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r3 576
-	lw.s	%r3 %f1 576
+	lw.s	%r0 %f1 576
 	addi	%r2 %r2 8
 	lw.s	%r2 %f2 0
 	mul.s	%f2 %f1 %f1
@@ -7073,9 +6872,9 @@ beq_else.226 :
 	mul.s	%f0 %f3 %f0
 	lw	%r1 %r1 0
 	lw	%r26 %r2 -16
-	addi	%r2 %r3 0
+	mov	%r2 %r3
 	lw.s	%r3 %f3 0
-	addi	%r1 %r3 0
+	mov	%r1 %r3
 	lw.s	%r3 %f4 0
 	mul.s	%f4 %f3 %f3
 	addi	%r2 %r3 4
@@ -7102,24 +6901,18 @@ fbl_cont.117 :
 	bne	%r1 %r3 beq_else.229 
 	j	beq_cont.208 
 beq_else.229 :
-	addi	%r0 %r1 604
-	lw.s	%r1 %f3 604
-	addi	%r0 %r1 580
-	lw.s	%r1 %f4 580
+	lw.s	%r0 %f3 604
+	lw.s	%r0 %f4 580
 	mul.s	%f4 %f0 %f4
 	add.s	%f4 %f3 %f3
 	sw.s	%r0 %f3 604
-	addi	%r0 %r1 608
-	lw.s	%r1 %f3 608
-	addi	%r0 %r1 584
-	lw.s	%r1 %f4 584
+	lw.s	%r0 %f3 608
+	lw.s	%r0 %f4 584
 	mul.s	%f4 %f0 %f4
 	add.s	%f4 %f3 %f3
 	sw.s	%r0 %f3 608
-	addi	%r0 %r1 612
-	lw.s	%r1 %f3 612
-	addi	%r0 %r1 588
-	lw.s	%r1 %f4 588
+	lw.s	%r0 %f3 612
+	lw.s	%r0 %f4 588
 	mul.s	%f4 %f0 %f0
 	add.s	%f0 %f3 %f0
 	sw.s	%r0 %f0 612
@@ -7139,16 +6932,13 @@ beq_else.230 :
 	mul.s	%f0 %f0 %f0
 	lw.s	%r26 %f1 -8
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 604
-	lw.s	%r1 %f3 604
+	lw.s	%r0 %f3 604
 	add.s	%f0 %f3 %f3
 	sw.s	%r0 %f3 604
-	addi	%r0 %r1 608
-	lw.s	%r1 %f3 608
+	lw.s	%r0 %f3 608
 	add.s	%f0 %f3 %f3
 	sw.s	%r0 %f3 608
-	addi	%r0 %r1 612
-	lw.s	%r1 %f3 612
+	lw.s	%r0 %f3 612
 	add.s	%f0 %f3 %f0
 	sw.s	%r0 %f0 612
 beq_cont.209 :
@@ -7192,8 +6982,7 @@ trace_ray.0 :
 	jal	trace_or_matrix.0 
 	addi	%r26 %r26 48
 	lw	%r26 %r28 -44
-	addi	%r0 %r1 548
-	lw.s	%r1 %f0 548
+	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f1 l.30
 	fbge	%f1 %f0 fbl_else.121 
 	addi	%r0 %r1 1
@@ -7225,21 +7014,18 @@ beq_cont.210 :
 	addi	%r0 %r1 0
 	beq	%r2 %r1 bne_else.12 
 	lw	%r26 %r1 -32
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	lw.s	%r2 %f0 0
-	addi	%r0 %r2 312
-	lw.s	%r2 %f1 312
+	lw.s	%r0 %f1 312
 	mul.s	%f1 %f0 %f0
 	addi	%r1 %r2 4
 	lw.s	%r2 %f1 0
-	addi	%r0 %r2 316
-	lw.s	%r2 %f2 316
+	lw.s	%r0 %f2 316
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	addi	%r1 %r1 8
 	lw.s	%r1 %f1 0
-	addi	%r0 %r1 320
-	lw.s	%r1 %f2 320
+	lw.s	%r0 %f2 320
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	neg.s	%f0 %f0
@@ -7258,19 +7044,15 @@ beq_else.233 :
 	mul.s	%f0 %f1 %f0
 	lw.s	%r26 %f1 -24
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 324
-	lw.s	%r1 %f1 324
+	lw.s	%r0 %f1 324
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 604
-	lw.s	%r1 %f1 604
+	lw.s	%r0 %f1 604
 	add.s	%f0 %f1 %f1
 	sw.s	%r0 %f1 604
-	addi	%r0 %r1 608
-	lw.s	%r1 %f1 608
+	lw.s	%r0 %f1 608
 	add.s	%f0 %f1 %f1
 	sw.s	%r0 %f1 608
-	addi	%r0 %r1 612
-	lw.s	%r1 %f1 612
+	lw.s	%r0 %f1 612
 	add.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 612
 	retl
@@ -7283,7 +7065,6 @@ beq_else.232 :
 	lw	%r2 %r2 0
 	lw	%r2 %r3 8
 	lw	%r2 %r4 28
-	addi	%r4 %r4 0
 	lw.s	%r4 %f0 0
 	lw.s	%r26 %f1 -24
 	mul.s	%f1 %f0 %f0
@@ -7337,7 +7118,6 @@ beq_else.234 :
 	addi	%r0 %r5 2
 	bne	%r4 %r5 beq_else.237 
 	lw	%r2 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f2 0
 	neg.s	%f2 %f2
 	sw.s	%r0 %f2 568
@@ -7353,26 +7133,21 @@ beq_else.234 :
 	sw.s	%r0 %f2 576
 	j	beq_cont.214 
 beq_else.237 :
-	addi	%r0 %r4 552
-	lw.s	%r4 %f2 552
+	lw.s	%r0 %f2 552
 	lw	%r2 %r4 20
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	sub.s	%f3 %f2 %f2
-	addi	%r0 %r4 556
-	lw.s	%r4 %f3 556
+	lw.s	%r0 %f3 556
 	lw	%r2 %r4 20
 	addi	%r4 %r4 4
 	lw.s	%r4 %f4 0
 	sub.s	%f4 %f3 %f3
-	addi	%r0 %r4 560
-	lw.s	%r4 %f4 560
+	lw.s	%r0 %f4 560
 	lw	%r2 %r4 20
 	addi	%r4 %r4 8
 	lw.s	%r4 %f5 0
 	sub.s	%f5 %f4 %f4
 	lw	%r2 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f5 0
 	mul.s	%f5 %f2 %f5
 	lw	%r2 %r4 16
@@ -7409,7 +7184,6 @@ beq_else.238 :
 	lw.s	%r4 %f5 0
 	mul.s	%f5 %f2 %f5
 	lw	%r2 %r4 36
-	addi	%r4 %r4 0
 	lw.s	%r4 %f8 0
 	mul.s	%f8 %f4 %f4
 	add.s	%f4 %f5 %f4
@@ -7422,7 +7196,6 @@ beq_else.238 :
 	lw.s	%r4 %f4 0
 	mul.s	%f4 %f2 %f2
 	lw	%r2 %r4 36
-	addi	%r4 %r4 0
 	lw.s	%r4 %f4 0
 	mul.s	%f4 %f3 %f3
 	add.s	%f3 %f2 %f2
@@ -7432,15 +7205,12 @@ beq_else.238 :
 	sw.s	%r0 %f2 576
 beq_cont.215 :
 	lw	%r2 %r4 24
-	addi	%r0 %r5 568
-	lw.s	%r5 %f2 568
+	lw.s	%r0 %f2 568
 	mul.s	%f2 %f2 %f2
-	addi	%r0 %r5 572
-	lw.s	%r5 %f3 572
+	lw.s	%r0 %f3 572
 	mul.s	%f3 %f3 %f3
 	add.s	%f3 %f2 %f2
-	addi	%r0 %r5 576
-	lw.s	%r5 %f3 576
+	lw.s	%r0 %f3 576
 	mul.s	%f3 %f3 %f3
 	add.s	%f3 %f2 %f2
 	sqrt.s	%f2 %f2
@@ -7466,32 +7236,25 @@ beq_cont.217 :
 beq_else.239 :
 	ilw.s	%r0 %f2 l.16
 beq_cont.216 :
-	addi	%r0 %r4 568
-	lw.s	%r4 %f3 568
+	lw.s	%r0 %f3 568
 	mul.s	%f2 %f3 %f3
 	sw.s	%r0 %f3 568
-	addi	%r0 %r4 572
-	lw.s	%r4 %f3 572
+	lw.s	%r0 %f3 572
 	mul.s	%f2 %f3 %f3
 	sw.s	%r0 %f3 572
-	addi	%r0 %r4 576
-	lw.s	%r4 %f3 576
+	lw.s	%r0 %f3 576
 	mul.s	%f2 %f3 %f2
 	sw.s	%r0 %f2 576
 beq_cont.214 :
 beq_cont.211 :
-	addi	%r0 %r4 552
-	lw.s	%r4 %f2 552
+	lw.s	%r0 %f2 552
 	sw.s	%r0 %f2 636
-	addi	%r0 %r4 556
-	lw.s	%r4 %f2 556
+	lw.s	%r0 %f2 556
 	sw.s	%r0 %f2 640
-	addi	%r0 %r4 560
-	lw.s	%r4 %f2 560
+	lw.s	%r0 %f2 560
 	sw.s	%r0 %f2 644
 	lw	%r2 %r4 0
 	lw	%r2 %r5 32
-	addi	%r5 %r5 0
 	lw.s	%r5 %f2 0
 	sw.s	%r0 %f2 580
 	lw	%r2 %r5 32
@@ -7508,10 +7271,8 @@ beq_cont.211 :
 	sw	%r26 %r2 -56
 	sw	%r26 %r1 -60
 	bne	%r4 %r5 beq_else.241 
-	addi	%r0 %r4 552
-	lw.s	%r4 %f2 552
+	lw.s	%r0 %f2 552
 	lw	%r2 %r4 20
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	sub.s	%f3 %f2 %f2
 	ilw.s	%r0 %f3 l.51
@@ -7527,8 +7288,7 @@ beq_cont.211 :
 fbl_else.125 :
 	addi	%r0 %r4 0
 fbl_cont.123 :
-	addi	%r0 %r5 560
-	lw.s	%r5 %f2 560
+	lw.s	%r0 %f2 560
 	lw	%r2 %r5 20
 	addi	%r5 %r5 8
 	lw.s	%r5 %f3 0
@@ -7570,8 +7330,7 @@ beq_cont.219 :
 beq_else.241 :
 	addi	%r0 %r5 2
 	bne	%r4 %r5 beq_else.245 
-	addi	%r0 %r4 556
-	lw.s	%r4 %f2 556
+	lw.s	%r0 %f2 556
 	ilw.s	%r0 %f3 l.50
 	mul.s	%f3 %f2 %f2
 	mov.s	%f2 %f0
@@ -7593,14 +7352,11 @@ beq_else.241 :
 beq_else.245 :
 	addi	%r0 %r5 3
 	bne	%r4 %r5 beq_else.246 
-	addi	%r0 %r4 552
-	lw.s	%r4 %f2 552
+	lw.s	%r0 %f2 552
 	lw	%r2 %r4 20
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	sub.s	%f3 %f2 %f2
-	addi	%r0 %r4 560
-	lw.s	%r4 %f3 560
+	lw.s	%r0 %f3 560
 	lw	%r2 %r4 20
 	addi	%r4 %r4 8
 	lw.s	%r4 %f4 0
@@ -7634,19 +7390,15 @@ beq_else.245 :
 beq_else.246 :
 	addi	%r0 %r5 4
 	bne	%r4 %r5 beq_else.247 
-	addi	%r0 %r4 552
-	lw.s	%r4 %f2 552
+	lw.s	%r0 %f2 552
 	lw	%r2 %r4 20
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	sub.s	%f3 %f2 %f2
 	lw	%r2 %r4 16
-	addi	%r4 %r4 0
 	lw.s	%r4 %f3 0
 	sqrt.s	%f3 %f3
 	mul.s	%f3 %f2 %f2
-	addi	%r0 %r4 560
-	lw.s	%r4 %f3 560
+	lw.s	%r0 %f3 560
 	lw	%r2 %r4 20
 	addi	%r4 %r4 8
 	lw.s	%r4 %f4 0
@@ -7912,8 +7664,7 @@ beq_else.248 :
 beq_cont.225 :
 	floor.w.s	%f2 %f3
 	sub.s	%f3 %f2 %f2
-	addi	%r0 %r4 556
-	lw.s	%r4 %f3 556
+	lw.s	%r0 %f3 556
 	lw	%r2 %r4 20
 	addi	%r4 %r4 4
 	lw.s	%r4 %f5 0
@@ -8224,22 +7975,18 @@ beq_cont.218 :
 	slli	%r2 %r5 2
 	add	%r3 %r5 %r3
 	lw	%r3 %r3 0
-	addi	%r0 %r5 552
-	lw.s	%r5 %f0 552
-	addi	%r3 %r5 0
+	lw.s	%r0 %f0 552
+	mov	%r3 %r5
 	sw.s	%r5 %f0 0
-	addi	%r0 %r5 556
-	lw.s	%r5 %f0 556
+	lw.s	%r0 %f0 556
 	addi	%r3 %r5 4
 	sw.s	%r5 %f0 0
-	addi	%r0 %r5 560
-	lw.s	%r5 %f0 560
+	lw.s	%r0 %f0 560
 	addi	%r3 %r3 8
 	sw.s	%r3 %f0 0
 	lw	%r1 %r3 12
 	lw	%r26 %r5 -56
 	lw	%r5 %r6 28
-	addi	%r6 %r6 0
 	lw.s	%r6 %f0 0
 	ilw.s	%r0 %f1 l.21
 	fbge	%f0 %f1 fbl_else.142 
@@ -8258,16 +8005,13 @@ fbl_cont.140 :
 	slli	%r2 %r6 2
 	add	%r3 %r6 %r6
 	lw	%r6 %r6 0
-	addi	%r0 %r7 580
-	lw.s	%r7 %f0 580
-	addi	%r6 %r7 0
+	lw.s	%r0 %f0 580
+	mov	%r6 %r7
 	sw.s	%r7 %f0 0
-	addi	%r0 %r7 584
-	lw.s	%r7 %f0 584
+	lw.s	%r0 %f0 584
 	addi	%r6 %r7 4
 	sw.s	%r7 %f0 0
-	addi	%r0 %r7 588
-	lw.s	%r7 %f0 588
+	lw.s	%r0 %f0 588
 	addi	%r6 %r6 8
 	sw.s	%r6 %f0 0
 	slli	%r2 %r6 2
@@ -8276,10 +8020,10 @@ fbl_cont.140 :
 	ilw.s	%r0 %f0 l.53
 	lw.s	%r26 %f1 -48
 	mul.s	%f1 %f0 %f0
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f2 0
 	mul.s	%f0 %f2 %f2
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	sw.s	%r6 %f2 0
 	addi	%r3 %r6 4
 	lw.s	%r6 %f2 0
@@ -8295,16 +8039,13 @@ fbl_cont.140 :
 	slli	%r2 %r6 2
 	add	%r3 %r6 %r3
 	lw	%r3 %r3 0
-	addi	%r0 %r6 568
-	lw.s	%r6 %f0 568
-	addi	%r3 %r6 0
+	lw.s	%r0 %f0 568
+	mov	%r3 %r6
 	sw.s	%r6 %f0 0
-	addi	%r0 %r6 572
-	lw.s	%r6 %f0 572
+	lw.s	%r0 %f0 572
 	addi	%r3 %r6 4
 	sw.s	%r6 %f0 0
-	addi	%r0 %r6 576
-	lw.s	%r6 %f0 576
+	lw.s	%r0 %f0 576
 	addi	%r3 %r3 8
 	sw.s	%r3 %f0 0
 	j	beq_cont.228 
@@ -8316,44 +8057,38 @@ beq_else.251 :
 beq_cont.228 :
 	ilw.s	%r0 %f0 l.54
 	lw	%r26 %r3 -32
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f1 0
-	addi	%r0 %r6 568
-	lw.s	%r6 %f2 568
+	lw.s	%r0 %f2 568
 	mul.s	%f2 %f1 %f1
 	addi	%r3 %r6 4
 	lw.s	%r6 %f2 0
-	addi	%r0 %r6 572
-	lw.s	%r6 %f3 572
+	lw.s	%r0 %f3 572
 	mul.s	%f3 %f2 %f2
 	add.s	%f2 %f1 %f1
 	addi	%r3 %r6 8
 	lw.s	%r6 %f2 0
-	addi	%r0 %r6 576
-	lw.s	%r6 %f3 576
+	lw.s	%r0 %f3 576
 	mul.s	%f3 %f2 %f2
 	add.s	%f2 %f1 %f1
 	mul.s	%f1 %f0 %f0
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	lw.s	%r6 %f1 0
-	addi	%r0 %r6 568
-	lw.s	%r6 %f2 568
+	lw.s	%r0 %f2 568
 	mul.s	%f2 %f0 %f2
 	add.s	%f2 %f1 %f1
-	addi	%r3 %r6 0
+	mov	%r3 %r6
 	sw.s	%r6 %f1 0
 	addi	%r3 %r6 4
 	lw.s	%r6 %f1 0
-	addi	%r0 %r6 572
-	lw.s	%r6 %f2 572
+	lw.s	%r0 %f2 572
 	mul.s	%f2 %f0 %f2
 	add.s	%f2 %f1 %f1
 	addi	%r3 %r6 4
 	sw.s	%r6 %f1 0
 	addi	%r3 %r6 8
 	lw.s	%r6 %f1 0
-	addi	%r0 %r6 576
-	lw.s	%r6 %f2 576
+	lw.s	%r0 %f2 576
 	mul.s	%f2 %f0 %f0
 	add.s	%f0 %f1 %f0
 	addi	%r3 %r6 8
@@ -8375,42 +8110,33 @@ beq_cont.228 :
 	lw	%r26 %r28 -72
 	addi	%r0 %r2 0
 	bne	%r1 %r2 beq_else.252 
-	addi	%r0 %r1 568
-	lw.s	%r1 %f0 568
-	addi	%r0 %r1 312
-	lw.s	%r1 %f1 312
+	lw.s	%r0 %f0 568
+	lw.s	%r0 %f1 312
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 572
-	lw.s	%r1 %f1 572
-	addi	%r0 %r1 316
-	lw.s	%r1 %f2 316
+	lw.s	%r0 %f1 572
+	lw.s	%r0 %f2 316
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r1 576
-	lw.s	%r1 %f1 576
-	addi	%r0 %r1 320
-	lw.s	%r1 %f2 320
+	lw.s	%r0 %f1 576
+	lw.s	%r0 %f2 320
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	neg.s	%f0 %f0
 	lw.s	%r26 %f1 -48
 	mul.s	%f1 %f0 %f0
 	lw	%r26 %r1 -32
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	lw.s	%r2 %f2 0
-	addi	%r0 %r2 312
-	lw.s	%r2 %f3 312
+	lw.s	%r0 %f3 312
 	mul.s	%f3 %f2 %f2
 	addi	%r1 %r2 4
 	lw.s	%r2 %f3 0
-	addi	%r0 %r2 316
-	lw.s	%r2 %f4 316
+	lw.s	%r0 %f4 316
 	mul.s	%f4 %f3 %f3
 	add.s	%f3 %f2 %f2
 	addi	%r1 %r2 8
 	lw.s	%r2 %f3 0
-	addi	%r0 %r2 320
-	lw.s	%r2 %f4 320
+	lw.s	%r0 %f4 320
 	mul.s	%f4 %f3 %f3
 	add.s	%f3 %f2 %f2
 	neg.s	%f2 %f2
@@ -8425,24 +8151,18 @@ fbl_cont.141 :
 	bne	%r2 %r3 beq_else.253 
 	j	beq_cont.230 
 beq_else.253 :
-	addi	%r0 %r2 604
-	lw.s	%r2 %f3 604
-	addi	%r0 %r2 580
-	lw.s	%r2 %f4 580
+	lw.s	%r0 %f3 604
+	lw.s	%r0 %f4 580
 	mul.s	%f4 %f0 %f4
 	add.s	%f4 %f3 %f3
 	sw.s	%r0 %f3 604
-	addi	%r0 %r2 608
-	lw.s	%r2 %f3 608
-	addi	%r0 %r2 584
-	lw.s	%r2 %f4 584
+	lw.s	%r0 %f3 608
+	lw.s	%r0 %f4 584
 	mul.s	%f4 %f0 %f4
 	add.s	%f4 %f3 %f3
 	sw.s	%r0 %f3 608
-	addi	%r0 %r2 612
-	lw.s	%r2 %f3 612
-	addi	%r0 %r2 588
-	lw.s	%r2 %f4 588
+	lw.s	%r0 %f3 612
+	lw.s	%r0 %f4 588
 	mul.s	%f4 %f0 %f0
 	add.s	%f0 %f3 %f0
 	sw.s	%r0 %f0 612
@@ -8462,30 +8182,24 @@ beq_else.254 :
 	mul.s	%f0 %f0 %f0
 	lw.s	%r26 %f2 -64
 	mul.s	%f2 %f0 %f0
-	addi	%r0 %r2 604
-	lw.s	%r2 %f3 604
+	lw.s	%r0 %f3 604
 	add.s	%f0 %f3 %f3
 	sw.s	%r0 %f3 604
-	addi	%r0 %r2 608
-	lw.s	%r2 %f3 608
+	lw.s	%r0 %f3 608
 	add.s	%f0 %f3 %f3
 	sw.s	%r0 %f3 608
-	addi	%r0 %r2 612
-	lw.s	%r2 %f3 612
+	lw.s	%r0 %f3 612
 	add.s	%f0 %f3 %f0
 	sw.s	%r0 %f0 612
 beq_cont.231 :
 	j	beq_cont.229 
 beq_else.252 :
 beq_cont.229 :
-	addi	%r0 %r1 552
-	lw.s	%r1 %f0 552
+	lw.s	%r0 %f0 552
 	sw.s	%r0 %f0 648
-	addi	%r0 %r1 556
-	lw.s	%r1 %f0 556
+	lw.s	%r0 %f0 556
 	sw.s	%r0 %f0 652
-	addi	%r0 %r1 560
-	lw.s	%r1 %f0 560
+	lw.s	%r0 %f0 560
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r2 -1
@@ -8535,13 +8249,11 @@ bl_cont.5 :
 	ilw.s	%r0 %f0 l.16
 	lw	%r26 %r1 -56
 	lw	%r1 %r1 28
-	addi	%r1 %r1 0
 	lw.s	%r1 %f2 0
 	sub.s	%f2 %f0 %f0
 	mul.s	%f0 %f1 %f0
 	addi	%r2 %r1 1
-	addi	%r0 %r2 548
-	lw.s	%r2 %f1 548
+	lw.s	%r0 %f1 548
 	lw.s	%r26 %f2 -8
 	add.s	%f1 %f2 %f1
 	lw	%r26 %r2 -32
@@ -8560,9 +8272,9 @@ iter_trace_diffuse_rays.0 :
 	add	%r1 %r5 %r5
 	lw	%r5 %r5 0
 	lw	%r5 %r5 0
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f0 0
-	addi	%r2 %r6 0
+	mov	%r2 %r6
 	lw.s	%r6 %f1 0
 	mul.s	%f1 %f0 %f0
 	addi	%r5 %r6 4
@@ -8609,8 +8321,7 @@ fbl_cont.144 :
 	jal	trace_or_matrix_fast.0 
 	addi	%r26 %r26 32
 	lw	%r26 %r28 -28
-	addi	%r0 %r1 548
-	lw.s	%r1 %f0 548
+	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f1 l.30
 	fbge	%f1 %f0 fbl_else.147 
 	addi	%r0 %r1 1
@@ -8690,7 +8401,6 @@ beq_else.260 :
 	addi	%r0 %r2 2
 	bne	%r3 %r2 beq_else.263 
 	lw	%r1 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f0 0
 	neg.s	%f0 %f0
 	sw.s	%r0 %f0 568
@@ -8706,26 +8416,21 @@ beq_else.260 :
 	sw.s	%r0 %f0 576
 	j	beq_cont.238 
 beq_else.263 :
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 556
-	lw.s	%r2 %f1 556
+	lw.s	%r0 %f1 556
 	lw	%r1 %r2 20
 	addi	%r2 %r2 4
 	lw.s	%r2 %f2 0
 	sub.s	%f2 %f1 %f1
-	addi	%r0 %r2 560
-	lw.s	%r2 %f2 560
+	lw.s	%r0 %f2 560
 	lw	%r1 %r2 20
 	addi	%r2 %r2 8
 	lw.s	%r2 %f3 0
 	sub.s	%f3 %f2 %f2
 	lw	%r1 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f3 0
 	mul.s	%f3 %f0 %f3
 	lw	%r1 %r2 16
@@ -8762,7 +8467,6 @@ beq_else.264 :
 	lw.s	%r2 %f3 0
 	mul.s	%f3 %f0 %f3
 	lw	%r1 %r2 36
-	addi	%r2 %r2 0
 	lw.s	%r2 %f6 0
 	mul.s	%f6 %f2 %f2
 	add.s	%f2 %f3 %f2
@@ -8775,7 +8479,6 @@ beq_else.264 :
 	lw.s	%r2 %f2 0
 	mul.s	%f2 %f0 %f0
 	lw	%r1 %r2 36
-	addi	%r2 %r2 0
 	lw.s	%r2 %f2 0
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
@@ -8785,15 +8488,12 @@ beq_else.264 :
 	sw.s	%r0 %f0 576
 beq_cont.239 :
 	lw	%r1 %r2 24
-	addi	%r0 %r3 568
-	lw.s	%r3 %f0 568
+	lw.s	%r0 %f0 568
 	mul.s	%f0 %f0 %f0
-	addi	%r0 %r3 572
-	lw.s	%r3 %f1 572
+	lw.s	%r0 %f1 572
 	mul.s	%f1 %f1 %f1
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r3 576
-	lw.s	%r3 %f1 576
+	lw.s	%r0 %f1 576
 	mul.s	%f1 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sqrt.s	%f0 %f0
@@ -8819,23 +8519,19 @@ beq_cont.241 :
 beq_else.265 :
 	ilw.s	%r0 %f0 l.16
 beq_cont.240 :
-	addi	%r0 %r2 568
-	lw.s	%r2 %f1 568
+	lw.s	%r0 %f1 568
 	mul.s	%f0 %f1 %f1
 	sw.s	%r0 %f1 568
-	addi	%r0 %r2 572
-	lw.s	%r2 %f1 572
+	lw.s	%r0 %f1 572
 	mul.s	%f0 %f1 %f1
 	sw.s	%r0 %f1 572
-	addi	%r0 %r2 576
-	lw.s	%r2 %f1 576
+	lw.s	%r0 %f1 576
 	mul.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 576
 beq_cont.238 :
 beq_cont.235 :
 	lw	%r1 %r2 0
 	lw	%r1 %r3 32
-	addi	%r3 %r3 0
 	lw.s	%r3 %f0 0
 	sw.s	%r0 %f0 580
 	lw	%r1 %r3 32
@@ -8849,10 +8545,8 @@ beq_cont.235 :
 	addi	%r0 %r3 1
 	sw	%r26 %r1 -28
 	bne	%r2 %r3 beq_else.267 
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
 	ilw.s	%r0 %f1 l.51
@@ -8868,8 +8562,7 @@ beq_cont.235 :
 fbl_else.150 :
 	addi	%r0 %r2 0
 fbl_cont.148 :
-	addi	%r0 %r3 560
-	lw.s	%r3 %f0 560
+	lw.s	%r0 %f0 560
 	lw	%r1 %r3 20
 	addi	%r3 %r3 8
 	lw.s	%r3 %f1 0
@@ -8911,8 +8604,7 @@ beq_cont.243 :
 beq_else.267 :
 	addi	%r0 %r3 2
 	bne	%r2 %r3 beq_else.271 
-	addi	%r0 %r2 556
-	lw.s	%r2 %f0 556
+	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.50
 	mul.s	%f1 %f0 %f0
 	sw	%r26 %r28 -32
@@ -8933,14 +8625,11 @@ beq_else.267 :
 beq_else.271 :
 	addi	%r0 %r3 3
 	bne	%r2 %r3 beq_else.272 
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 560
-	lw.s	%r2 %f1 560
+	lw.s	%r0 %f1 560
 	lw	%r1 %r2 20
 	addi	%r2 %r2 8
 	lw.s	%r2 %f2 0
@@ -8973,19 +8662,15 @@ beq_else.271 :
 beq_else.272 :
 	addi	%r0 %r3 4
 	bne	%r2 %r3 beq_else.273 
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
 	lw	%r1 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sqrt.s	%f1 %f1
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r2 560
-	lw.s	%r2 %f1 560
+	lw.s	%r0 %f1 560
 	lw	%r1 %r2 20
 	addi	%r2 %r2 8
 	lw.s	%r2 %f2 0
@@ -9251,8 +8936,7 @@ beq_else.274 :
 beq_cont.249 :
 	floor.w.s	%f0 %f1
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 556
-	lw.s	%r2 %f1 556
+	lw.s	%r0 %f1 556
 	lw	%r1 %r2 20
 	addi	%r2 %r2 4
 	lw.s	%r2 %f3 0
@@ -9557,21 +9241,15 @@ beq_cont.242 :
 	lw	%r26 %r28 -32
 	addi	%r0 %r2 0
 	bne	%r1 %r2 beq_else.277 
-	addi	%r0 %r1 568
-	lw.s	%r1 %f0 568
-	addi	%r0 %r1 312
-	lw.s	%r1 %f1 312
+	lw.s	%r0 %f0 568
+	lw.s	%r0 %f1 312
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 572
-	lw.s	%r1 %f1 572
-	addi	%r0 %r1 316
-	lw.s	%r1 %f2 316
+	lw.s	%r0 %f1 572
+	lw.s	%r0 %f2 316
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r1 576
-	lw.s	%r1 %f1 576
-	addi	%r0 %r1 320
-	lw.s	%r1 %f2 320
+	lw.s	%r0 %f1 576
+	lw.s	%r0 %f2 320
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	neg.s	%f0 %f0
@@ -9592,27 +9270,20 @@ beq_cont.253 :
 	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 -28
 	lw	%r1 %r1 28
-	addi	%r1 %r1 0
 	lw.s	%r1 %f1 0
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 592
-	lw.s	%r1 %f1 592
-	addi	%r0 %r1 580
-	lw.s	%r1 %f2 580
+	lw.s	%r0 %f1 592
+	lw.s	%r0 %f2 580
 	mul.s	%f2 %f0 %f2
 	add.s	%f2 %f1 %f1
 	sw.s	%r0 %f1 592
-	addi	%r0 %r1 596
-	lw.s	%r1 %f1 596
-	addi	%r0 %r1 584
-	lw.s	%r1 %f2 584
+	lw.s	%r0 %f1 596
+	lw.s	%r0 %f2 584
 	mul.s	%f2 %f0 %f2
 	add.s	%f2 %f1 %f1
 	sw.s	%r0 %f1 596
-	addi	%r0 %r1 600
-	lw.s	%r1 %f1 600
-	addi	%r0 %r1 588
-	lw.s	%r1 %f2 588
+	lw.s	%r0 %f1 600
+	lw.s	%r0 %f2 588
 	mul.s	%f2 %f0 %f0
 	add.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 600
@@ -9642,8 +9313,7 @@ beq_else.257 :
 	jal	trace_or_matrix_fast.0 
 	addi	%r26 %r26 48
 	lw	%r26 %r28 -44
-	addi	%r0 %r1 548
-	lw.s	%r1 %f0 548
+	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f1 l.30
 	fbge	%f1 %f0 fbl_else.168 
 	addi	%r0 %r1 1
@@ -9723,7 +9393,6 @@ beq_else.281 :
 	addi	%r0 %r2 2
 	bne	%r3 %r2 beq_else.284 
 	lw	%r1 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f0 0
 	neg.s	%f0 %f0
 	sw.s	%r0 %f0 568
@@ -9739,26 +9408,21 @@ beq_else.281 :
 	sw.s	%r0 %f0 576
 	j	beq_cont.259 
 beq_else.284 :
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 556
-	lw.s	%r2 %f1 556
+	lw.s	%r0 %f1 556
 	lw	%r1 %r2 20
 	addi	%r2 %r2 4
 	lw.s	%r2 %f2 0
 	sub.s	%f2 %f1 %f1
-	addi	%r0 %r2 560
-	lw.s	%r2 %f2 560
+	lw.s	%r0 %f2 560
 	lw	%r1 %r2 20
 	addi	%r2 %r2 8
 	lw.s	%r2 %f3 0
 	sub.s	%f3 %f2 %f2
 	lw	%r1 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f3 0
 	mul.s	%f3 %f0 %f3
 	lw	%r1 %r2 16
@@ -9795,7 +9459,6 @@ beq_else.285 :
 	lw.s	%r2 %f3 0
 	mul.s	%f3 %f0 %f3
 	lw	%r1 %r2 36
-	addi	%r2 %r2 0
 	lw.s	%r2 %f6 0
 	mul.s	%f6 %f2 %f2
 	add.s	%f2 %f3 %f2
@@ -9808,7 +9471,6 @@ beq_else.285 :
 	lw.s	%r2 %f2 0
 	mul.s	%f2 %f0 %f0
 	lw	%r1 %r2 36
-	addi	%r2 %r2 0
 	lw.s	%r2 %f2 0
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
@@ -9818,15 +9480,12 @@ beq_else.285 :
 	sw.s	%r0 %f0 576
 beq_cont.260 :
 	lw	%r1 %r2 24
-	addi	%r0 %r3 568
-	lw.s	%r3 %f0 568
+	lw.s	%r0 %f0 568
 	mul.s	%f0 %f0 %f0
-	addi	%r0 %r3 572
-	lw.s	%r3 %f1 572
+	lw.s	%r0 %f1 572
 	mul.s	%f1 %f1 %f1
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r3 576
-	lw.s	%r3 %f1 576
+	lw.s	%r0 %f1 576
 	mul.s	%f1 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sqrt.s	%f0 %f0
@@ -9852,23 +9511,19 @@ beq_cont.262 :
 beq_else.286 :
 	ilw.s	%r0 %f0 l.16
 beq_cont.261 :
-	addi	%r0 %r2 568
-	lw.s	%r2 %f1 568
+	lw.s	%r0 %f1 568
 	mul.s	%f0 %f1 %f1
 	sw.s	%r0 %f1 568
-	addi	%r0 %r2 572
-	lw.s	%r2 %f1 572
+	lw.s	%r0 %f1 572
 	mul.s	%f0 %f1 %f1
 	sw.s	%r0 %f1 572
-	addi	%r0 %r2 576
-	lw.s	%r2 %f1 576
+	lw.s	%r0 %f1 576
 	mul.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 576
 beq_cont.259 :
 beq_cont.256 :
 	lw	%r1 %r2 0
 	lw	%r1 %r3 32
-	addi	%r3 %r3 0
 	lw.s	%r3 %f0 0
 	sw.s	%r0 %f0 580
 	lw	%r1 %r3 32
@@ -9882,10 +9537,8 @@ beq_cont.256 :
 	addi	%r0 %r3 1
 	sw	%r26 %r1 -44
 	bne	%r2 %r3 beq_else.288 
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
 	ilw.s	%r0 %f1 l.51
@@ -9901,8 +9554,7 @@ beq_cont.256 :
 fbl_else.171 :
 	addi	%r0 %r2 0
 fbl_cont.169 :
-	addi	%r0 %r3 560
-	lw.s	%r3 %f0 560
+	lw.s	%r0 %f0 560
 	lw	%r1 %r3 20
 	addi	%r3 %r3 8
 	lw.s	%r3 %f1 0
@@ -9944,8 +9596,7 @@ beq_cont.264 :
 beq_else.288 :
 	addi	%r0 %r3 2
 	bne	%r2 %r3 beq_else.292 
-	addi	%r0 %r2 556
-	lw.s	%r2 %f0 556
+	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.50
 	mul.s	%f1 %f0 %f0
 	sw	%r26 %r28 -48
@@ -9966,14 +9617,11 @@ beq_else.288 :
 beq_else.292 :
 	addi	%r0 %r3 3
 	bne	%r2 %r3 beq_else.293 
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 560
-	lw.s	%r2 %f1 560
+	lw.s	%r0 %f1 560
 	lw	%r1 %r2 20
 	addi	%r2 %r2 8
 	lw.s	%r2 %f2 0
@@ -10006,19 +9654,15 @@ beq_else.292 :
 beq_else.293 :
 	addi	%r0 %r3 4
 	bne	%r2 %r3 beq_else.294 
-	addi	%r0 %r2 552
-	lw.s	%r2 %f0 552
+	lw.s	%r0 %f0 552
 	lw	%r1 %r2 20
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sub.s	%f1 %f0 %f0
 	lw	%r1 %r2 16
-	addi	%r2 %r2 0
 	lw.s	%r2 %f1 0
 	sqrt.s	%f1 %f1
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r2 560
-	lw.s	%r2 %f1 560
+	lw.s	%r0 %f1 560
 	lw	%r1 %r2 20
 	addi	%r2 %r2 8
 	lw.s	%r2 %f2 0
@@ -10284,8 +9928,7 @@ beq_else.295 :
 beq_cont.270 :
 	floor.w.s	%f0 %f1
 	sub.s	%f1 %f0 %f0
-	addi	%r0 %r2 556
-	lw.s	%r2 %f1 556
+	lw.s	%r0 %f1 556
 	lw	%r1 %r2 20
 	addi	%r2 %r2 4
 	lw.s	%r2 %f3 0
@@ -10590,21 +10233,15 @@ beq_cont.263 :
 	lw	%r26 %r28 -48
 	addi	%r0 %r2 0
 	bne	%r1 %r2 beq_else.298 
-	addi	%r0 %r1 568
-	lw.s	%r1 %f0 568
-	addi	%r0 %r1 312
-	lw.s	%r1 %f1 312
+	lw.s	%r0 %f0 568
+	lw.s	%r0 %f1 312
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 572
-	lw.s	%r1 %f1 572
-	addi	%r0 %r1 316
-	lw.s	%r1 %f2 316
+	lw.s	%r0 %f1 572
+	lw.s	%r0 %f2 316
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
-	addi	%r0 %r1 576
-	lw.s	%r1 %f1 576
-	addi	%r0 %r1 320
-	lw.s	%r1 %f2 320
+	lw.s	%r0 %f1 576
+	lw.s	%r0 %f2 320
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	neg.s	%f0 %f0
@@ -10625,27 +10262,20 @@ beq_cont.274 :
 	mul.s	%f0 %f1 %f0
 	lw	%r26 %r1 -44
 	lw	%r1 %r1 28
-	addi	%r1 %r1 0
 	lw.s	%r1 %f1 0
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r1 592
-	lw.s	%r1 %f1 592
-	addi	%r0 %r1 580
-	lw.s	%r1 %f2 580
+	lw.s	%r0 %f1 592
+	lw.s	%r0 %f2 580
 	mul.s	%f2 %f0 %f2
 	add.s	%f2 %f1 %f1
 	sw.s	%r0 %f1 592
-	addi	%r0 %r1 596
-	lw.s	%r1 %f1 596
-	addi	%r0 %r1 584
-	lw.s	%r1 %f2 584
+	lw.s	%r0 %f1 596
+	lw.s	%r0 %f2 584
 	mul.s	%f2 %f0 %f2
 	add.s	%f2 %f1 %f1
 	sw.s	%r0 %f1 596
-	addi	%r0 %r1 600
-	lw.s	%r1 %f1 600
-	addi	%r0 %r1 588
-	lw.s	%r1 %f2 588
+	lw.s	%r0 %f1 600
+	lw.s	%r0 %f2 588
 	mul.s	%f2 %f0 %f0
 	add.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 600
@@ -10688,7 +10318,7 @@ beq_else.300 :
 	slli	%r2 %r7 2
 	add	%r3 %r7 %r3
 	lw	%r3 %r3 0
-	addi	%r3 %r7 0
+	mov	%r3 %r7
 	lw.s	%r7 %f0 0
 	sw.s	%r0 %f0 592
 	addi	%r3 %r7 4
@@ -10698,7 +10328,6 @@ beq_else.300 :
 	lw.s	%r3 %f0 0
 	sw.s	%r0 %f0 600
 	lw	%r1 %r3 24
-	addi	%r3 %r3 0
 	lw	%r3 %r3 0
 	slli	%r2 %r7 2
 	add	%r4 %r7 %r4
@@ -10713,7 +10342,7 @@ beq_else.300 :
 	sw	%r26 %r3 -20
 	beq	%r3 %r7 bne_else.13 
 	lw	%r0 %r7 716
-	addi	%r5 %r8 0
+	mov	%r5 %r8
 	lw.s	%r8 %f0 0
 	sw.s	%r0 %f0 648
 	addi	%r5 %r8 4
@@ -10749,7 +10378,7 @@ bne_cont.8 :
 	beq	%r2 %r1 bne_else.14 
 	lw	%r0 %r1 720
 	lw	%r26 %r3 -16
-	addi	%r3 %r4 0
+	mov	%r3 %r4
 	lw.s	%r4 %f0 0
 	sw.s	%r0 %f0 648
 	addi	%r3 %r4 4
@@ -10785,7 +10414,7 @@ bne_cont.9 :
 	beq	%r2 %r1 bne_else.15 
 	lw	%r0 %r1 724
 	lw	%r26 %r3 -16
-	addi	%r3 %r4 0
+	mov	%r3 %r4
 	lw.s	%r4 %f0 0
 	sw.s	%r0 %f0 648
 	addi	%r3 %r4 4
@@ -10821,7 +10450,7 @@ bne_cont.10 :
 	beq	%r2 %r1 bne_else.16 
 	lw	%r0 %r1 728
 	lw	%r26 %r3 -16
-	addi	%r3 %r4 0
+	mov	%r3 %r4
 	lw.s	%r4 %f0 0
 	sw.s	%r0 %f0 648
 	addi	%r3 %r4 4
@@ -10857,7 +10486,7 @@ bne_cont.11 :
 	beq	%r2 %r1 bne_else.17 
 	lw	%r0 %r1 732
 	lw	%r26 %r2 -16
-	addi	%r2 %r3 0
+	mov	%r2 %r3
 	lw.s	%r3 %f0 0
 	sw.s	%r0 %f0 648
 	addi	%r2 %r3 4
@@ -10893,30 +10522,24 @@ bne_cont.12 :
 	lw	%r26 %r3 -8
 	add	%r3 %r2 %r2
 	lw	%r2 %r2 0
-	addi	%r0 %r3 604
-	lw.s	%r3 %f0 604
-	addi	%r2 %r3 0
+	lw.s	%r0 %f0 604
+	mov	%r2 %r3
 	lw.s	%r3 %f1 0
-	addi	%r0 %r3 592
-	lw.s	%r3 %f2 592
+	lw.s	%r0 %f2 592
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 604
-	addi	%r0 %r3 608
-	lw.s	%r3 %f0 608
+	lw.s	%r0 %f0 608
 	addi	%r2 %r3 4
 	lw.s	%r3 %f1 0
-	addi	%r0 %r3 596
-	lw.s	%r3 %f2 596
+	lw.s	%r0 %f2 596
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 608
-	addi	%r0 %r3 612
-	lw.s	%r3 %f0 612
+	lw.s	%r0 %f0 612
 	addi	%r2 %r2 8
 	lw.s	%r2 %f1 0
-	addi	%r0 %r2 600
-	lw.s	%r2 %f2 600
+	lw.s	%r0 %f2 600
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 612
@@ -11040,7 +10663,7 @@ beq_else.306 :
 	slli	%r6 %r12 2
 	add	%r7 %r12 %r7
 	lw	%r7 %r7 0
-	addi	%r7 %r12 0
+	mov	%r7 %r12
 	lw.s	%r12 %f0 0
 	sw.s	%r0 %f0 592
 	addi	%r7 %r12 4
@@ -11052,20 +10675,17 @@ beq_else.306 :
 	slli	%r6 %r7 2
 	add	%r8 %r7 %r7
 	lw	%r7 %r7 0
-	addi	%r0 %r8 592
-	lw.s	%r8 %f0 592
-	addi	%r7 %r8 0
+	lw.s	%r0 %f0 592
+	mov	%r7 %r8
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 592
-	addi	%r0 %r8 596
-	lw.s	%r8 %f0 596
+	lw.s	%r0 %f0 596
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 596
-	addi	%r0 %r8 600
-	lw.s	%r8 %f0 600
+	lw.s	%r0 %f0 600
 	addi	%r7 %r7 8
 	lw.s	%r7 %f1 0
 	add.s	%f1 %f0 %f0
@@ -11073,20 +10693,17 @@ beq_else.306 :
 	slli	%r6 %r7 2
 	add	%r9 %r7 %r7
 	lw	%r7 %r7 0
-	addi	%r0 %r8 592
-	lw.s	%r8 %f0 592
-	addi	%r7 %r8 0
+	lw.s	%r0 %f0 592
+	mov	%r7 %r8
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 592
-	addi	%r0 %r8 596
-	lw.s	%r8 %f0 596
+	lw.s	%r0 %f0 596
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 596
-	addi	%r0 %r8 600
-	lw.s	%r8 %f0 600
+	lw.s	%r0 %f0 600
 	addi	%r7 %r7 8
 	lw.s	%r7 %f1 0
 	add.s	%f1 %f0 %f0
@@ -11094,20 +10711,17 @@ beq_else.306 :
 	slli	%r6 %r7 2
 	add	%r10 %r7 %r7
 	lw	%r7 %r7 0
-	addi	%r0 %r8 592
-	lw.s	%r8 %f0 592
-	addi	%r7 %r8 0
+	lw.s	%r0 %f0 592
+	mov	%r7 %r8
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 592
-	addi	%r0 %r8 596
-	lw.s	%r8 %f0 596
+	lw.s	%r0 %f0 596
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 596
-	addi	%r0 %r8 600
-	lw.s	%r8 %f0 600
+	lw.s	%r0 %f0 600
 	addi	%r7 %r7 8
 	lw.s	%r7 %f1 0
 	add.s	%f1 %f0 %f0
@@ -11115,20 +10729,17 @@ beq_else.306 :
 	slli	%r6 %r7 2
 	add	%r11 %r7 %r7
 	lw	%r7 %r7 0
-	addi	%r0 %r8 592
-	lw.s	%r8 %f0 592
-	addi	%r7 %r8 0
+	lw.s	%r0 %f0 592
+	mov	%r7 %r8
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 592
-	addi	%r0 %r8 596
-	lw.s	%r8 %f0 596
+	lw.s	%r0 %f0 596
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 596
-	addi	%r0 %r8 600
-	lw.s	%r8 %f0 600
+	lw.s	%r0 %f0 600
 	addi	%r7 %r7 8
 	lw.s	%r7 %f1 0
 	add.s	%f1 %f0 %f0
@@ -11140,30 +10751,24 @@ beq_else.306 :
 	slli	%r6 %r8 2
 	add	%r7 %r8 %r7
 	lw	%r7 %r7 0
-	addi	%r0 %r8 604
-	lw.s	%r8 %f0 604
-	addi	%r7 %r8 0
+	lw.s	%r0 %f0 604
+	mov	%r7 %r8
 	lw.s	%r8 %f1 0
-	addi	%r0 %r8 592
-	lw.s	%r8 %f2 592
+	lw.s	%r0 %f2 592
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 604
-	addi	%r0 %r8 608
-	lw.s	%r8 %f0 608
+	lw.s	%r0 %f0 608
 	addi	%r7 %r8 4
 	lw.s	%r8 %f1 0
-	addi	%r0 %r8 596
-	lw.s	%r8 %f2 596
+	lw.s	%r0 %f2 596
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 608
-	addi	%r0 %r8 612
-	lw.s	%r8 %f0 612
+	lw.s	%r0 %f0 612
 	addi	%r7 %r7 8
 	lw.s	%r7 %f1 0
-	addi	%r0 %r7 600
-	lw.s	%r7 %f2 600
+	lw.s	%r0 %f2 600
 	mul.s	%f2 %f1 %f1
 	add.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 612
@@ -11193,7 +10798,6 @@ pretrace_diffuse_rays.0 :
 	j	beq_cont.281 
 beq_else.307 :
 	lw	%r1 %r3 24
-	addi	%r3 %r3 0
 	lw	%r3 %r3 0
 	ilw.s	%r0 %f0 l.15
 	sw.s	%r0 %f0 592
@@ -11210,7 +10814,7 @@ beq_else.307 :
 	slli	%r2 %r6 2
 	add	%r5 %r6 %r5
 	lw	%r5 %r5 0
-	addi	%r5 %r6 0
+	mov	%r5 %r6
 	lw.s	%r6 %f0 0
 	sw.s	%r0 %f0 648
 	addi	%r5 %r6 4
@@ -11247,16 +10851,13 @@ beq_else.307 :
 	slli	%r3 %r4 2
 	add	%r2 %r4 %r2
 	lw	%r2 %r2 0
-	addi	%r0 %r4 592
-	lw.s	%r4 %f0 592
-	addi	%r2 %r4 0
+	lw.s	%r0 %f0 592
+	mov	%r2 %r4
 	sw.s	%r4 %f0 0
-	addi	%r0 %r4 596
-	lw.s	%r4 %f0 596
+	lw.s	%r0 %f0 596
 	addi	%r2 %r4 4
 	sw.s	%r4 %f0 0
-	addi	%r0 %r4 600
-	lw.s	%r4 %f0 600
+	lw.s	%r0 %f0 600
 	addi	%r2 %r2 8
 	sw.s	%r2 %f0 0
 beq_cont.281 :
@@ -11272,36 +10873,29 @@ pretrace_pixels.0 :
 	lw	%r30 %r5 4
 	addi	%r0 %r6 0
 	bg	%r6 %r2 ble_else.12 
-	addi	%r0 %r6 632
-	lw.s	%r6 %f3 632
+	lw.s	%r0 %f3 632
 	lw	%r0 %r6 624
 	sub	%r2 %r6 %r6
 	mtc1	%r6 %f4
 	mul.s	%f4 %f3 %f3
-	addi	%r0 %r6 660
-	lw.s	%r6 %f4 660
+	lw.s	%r0 %f4 660
 	mul.s	%f4 %f3 %f4
 	add.s	%f0 %f4 %f4
 	sw.s	%r0 %f4 696
-	addi	%r0 %r6 664
-	lw.s	%r6 %f4 664
+	lw.s	%r0 %f4 664
 	mul.s	%f4 %f3 %f4
 	add.s	%f1 %f4 %f4
 	sw.s	%r0 %f4 700
-	addi	%r0 %r6 668
-	lw.s	%r6 %f4 668
+	lw.s	%r0 %f4 668
 	mul.s	%f4 %f3 %f3
 	add.s	%f2 %f3 %f3
 	sw.s	%r0 %f3 704
-	addi	%r0 %r6 696
-	lw.s	%r6 %f3 696
+	lw.s	%r0 %f3 696
 	mul.s	%f3 %f3 %f3
-	addi	%r0 %r6 700
-	lw.s	%r6 %f4 700
+	lw.s	%r0 %f4 700
 	mul.s	%f4 %f4 %f4
 	add.s	%f4 %f3 %f3
-	addi	%r0 %r6 704
-	lw.s	%r6 %f4 704
+	lw.s	%r0 %f4 704
 	mul.s	%f4 %f4 %f4
 	add.s	%f4 %f3 %f3
 	sqrt.s	%f3 %f3
@@ -11320,30 +10914,24 @@ fbeq_cont.41 :
 beq_else.308 :
 	ilw.s	%r0 %f3 l.16
 beq_cont.282 :
-	addi	%r0 %r6 696
-	lw.s	%r6 %f4 696
+	lw.s	%r0 %f4 696
 	mul.s	%f3 %f4 %f4
 	sw.s	%r0 %f4 696
-	addi	%r0 %r6 700
-	lw.s	%r6 %f4 700
+	lw.s	%r0 %f4 700
 	mul.s	%f3 %f4 %f4
 	sw.s	%r0 %f4 700
-	addi	%r0 %r6 704
-	lw.s	%r6 %f4 704
+	lw.s	%r0 %f4 704
 	mul.s	%f3 %f4 %f3
 	sw.s	%r0 %f3 704
 	ilw.s	%r0 %f3 l.15
 	sw.s	%r0 %f3 604
 	sw.s	%r0 %f3 608
 	sw.s	%r0 %f3 612
-	addi	%r0 %r6 300
-	lw.s	%r6 %f3 300
+	lw.s	%r0 %f3 300
 	sw.s	%r0 %f3 636
-	addi	%r0 %r6 304
-	lw.s	%r6 %f3 304
+	lw.s	%r0 %f3 304
 	sw.s	%r0 %f3 640
-	addi	%r0 %r6 308
-	lw.s	%r6 %f3 308
+	lw.s	%r0 %f3 308
 	sw.s	%r0 %f3 644
 	addi	%r0 %r6 0
 	ilw.s	%r0 %f3 l.16
@@ -11376,23 +10964,19 @@ beq_cont.282 :
 	add	%r3 %r2 %r2
 	lw	%r2 %r2 0
 	lw	%r2 %r2 0
-	addi	%r0 %r4 604
-	lw.s	%r4 %f0 604
-	addi	%r2 %r4 0
+	lw.s	%r0 %f0 604
+	mov	%r2 %r4
 	sw.s	%r4 %f0 0
-	addi	%r0 %r4 608
-	lw.s	%r4 %f0 608
+	lw.s	%r0 %f0 608
 	addi	%r2 %r4 4
 	sw.s	%r4 %f0 0
-	addi	%r0 %r4 612
-	lw.s	%r4 %f0 612
+	lw.s	%r0 %f0 612
 	addi	%r2 %r2 8
 	sw.s	%r2 %f0 0
 	slli	%r1 %r2 2
 	add	%r3 %r2 %r2
 	lw	%r2 %r2 0
 	lw	%r2 %r2 24
-	addi	%r2 %r2 0
 	lw	%r26 %r4 -28
 	sw	%r2 %r4 0
 	slli	%r1 %r2 2
@@ -11433,7 +11017,7 @@ scan_pixel.0 :
 	add	%r4 %r6 %r6
 	lw	%r6 %r6 0
 	lw	%r6 %r6 0
-	addi	%r6 %r7 0
+	mov	%r6 %r7
 	lw.s	%r7 %f0 0
 	sw.s	%r0 %f0 604
 	addi	%r6 %r7 4
@@ -11496,8 +11080,7 @@ beq_else.309 :
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
 beq_cont.283 :
-	addi	%r0 %r1 604
-	lw.s	%r1 %f0 604
+	lw.s	%r0 %f0 604
 	mfc1	%r1 %f0
 	addi	%r0 %r2 255
 	bge	%r2 %r1 bl_else.12 
@@ -11548,8 +11131,7 @@ bl_cont.13 :
 bl_cont.12 :
 	addi	%r0 %r1 32
 	out	%r1
-	addi	%r0 %r1 608
-	lw.s	%r1 %f0 608
+	lw.s	%r0 %f0 608
 	mfc1	%r1 %f0
 	addi	%r0 %r2 255
 	bge	%r2 %r1 bl_else.16 
@@ -11600,8 +11182,7 @@ bl_cont.17 :
 bl_cont.16 :
 	addi	%r0 %r1 32
 	out	%r1
-	addi	%r0 %r1 612
-	lw.s	%r1 %f0 612
+	lw.s	%r0 %f0 612
 	mfc1	%r1 %f0
 	addi	%r0 %r2 255
 	bge	%r2 %r1 bl_else.20 
@@ -11675,29 +11256,22 @@ scan_line.0 :
 	sw	%r26 %r1 -20
 	bge	%r1 %r7 bl_else.25 
 	addi	%r1 %r7 1
-	addi	%r0 %r8 632
-	lw.s	%r8 %f0 632
+	lw.s	%r0 %f0 632
 	lw	%r0 %r8 628
 	sub	%r7 %r8 %r7
 	mtc1	%r7 %f1
 	mul.s	%f1 %f0 %f0
-	addi	%r0 %r7 672
-	lw.s	%r7 %f1 672
+	lw.s	%r0 %f1 672
 	mul.s	%f1 %f0 %f1
-	addi	%r0 %r7 684
-	lw.s	%r7 %f2 684
+	lw.s	%r0 %f2 684
 	add.s	%f2 %f1 %f1
-	addi	%r0 %r7 676
-	lw.s	%r7 %f2 676
+	lw.s	%r0 %f2 676
 	mul.s	%f2 %f0 %f2
-	addi	%r0 %r7 688
-	lw.s	%r7 %f3 688
+	lw.s	%r0 %f3 688
 	add.s	%f3 %f2 %f2
-	addi	%r0 %r7 680
-	lw.s	%r7 %f3 680
+	lw.s	%r0 %f3 680
 	mul.s	%f3 %f0 %f0
-	addi	%r0 %r7 692
-	lw.s	%r7 %f3 692
+	lw.s	%r0 %f3 692
 	add.s	%f3 %f0 %f0
 	lw	%r0 %r7 616
 	addi	%r7 %r7 -1
@@ -12063,7 +11637,7 @@ calc_dirvec.0 :
 	add	%r1 %r2 %r2
 	lw	%r2 %r2 0
 	lw	%r2 %r2 0
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	sw.s	%r4 %f0 0
 	addi	%r2 %r4 4
 	sw.s	%r4 %f1 0
@@ -12075,7 +11649,7 @@ calc_dirvec.0 :
 	lw	%r2 %r2 0
 	lw	%r2 %r2 0
 	neg.s	%f1 %f3
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	sw.s	%r4 %f0 0
 	addi	%r2 %r4 4
 	sw.s	%r4 %f2 0
@@ -12088,7 +11662,7 @@ calc_dirvec.0 :
 	lw	%r2 %r2 0
 	neg.s	%f0 %f3
 	neg.s	%f1 %f4
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	sw.s	%r4 %f2 0
 	addi	%r2 %r4 4
 	sw.s	%r4 %f3 0
@@ -12102,7 +11676,7 @@ calc_dirvec.0 :
 	neg.s	%f0 %f3
 	neg.s	%f1 %f4
 	neg.s	%f2 %f5
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	sw.s	%r4 %f3 0
 	addi	%r2 %r4 4
 	sw.s	%r4 %f4 0
@@ -12115,7 +11689,7 @@ calc_dirvec.0 :
 	lw	%r2 %r2 0
 	neg.s	%f0 %f3
 	neg.s	%f2 %f4
-	addi	%r2 %r4 0
+	mov	%r2 %r4
 	sw.s	%r4 %f3 0
 	addi	%r2 %r4 4
 	sw.s	%r4 %f4 0
@@ -12127,7 +11701,7 @@ calc_dirvec.0 :
 	lw	%r1 %r1 0
 	lw	%r1 %r1 0
 	neg.s	%f2 %f2
-	addi	%r1 %r2 0
+	mov	%r1 %r2
 	sw.s	%r2 %f2 0
 	addi	%r1 %r2 4
 	sw.s	%r2 %f0 0
