@@ -1,6 +1,6 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 1041) (
+module top #(CLK_PER_HALF_BIT = 1321) (
     input wire clk,
     input wire rstn,
     
@@ -26,14 +26,14 @@ module top #(CLK_PER_HALF_BIT = 1041) (
     input wire [31:0] read_data,
 
     // メモリ読み込み・書き込みに用いるアドレス
-    output wire [19:0] memory_addr,
+    output wire [18:0] memory_addr,
 
     // メモリに書き込むデータ
     output wire [31:0] write_data,
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 5000;
+	localparam inst_size	 = 15000;
 	localparam buffer_size	 = 5000;
 
     reg [3:0]             err;
@@ -105,8 +105,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
     reg [2:0] waiting;
 
     // 分岐予測を何段しているか？
-    reg [3:0] prediction;
-    reg [3:0] prop_prediction [0:4];
 
     integer i;
 
@@ -140,6 +138,9 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 
     // 伝搬する実行命令数
     reg [31:0] prop_iteration [0:4];
+
+    // 伝搬する分岐命令フラグ
+    reg [4:0] jump;
 
     // レジスタの値がいま計算中であるかどうかを保持するフラグ
     reg [31:0] int_data_flag;
@@ -213,7 +214,7 @@ module top #(CLK_PER_HALF_BIT = 1041) (
     
 
      // write-enable
-    assign we = (instr_reg[0][31:26] == sw || instr_reg[0][31:26] == sws) && (prediction == 3'b0) && validate_flag[0];
+    assign we = (instr_reg[0][31:26] == sw || instr_reg[0][31:26] == sws) && validate_flag[0];
     
     // 読み出し・書き出しに使うメモリアドレス
     assign memory_addr = register_int[instr_reg[0][25:21]][31:2] + immediate[31:2];
@@ -239,25 +240,23 @@ module top #(CLK_PER_HALF_BIT = 1041) (
             float_data_flag[i] <= 1'b0;
         end
         for(i=0;i<5;i=i+1) begin
+            jump[i] <= 1'b0;
         	result[i] <= 32'b0;
         	argument1[i] <= 32'b0;
         	argument2[i] <= 32'b0;
         	argument3[i] <= 32'b0;
         	prop_pc[i] <= 32'b0;
             prop_iteration[i] <= 32'b0;
-            prop_prediction[i] <= 3'b0;
             prop_reading_idx[i] <= 32'b0;
         	validate_flag[i] <= 1'b0;
         end
         waiting <= 2;
-        prediction <= 3'b0;
-        register_int[27] <= 32'b00000000000000001000000000000000;
     	pc <= 32'b0;
     	$readmemb("copy.mem", inst);
     end
     
     // LEDに表示したいものをここでassignする
-    assign out_led = iteration[23:16];
+    assign out_led = iteration[7:0];
 
     reg ferr;
 
@@ -305,6 +304,7 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 	            float_data_flag[i] <= 1'b0;
 	        end
 	        for(i=0;i<5;i=i+1) begin
+                jump[i] <= 1'b0;
                 instr_reg[i] <= 32'b0;
 	        	result[i] <= 32'b0;
 	        	argument1[i] <= 32'b0;
@@ -312,13 +312,10 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 	        	argument3[i] <= 32'b0;
 	        	prop_pc[i] <= 32'b0;
                 prop_iteration[i] <= 32'b0;
-                prop_prediction[i] <= 3'b0;
                 prop_reading_idx[i] <= 32'b0;
 	        	validate_flag[i] <= 1'b0;
 	        end
-            prediction <= 3'b0;
 	        waiting <= 2;
-	        register_int[27] <= 32'b00000000000000001000000000000000;
 	    	pc <= 32'b0;
 	    	$readmemb("copy.mem", inst);
     	end else if (~inst_stop && ~sender_sending) begin
@@ -329,14 +326,12 @@ module top #(CLK_PER_HALF_BIT = 1041) (
     		// ********************
             if (waiting == 3'b0) begin 
 
-                
-
-	    		instr_reg[0] <= inst[pc];
+                instr_reg[0] <= inst[pc];
 	    		prop_pc[0] <= pc;
                 prop_iteration[0] <= iteration;
-                prop_prediction[0] <= prediction;
-                prop_reading_idx[0] <= reading_idx;
+                prop_reading_idx[0] <= buffer_reading_idx;
                 validate_flag[0] <= 1'b1;
+                jump[0] <= 1'b0;
 
 	    		// 分岐予測
 	    		// 常にジャンプするように予測
@@ -348,7 +343,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 				    				// Read After Writeハザードが発生
 				    				// パイプラインの伝搬を１つ遅らせる
 				    				validate_flag[0] <= 1'b0;
-                                    prediction <= prediction;
                                     iteration <= iteration;
 				    				pc <= pc;
 				    			end else begin
@@ -359,7 +353,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 			    			s_retl: begin
 			    				if (int_data_flag[28]) begin
 			    					validate_flag[0] <= 1'b0;
-                                    prediction <= prediction;
                                     iteration <= iteration;
 			    					pc <= pc;
 			    				end else begin
@@ -392,7 +385,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 			    		if (int_data_flag[inst[pc][25:21]]) begin
 		    				validate_flag[0] <= 1'b0;
 		    				pc <= pc;
-                            prediction <= prediction;
                             iteration <= iteration;
 		    			end else begin
 		    				pc <= register_int[inst[pc][25:21]];
@@ -400,17 +392,20 @@ module top #(CLK_PER_HALF_BIT = 1041) (
 		    			end
 		    		end
 		    		beq, bne, bl, ble, bg, bge, fbg, fbge, fbne: begin
-
-                        prediction <= prediction + 1;
+                        jump[0] <= 1'b1;
                         iteration <= iteration + 1;
 	    				pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
 	    			end
                     sw: begin
-                        if (int_data_flag[inst[pc][20:16]] || int_data_flag[inst[pc][25:21]] || prediction != 3'b0 || validate_flag[0]) begin
+                        if (int_data_flag[inst[pc][20:16]] || 
+                            int_data_flag[inst[pc][25:21]] || 
+                            (validate_flag[1] && jump[1]) ||
+                            (validate_flag[2] && jump[2]) || 
+                            validate_flag[0]) begin
+
                             sw_waiting <= 1'b1;
                             validate_flag[0] <= 1'b0;
                             pc <= pc;
-                            prediction <= prediction;
                             iteration <= iteration;
                         end else begin
                             sw_waiting <= 1'b0;
@@ -419,12 +414,17 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                         end
                     end
                     sws: begin
-                        if (float_data_flag[inst[pc][20:16]] || float_data_flag[inst[pc][25:21]] || prediction != 3'b0 || validate_flag[0]) begin
+                        if (float_data_flag[inst[pc][20:16]] || 
+                            float_data_flag[inst[pc][25:21]] || 
+                            (validate_flag[1] && jump[1]) ||
+                            (validate_flag[2] && jump[2]) || 
+                            validate_flag[0]) begin
+
+                            sw_waiting <= 1'b1;
                             sw_waiting <= 1'b1;
                             validate_flag[0] <= 1'b0;
                             
                             pc <= pc;
-                            prediction <= prediction;
                             iteration <= iteration;
                         end else begin
                             sw_waiting <= 1'b0;
@@ -474,7 +474,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                                     validate_flag[1] <= 1'b0;
                                     iteration <= prop_iteration[0];
                                     pc <= prop_pc[0];
-                                    prediction <= prop_prediction[0];
                                     buffer_reading_idx <= prop_reading_idx[0];
                                 end 
                             end
@@ -484,7 +483,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                                     validate_flag[1] <= 1'b0;
                                     iteration <= prop_iteration[0];
                                     pc <= prop_pc[0];
-                                    prediction <= prop_prediction[0];
                                     buffer_reading_idx <= prop_reading_idx[0];
                                 end 
                             end
@@ -493,27 +491,27 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                                 stallflag = int_data_flag[instr_reg[0][25:21]] | sender_sending;
                             end
                             s_in: begin
-                                argument[1] <= {buffer[buffer_reading_idx+3], 
+                                argument1[1] <= {buffer[buffer_reading_idx+3], 
                                                 buffer[buffer_reading_idx+2],
                                                 buffer[buffer_reading_idx+1],
-                                                buffre[buffer_reading_idx]};
+                                                buffer[buffer_reading_idx]};
                                 stallflag = (buffer_reading_idx + 3 > buffer_valid_idx) | 
                                             (buffer_reading_idx + 3 == buffer_valid_idx);
                                 if (~stallflag) begin
                                     buffer_reading_idx <= buffer_reading_idx + 4;
-                                    register_int[instr_reg[0][25:21]] <= 1'b1;
+                                    int_data_flag[instr_reg[0][25:21]] <= 1'b1;
                                 end
                             end
                             s_fin: begin
-                                argument[1] <= {buffer[buffer_reading_idx+3], 
+                                argument1[1] <= {buffer[buffer_reading_idx+3], 
                                                 buffer[buffer_reading_idx+2],
                                                 buffer[buffer_reading_idx+1],
-                                                buffre[buffer_reading_idx]};
+                                                buffer[buffer_reading_idx]};
                                 stallflag = (buffer_reading_idx + 3 > buffer_valid_idx) | 
                                             (buffer_reading_idx + 3 == buffer_valid_idx);
                                 if (~stallflag) begin
                                     buffer_reading_idx <= buffer_reading_idx + 4;
-                                    register_float[instr_reg[0][25:21]] <= 1'b1;
+                                    float_data_flag[instr_reg[0][25:21]] <= 1'b1;
                                 end
                             end
                             //s_in:
@@ -525,7 +523,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             validate_flag[1] <= 1'b0;
                             iteration <= prop_iteration[0];
                             pc <= prop_pc[0];
-                            prediction <= prop_prediction[0];
                             buffer_reading_idx <= prop_reading_idx[0];
                         end
                     end
@@ -535,7 +532,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             validate_flag[1] <= 1'b0;
                             iteration <= prop_iteration[0];
                             pc <= prop_pc[0];
-                            prediction <= prop_prediction[0];
                             buffer_reading_idx <= prop_reading_idx[0];
                         end 
                     end
@@ -595,7 +591,7 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                         stallflag = int_data_flag[instr_reg[0][25:21]];
                         if (~stallflag) begin
 
-                            int_data_flag[register_int[20:16]] <= 1'b1;
+                            int_data_flag[instr_reg[0][20:16]] <= 1'b1;
                         end
                     end
                     ilws: begin
@@ -643,7 +639,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             validate_flag[1] <= 1'b0;
                             iteration <= prop_iteration[0];
                             pc <= prop_pc[0];
-                            prediction <= prop_prediction[0];
                             buffer_reading_idx <= prop_reading_idx[0];
                     	end else begin
                             int_data_flag[28] <= 1'b1;
@@ -665,7 +660,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             validate_flag[1] <= 1'b0;
                             iteration <= prop_iteration[0];
                             pc <= prop_pc[0];
-                            prediction <= prop_prediction[0];
                             buffer_reading_idx <= prop_reading_idx[0];
                         end
                     end
@@ -675,7 +669,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             validate_flag[1] <= 1'b0;
                             iteration <= prop_iteration[0];
                             pc <= prop_pc[0];
-                            prediction <= prop_prediction[0];
                             buffer_reading_idx <= prop_reading_idx[0];
                         end 
                     end
@@ -686,9 +679,9 @@ module top #(CLK_PER_HALF_BIT = 1041) (
             instr_reg[1] <= instr_reg[0];
             prop_pc[1] <= prop_pc[0];
             prop_iteration[1] <= prop_iteration[0];
-            prop_prediction[1] <= prop_prediction[0];
             prop_reading_idx[1] <= prop_reading_idx[0];
             validate_flag[1] <= validate_flag[0];
+            jump[1] <= jump[0];
 
             if (stallflag && validate_flag[0]) begin
             	// Read After Writeハザードが発生する
@@ -696,13 +689,12 @@ module top #(CLK_PER_HALF_BIT = 1041) (
             	validate_flag[1] <= 1'b0;
             	instr_reg[0] <= instr_reg[0];
             	prop_pc[0] <= prop_pc[0];
+                jump[0] <= jump[0];
                 prop_iteration[0] <= prop_iteration[0];
-                prop_prediction[0] <= prop_prediction[0];
                 prop_reading_idx[0] <= prop_reading_idx[0];
             	validate_flag[0] <= validate_flag[0];
             	pc <= pc;
                 waiting <= waiting;
-                prediction <= prediction;
                 iteration <= iteration;
             end
 
@@ -750,120 +742,86 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                     beq: begin
                     	if (argument1[1] != argument2[1]) begin
                     		out = 1'b1;
-                    	end else begin
-                            prediction <= prediction - 1;
-                        end
+                    	end
                     end
 
                     bne: begin
                     	if (argument1[1] == argument2[1]) begin
                     		out = 1'b1;
-                    	end else begin
-                            prediction <= prediction - 1;
-                        end
+                    	end
                     end
 
                     bl: begin
                     	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
                     		if (argument1[1] >= argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
                     		if (argument1[1] <= argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
                     		out = 1'b1;
-                    	end else begin
-                            prediction <= prediction - 1;
-                        end
+                    	end
                     end
 
                     ble: begin
                     	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
                     		if (argument1[1] > argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
                     		if (argument1[1] < argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
                     		out = 1'b1;
-                    	end else begin
-                            prediction <= prediction - 1;
-                        end
+                    	end 
                     end
                     
                     bg: begin
                     	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
                     		if (argument1[1] <= argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
                     		if (argument1[1] >= argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
                     		out = 1'b1;
-                    	end else begin
-                            prediction <= prediction - 1;
-                        end
+                    	end
                     end
 
                     bge: begin
                     	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
                     		if (argument1[1] < argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
                     		if (argument1[1] > argument2[1]) begin
                     			out = 1'b1;
-                    		end else begin
-                                prediction <= prediction - 1;
-                            end
+                    		end
                     	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
                     		out = 1'b1;
-                    	end else begin
-                            prediction <= prediction - 1;
-                        end
+                    	end
                     end
 
                     fbne: begin
                         if (fequal_res) begin
                             out = 1'b1;
-                        end else begin
-                            prediction <= prediction - 1;
                         end
                     end
 
                     fbg: begin
                         if (fequal_res | !fless_res) begin
                             out = 1'b1;
-                        end else begin
-                            prediction <= prediction - 1;
                         end
                     end
 
                     fbge: begin
                         if (!fequal_res && !fless_res) begin
                             out = 1'b1;
-                        end else begin
-                            prediction <= prediction - 1;
                         end
                     end
 
@@ -880,7 +838,6 @@ module top #(CLK_PER_HALF_BIT = 1041) (
         			int_data_flag[i] <= 1'b0;
         			float_data_flag[i] <= 1'b0;
         		end
-                prediction <= 3'b0;
                 waiting <= 1'b0;
                 iteration <= prop_iteration[1] + 1;
         		pc <= prop_pc[1] + 1;
@@ -890,9 +847,9 @@ module top #(CLK_PER_HALF_BIT = 1041) (
             instr_reg[2] <= instr_reg[1];
             prop_pc[2] <= prop_pc[1];
             prop_iteration[2] <= prop_iteration[1];
-            prop_prediction[2] <= prop_prediction[1];
             prop_reading_idx[2] <= prop_reading_idx[1];
             validate_flag[2] <= validate_flag[1];
+            jump[2] <= jump[1];
 
 
     		// ********************
@@ -928,7 +885,7 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             end
                             s_in: begin
                                 register_int[instr_reg[2][25:21]] <= result[2];
-                                int_data_flag[isntr_reg[2][25:21]] <= 1'b0;
+                                int_data_flag[instr_reg[2][25:21]] <= 1'b0;
                                 validate_flag[3] <= 1'b0;
                             end
                             s_fin: begin
@@ -991,8 +948,8 @@ module top #(CLK_PER_HALF_BIT = 1041) (
             instr_reg[3] <= instr_reg[2];
             prop_pc[3] <= prop_pc[2];
             prop_iteration[3] <= prop_iteration[2];
-            prop_prediction[3] <= prop_prediction[2];
             prop_reading_idx[3] <= prop_reading_idx[2];
+            jump[3] <= jump[2];
 
     		// ********************
     		// 実行フェーズその3
@@ -1003,8 +960,8 @@ module top #(CLK_PER_HALF_BIT = 1041) (
             prop_pc[4] <= prop_pc[3];
             validate_flag[4] <= validate_flag[3];
             prop_iteration[4] <= prop_iteration[3];
-            prop_prediction[4] <= prop_prediction[3];
             prop_reading_idx[4] <= prop_reading_idx[3];
+            jump[4] <= jump[3];
 
 
     		// ********************
@@ -1019,7 +976,7 @@ module top #(CLK_PER_HALF_BIT = 1041) (
                             register_float[instr_reg[4][10:6]] <= f_result;
 
                         end else if (instr_reg[4][25:21] == f_mfc1) begin
-                            float_data_flag[instr_reg[4][20:16]] <= 1'b0;
+                            int_data_flag[instr_reg[4][20:16]] <= 1'b0;
                             register_int[instr_reg[4][20:16]] <= f_result;
 
                         end else if (instr_reg[4][25:21] == f_mtc1) begin
