@@ -469,7 +469,246 @@ if(argc==4){
 // ---  code for -l option ---
 
 
+// --- code for -l2 option ---
+if(argc==5){
+  if(strcmp(argv[2], "-l2")==0){
+    //pre_num回実行を行なった後、初めてblock行目の実行を行うと停止する
+    int block = atoi(argv[3]);
+    int pre_num = atoi(argv[4]);
+    int temp_now = 0;
+    int end_flag = 0;
+    long long inst_sum = 0;
+    for(int now = 0; now < instr_num; now++)
+    {
+      if(inst_sum == pre_num) {temp_now = now; break;}
+      unsigned int one_instruction = inst_mem[now];
+      if(one_instruction == 0) {end_flag = 1; break;}
+      switch(one_instruction >> 26){
+        case 0b000000 :
+        //最初のopecodeがspecialつまり000000だった場合
+          exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
+          break;
+        case 0b010001 :
+          //code for fpu
+          exec_fpu_code(one_instruction,pc,reg,freg);
+          break;
+        default :
+          //最初の6文字で命令の判別が可能な場合
+          exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem,
+            howmany_label,label_list,array_num);
+          break;
+      }
+      inst_sum = inst_sum + 1;
+    }
+    for(int now = temp_now; now < instr_num; now++)
+    {
+      if(now == block) break;
+      unsigned int one_instruction = inst_mem[now];
+      if(one_instruction == 0) {end_flag = 1; break;}
+      switch(one_instruction >> 26){
+        case 0b000000 :
+        //最初のopecodeがspecialつまり000000だった場合
+          exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
+          break;
+        case 0b010001 :
+          //code for fpu
+          exec_fpu_code(one_instruction,pc,reg,freg);
+          break;
+        default :
+          //最初の6文字で命令の判別が可能な場合
+          exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem,
+            howmany_label,label_list,array_num);
+          break;
+      }
+      inst_sum = inst_sum + 1;
+    }
+    if (end_flag == 1) { cout << "not reached this row" << endl; }
+    else {
+      //初めのブロック場所をinit_blockという変数に保管しておく
+      int init_block = block;
+    while(1){
+      cout << "---------------------------" << endl;
+      cout << "position is " << block << endl;
+      cout << inst_sum << " instructions were executed" << endl;
+      for(int i = 0; i<32; i++){
+        if (i%5 == 0) { cout << "" << endl; }
+        cout << "r" << i << " = " << reg[i] << "  ";
+      }
+      cout << "" << endl;
+      for(int i = 0; i<32; i++){
+        if (i%3 == 0) { cout << "" << endl; }
+        cout << "f" << i << " = " << freg[i] << "  ";
+      }
+      char option;
+      cin >> option;
+      if(option == 'e') break;
+      else if(option == 'c') {
+        unsigned int one_instruction = inst_mem[block];
+        if(one_instruction == 0) break;
+        if((block-data_num)>=0) {
+          cout << instruction_set[(block-data_num)] << " ";
+        }
+        switch(one_instruction >> 26){
+          case 0b000000 :
+          //最初のopecodeがspecialつまり000000だった場合
+            exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+            break;
+          case 0b010001 :
+            //code for fpu
+            exec_fpu_code(one_instruction,pc,reg,freg);
+            break;
+          default :
+            //最初の6文字で命令の判別が可能な場合
+            exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+              howmany_label,label_list,array_num);
+            break;
+        cout << "" << endl;
+        }
+        inst_sum++;
+        block++;
+        continue;
+      }
+      else if (option == 'l') {
+        //pcの値はnowではなくblockを更新することで管理されていることに注意
+        //まず一行実行
+        unsigned int one_instruction = inst_mem[block];
+        if(one_instruction == 0) break;
+        if((block-data_num)>=0) {
+          cout << instruction_set[(block-data_num)] << " ";
+        }
+        switch(one_instruction >> 26){
+          case 0b000000 :
+          //最初のopecodeがspecialつまり000000だった場合
+            exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+            break;
+          case 0b010001 :
+            //code for fpu
+            exec_fpu_code(one_instruction,pc,reg,freg);
+            break;
+          default :
+            //最初の6文字で命令の判別が可能な場合
+            exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+              howmany_label,label_list,array_num);
+            break;
+        cout << "" << endl;
+        }
+        inst_sum++;
+        block++;
+        //その後にその行にくるまで実行
+        while(1)
+        {
+          if(block == init_block) break;
+          if(block == instr_num) {cout << "cannot reach this row again" << endl; break;}
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) {end_flag = 1; break;}
+          switch(one_instruction >> 26){
+            case 0b000000 :
+              //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+                howmany_label,label_list,array_num);
+              break;
+          }
+          inst_sum++;
+          block++;
+        }
+        continue;
+      }
+      else if (option == '1') {
+        for (int i = 0; i < 10; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,howmany_label,label_list,array_num);
+              break;
+          }
+          inst_sum++;
+          block++;
+        }
+        continue;
+      }
+      else if (option == '2') {
+        for (int i = 0; i < 100; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+                howmany_label,label_list,array_num);
+              break;
+          }
+          inst_sum++;
+          block++;
+        }
+        continue;
+      }
+      else if (option == '3') {
+        for (int i = 0; i < 1000; i++){
+          unsigned int one_instruction = inst_mem[block];
+          if(one_instruction == 0) break;
+          switch(one_instruction >> 26){
+            case 0b000000 :
+            //最初のopecodeがspecialつまり000000だった場合
+              exec_special_code(one_instruction,pc,&block,reg,freg,&fin,&fout);
+              break;
+            case 0b010001 :
+              //code for fpu
+              exec_fpu_code(one_instruction,pc,reg,freg);
+              break;
+            default :
+              //最初の6文字で命令の判別が可能な場合
+              exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,
+                howmany_label,label_list,array_num);
+              break;
+          }
+          inst_sum++;
+          block++;
+        }
+        continue;
+      }
+    }
+  }
 
+  fin.close();
+  fout.close();
+  free(mem);
+  free(inst_mem);
+  free(label_list);
+  free(execute_instruction);
+  free(instruction_set);
+  free(reg);
+  free(freg);
+
+  return 0;
+  }
+}
+// ---  code for -l2 option ---
 
 
 // --- code for -suml option ---
