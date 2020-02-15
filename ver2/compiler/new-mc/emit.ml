@@ -230,7 +230,7 @@ let h oc { name = Id.L(x); args = _; fargs = _; body = e; ret = _ } =
   stackmap := [];
   g oc (Tail, e)
 
-let f oc memtbl (Prog(mems, data, fundefs, e)) =
+let f oc memtbl tp (Prog(mems, data, fundefs, e)) =
   (* Format.eprintf "generating assembly...@."; *)
   (* Printf.fprintf oc ".section\t\".rodata\"\n"; *)
   (* Printf.fprintf oc ".align\t8\n"; *)
@@ -257,7 +257,11 @@ let f oc memtbl (Prog(mems, data, fundefs, e)) =
   (* Printf.fprintf oc "\tsave\t%%r29 -112 %%r29\n"; (* from gcc; why 112? *) *)
   stackset := S.empty;
   stackmap := [];
-  g oc (NonTail("%r1"), e);
+  let dest =
+    match tp with
+    | Type.Float -> "%f0"
+    | _ -> "%r1" in
+  g oc (NonTail(dest), e);
   Printf.fprintf oc "program_end :\n";
   Printf.fprintf oc "\tadd\t%%r0 %%r0 %%r0\n";
   Printf.fprintf oc "\tret\n";
