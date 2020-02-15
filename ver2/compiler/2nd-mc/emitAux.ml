@@ -27,8 +27,8 @@ let save_sub x =
   
 let remov_sub x =
   assert (H.mem stackmap_sub x);
-  H.remove stackmap_sub
-
+  H.remove stackmap_sub x
+  
 
 let add_list_to_stackmap regtbl xs =
   let xs = List.map fst (* spillされた変数を集める *)
@@ -193,3 +193,183 @@ let output_simple_op oc dregmap uregmap operation =
        (if (ulu x) <> regs.(0) then
           Printf.fprintf oc "\tmov\t%s %s\n" (ulu x) regs.(0))
   | _ -> assert false
+
+
+
+(* functions for calling convention *)
+let make_savemap saves top =
+  let new_top, savemap =
+    List.fold_left
+      (fun (ofs, acc) r ->
+        (ofs - 4, (r, ofs) :: acc))
+      (top, []) saves in
+  new_top, savemap
+
+
+let save_live_regs oc savemap =
+  List.iter
+    (fun (r, ofs) ->
+      if is_freg r then
+        Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp r ofs
+      else
+        Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp r ofs)
+    savemap
+
+
+let restore_live_regs oc savemap =
+  List.iter
+    (fun (r, ofs) ->
+      if is_freg r then
+        Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r ofs
+      else
+        Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r ofs)
+    savemap
+
+
+let make_int_argmap regtbl xs =
+  let allocs = List.map
+               (fun x -> (x, lookup_alloc regtbl x))
+               xs in
+  let _, shuffle_map = List.fold_left
+                        (fun (i, acc) (x, a) -> (i + 1, (x, a, regs.(i)) :: acc))
+                        (0, []) allocs in
+  let xrrs, xsrs = List.partition
+                   (fun (_, a, _) -> is_alloc a)
+                   shuffle_map in
+  let rrs = List.map (fun (_, a, r) -> (alloced_reg a, r)) xrrs in
+  let xrs = List.map (fun (x, _, r) -> save x; (x, r)) xsrs in
+  rrs, xrs
+
+
+let make_float_argmap regtbl xs =
+  let allocs = List.map
+                 (fun x -> (x, lookup_alloc regtbl x))
+                 xs in
+  let _, shuffle_map = List.fold_left
+                         (fun (i, acc) (x, a) -> (i + 1, (x, a, fregs.(i)) :: acc))
+                         (0, []) allocs in
+  let xrrs, xsrs = List.partition
+                   (fun (_, a, _) -> is_alloc a)
+                   shuffle_map in
+  let rrs = List.map (fun (_, a, r) -> (alloced_reg a, r)) xrrs in
+  let xrs = List.map (fun (x, _, r) -> save x; (x, r)) xsrs in
+  rrs, xrs
+
+
+let insert_int_shuffle oc xys =
+  List.iter
+    (fun (x, y) -> Printf.fprintf oc "\tmov\t%s %s\n" x y)
+    (shuffle reg_sub2 xys)
+
+
+let insert_float_shuffle oc xys =
+  List.iter
+    (fun (x, y) -> Printf.fprintf oc "\tmov.s\t%s %s\n" x y)
+    (shuffle freg_sub1 xys)
+
+
+let insert_int_restore oc xrs =
+  List.iter
+    (fun (x, r) -> Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r
+                     (try get_offset x with Not_found -> assert false))
+    xrs
+
+
+let insert_float_restore oc xrs =
+  List.iter
+    (fun (x, r) -> Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r
+                     (try get_offset x with Not_found -> assert false))
+    xrs
+
+
+let insert_int_save oc xrs =
+  List.iter
+    (fun (x, r) -> Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp r
+                     (try get_offset x with Not_found -> assert false))
+    xrs
+
+
+let insert_float_save oc xrs =
+  List.iter
+    (fun (x, r) -> Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp r
+                     (try get_offset x with Not_found -> assert false))
+    xrs
+
+  
+let align_args oc rrs xrs frrs fxrs =
+  insert_int_shuffle oc rrs; (* レジスタに乗っている引数をシャッフル *)
+  insert_int_restore oc xrs; (* 乗っていない引数をロード *)
+  insert_float_shuffle oc frrs;
+  insert_float_restore oc fxrs
+
+
+let move_return_val oc regtbl x t =
+  if t = Type.Float then
+    (match lookup_alloc regtbl x with
+     | Alloc(r) when r <> fregs.(0) ->
+        Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) r
+     | Alloc _ -> ()
+     | Spill _ ->
+        Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp fregs.(0) (get_offset x))
+  else
+    (match lookup_alloc regtbl x with
+     | Alloc(r) when r <> regs.(0) ->
+        Printf.fprintf oc "\tmov\t%s %s\n" regs.(0) r
+     | Alloc _ -> ()
+     | Spill _ ->
+        Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp regs.(0) (get_offset x))
+
+  
+let move_val oc regtbl reg x t =
+  assert (is_reg reg);
+  let alloc = lookup_alloc regtbl x in
+  if t = Type.Float then
+    (assert (is_freg reg);
+     match alloc with
+     | Alloc(r) when r <> reg ->
+        Printf.fprintf oc "\tmov.s\t%s %s\n" reg r
+     | _ -> ())
+  else
+    if (not (is_freg reg)) then
+      Format.eprintf "EmitAux : ----- reg = %s ----@." reg;
+    (assert (not (is_freg reg));
+     match alloc with
+     | Alloc(r) when r <> reg ->
+        Printf.fprintf oc "\tmov\t%s %s\n" reg r
+     | _ -> ())
+
+
+(* functions for Emit2.push_next *)
+let brnc (t, cmp) =
+  match t with
+  | Type.Float ->
+     (match cmp with
+      | Eq -> "fbne", true
+      | NE -> "fbne", false
+      | LE -> "fbg", true
+      | Lt -> "fbge", true)
+  | _ ->
+     (match cmp with
+      | Eq -> "beq", false
+      | NE -> "bne", false
+      | LE -> "ble", false
+      | Lt -> "bl", false)
+
+    
+let call_at_tail block =
+  let code = block.code in
+  if code = [] then false
+  else
+    match (List.hd (List.rev code)).op with
+    | CallCls _ | CallDir _ -> true
+    | _ -> false
+      
+
+
+let necessary_block block =
+(* a confl block is not necessary
+ * when it's unreachable due to tail-call optimization *)
+  match block.next with
+  | End prog_end ->
+     prog_end || not (List.for_all call_at_tail block.prev)
+  | _ -> true

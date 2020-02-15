@@ -1,5 +1,5 @@
 let limit = ref 0
-let limit2 = ref 25
+let limit2 = ref 10
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
   Format.eprintf "iteration %d@." n;

@@ -887,17 +887,13 @@ branching_b.632 :
 	addi	%r0 %r1 2104
 	sw	%r0 %r1 2064
 	addi	%r0 %r1 2116
-	sw	%r26 %r6 0
 	mov	%r2 %r31
 	mov	%r1 %r2
 	mov	%r31 %r1
-	sw	%r26 %r28 -4
-	addi	%r26 %r26 -8
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 8
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 0
 	mov	%r1 %r3
-	lw	%r26 %r6 0
 	lw	%r0 %r1 616
 	addi	%r1 %r2 -2
 	sw	%r26 %r6 0
@@ -943,17 +939,11 @@ branching_b.632 :
 	addi	%r0 %r1 2512
 	sw	%r0 %r1 2472
 	addi	%r0 %r2 2524
-	sw	%r26 %r3 -4
-	sw	%r26 %r6 0
 	mov	%r4 %r1
-	sw	%r26 %r28 -8
-	addi	%r26 %r26 -12
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 12
-	lw	%r26 %r28 -8
+	lw	%r26 %r28 0
 	mov	%r1 %r4
-	lw	%r26 %r3 -4
-	lw	%r26 %r6 0
 	lw	%r0 %r1 616
 	addi	%r1 %r2 -2
 	sw	%r26 %r3 -4
@@ -1001,18 +991,10 @@ branching_b.632 :
 	addi	%r0 %r1 2920
 	sw	%r0 %r1 2880
 	addi	%r0 %r2 2932
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r6 0
 	mov	%r4 %r1
-	sw	%r26 %r28 -12
-	addi	%r26 %r26 -16
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 16
-	lw	%r26 %r28 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r28 0
 	lw	%r0 %r2 616
 	addi	%r2 %r2 -2
 	sw	%r26 %r5 -8
@@ -1513,58 +1495,19 @@ tail_b.1042 :
 	sub.s	%f0 %f1 %f0
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f1 l.29
-	sw	%r26 %r4 -32
-	sw	%r26 %r5 -28
-	sw.s	%r26 %f0 -24
-	sw.s	%r26 %f2 -20
-	sw.s	%r26 %f4 -16
-	sw.s	%r26 %f5 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r7 -4
-	sw	%r26 %r3 0
+	sw.s	%r26 %f0 0
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
+	lw	%r26 %r28 -4
 	mov	%r1 %r8
-	lw	%r26 %r4 -32
-	lw	%r26 %r5 -28
-	lw.s	%r26 %f0 -24
-	lw.s	%r26 %f2 -20
-	lw.s	%r26 %f4 -16
-	lw.s	%r26 %f5 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r7 -4
-	lw	%r26 %r3 0
+	lw.s	%r26 %f0 0
 	lw	%r0 %r1 0
-	sw	%r26 %r4 -36
-	sw	%r26 %r5 -32
-	sw	%r26 %r8 -28
-	sw.s	%r26 %f0 -24
-	sw.s	%r26 %f2 -20
-	sw.s	%r26 %f4 -16
-	sw.s	%r26 %f5 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r7 -4
-	sw	%r26 %r3 0
 	mov	%r8 %r2
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
-	lw	%r26 %r4 -36
-	lw	%r26 %r5 -32
-	lw	%r26 %r8 -28
-	lw.s	%r26 %f0 -24
-	lw.s	%r26 %f2 -20
-	lw.s	%r26 %f4 -16
-	lw.s	%r26 %f5 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r7 -4
-	lw	%r26 %r3 0
+	lw	%r26 %r28 0
+	mov	%r2 %r8
 	mov	%r27 %r2
 	addi	%r27 %r27 8
 	sw	%r2 %r1 4
@@ -1627,66 +1570,21 @@ tail_b.1041 :
 	lw.s	%r0 %f4 312
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f2 l.29
-	sw	%r26 %r4 -40
-	sw	%r26 %r5 -36
-	sw	%r26 %r3 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r2 -24
-	sw.s	%r26 %f5 -20
-	sw.s	%r26 %f3 -16
-	sw.s	%r26 %f1 -12
-	sw.s	%r26 %f0 -8
-	sw	%r26 %r7 -4
-	sw	%r26 %r8 0
+	sw.s	%r26 %f0 0
 	mov.s	%f2 %f0
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
+	lw	%r26 %r28 -4
 	mov	%r1 %r9
-	lw	%r26 %r4 -40
-	lw	%r26 %r5 -36
-	lw	%r26 %r3 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r2 -24
-	lw.s	%r26 %f5 -20
-	lw.s	%r26 %f3 -16
-	lw.s	%r26 %f1 -12
-	lw.s	%r26 %f0 -8
-	lw	%r26 %r7 -4
-	lw	%r26 %r8 0
+	lw.s	%r26 %f0 0
 	lw	%r0 %r1 0
-	sw	%r26 %r4 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r3 -36
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r2 -24
-	sw.s	%r26 %f5 -20
-	sw.s	%r26 %f3 -16
-	sw.s	%r26 %f1 -12
-	sw.s	%r26 %f0 -8
-	sw	%r26 %r7 -4
-	sw	%r26 %r8 0
+	sw	%r26 %r2 0
 	mov	%r9 %r2
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r4 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r3 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r2 -24
-	lw.s	%r26 %f5 -20
-	lw.s	%r26 %f3 -16
-	lw.s	%r26 %f1 -12
-	lw.s	%r26 %f0 -8
-	lw	%r26 %r7 -4
-	lw	%r26 %r8 0
+	lw	%r26 %r28 -4
+	mov	%r2 %r9
+	lw	%r26 %r2 0
 	mov	%r27 %r6
 	addi	%r27 %r27 8
 	sw	%r6 %r1 4
@@ -1742,71 +1640,22 @@ tail_b.1041 :
 	lw.s	%r0 %f4 316
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f2 l.29
-	sw	%r26 %r4 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r3 -36
-	sw.s	%r26 %f4 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r9 -24
-	sw.s	%r26 %f5 -20
-	sw.s	%r26 %f3 -16
-	sw.s	%r26 %f1 -12
-	sw.s	%r26 %f0 -8
-	sw	%r26 %r7 -4
-	sw	%r26 %r8 0
+	sw.s	%r26 %f0 0
 	mov.s	%f2 %f0
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
+	lw	%r26 %r28 -4
 	mov	%r1 %r10
-	lw	%r26 %r4 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r3 -36
-	lw.s	%r26 %f4 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r9 -24
-	lw.s	%r26 %f5 -20
-	lw.s	%r26 %f3 -16
-	lw.s	%r26 %f1 -12
-	lw.s	%r26 %f0 -8
-	lw	%r26 %r7 -4
-	lw	%r26 %r8 0
+	lw.s	%r26 %f0 0
 	lw	%r0 %r1 0
-	sw	%r26 %r4 -48
-	sw	%r26 %r5 -44
-	sw	%r26 %r3 -40
-	sw	%r26 %r10 -36
-	sw.s	%r26 %f4 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r9 -24
-	sw.s	%r26 %f5 -20
-	sw.s	%r26 %f3 -16
-	sw.s	%r26 %f1 -12
-	sw.s	%r26 %f0 -8
-	sw	%r26 %r7 -4
-	sw	%r26 %r8 0
+	sw	%r26 %r2 0
 	mov	%r10 %r2
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
+	lw	%r26 %r28 -4
+	mov	%r2 %r10
 	mov	%r1 %r6
-	lw	%r26 %r4 -48
-	lw	%r26 %r5 -44
-	lw	%r26 %r3 -40
-	lw	%r26 %r10 -36
-	lw.s	%r26 %f4 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r9 -24
-	lw.s	%r26 %f5 -20
-	lw.s	%r26 %f3 -16
-	lw.s	%r26 %f1 -12
-	lw.s	%r26 %f0 -8
-	lw	%r26 %r7 -4
-	lw	%r26 %r8 0
+	lw	%r26 %r2 0
 	mov	%r27 %r1
 	addi	%r27 %r27 8
 	sw	%r1 %r6 4
@@ -1862,62 +1711,19 @@ tail_b.1041 :
 	lw.s	%r0 %f2 320
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f4 l.29
-	sw	%r26 %r4 -36
-	sw	%r26 %r5 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r8 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r3 -16
-	sw.s	%r26 %f3 -12
-	sw.s	%r26 %f1 -8
-	sw.s	%r26 %f0 -4
-	sw	%r26 %r7 0
+	sw.s	%r26 %f0 0
 	mov.s	%f4 %f0
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
+	lw	%r26 %r28 -4
 	mov	%r1 %r6
-	lw	%r26 %r4 -36
-	lw	%r26 %r5 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r8 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r3 -16
-	lw.s	%r26 %f3 -12
-	lw.s	%r26 %f1 -8
-	lw.s	%r26 %f0 -4
-	lw	%r26 %r7 0
+	lw.s	%r26 %f0 0
 	lw	%r0 %r1 0
-	sw	%r26 %r4 -40
-	sw	%r26 %r5 -36
-	sw	%r26 %r6 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r8 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r3 -16
-	sw.s	%r26 %f3 -12
-	sw.s	%r26 %f1 -8
-	sw.s	%r26 %f0 -4
-	sw	%r26 %r7 0
 	mov	%r6 %r2
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw	%r26 %r4 -40
-	lw	%r26 %r5 -36
-	lw	%r26 %r6 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r8 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r3 -16
-	lw.s	%r26 %f3 -12
-	lw.s	%r26 %f1 -8
-	lw.s	%r26 %f0 -4
-	lw	%r26 %r7 0
+	lw	%r26 %r28 0
+	mov	%r2 %r6
 	mov	%r27 %r2
 	addi	%r27 %r27 8
 	sw	%r2 %r1 4
@@ -2423,22 +2229,10 @@ branching_b.20 :
 	in	%r7
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r7 -16
-	sw	%r26 %r3 -12
-	sw	%r26 %r13 -8
-	sw	%r26 %r11 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
+	lw	%r26 %r28 0
 	mov	%r1 %r5
-	lw	%r26 %r7 -16
-	lw	%r26 %r3 -12
-	lw	%r26 %r13 -8
-	lw	%r26 %r11 -4
-	lw	%r26 %r4 0
 	fin	%f0
 	mov	%r5 %r1
 	sw.s	%r1 %f0 0
@@ -2450,23 +2244,9 @@ branching_b.20 :
 	sw.s	%r1 %f0 0
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r5 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r3 -12
-	sw	%r26 %r13 -8
-	sw	%r26 %r11 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -24
-	addi	%r26 %r26 -28
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 28
-	lw	%r26 %r28 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r3 -12
-	lw	%r26 %r13 -8
-	lw	%r26 %r11 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r28 0
 	fin	%f0
 	mov	%r1 %r2
 	sw.s	%r2 %f0 0
@@ -2487,29 +2267,13 @@ tail_b.21 :
 branching_b.21 :
 	addi	%r0 %r2 2
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r12 -28
-	sw	%r26 %r1 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r3 -12
-	sw	%r26 %r13 -8
-	sw	%r26 %r11 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -32
-	addi	%r26 %r26 -36
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 36
-	lw	%r26 %r28 -32
+	lw	%r26 %r28 -4
 	mov	%r1 %r10
-	lw	%r26 %r12 -28
-	lw	%r26 %r1 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r3 -12
-	lw	%r26 %r13 -8
-	lw	%r26 %r11 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r1 0
 	fin	%f0
 	mov	%r10 %r2
 	sw.s	%r2 %f0 0
@@ -2518,31 +2282,13 @@ branching_b.21 :
 	sw.s	%r2 %f0 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r10 -32
-	sw	%r26 %r12 -28
-	sw	%r26 %r1 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r3 -12
-	sw	%r26 %r13 -8
-	sw	%r26 %r11 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
+	lw	%r26 %r28 -4
 	mov	%r1 %r8
-	lw	%r26 %r10 -32
-	lw	%r26 %r12 -28
-	lw	%r26 %r1 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r3 -12
-	lw	%r26 %r13 -8
-	lw	%r26 %r11 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r1 0
 	fin	%f0
 	mov	%r8 %r2
 	sw.s	%r2 %f0 0
@@ -2554,33 +2300,13 @@ branching_b.21 :
 	sw.s	%r2 %f0 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r8 -36
-	sw	%r26 %r10 -32
-	sw	%r26 %r12 -28
-	sw	%r26 %r1 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r3 -12
-	sw	%r26 %r13 -8
-	sw	%r26 %r11 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
+	lw	%r26 %r28 -4
 	mov	%r1 %r6
-	lw	%r26 %r8 -36
-	lw	%r26 %r10 -32
-	lw	%r26 %r12 -28
-	lw	%r26 %r1 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r3 -12
-	lw	%r26 %r13 -8
-	lw	%r26 %r11 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 0
 	bne	%r7 %r2 tail_b.22
 tail_b.23 :
@@ -2612,37 +2338,13 @@ tail_b.24 :
 branching_b.23 :
 	addi	%r0 %r9 4
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r2 -44
-	sw	%r26 %r6 -40
-	sw	%r26 %r8 -36
-	sw	%r26 %r10 -32
-	sw	%r26 %r12 -28
-	sw	%r26 %r1 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r3 -12
-	sw	%r26 %r13 -8
-	sw	%r26 %r11 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r1 0
 	mov	%r9 %r1
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
+	lw	%r26 %r28 -4
 	mov	%r1 %r14
-	lw	%r26 %r2 -44
-	lw	%r26 %r6 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r10 -32
-	lw	%r26 %r12 -28
-	lw	%r26 %r1 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r3 -12
-	lw	%r26 %r13 -8
-	lw	%r26 %r11 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r1 0
 	mov	%r27 %r9
 	addi	%r27 %r27 44
 	sw	%r9 %r14 40
@@ -3137,7 +2839,9 @@ tail_b.77 :
 tail_b.76 :
 	addi	%r1 %r1 1
 	addi	%r0 %r2 -1
-	j	min_caml_create_array
+	sw	%r26 %r28 0
+	jal	min_caml_create_array
+	lw	%r26 %r28 0
 return_point.3 :
 	retl
 read_or_network.0 :
@@ -3176,7 +2880,9 @@ tail_b.79 :
 tail_b.78 :
 	addi	%r2 %r1 1
 	mov	%r4 %r2
-	j	min_caml_create_array
+	sw	%r26 %r28 0
+	jal	min_caml_create_array
+	lw	%r26 %r28 0
 return_point.4 :
 	retl
 read_and_network.0 :
@@ -3230,22 +2936,10 @@ branching_b.72 :
 branching_b.75 :
 	addi	%r0 %r1 5
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r7 -16
-	sw	%r26 %r5 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
+	lw	%r26 %r28 0
 	mov	%r1 %r2
-	lw	%r26 %r7 -16
-	lw	%r26 %r5 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r4 0
 	mov	%r7 %r1
 	lw.s	%r1 %f5 0
 	addi	%r7 %r1 4
@@ -3296,22 +2990,10 @@ tail_b.121 :
 branching_b.73 :
 	addi	%r0 %r1 4
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r7 -16
-	sw	%r26 %r5 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
+	lw	%r26 %r28 0
 	mov	%r1 %r8
-	lw	%r26 %r7 -16
-	lw	%r26 %r5 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r4 0
 	mov	%r7 %r1
 	lw.s	%r1 %f1 0
 	lw	%r6 %r1 16
@@ -3342,22 +3024,10 @@ tail_b.117 :
 branching_b.54 :
 	addi	%r0 %r1 6
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r7 -16
-	sw	%r26 %r5 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
+	lw	%r26 %r28 0
 	mov	%r1 %r8
-	lw	%r26 %r7 -16
-	lw	%r26 %r5 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r4 0
 	mov	%r7 %r1
 	lw.s	%r1 %f0 0
 	ilw.s	%r0 %f1 l.29
@@ -12726,651 +12396,275 @@ tail_b.1001 :
 tail_b.1000 :
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
-	sw	%r26 %r28 -8
-	addi	%r26 %r26 -12
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 12
-	lw	%r26 %r28 -8
+	lw	%r26 %r28 0
 	mov	%r1 %r7
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
-	sw	%r26 %r28 -12
-	addi	%r26 %r26 -16
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 16
-	lw	%r26 %r28 -12
+	lw	%r26 %r28 0
 	mov	%r1 %r2
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
 	addi	%r0 %r1 5
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
-	sw	%r26 %r28 -12
-	addi	%r26 %r26 -16
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 16
-	lw	%r26 %r28 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r28 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -16
-	addi	%r26 %r26 -20
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 20
-	lw	%r26 %r28 -16
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r1 %r3 4
 	sw	%r3 %r2 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -16
-	addi	%r26 %r26 -20
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 20
-	lw	%r26 %r28 -16
+	lw	%r26 %r28 -4
 	mov	%r1 %r3
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r1 %r2 8
 	sw	%r2 %r3 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -16
-	addi	%r26 %r26 -20
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 20
-	lw	%r26 %r28 -16
+	lw	%r26 %r28 -4
 	mov	%r1 %r3
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r1 %r2 12
 	sw	%r2 %r3 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -16
-	addi	%r26 %r26 -20
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 20
-	lw	%r26 %r28 -16
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r1 %r3 16
 	sw	%r3 %r2 0
 	addi	%r0 %r3 5
 	addi	%r0 %r2 0
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r3 %r1
-	sw	%r26 %r28 -16
-	addi	%r26 %r26 -20
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 20
-	lw	%r26 %r28 -16
+	lw	%r26 %r28 -4
 	mov	%r1 %r8
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 5
 	addi	%r0 %r3 0
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
 	mov	%r3 %r2
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
+	lw	%r26 %r28 -4
 	mov	%r1 %r9
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -24
-	addi	%r26 %r26 -28
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 28
-	lw	%r26 %r28 -24
+	lw	%r26 %r28 -4
 	mov	%r1 %r3
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 5
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
 	mov	%r3 %r2
-	sw	%r26 %r28 -24
-	addi	%r26 %r26 -28
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 28
-	lw	%r26 %r28 -24
+	lw	%r26 %r28 -4
 	mov	%r1 %r3
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	lw	%r26 %r28 -4
 	mov	%r1 %r4
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r3 %r2 4
 	sw	%r2 %r4 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r3 %r4 8
 	sw	%r4 %r2 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r3 %r4 12
 	sw	%r4 %r2 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r3 %r4 16
 	sw	%r4 %r2 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r4 5
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r4 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	lw	%r26 %r28 -4
 	mov	%r1 %r10
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -32
-	addi	%r26 %r26 -36
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 36
-	lw	%r26 %r28 -32
+	lw	%r26 %r28 -4
 	mov	%r1 %r4
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r10 %r2 4
 	sw	%r2 %r4 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -32
-	addi	%r26 %r26 -36
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 36
-	lw	%r26 %r28 -32
+	lw	%r26 %r28 -4
 	mov	%r1 %r4
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r10 %r2 8
 	sw	%r2 %r4 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -32
-	addi	%r26 %r26 -36
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 36
-	lw	%r26 %r28 -32
+	lw	%r26 %r28 -4
 	mov	%r1 %r4
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r10 %r2 12
 	sw	%r2 %r4 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -32
-	addi	%r26 %r26 -36
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 36
-	lw	%r26 %r28 -32
+	lw	%r26 %r28 -4
 	mov	%r1 %r4
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r10 %r2 16
 	sw	%r2 %r4 0
 	addi	%r0 %r2 1
 	addi	%r0 %r4 0
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
 	mov	%r4 %r2
-	sw	%r26 %r28 -32
-	addi	%r26 %r26 -36
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 36
-	lw	%r26 %r28 -32
+	lw	%r26 %r28 -4
 	mov	%r1 %r12
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r12 -32
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r12 -32
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r4 5
-	sw	%r26 %r12 -32
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r4 %r1
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
+	lw	%r26 %r28 -4
 	mov	%r1 %r11
-	lw	%r26 %r12 -32
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r11 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r11 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r11 %r4 4
 	sw	%r4 %r2 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r11 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r11 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r11 %r4 8
 	sw	%r4 %r2 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r11 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
+	lw	%r26 %r28 -4
 	mov	%r1 %r4
-	lw	%r26 %r11 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r11 %r2 12
 	sw	%r2 %r4 0
 	addi	%r0 %r2 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r11 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r10 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r7 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r1 0
 	mov	%r2 %r1
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -4
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
+	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r11 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r10 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r7 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r6 0
+	lw	%r26 %r1 0
 	addi	%r11 %r4 16
 	sw	%r4 %r2 0
 	mov	%r27 %r2
@@ -14171,28 +13465,14 @@ tail_b.1025 :
 tail_b.1024 :
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
-	sw	%r26 %r28 -8
-	addi	%r26 %r26 -12
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 12
-	lw	%r26 %r28 -8
+	lw	%r26 %r28 0
 	mov	%r1 %r2
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
 	lw	%r0 %r1 0
-	sw	%r26 %r2 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
-	sw	%r26 %r28 -12
-	addi	%r26 %r26 -16
+	sw	%r26 %r28 0
 	jal	min_caml_create_array
-	addi	%r26 %r26 16
-	lw	%r26 %r28 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	lw	%r26 %r28 0
 	mov	%r27 %r5
 	addi	%r27 %r27 8
 	sw	%r5 %r1 4
@@ -14219,28 +13499,17 @@ tail_b.1026 :
 	addi	%r0 %r5 120
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.29
-	sw	%r26 %r5 -4
-	sw	%r26 %r2 0
-	sw	%r26 %r28 -8
-	addi	%r26 %r26 -12
+	sw	%r26 %r28 0
 	jal	min_caml_create_float_array
-	addi	%r26 %r26 12
-	lw	%r26 %r28 -8
+	lw	%r26 %r28 0
 	mov	%r1 %r3
-	lw	%r26 %r5 -4
-	lw	%r26 %r2 0
 	lw	%r0 %r1 0
-	sw	%r26 %r3 -8
-	sw	%r26 %r5 -4
 	sw	%r26 %r2 0
 	mov	%r3 %r2
-	sw	%r26 %r28 -12
-	addi	%r26 %r26 -16
+	sw	%r26 %r28 -4
 	jal	min_caml_create_array
-	addi	%r26 %r26 16
-	lw	%r26 %r28 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r5 -4
+	lw	%r26 %r28 -4
+	mov	%r2 %r3
 	lw	%r26 %r2 0
 	mov	%r27 %r4
 	addi	%r27 %r27 8
@@ -14251,9 +13520,7 @@ tail_b.1026 :
 	mov	%r1 %r2
 	mov	%r5 %r1
 	sw	%r26 %r28 -4
-	addi	%r26 %r26 -8
 	jal	min_caml_create_array
-	addi	%r26 %r26 8
 	lw	%r26 %r28 -4
 	mov	%r1 %r3
 	lw	%r26 %r2 0
@@ -14338,26 +13605,27 @@ return_point.34 :
 #libraries
 min_caml_create_array :
 	bl	%r1 %r0 program_end
+	mov	%r1 %r30
 	mov	%r1 %r31
 	mov	%r27 %r1
 create_array_loop :
-	bne     %r31 %r0 create_array_cont
-	retl
-create_array_cont :
+	beq     %r31 %r0 create_array_ret
 	sw	%r27 %r2 0
 	addi 	%r31 %r31 -1
 	addi	%r27 %r27 4
 	j	create_array_loop
+create_array_ret :
+	retl
 min_caml_create_float_array :
-	bl	%r1 %r0 program_end	
+	bl	%r1 %r0 program_end
+	mov	%r1 %r30
 	mov	%r1 %r31
 	mov	%r27 %r1
 create_float_array_loop :
-	bne	%r31 %r0 create_float_array_cont
-	retl
-create_float_array_cont :
+	beq	%r31 %r0 create_float_array_ret
 	sw.s	%r27 %f0 0
 	addi	%r31 %r31 -1
 	addi	%r27 %r27 4
 	j	create_float_array_loop
-
+create_float_array_ret :
+	retl
