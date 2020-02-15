@@ -1,1 +1,1 @@
-val f : out_channel -> MemAlloc.memtbl_t -> Asm.prog -> unit
+val f : out_channel -> MemAlloc.memtbl_t -> Type.t -> Asm.prog -> unit
