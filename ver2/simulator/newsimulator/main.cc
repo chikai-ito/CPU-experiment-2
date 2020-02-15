@@ -257,6 +257,7 @@ if(argc==4){
   if(strcmp(argv[2], "-l")==0){
     int block = atoi(argv[3]);
     int end_flag = 0;
+    long long inst_sum = 0;
     for(int now = 0; now < instr_num; now++)
     {
       if(now == block) break;
@@ -277,6 +278,7 @@ if(argc==4){
             howmany_label,label_list,array_num);
           break;
       }
+      inst_sum = inst_sum + 1;
     }
     if (end_flag == 1) { cout << "not reached this row" << endl; }
     else {
@@ -284,7 +286,8 @@ if(argc==4){
       int init_block = block;
     while(1){
       cout << "---------------------------" << endl;
-      cout << "position is " << block; 
+      cout << "position is " << block << endl; 
+      cout << inst_sum << " instructions were executed" << endl;
       for(int i = 0; i<32; i++){
         if (i%5 == 0) { cout << "" << endl; }
         cout << "r" << i << " = " << reg[i] << "  ";
@@ -319,6 +322,7 @@ if(argc==4){
             break;
         cout << "" << endl;
         }
+        inst_sum++;
         block++;
         continue;
       }
@@ -346,6 +350,7 @@ if(argc==4){
             break;
         cout << "" << endl;
         }
+        inst_sum++;
         block++;
         //その後にその行にくるまで実行
         while(1)
@@ -369,6 +374,7 @@ if(argc==4){
                 howmany_label,label_list,array_num);
               break;
           }
+          inst_sum++;
           block++;
         }
         continue;
@@ -391,6 +397,7 @@ if(argc==4){
               exec_normal_code(one_instruction,pc,reg,freg,&block,mem,inst_mem,howmany_label,label_list,array_num);
               break;
           }
+          inst_sum++;
           block++;
         }
         continue;
@@ -414,6 +421,7 @@ if(argc==4){
                 howmany_label,label_list,array_num);
               break;
           }
+          inst_sum++;
           block++;
         }
         continue;
@@ -437,6 +445,7 @@ if(argc==4){
                 howmany_label,label_list,array_num);
               break;
           }
+          inst_sum++;
           block++;
         }
         continue;
@@ -675,6 +684,7 @@ for(int now = 0; now < instr_num; now++)
 				break;
 		}
     
+
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
