@@ -131,7 +131,6 @@ let rec subst env lenv = function
      let zs' = List.map (fun z -> find z env) zs in
      let env' = M.add_list2 (List.map fst yts) (List.map fst yts') env in
      Loop(L(x'), yts', zs', subst env' (M.add x x' lenv) e)
-  (* substはlenvを拡張しない *) (* ラベルの発行はloop_inlineの責任 *)
   (* Loop.loop_inlineで埋め込むラベルを新しくlenvに束縛している *)
   | Jump(yzts, L(x)) -> (* 上の２つの操作を合併 *)
      let yzts' = List.map (fun (y, z, t) -> (find y env, find z env, t)) yzts in

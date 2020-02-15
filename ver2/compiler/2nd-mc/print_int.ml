@@ -1,3 +1,6 @@
+(* let print_char x = print_char (char_of_int x)
+ * in *)
+
 let rec print_int x =
   let a = x / 100 in
   let b = (x - a * 100) / 10 in

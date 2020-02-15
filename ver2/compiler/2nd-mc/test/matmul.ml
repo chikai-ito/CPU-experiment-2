@@ -1,3 +1,29 @@
+(* let print_char x = print_char (char_of_int x)
+ * in *)
+
+let rec print_newline _ =
+  print_char 10
+in
+
+let rec print_int x =
+  let a = x / 100 in
+  let b = (x - a * 100) / 10 in
+  let c = (x - a * 100 - b * 10) in
+  if a > 0 then (
+    print_char (a + 48);
+    print_char (b + 48);
+    print_char (c + 48)
+  ) else (
+    if b > 0 then (
+      print_char (b + 48);
+      print_char (c + 48)
+    ) else (
+      print_char (c + 48)
+    )
+  )
+in
+
+
 let rec mul l m n a b c =
   let rec loop1 i =
     if i < 0 then () else
@@ -30,11 +56,11 @@ b.(0).(0) <- 7.; b.(0).(1) <- 8.;
 b.(1).(0) <- 9.; b.(1).(1) <- 10.;
 b.(2).(0) <- 11.; b.(2).(1) <- 12.;
 mul 2 3 2 a b c;
-print_int (truncate (c.(0).(0)));
+print_int (int_of_float (c.(0).(0)));
 print_newline ();
-print_int (truncate (c.(0).(1)));
+print_int (int_of_float (c.(0).(1)));
 print_newline ();
-print_int (truncate (c.(1).(0)));
+print_int (int_of_float (c.(1).(0)));
 print_newline ();
-print_int (truncate (c.(1).(1)));
+print_int (int_of_float (c.(1).(1)));
 print_newline ()

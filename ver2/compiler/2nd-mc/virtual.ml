@@ -36,20 +36,21 @@ let g_const memtbl = function
   | Closure.Int(i) ->
      Ans(Set(i))
   | Closure.Float(f) ->
-     let l =
-       try
-         (* すでに定数テーブルにあったら再利用 *)
-         let (l, _) =
-           List.find (fun (_, d) ->
-               match d with
-                 F (f') -> f = f'
-               | _ -> false) !data in
-         l
-       with Not_found ->
-         let l = Id.L(Id.genid "l") in
-         data := (l, F(f)) :: !data;
-         l in
-     Ans(ILdF(l))
+     Ans(SetF(f)) (* この段階ではまだ値で持つことにした *)
+     (* let l =
+      *   try
+      *     (\* すでに定数テーブルにあったら再利用 *\)
+      *     let (l, _) =
+      *       List.find (fun (_, d) ->
+      *           match d with
+      *             F (f') -> f = f'
+      *           | _ -> false) !data in
+      *     l
+      *   with Not_found ->
+      *     let l = Id.L(Id.genid "l") in
+      *     data := (l, F(f)) :: !data;
+      *     l in
+      * Ans(ILdF(l)) *)
   | Closure.Ptr(l) ->
      Ans(Set(MemAlloc.lookup_addr memtbl l))
      
@@ -203,6 +204,8 @@ let rec g memtbl env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
                      Ans(St(z, abs, 0)))))
       | _ -> assert false)
   | Closure.ExtArray(Id.L(x)) -> Ans(SetL(Id.L("min_caml_" ^ x)))
+  | Closure.Loop(l, yts, zs, e) -> Ans(Loop(l, yts, zs, g memtbl (M.add_list yts env) e))
+  | Closure.Jump(yzts, l) -> Ans(Jump(yzts, l))
 
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
 let h memtbl

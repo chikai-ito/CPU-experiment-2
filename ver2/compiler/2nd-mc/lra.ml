@@ -76,6 +76,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Phi((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Nop -> idset
   | Set((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | SetF((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SetL((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | ILd((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Mov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -127,7 +128,7 @@ let merge_lr_on_block : lr_info H.t -> Cfg.block -> unit =
   List.iter (merge_lr lrtbl) code
 
 let lookup_lr lrtbl x =
-  if Asm2.is_reg x then x
+  if Asm.is_reg x then x
   else
     (try
        let lr_i = H.find lrtbl x in
@@ -158,7 +159,8 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Phi ((x, t), yls) -> [x], [] (* これが正解? *)
      (* let ys = List.map fst yls in [x], ys *)
   | Nop -> [], []
-  | Set((x, t), i) -> [x], []
+  | Set((x, t), _) -> [x], []
+  | SetF((x, t), _) -> [x], []
   | SetL((x, t), l) -> [x], []
   | ILd((x, t), l) -> [x], []
   | Mov((x, t), y) -> [x], [y]
@@ -174,10 +176,8 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Div((x, t), y, z) -> [x], [y; z]
   | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
-  | Ld((x, t), y, Asm2.V(z)) -> [x], [y; z]
-  | Ld((x, t), y, Asm2.C(i)) -> [x], [y]
-  | St(y, z, Asm2.V(w)) -> [], [y; z; w]
-  | St(y, z, Asm2.C(i)) -> [], [y; z]
+  | Ld((x, t), y, i) -> [x], [y]
+  | St(y, z, i) -> [], [y; z]
   | FMov((x, t), y) -> [x], [y]
   | Ftoi((x, t), y) -> [x], [y]
   | FNeg((x, t), y) -> [x], [y]
@@ -187,13 +187,12 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | FSub((x, t), y, z) -> [x], [y; z]
   | FMul((x, t), y, z) -> [x], [y; z]
   | FDiv((x, t), y, z) -> [x], [y; z]
-  | LdF((x, t), y, Asm2.V(z)) -> [x], [y; z]
-  | LdF((x, t), y, Asm2.C(i)) -> [x], [y]
-  | StF(y, z, Asm2.V(w)) -> [], [y; z; w]
-  | StF(y, z, Asm2.C(i)) -> [], [y; z]
+  | LdF((x, t), y, i) -> [x], [y]
+  | StF(y, z, i) -> [], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(l, xs, ys) -> (l :: (xs @ ys)), []
+  | Return((_, t)) when t = Type.Unit -> [], []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
   | Save(x) -> [], []
   | Restore(x) -> [], []

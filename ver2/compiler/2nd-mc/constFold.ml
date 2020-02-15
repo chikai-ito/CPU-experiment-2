@@ -26,11 +26,6 @@ let rec g env = function (* 定数畳み込みルーチン本体 (caml2html: constfold_g) *)
   | Var(x) when memi x env -> Const(Int(findi x env))
   | Var(x) when memf x env -> Const(Float(findf x env))
   | Var(x) when memt x env -> Tuple(findt x env)
-  (* | Var(x) -> 
-   *    if (x.[0] = 'p' && x.[1] = 'i') then
-   *      Format.eprintf "=====pi is found : %s@." x;
-   *    Format.eprintf "ConstFold.g : variable %s is not in env@." x;
-   *             Var(x) *)
   | Neg(x) when memi x env -> Const(Int(-(findi x env)))
   | Add(x, y) when memi x env && memi y env -> Const(Int(findi x env + findi y env)) (* 足し算のケース (caml2html: constfold_add) *)
   | Sub(x, y) when memi x env && memi y env -> Const(Int(findi x env - findi y env))
@@ -58,16 +53,6 @@ let rec g env = function (* 定数畳み込みルーチン本体 (caml2html: constfold_g) *)
      (* Format.eprintf "ConstFold.g : added %s to env@." x; *)
      Let((x, t), e1', e2')
   | LetRec({ name = x; args = ys; body = e1 }, e2) ->
-     (* Format.eprintf "ConstFold.f : function %s is detected@." (fst x);
-      * if (fst x) = "sin.0" then
-      *   (List.iter (Format.eprintf "%s@.") (List.map fst ys);
-      *     M.iter (fun x t ->
-      *         Format.eprintf "%s : %s@." x
-      *           (match t with Const(Float _) -> "float" | _ -> "int")) env;
-      *    S.print (fst x) (fv e1));
-      * let e1' = g env e1 in
-      * if (fst x) = "sin.0" then
-      *   S.print (fst x) (fv e1'); *)
      LetRec({ name = x; args = ys; body = g env e1 }, g env e2)
   | LetTuple(xts, y, e) when memt y env ->
      List.fold_left2
@@ -76,6 +61,7 @@ let rec g env = function (* 定数畳み込みルーチン本体 (caml2html: constfold_g) *)
        xts
        (findt y env)
   | LetTuple(xts, y, e) -> LetTuple(xts, y, g env e)
+  | Loop(l, xts, ys, e) -> Loop(l, xts, ys, g env e)
   | e -> e
 
        

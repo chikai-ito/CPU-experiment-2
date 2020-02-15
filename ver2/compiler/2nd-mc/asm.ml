@@ -9,6 +9,7 @@ type t = (* 命令の列 (caml2html: sparcasm_t) *)
 and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | Nop
   | Set of int
+  | SetF of float (* emit直前までfloatのloadは値で持つことにした -> 最適化のため *)
   | SetL of Id.l
   | ILd of Id.l
   | ILdF of Id.l
@@ -42,6 +43,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t
   | FIf of cmp * Id.t * Id.t * t * t
+  | Loop of Id.l * ((Id.t * Type.t) list) * Id.t list * t
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list
   | CallDir of Id.l * Id.t list * Id.t list
@@ -64,20 +67,25 @@ let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
      "%r7"; "%r8"; "%r9"; "%r10"; "%r11"; "%r12";
      "%r13"; "%r14"; "%r15"; "%r16"; "%r17"; "%r18";
      "%r19"; "%r20"; "%r21"; "%r22"; "%r23"; "%r24"; "%r25";
-     "%r29"; "%r30"|]
-let fregs = Array.init 32 (fun i -> Printf.sprintf "%%f%d" i)
+     "%r29"|]
+let fregs = Array.init 30 (fun i -> Printf.sprintf "%%f%d" i)
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
+let reg_sub1 = "%r30"
+let reg_sub2 = "%r31"
+let reg_tmp = "%r32"
+let freg_sub1 = "%f30"
+let freg_sub2 = "%f31"
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *) 
-let reg_sw = regs.(Array.length regs - 2) (* temporary for swap *) 
-let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *)
+(* let reg_sw = regs.(Array.length regs - 2) (\* temporary for swap *\)  *)
+(* let reg_fsw = fregs.(Array.length fregs - 1) (\* temporary for swap *\) *)
 let reg_zero = "%r0" (* zero register *)
 let reg_sp = "%r26" (* stack pointer *)
 let reg_hp = "%r27" (* heap pointer (caml2html: sparcasm_reghp) *)
 let reg_ra = "%r28" (* return address *)
-let reg_sub = "%r31" (* sub register *)
 let is_reg x = (x.[0] = '%')
 let is_freg r = (is_reg r && r.[1] = 'f')
+let is_regtmp r = (r = reg_tmp)
 (* let co_freg_table =
  *   let ht = Hashtbl.create 16 in
  *   for i = 0 to 15 do
@@ -98,18 +106,21 @@ let rec remove_and_uniq xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 (* let fv_id_or_imm = function V(x) -> [x] | _ -> [] *)
 let rec fv_exp = function
-  | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_)
+  | Nop | Set(_) | SetF _ | SetL(_) | Comment(_) | Restore(_)
     | ILd _ | ILdF _ -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
     | FSqrt(x) | Floor(x) | Save(x, _) | AddI(x,_) | SLLI(x,_) -> [x]
-  (* | Ld(x, y') | LdF(x, y')   -> x :: fv_id_or_imm y'
-   * | St(x, y, z') | StF(x, y, z') -> x :: y :: fv_id_or_imm z' *)
   | Ld(x, _) | LdF(x, _) -> [x]
   | St(x, y, _) | StF(x, y, _) -> [x; y]
   | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
-  | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2)
-    -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
+  | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2) ->
+     x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
+  | Loop(_, yts, zs, e) -> zs @ remove_and_uniq (S.of_list (List.map fst yts)) (fv e)
+  | Jump(yzts, _) -> remove_and_uniq S.empty
+                       (List.fold_right
+                          (fun (y, z, t) acc -> z :: y :: acc)
+                          yzts [])
   | CallCls(x, ys, zs) -> x :: ys @ zs
   | CallDir(_, ys, zs) -> ys @ zs
 and fv = function
@@ -120,6 +131,7 @@ let fv e = remove_and_uniq S.empty (fv e)
 
 let rec concat e1 xt e2 =
   match e1 with
+  | Ans(Jump _) -> assert false (* 非末尾にjumpが来ることはない *)
   | Ans(exp) -> Let(xt, exp, e2)
   | Let(yt, exp, e1') -> Let(yt, exp, concat e1' xt e2)
 

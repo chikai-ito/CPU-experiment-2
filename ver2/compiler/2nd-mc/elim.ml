@@ -9,6 +9,7 @@ let rec effect = function (* 副作用の有無 (caml2html: elim_effect) *)
 
 let rec f = function (* 不要定義削除ルーチン本体 (caml2html: elim_f) *)
   | If(cmp,x, y, e1, e2) -> If(cmp,x, y, f e1, f e2)
+  | Loop(l, xts, ys, e) -> Loop(l, xts, ys, f e)
   | Let((x, t), e1, e2) -> (* letの場合 (caml2html: elim_let) *)
       let e1' = f e1 in
       let e2' = f e2 in

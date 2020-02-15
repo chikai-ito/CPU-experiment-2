@@ -14,7 +14,9 @@ let collect_useless_save livenow_tbl block =
          *     S.remove x livenow
          *  | _ -> assert false) *)
      | _ -> assert false)
-  | _ -> assert false
+  | _ ->
+     Cfg_db.print_block block;
+     assert false
 
 let eliminate_saves_restores livenow_tbl block =
   match block.next with
@@ -36,7 +38,7 @@ let eliminate_saves_restores livenow_tbl block =
          postloop.code in
      postloop.code <- code2
   | _ -> ()
-     
+
 let elim_save livenow_tbl cfg =
   List.iter
     (eliminate_saves_restores livenow_tbl) cfg

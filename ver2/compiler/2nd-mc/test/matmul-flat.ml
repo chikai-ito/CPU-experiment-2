@@ -1,3 +1,6 @@
+(* let print_char x = print_char (char_of_int x)
+ * in *)
+
 let rec print_int x =
   let a = x / 100 in
   let b = (x - a * 100) / 10 in
@@ -34,13 +37,13 @@ let rec loop1 i m n a b c =
    loop1 (i - 1) m n a b c) in
 let rec mul l m n a b c =
   loop1 (l - 1) m n a b c in
-let dummy = create_array 0 0. in
+let dummy = Array.make 0 0. in
 let rec init i n mat =
   if i < 0 then () else
-  (mat.(i) <- create_array n 0.;
+  (mat.(i) <- Array.make n 0.;
    init (i - 1) n mat) in
 let rec make m n dummy =
-  let mat = create_array m dummy in
+  let mat = Array.make m dummy in
   init (m - 1) n mat;
   mat in
 let a = make 2 3 dummy in

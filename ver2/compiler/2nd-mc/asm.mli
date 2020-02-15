@@ -8,6 +8,7 @@ type t =
 and exp =
   | Nop
   | Set of int
+  | SetF of float
   | SetL of Id.l
   | ILd of Id.l
   | ILdF of Id.l
@@ -41,6 +42,8 @@ and exp =
   (* virtual instructions *)
   | If of cmp * Id.t * Id.t * t * t
   | FIf of cmp * Id.t * Id.t * t * t
+  | Loop of Id.l * ((Id.t * Type.t) list) * Id.t list * t
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   (* closure address, integer arguments, and float arguments *)
   | CallCls of Id.t * Id.t list * Id.t list
   | CallDir of Id.l * Id.t list * Id.t list
@@ -56,16 +59,22 @@ val regs : Id.t array
 val fregs : Id.t array
 val allregs : Id.t list
 val allfregs : Id.t list
+val reg_sub1 : Id.t
+val reg_sub2 : Id.t
+val reg_tmp : Id.t
+val freg_sub1 : Id.t
+val freg_sub2: Id.t
 val reg_cl : Id.t
-val reg_sw : Id.t
-val reg_fsw : Id.t
+(* val reg_sw : Id.t *)
+(* val reg_fsw : Id.t *)
 val reg_zero : Id.t
 val reg_ra : Id.t
 val reg_hp : Id.t
 val reg_sp : Id.t
-val reg_sub : Id.t
+(* val reg_sub : Id.t *)
 val is_reg : Id.t -> bool
 val is_freg : Id.t -> bool
+val is_regtmp : Id.t -> bool
 (* val co_freg : Id.t -> Id.t *)
 
 val fv : t -> Id.t list

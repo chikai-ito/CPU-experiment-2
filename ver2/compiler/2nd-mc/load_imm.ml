@@ -50,8 +50,8 @@ let routine_for_asm = function
                      let l = Id.genlab "l" in
                      data := (l, Asm.I(i)) :: !data;
                      l in
-       Let((reg_sub, Type.Int), ILd(l),
-           Ans(Add(x, reg_sub)))
+       Let((reg_sub1, Type.Int), ILd(l),
+           Ans(Add(x, reg_sub1)))
   | SLLI(x, i) ->
      if inside_range i then
        Ans(SLLI(x, i))
@@ -61,8 +61,8 @@ let routine_for_asm = function
                      let l = Id.genlab "l" in
                      data := (l, Asm.I(i)) :: !data;
                      l in
-       Let((reg_sub, Type.Int), ILd(l),
-           Ans(SLL(x, reg_sub)))
+       Let((reg_sub1, Type.Int), ILd(l),
+           Ans(SLL(x, reg_sub1)))
   | Ld(x, i) ->
      if inside_range i then
        Ans(Ld(x, i))
@@ -72,9 +72,9 @@ let routine_for_asm = function
                      let l = Id.genlab "l" in
                      data := (l, Asm.I(i)) :: !data;
                      l in
-       Let((reg_sub, Type.Int), ILd(l),
-           Let((reg_sub, Type.Int), Add(x, reg_sub),
-               Ans(Ld(reg_sub, 0))))
+       Let((reg_sub1, Type.Int), ILd(l),
+           Let((reg_sub1, Type.Int), Add(x, reg_sub1),
+               Ans(Ld(reg_sub1, 0))))
   | St(x, y, i) ->
      if inside_range i then
        Ans(St(x, y, i))
@@ -84,9 +84,9 @@ let routine_for_asm = function
                  let l = Id.genlab "l" in
                  data := (l, Asm.I(i)) :: !data;
                  l in
-       Let((reg_sub, Type.Int), ILd(l),
-           Let((reg_sub, Type.Int), Add(y, reg_sub),
-               Ans(St(x, reg_sub, 0))))
+       Let((reg_sub1, Type.Int), ILd(l),
+           Let((reg_sub1, Type.Int), Add(y, reg_sub1),
+               Ans(St(x, reg_sub1, 0))))
   | LdF(x, i) ->
      if inside_range i then
        Ans(LdF(x, i))
@@ -96,9 +96,9 @@ let routine_for_asm = function
                  let l = Id.genlab "l" in
                  data := (l, Asm.I(i)) :: !data;
                  l in
-       Let((reg_sub, Type.Int), ILd(l),
-           Let((reg_sub, Type.Int), Add(x, reg_sub),
-               Ans(LdF(reg_sub, 0))))
+       Let((reg_sub1, Type.Int), ILd(l),
+           Let((reg_sub1, Type.Int), Add(x, reg_sub1),
+               Ans(LdF(reg_sub1, 0))))
   | StF(x, y, i) ->
      if inside_range i then
        Ans(StF(x, y, i))
@@ -108,11 +108,11 @@ let routine_for_asm = function
                  let l = Id.genlab "l" in
                  data := (l, Asm.I(i)) :: !data;
                  l in
-       Let((reg_sub, Type.Int), ILd(l),
-           Let((reg_sub, Type.Int), Add(y, reg_sub),
-               Ans(StF(x, reg_sub, 0))))
+       Let((reg_sub1, Type.Int), ILd(l),
+           Let((reg_sub1, Type.Int), Add(y, reg_sub1),
+               Ans(StF(x, reg_sub1, 0))))
   | others -> Ans(others)
-    
+
 
 let routine_for_memAlloc = function
   | MemAlloc.I(i) ->
