@@ -1,4 +1,4 @@
-open Asm2
+open Asm
 open Enums
 open Lra
 open Lra2
@@ -45,7 +45,7 @@ let make_reg_list : alloc_tbl_t -> S.t -> Id.t list =
 
 (* これを書き換えてcoalescingする *)
 let choose_reg stat_tbl allregs regs lr =
-  if Asm2.is_reg lr then lr
+  if Asm.is_reg lr then lr
   else
     (let targets = tar_list allregs (get_status stat_tbl lr).target in
      try
@@ -71,7 +71,7 @@ let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
     let reg = (match ty with
                | Type.Float -> choose_reg stat_tbl fallregs regs lr
                | _ -> choose_reg stat_tbl allregs regs lr) in
-    Format.eprintf "assign register %s to live range %s@." reg lr;
+    (* Format.eprintf "assign register %s to live range %s@." reg lr; *)
     add_reg regtbl lr reg;
     allocated := lr :: !allocated
   done
@@ -79,8 +79,8 @@ let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
      
 let f : lr_stat_tbl_t -> inter_graph -> alloc_tbl_t =
   fun stat_tbl graph ->
-  let allregs = Array.to_list Asm2.regs in
-  let fallregs = Array.to_list Asm2.fregs in
+  let allregs = Array.to_list Asm.regs in
+  let fallregs = Array.to_list Asm.fregs in
   let regtbl : alloc_tbl_t = H.create graph.size in
   let spill_rank_list =
     (* spill_rank_listの順番を調節してspill strategyを変更 *)

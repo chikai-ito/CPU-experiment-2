@@ -8,6 +8,9 @@ let rec g env = function (* 命令列の13bit即値最適化 (caml2html: simm13_g) *)
       if List.mem x (fv e') then Let((x, t), Set(i), e') else
       ((* Format.eprintf "erased redundant Set to %s@." x; *)
        e')
+  | Let((x, t), SetF(f), e) ->
+     let e' = g env e in
+     if List.mem x (fv e') then Let((x, t), SetF(f), e') else e'
   | Let((x,t) as xt, SLLI(y, i), e) when M.mem y env -> (* for array access *)
      (* Format.eprintf "erased redundant SLL on %s: %d@." x (M.find y env);  *)
      g env (Let(xt, Set((M.find y env) lsl i), e))
@@ -35,6 +38,7 @@ and g' env = function (* 各命令の13bit即値最適化 (caml2html: simm13_gprime) *)
   | LdF(x, i) when M.mem x env -> LdF(reg_zero, (M.find x env) + i)
   | StF(x, y, i) when M.mem y env -> StF(x, reg_zero, (M.find y env) + i)
   | If(cmp, x, y, e1, e2) -> If(cmp, x, y, g env e1, g env e2)
+  | Loop(l, xts, ys, e) -> Loop(l, xts, ys, g env e)
   | e -> e
 
 let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関数の13bit即値最適化 *)

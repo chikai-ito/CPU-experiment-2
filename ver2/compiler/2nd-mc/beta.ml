@@ -40,6 +40,11 @@ let rec g env = function (* β簡約ルーチン本体 (caml2html: beta_g) *)
   | GetL(l, x) -> GetL(l, find x env)
   | Put(x, y, z) -> Put(find x env, find y env, find z env)
   | PutL(l, x, y) -> PutL(l, find x env, find y env)
+  | Loop(l, xts, ys, e) ->
+     Loop(l, xts, List.map (fun y -> find y env) ys, g env e)
+  | Jump(xyts, l) ->
+     (* xs should not be replaced because they're the destinations of substitutuins of a loop *)
+     Jump(List.map (fun (x, y, t) -> (x, find y env, t)) xyts, l)
   | App(g, xs) -> App(find g env, List.map (fun x -> find x env) xs)
   | ExtArray(x) -> ExtArray(x)
   | ExtFunApp(x, ys) -> ExtFunApp(x, List.map (fun y -> find y env) ys)

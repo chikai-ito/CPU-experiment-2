@@ -6,6 +6,7 @@ and op_t =
   | Phi of (Id.t * Type.t) * (Id.t * Id.l) list
   | Nop
   | Set of (Id.t * Type.t) * int
+  | SetF of (Id.t * Type.t) * float
   | SetL of (Id.t * Type.t) * Id.l
   | ILd of (Id.t * Type.t) * Id.l
   | Mov of (Id.t * Type.t) * Id.t
@@ -21,8 +22,8 @@ and op_t =
   | Div of (Id.t * Type.t) * Id.t * Id.t
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
-  | Ld of (Id.t * Type.t) * Id.t * Asm2.id_or_imm
-  | St of Id.t * Id.t * Asm2.id_or_imm
+  | Ld of (Id.t * Type.t) * Id.t * int
+  | St of Id.t * Id.t * int
   | FMov of (Id.t * Type.t) * Id.t
   | Ftoi of (Id.t * Type.t) * Id.t
   | FNeg of (Id.t * Type.t) * Id.t
@@ -32,8 +33,8 @@ and op_t =
   | FSub of (Id.t * Type.t) * Id.t * Id.t
   | FMul of (Id.t * Type.t) * Id.t * Id.t
   | FDiv of (Id.t * Type.t) * Id.t * Id.t
-  | LdF of (Id.t * Type.t) * Id.t * Asm2.id_or_imm
-  | StF of Id.t * Id.t * Asm2.id_or_imm
+  | LdF of (Id.t * Type.t) * Id.t * int
+  | StF of Id.t * Id.t * int
   | CallCls of (Id.t * Type.t) * Id.t * Id.t list * Id.t list
   | CallDir of (Id.t * Type.t) * Id.l * Id.t list * Id.t list
   | Entry of Id.t * Id.t list * Id.t list
@@ -56,9 +57,14 @@ and next_t = Brc of compare_t * block ref * block ref (* branch *)
            | End of bool (* end of the flow *)
 and compare_t = { branch : Type.t * cmp; args : Id.t * Id.t }
 
+type prog = Prog of MemAlloc.t list * (Id.l * Asm.data_t) list *
+                      (block list) list * block list
+
 val label_of_block : block -> Id.t
   
 val next_blocks : block -> block list
 
-val f : Asm2.prog -> Type.t -> (Id.l * Asm2.data_t) list * (block list) list * block list
+val f : Asm.prog -> Type.t -> prog
+
+(* val f : Asm2.prog -> Type.t -> (Id.l * Asm2.data_t) list * (block list) list * block list *)
                                 

@@ -25,7 +25,7 @@ let tar_list regs tarset =
       if x >= 0 then
         List.nth regs x
       else if x = (-1) then
-        Asm2.reg_cl
+        Asm.reg_cl
       else
         assert false)
     tarofs

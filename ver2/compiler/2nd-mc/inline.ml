@@ -6,7 +6,7 @@ let unlimited = ref true
 
 let rec size = function
   | If(_,_,_,e1,e2) | Let(_, e1, e2) | LetRec({ body = e1 }, e2) -> 1 + size e1 + size e2
-  | LetTuple(_, _, e) -> 1 + size e
+  | LetTuple(_, _, e) | Loop(_, _, _, e) -> 1 + size e
   | _ -> 1
 
 let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
@@ -27,6 +27,7 @@ let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
           ys in
       Alpha.g env' e
   | LetTuple(xts, y, e) -> LetTuple(xts, y, g env e)
+  | Loop(l, xts, ys, e) -> Loop(l, xts, ys, g env e)
   | e -> e
 
 let f e = g M.empty e

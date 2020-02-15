@@ -1,7 +1,8 @@
-open Asm2
+open Asm
 open Enums
 open RegAlloc2
 open Cfg
+open EmitAux
 
 external get : float -> int32 = "get"
 
@@ -12,12 +13,6 @@ let stackmap = H.create 5000
              
 (* loopの前後に上書きされる変数をsaveするmap *)
 let stackmap_sub = H.create 100
-
-let reset_ar _ =
-  stacktop := 0;
-  H.clear stackmap;
-  H.clear stackmap_sub
-
 
 let save x =
   if not (H.mem stackmap x) then
@@ -63,139 +58,135 @@ let rec shuffle sw xys =
                                          xys)
   | xys, acyc -> acyc @ shuffle sw xys
 
-let add_regmap regtbl =
-  fun (spl_regs, fspl_regs, regmap, spilled) x ->
-  match lookup_alloc regtbl x with
-  | Alloc(r) -> (spl_regs, fspl_regs, (x,r) :: regmap, spilled)
-  | Spill (t) ->
-     (match t with
-      | Type.Float -> (* float型のspillの時 *)
-         if not (List.mem_assoc x regmap) then
-           ((* まだregmapに追加されていないとき *)
-            save x; (* AR上に追加 *)
-            match fspl_regs with
-            | r :: rs -> (spl_regs, rs, (x, r) :: regmap, (x, t) :: spilled)
-            | [] -> assert false (* spill regは２つあれば足りるはず *))
-         else (* すでにregmapに追加されているときは何もしない *)
-           (spl_regs, fspl_regs, regmap, spilled)
-      | _ -> (* その他の型の時 *)
-         if not (List.mem_assoc x regmap) then
-           (save x;
-            match spl_regs with
-            | r :: rs -> (rs, fspl_regs, (x, r) :: regmap, (x, t) :: spilled)
-            | [] -> assert false)
-         else
-           (spl_regs, fspl_regs, regmap, spilled))
+(* let add_regmap regtbl =
+ *   fun (spl_regs, fspl_regs, regmap, spilled) x ->
+ *   match lookup_alloc regtbl x with
+ *   | Alloc(r) -> (spl_regs, fspl_regs, (x,r) :: regmap, spilled)
+ *   | Spill (t) ->
+ *      (match t with
+ *       | Type.Float -> (\* float型のspillの時 *\)
+ *          if not (List.mem_assoc x regmap) then
+ *            ((\* まだregmapに追加されていないとき *\)
+ *             save x; (\* AR上に追加 *\)
+ *             match fspl_regs with
+ *             | r :: rs -> (spl_regs, rs, (x, r) :: regmap, (x, t) :: spilled)
+ *             | [] -> assert false (\* spill regは２つあれば足りるはず *\))
+ *          else (\* すでにregmapに追加されているときは何もしない *\)
+ *            (spl_regs, fspl_regs, regmap, spilled)
+ *       | _ -> (\* その他の型の時 *\)
+ *          if not (List.mem_assoc x regmap) then
+ *            (save x;
+ *             match spl_regs with
+ *             | r :: rs -> (rs, fspl_regs, (x, r) :: regmap, (x, t) :: spilled)
+ *             | [] -> assert false)
+ *          else
+ *            (spl_regs, fspl_regs, regmap, spilled)) *)
      
 
-let get_reg regtbl defs uses =
-  let _, _, dregmap, dspls =
-    List.fold_left
-      (add_regmap regtbl)
-      ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], [], [])
-      defs in
-  let _, _, uregmap, uspls =
-    List.fold_left
-      (add_regmap regtbl)
-      ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], [], [])
-      uses in
-  dregmap, uregmap, (List.rev dspls), (List.rev uspls)
+(* let get_reg regtbl defs uses =
+ *   let _, _, dregmap, dspls =
+ *     List.fold_left
+ *       (add_regmap regtbl)
+ *       ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], [], [])
+ *       defs in
+ *   let _, _, uregmap, uspls =
+ *     List.fold_left
+ *       (add_regmap regtbl)
+ *       ([reg_sub1; reg_sub2], [freg_sub1; freg_sub2], [], [])
+ *       uses in
+ *   dregmap, uregmap, (List.rev dspls), (List.rev uspls) *)
   
 
-let lookup_regmap regmap x =
-  if Asm2.is_reg x then x
-  else try List.assoc x regmap with Not_found -> assert false
-                                               
+(* let lookup_regmap regmap x =
+ *   if Asm.is_reg x then x
+ *   else try List.assoc x regmap with Not_found -> assert false *)
 
-let insert_restore oc regmap spilled =
-  List.iter
-    (fun (x, t) ->
-      let reg = lookup_regmap regmap x in
-      let offset = try get_offset x with Not_found -> assert false in
-      if t = Type.Float then
-        Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp reg offset
-      else
-        Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg offset)
-    spilled
+
+(* let insert_restore oc regmap spilled =
+ *   List.iter
+ *     (fun (x, t) ->
+ *       let reg = lookup_regmap regmap x in
+ *       let offset = try get_offset x with Not_found -> assert false in
+ *       if t = Type.Float then
+ *         Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp reg offset
+ *       else
+ *         Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg offset)
+ *     spilled *)
   
 
-let insert_save oc regmap spilled =
-  List.iter
-    (fun (x, t) ->
-      let reg = lookup_regmap regmap x in
-      let offset = try get_offset x with Not_found -> assert false in
-      if t = Type.Float then
-        Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp reg offset
-      else
-        Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg offset)
-    spilled
+(* let insert_save oc regmap spilled =
+ *   List.iter
+ *     (fun (x, t) ->
+ *       let reg = lookup_regmap regmap x in
+ *       let offset = try get_offset x with Not_found -> assert false in
+ *       if t = Type.Float then
+ *         Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp reg offset
+ *       else
+ *         Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg offset)
+ *     spilled *)
   
 
-let output_simple_op oc dregmap uregmap operation =
-  let dlu = lookup_regmap dregmap in
-  let ulu = lookup_regmap uregmap in
-  match operation with
-  | Phi _ -> () (* Phi関数は単純に消す *)
-  | Nop -> ()
-  | Set((x, _), i) ->
-     Printf.fprintf oc "\taddi\t%%r0 %s %d\n" (dlu x) i
-  | SetL((x, _), (Id.L(l))) ->
-     Printf.fprintf oc "\taddi\t%%r0 %s %s\n" (dlu x) l
-  | ILd((x, _), (Id.L(l))) ->
-     let r = dlu x in
-     if is_freg r then
-       Printf.fprintf oc "\tilw.s\t%%r0 %s %s\n" r l
-     else
-       Printf.fprintf oc "\tilw\t%%r0 %s %s\n" r l
-  | Mov((x, _), y) when (dlu x) = (ulu y) -> ()
-  | Mov((x, t), y) ->
-     if t = Type.Float then
-       Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu y) (dlu x)
-     else
-       Printf.fprintf oc "\tmov\t%s %s\n" (ulu y) (dlu x)
-  | Neg((x, _), y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" (ulu y) (dlu x)
-  | Itof((x, _), y) -> Printf.fprintf oc "\tmtc1\t%s %s\n" (ulu y) (dlu x)
-  | In((x, _)) -> Printf.fprintf oc "\tin\t%s\n" (dlu x)
-  | Fin((x, _)) -> Printf.fprintf oc "\tfin\t%s\n" (dlu x)
-  | Out(y) -> Printf.fprintf oc "\tout\t%s\n" (ulu y)
-  | AddI((x, _), y, i) -> Printf.fprintf oc "\taddi\t%s %s %d\n" (ulu y) (dlu x) i
-  | Add((x, _), y, z) -> Printf.fprintf oc "\tadd\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
-  | Sub((x, _), y, z) -> Printf.fprintf oc "\tsub\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
-  | Mul((x, _), y, z) -> Printf.fprintf oc "\tmul\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
-  | Div((x, _), y, z) -> Printf.fprintf oc "\tdiv\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
-  | SLLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s %d\n" (ulu y) (dlu x) i
-  | SLL((x, _), y, z) -> Printf.fprintf oc "\tsll\t%s %s %s\n" (ulu y) (dlu x) (ulu z)
-  | Ld((x, _), y, C(i)) ->
-     Printf.fprintf oc "\tlw\t%s %s %d\n" (ulu y) (dlu x) i
-  | Ld((x, _), y, V(z)) ->
-     Printf.fprintf oc "\tadd\t%s %s %%r31\n" (ulu y) (ulu z);
-     Printf.fprintf oc "\tlw\t%%r31 %s 0\n" (dlu x)
-  | St(x, y, C(i)) ->
-     Printf.fprintf oc "\tsw\t%s %s %d\n" (ulu y) (ulu x) i
-  | FMov((x, _), y) -> Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu y) (dlu x)
-  | FNeg((x, _), y) -> Printf.fprintf oc "\tneg.s\t%s %s\n" (ulu y) (dlu x)
-  | Floor((x, _), y) -> Printf.fprintf oc "\tfloor.w.s\t%s %s\n" (ulu y) (dlu x)
-  | Ftoi((x, _), y) -> Printf.fprintf oc "\tmfc1\t%s %s\n" (dlu x) (ulu y)
-  | FSqrt((x, _), y) -> Printf.fprintf oc "\tsqrt.s\t%s %s\n" (ulu y) (dlu x)
-  | FAdd((x, _), y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
-  | FSub((x, _), y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
-  | FMul((x, _), y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
-  | FDiv((x, _), y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
-  | LdF((x, _), y, C(i)) ->
-     Printf.fprintf oc "\tlw.s\t%s %s %d\n" (ulu y) (dlu x) i
-  | LdF((x, _), y, V(z)) ->
-     Printf.fprintf oc "\tadd\t%s %s %%r31\n" (ulu y) (ulu z);
-     Printf.fprintf oc "\tlw.s\t%%r31 %s 0\n" (dlu x)
-  | StF(x, y, C(i)) ->
-     Printf.fprintf oc "\tsw.s\t%s %s %d\n" (ulu y) (ulu x) i
-  | Return((x, t)) ->
-     if t = Type.Float then
-       (if (ulu x) <> fregs.(0) then
-          Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu x) fregs.(0))
-     else
-       (if (ulu x) <> regs.(0) then
-          Printf.fprintf oc "\tmov\t%s %s\n" (ulu x) regs.(0))
-  | _ -> assert false
+(* let output_simple_op oc dregmap uregmap operation =
+ *   let dlu = lookup_regmap dregmap in
+ *   let ulu = lookup_regmap uregmap in
+ *   match operation with
+ *   | Phi _ -> () (\* Phi関数は単純に消す *\)
+ *   | Nop -> ()
+ *   | Set((x, _), i) ->
+ *      Printf.fprintf oc "\taddi\t%%r0 %s %d\n" (dlu x) i
+ *   | SetF _ -> assert false (\* 浮動小数点数を直接ロードする命令はない *\)
+ *   | SetL((x, _), (Id.L(l))) ->
+ *      Printf.fprintf oc "\taddi\t%%r0 %s %s\n" (dlu x) l
+ *   | ILd((x, _), (Id.L(l))) ->
+ *      let r = dlu x in
+ *      if is_freg r then
+ *        Printf.fprintf oc "\tilw.s\t%%r0 %s %s\n" r l
+ *      else
+ *        Printf.fprintf oc "\tilw\t%%r0 %s %s\n" r l
+ *   | Mov((x, _), y) when (dlu x) = (ulu y) -> ()
+ *   | Mov((x, t), y) ->
+ *      if t = Type.Float then
+ *        Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu y) (dlu x)
+ *      else
+ *        Printf.fprintf oc "\tmov\t%s %s\n" (ulu y) (dlu x)
+ *   | Neg((x, _), y) -> Printf.fprintf oc "\tsub\t%%r0 %s %s\n" (ulu y) (dlu x)
+ *   | Itof((x, _), y) -> Printf.fprintf oc "\tmtc1\t%s %s\n" (ulu y) (dlu x)
+ *   | In((x, _)) -> Printf.fprintf oc "\tin\t%s\n" (dlu x)
+ *   | Fin((x, _)) -> Printf.fprintf oc "\tfin\t%s\n" (dlu x)
+ *   | Out(y) -> Printf.fprintf oc "\tout\t%s\n" (ulu y)
+ *   | AddI((x, _), y, i) -> Printf.fprintf oc "\taddi\t%s %s %d\n" (ulu y) (dlu x) i
+ *   | Add((x, _), y, z) -> Printf.fprintf oc "\tadd\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
+ *   | Sub((x, _), y, z) -> Printf.fprintf oc "\tsub\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
+ *   | Mul((x, _), y, z) -> Printf.fprintf oc "\tmul\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
+ *   | Div((x, _), y, z) -> Printf.fprintf oc "\tdiv\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
+ *   | SLLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s %d\n" (ulu y) (dlu x) i
+ *   | SLL((x, _), y, z) -> Printf.fprintf oc "\tsll\t%s %s %s\n" (ulu y) (dlu x) (ulu z)
+ *   | Ld((x, _), y, i) ->
+ *      Printf.fprintf oc "\tlw\t%s %s %d\n" (ulu y) (dlu x) i
+ *   | St(x, y, i) ->
+ *      Printf.fprintf oc "\tsw\t%s %s %d\n" (ulu y) (ulu x) i
+ *   | FMov((x, _), y) when (dlu x) = (ulu y) -> ()
+ *   | FMov((x, _), y) -> Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu y) (dlu x)
+ *   | FNeg((x, _), y) -> Printf.fprintf oc "\tneg.s\t%s %s\n" (ulu y) (dlu x)
+ *   | Floor((x, _), y) -> Printf.fprintf oc "\tfloor.w.s\t%s %s\n" (ulu y) (dlu x)
+ *   | Ftoi((x, _), y) -> Printf.fprintf oc "\tmfc1\t%s %s\n" (dlu x) (ulu y)
+ *   | FSqrt((x, _), y) -> Printf.fprintf oc "\tsqrt.s\t%s %s\n" (ulu y) (dlu x)
+ *   | FAdd((x, _), y, z) -> Printf.fprintf oc "\tadd.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
+ *   | FSub((x, _), y, z) -> Printf.fprintf oc "\tsub.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
+ *   | FMul((x, _), y, z) -> Printf.fprintf oc "\tmul.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
+ *   | FDiv((x, _), y, z) -> Printf.fprintf oc "\tdiv.s\t%s %s %s\n" (ulu z) (ulu y) (dlu x)
+ *   | LdF((x, _), y, i) ->
+ *      Printf.fprintf oc "\tlw.s\t%s %s %d\n" (ulu y) (dlu x) i
+ *   | StF(x, y, i) ->
+ *      Printf.fprintf oc "\tsw.s\t%s %s %d\n" (ulu y) (ulu x) i
+ *   | Return((x, t)) ->
+ *      if t = Type.Float then
+ *        (if (ulu x) <> fregs.(0) then
+ *           Printf.fprintf oc "\tmov.s\t%s %s\n" (ulu x) fregs.(0))
+ *      else
+ *        (if (ulu x) <> regs.(0) then
+ *           Printf.fprintf oc "\tmov\t%s %s\n" (ulu x) regs.(0))
+ *   | _ -> assert false *)
 
 
 let output_save_op_restore oc regtbl oper defs uses =
@@ -204,6 +195,7 @@ let output_save_op_restore oc regtbl oper defs uses =
   output_simple_op oc dregmap uregmap oper;
   insert_save oc dregmap dspls
 
+
 let rec output_instr oc livenow_tbl regtbl instr =
   (* 末尾呼び出しがあったかどうかを呼び出しルーチンに伝えるためのbool値を返す *)
   let oper = instr.op in
@@ -211,79 +203,36 @@ let rec output_instr oc livenow_tbl regtbl instr =
   match oper with
   | Phi _ -> false (* Phi関数は消す *)
   | Nop -> false
-  | Set((x, _), _) -> out_sor oper [x] []; false
-  | SetL((x, _), _) -> out_sor oper [x] []; false
-  | ILd((x, _), _) -> out_sor oper [x] []; false
-  | Mov((x, _), y) -> out_sor oper [x] [y]; false
-  | Neg((x, _), y) -> out_sor oper [x] [y]; false
-  | Itof((x, _), y) -> out_sor oper [x] [y]; false
-  | In((x, _)) -> out_sor oper [x] []; false
-  | Fin((x, _)) -> out_sor oper [x] []; false
-  | Out(y) -> out_sor oper [] [y]; false
-  | AddI((x, _), y, _) -> out_sor oper [x] [y]; false
-  | Add((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | Sub((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | Mul((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | Div((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | SLLI((x, _), y, _) -> out_sor oper [x] [y]; false
-  | SLL((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | Ld((x, _), y, C(_)) -> out_sor oper [x] [y]; false
-  | Ld((x, _), y, V(z)) ->
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [] [y; z] in
-     assert (dregmap = [] && dspls = []);
-     insert_restore oc uregmap uspls; (* restore *)
-     Printf.fprintf oc "\tadd\t%s %s %%r31\n"
-       (lookup_regmap uregmap y) (lookup_regmap uregmap z);
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [x] [] in
-     assert (uregmap = [] && uspls = []);
-     Printf.fprintf oc "\tlw\t%%r31 %s 0\n" (lookup_regmap dregmap x);
-     insert_save oc dregmap dspls; (* save*)
-     false
-  | St(x, y, C(_)) -> out_sor oper [] [x; y]; false
-  | St(x, y, V(z)) ->
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [] [y; z] in
-     assert (dregmap = [] && dspls = []);
-     insert_restore oc uregmap uspls; (* restore *)
-     Printf.fprintf oc "\tadd\t%s %s %%r31\n"
-       (lookup_regmap uregmap y) (lookup_regmap uregmap z);
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [] [x] in
-     assert (dregmap = [] && dspls = []);
-     insert_restore oc uregmap uspls; (* storeするxをrestore *)
-     Printf.fprintf oc "\tsw\t%%r31 %s 0\n" (lookup_regmap uregmap x);
-     false
-  | FMov((x, _), y) -> out_sor oper [x] [y]; false
-  | FNeg((x, _), y) -> out_sor oper [x] [y]; false
-  | Floor((x, _), y) -> out_sor oper [x] [y]; false
-  | Ftoi((x, _), y) -> out_sor oper [x] [y]; false
-  | FSqrt((x, _), y) -> out_sor oper [x] [y]; false
-  | FAdd((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | FSub((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | FMul((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | FDiv((x, _), y, z) -> out_sor oper [x] [y; z]; false
-  | LdF((x, _), y, C(_)) -> out_sor oper [x] [y]; false
-  | LdF((x, _), y, V(z)) ->
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [] [y; z] in
-     assert (dregmap = [] && dspls = []);
-     insert_restore oc uregmap uspls; (* restore *)
-     Printf.fprintf oc "\tadd\t%s %s %%r31\n"
-       (lookup_regmap uregmap y) (lookup_regmap uregmap z);
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [x] [] in
-     assert (uregmap = [] && uspls = []);
-     Printf.fprintf oc "\tlw.s\t%%r31 %s 0\n" (lookup_regmap dregmap x);
-     insert_save oc dregmap dspls; (* save*)
-     false
-  | StF(x, y, C(_)) -> out_sor oper [] [x; y]; false
-  | StF(x, y, V(z)) ->
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [] [y; z] in
-     assert (dregmap = [] && dspls = []);
-     insert_restore oc uregmap uspls; (* restore *)
-     Printf.fprintf oc "\tadd\t%s %s %%r31\n"
-       (lookup_regmap uregmap y) (lookup_regmap uregmap z);
-     let dregmap, uregmap, dspls, uspls = get_reg regtbl [] [x] in
-     assert (dregmap = [] && dspls = []);
-     insert_restore oc uregmap uspls; (* storeするxをrestore *)
-     Printf.fprintf oc "\tsw.s\t%%r31 %s 0\n" (lookup_regmap uregmap x);
-     false
+  (* | Set((x, _), _) -> out_sor oper [x] []; false
+   * | SetF((x, _), _) -> out_sor oper [x] []; false
+   * | SetL((x, _), _) -> out_sor oper [x] []; false
+   * | ILd((x, _), _) -> out_sor oper [x] []; false
+   * | Mov((x, _), y) -> out_sor oper [x] [y]; false
+   * | Neg((x, _), y) -> out_sor oper [x] [y]; false
+   * | Itof((x, _), y) -> out_sor oper [x] [y]; false
+   * | In((x, _)) -> out_sor oper [x] []; false
+   * | Fin((x, _)) -> out_sor oper [x] []; false
+   * | Out(y) -> out_sor oper [] [y]; false
+   * | AddI((x, _), y, _) -> out_sor oper [x] [y]; false
+   * | Add((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | Sub((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | Mul((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | Div((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | SLLI((x, _), y, _) -> out_sor oper [x] [y]; false
+   * | SLL((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | Ld((x, _), y, _) -> out_sor oper [x] [y]; false
+   * | St(x, y, _) -> out_sor oper [] [x; y]; false
+   * | FMov((x, _), y) -> out_sor oper [x] [y]; false
+   * | FNeg((x, _), y) -> out_sor oper [x] [y]; false
+   * | Floor((x, _), y) -> out_sor oper [x] [y]; false
+   * | Ftoi((x, _), y) -> out_sor oper [x] [y]; false
+   * | FSqrt((x, _), y) -> out_sor oper [x] [y]; false
+   * | FAdd((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | FSub((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | FMul((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | FDiv((x, _), y, z) -> out_sor oper [x] [y; z]; false
+   * | LdF((x, _), y, _) -> out_sor oper [x] [y]; false
+   * | StF(x, y, _) -> out_sor oper [] [x; y]; false *)
   | CallCls _ ->
      callcls_routine oc livenow_tbl regtbl instr
   | CallDir _ ->
@@ -291,8 +240,6 @@ let rec output_instr oc livenow_tbl regtbl instr =
   | Entry _ ->
      entry_routine oc regtbl instr
   | Return((x, t)) ->
-     (* Format.eprintf "^^^^^return val = %s : %s@." x
-      *   (Id.id_of_typ t); *)
      (match lookup_alloc regtbl x with
       | Alloc(r) ->
          if t = Type.Float then
@@ -349,6 +296,9 @@ let rec output_instr oc livenow_tbl regtbl instr =
               (try get_offset x with Not_found -> assert false)));
      remov_sub x; (* ループ前退避用のoffset tableの一番上をクリア *)
      false
+  | e -> (* case of simple operations *)
+     let defs, uses = Lra.defs_uses_of_instr instr in
+     out_sor oper defs uses; false
 
 and ofs_live_regs saves top =
   let new_top, savemap =
@@ -413,7 +363,7 @@ and insert_float_shuffle oc xys =
   List.iter
     (fun (x, y) -> Printf.fprintf oc "\tmov.s\t%s %s\n" x y)
     (shuffle freg_sub1 xys)
-  
+
 and insert_int_restore oc xrs =
   List.iter
     (fun (x, r) -> Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r
@@ -475,7 +425,12 @@ and callcls_routine oc livenow_tbl regtbl instr =
      let saves = List.concat (* 関数呼び出しに際してsaveが必要なregisters *)
                    (List.map
                       (fun x -> match lookup_alloc regtbl x with
-                                | Alloc(r) -> [r]
+                                | Alloc(r) ->
+                                   if r <> Asm.reg_zero
+                                      && r <> Asm.reg_sp
+                                      && r <> Asm.reg_hp then [r]
+                                   else
+                                     []
                                 | Spill _ -> [])
                       livenow) in
      let new_top, savemap = ofs_live_regs saves !stacktop in
@@ -520,7 +475,12 @@ and calldir_routine oc livenow_tbl regtbl instr =
      let saves = List.concat
                    (List.map
                       (fun x -> match lookup_alloc regtbl x with
-                                | Alloc(r) -> [r]
+                                | Alloc(r) ->
+                                   if r <> Asm.reg_zero
+                                      && r <> Asm.reg_sp
+                                      && r <> Asm.reg_hp then [r]
+                                   else
+                                     []                
                                 | Spill _ -> [])
                       livenow) in
      let new_top, savemap = ofs_live_regs saves !stacktop in
@@ -641,14 +601,14 @@ let check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf =
        (Printf.fprintf oc "\t%s\t%s %s %s\n" brnc (ulu x) (ulu y) l2;
         if is_not_done b1 && is_not_done b2 then
           (Stack.push (true, b2) stack_bl;
-           Stack.push (false, b1) stack_bl) (* branchせずにまっすぐ降りた時にb1へ遷移 *)
+           Stack.push (true, b1) stack_bl) (* branchせずにまっすぐ降りた時にb1へ遷移 *)
         else
           assert false) 
      else
        (Printf.fprintf oc "\t%s\t%s %s %s\n" brnc (ulu x) (ulu y) l1;
         if is_not_done b1 && is_not_done b2 then
           (Stack.push (true, b1) stack_bl;
-           Stack.push (false, b2) stack_bl) (* branchせずにまっすぐ降りた時にb2へ遷移 *)
+           Stack.push (true, b2) stack_bl) (* branchせずにまっすぐ降りた時にb2へ遷移 *)
         else
           assert false
        (* program_startからbranch後のブロックへは *)
@@ -687,7 +647,7 @@ let check_next oc livenow_tbl regtbl work_tbl block stack_bl stack_cf =
           if not tail_call then
             Printf.fprintf oc "\tj\t%s\n" l)
      else
-       ()
+       Printf.fprintf oc "\tj\t%s\n" l
   | Loop(bref, _) ->
      let b = !bref in
      (* let l = Cfg.label_of_block b in *)
@@ -767,14 +727,19 @@ let arrange_data oc data =
   hp, sp
 
 
-let f : out_channel -> Asm2.prog -> Type.t -> unit =
-  fun oc virtCode ty ->
-  let (data, f_cfgs, cfg) = Cfg.f virtCode ty in
+let f : out_channel -> MemAlloc.memtbl_t -> Cfg.prog -> unit =
+  fun oc memtbl (Prog(mems, data, f_cfgs, cfg)) ->
+  let reset_ar _ =
+    stacktop := 0;
+    H.clear stackmap;
+    H.clear stackmap_sub in
+  (* let Prog (mems, data, f_cfgs, cfg) = Cfg.f virtCode tp in *)
   let hp, sp = arrange_data oc data in
   Printf.fprintf oc "#text_section\n";
   Printf.fprintf oc "program_start :\n";
   Printf.fprintf oc "\tilw\t%%r0 %%r26 %s\n" sp;
   Printf.fprintf oc "\tilw\t%%r0 %%r27 %s\n" hp;
+  MemMap.f oc memtbl mems;
   Printf.fprintf oc "\taddi\t%%r0 %%r28 program_end\n";
   List.iter
     (fun blocks ->

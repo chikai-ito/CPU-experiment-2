@@ -61,6 +61,7 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
      { instr_id = iid; op = Phi((lu x, t), yls') }
   | Nop -> { instr_id = iid; op = Nop }
   | Set((x, t), i) -> rt x t; { instr_id = iid; op = Set((lu x, t), i) }
+  | SetF((x, t), f) -> rt x t; { instr_id = iid; op = SetF((lu x, t), f) }
   | SetL((x, t), l) -> rt x t; { instr_id = iid; op = SetL((lu x, t), l) }
   | ILd((x, t), l) -> rt x t; { instr_id = iid; op = ILd((lu x, t), l) }
   | Mov((x, t), y) -> rt x t; { instr_id = iid; op = Mov((lu x, t), lu y) }
@@ -76,10 +77,8 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | Div((x, t), y, z) -> rt x t; { instr_id = iid; op = Div((lu x, t), lu y, lu z) }
   | SLL((x, t), y, z) -> rt x t; { instr_id = iid; op = SLL((lu x, t), lu y, lu z) }
   | SLLI((x, t), y, i) -> rt x t; { instr_id = iid; op = SLLI((lu x, t), lu y, i) }
-  | Ld((x, t), y, Asm2.V(z)) -> rt x t; { instr_id = iid; op = Ld((lu x, t), lu y, Asm2.V(lu z)) }
-  | Ld((x, t), y, Asm2.C(i)) -> rt x t; { instr_id = iid; op = Ld((lu x, t), lu y, Asm2.C(i)) }
-  | St(y, z, Asm2.V(w)) -> { instr_id = iid; op = St(lu y, lu z, Asm2.V(lu w)) }
-  | St(y, z, Asm2.C(i)) -> { instr_id = iid; op = St(lu y, lu z, Asm2.C(i)) }
+  | Ld((x, t), y, i) -> rt x t; { instr_id = iid; op = Ld((lu x, t), lu y, i) }
+  | St(y, z, i) -> { instr_id = iid; op = St(lu y, lu z, i) }
   | FMov((x, t), y) -> rt x t; { instr_id = iid; op = FMov((lu x, t), lu y) }
   | Ftoi((x, t), y) -> rt x t; { instr_id = iid; op = Ftoi((lu x, t), lu y) }
   | FNeg((x, t), y) -> rt x t; { instr_id = iid; op = FNeg((lu x, t), lu y) }
@@ -89,10 +88,8 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | FSub((x, t), y, z) -> rt x t; { instr_id = iid; op = FSub((lu x, t), lu y, lu z) }
   | FMul((x, t), y, z) -> rt x t; { instr_id = iid; op = FMul((lu x, t), lu y, lu z) }
   | FDiv((x, t), y, z) -> rt x t; { instr_id = iid; op = FDiv((lu x, t), lu y, lu z) }
-  | LdF((x, t), y, Asm2.V(z)) -> rt x t; { instr_id = iid; op = LdF((lu x, t), lu y, Asm2.V(lu z)) }
-  | LdF((x, t), y, Asm2.C(i)) -> rt x t; { instr_id = iid; op = LdF((lu x, t), lu y, Asm2.C(i)) }
-  | StF(y, z, Asm2.V(w)) -> { instr_id = iid; op = StF(lu y, lu z, Asm2.V(lu w)) }
-  | StF(y, z, Asm2.C(i)) -> { instr_id = iid; op = StF(lu y, lu z, Asm2.C(i)) }
+  | LdF((x, t), y, i) -> rt x t; { instr_id = iid; op = LdF((lu x, t), lu y, i) }
+  | StF(y, z, i) -> { instr_id = iid; op = StF(lu y, lu z, i) }
   | CallCls((x, t), f, ys, zs) ->
      rt x t;
      { instr_id = iid; op = CallCls((lu x, t), lu f, List.map lu ys, List.map lu zs) }
@@ -134,7 +131,13 @@ let cfg_replace_with_lr : lr_info H.t -> Cfg.block list -> Type.t H.t =
 
 let lookup_tp : Type.t H.t -> Id.t -> Type.t =
   fun lr_tp_tbl lr ->
-  try H.find lr_tp_tbl lr with Not_found -> assert false
+  try H.find lr_tp_tbl lr
+  with Not_found ->
+    if Asm.is_reg lr && not (Asm.is_freg lr) then
+      Type.Int
+    else      
+      (Format.eprintf "LR %s is not on the table@." lr;
+       assert false)
 
 
 let separate_lr : Type.t H.t -> Id.t list -> Id.t list * Id.t list =

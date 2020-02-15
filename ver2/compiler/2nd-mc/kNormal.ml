@@ -1,4 +1,5 @@
- (* give names to intermediate values (K-normalization) *)
+(* give names to intermediate values (K-normalization) *)
+(* Added types for loop *)
 open Enums
 type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Unit
@@ -33,6 +34,8 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | GetL of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
   | PutL of Id.l * Id.t * Id.t
+  | Loop of Id.l * ((Id.t * Type.t) list) * Id.t list * t
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
 and const = Int of int | Float of float | Ptr of Id.l (* PrtはTupleに必要 *)
@@ -92,6 +95,15 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Tuple(xs) | ExtFunApp(_,xs) -> S.of_list xs
   | Put(x,y,z) -> S.of_list [x;y;z]
   | LetTuple(xs,y,e) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xs)))
+  | Loop(_, xts, ys, e) ->
+     let xs = S.of_list (List.map fst xts) in
+     let ys = S.of_list ys in
+     S.union ys (S.diff (fv e) xs)
+  | Jump(xyts, _) ->
+     List.fold_left
+       (fun acc (x, y, _) -> S.union (S.of_list [x; y]) acc)
+       S.empty
+       xyts
 
 let insert_let (e, t) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *)
   match e with
@@ -504,6 +516,32 @@ and print_kNormal =
       Printf.printf " ";
       Id.print_id id3;
       Printf.printf "\n"
+    | Loop(Id.L(l), xts, ys, e) ->
+       Printf.printf "Loop ";
+       Id.print_id l;
+       print_string " ";
+       List.iter
+         (fun (x, t) ->
+           Id.print_id x; print_string " : "; Type.print_type t)
+         xts;
+       print_string " <- ";
+       List.iter
+         (fun y ->
+           Id.print_id y; print_string " ")
+         ys;
+       print_string "\n";
+       indent !depth;
+       print_kNormal e
+    | Jump(xyts, Id.L(l)) ->
+       Printf.printf "Jump ";
+       Printf.printf "to %s " l;
+       let xs, ys = List.fold_right
+                      (fun (x, y, _) (acc1, acc2) -> (x :: acc1, y :: acc2))
+                      xyts ([], []) in
+       List.iter (Printf.printf "%s ") xs;
+       print_string " <- ";
+       List.iter (Printf.printf "%s ") ys;
+       print_string "\n"
     | ExtArray id ->
       Printf.printf "EXTARRAY ";
       Id.print_id id;
