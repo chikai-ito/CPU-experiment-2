@@ -1,6 +1,6 @@
 `default_nettype none
 
-module sender #(CLK_PER_HALF_BIT = 520) (
+module sender #(CLK_PER_HALF_BIT = 1406) (
                input wire [7:0] sdata,
                input wire       tx_start,
                output reg     tx_busy,
