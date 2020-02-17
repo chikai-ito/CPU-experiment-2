@@ -232,7 +232,7 @@ let update_use_kill : lra_sets_t -> instr -> unit =
   update_kill defs lrasets
 
 let setup_use_kill_of_block lratbl block = 
-  let L(l) = block.label in
+  let Id.L(l) = block.label in
   let lrasets = try H.find lratbl l with Not_found -> assert false in
   List.iter (update_use_kill lrasets) block.code;
   let uses_brnc = uses_of_branch block in
@@ -248,7 +248,7 @@ let setup_lra : Cfg.block list -> lra_sets_t H.t =
   let lratbl = H.create n in (* use, kill, liveoutの組を記録するテーブル *)
   List.iter
     (fun block ->
-      let L(l) = block.label in
+      let Id.L(l) = block.label in
       let lrasets = make_lrasets () in
       H.add lratbl l lrasets) blocks;
   setup_use_kill lratbl blocks;
@@ -266,7 +266,7 @@ let compute_liveout : lra_sets_t list -> S.t =
     S.empty lrasets_list
 
 let update_liveout lratbl block =
-  let L(l) = block.label in
+  let Id.L(l) = block.label in
   let lrasets = lrasets_of_block lratbl block in
   let next_lrasets_list =
     List.map (lrasets_of_block lratbl) (Cfg.next_blocks block) in
