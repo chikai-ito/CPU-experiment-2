@@ -361,7 +361,7 @@ for(int now = 0; now < instr_num; now++)
 						rt = (int)((code >> 16) & 0b11111);
 						//immediateは場合分けが必要
 						if((code>>15)&0b1){
-							immediate = (int)(code&0b111111111111111) - pow(2,15);
+							immediate = (int)(code&0b111111111111111) - power(2,15);
 						}else{
 							immediate = (int)(code&0b1111111111111111);
 						}
@@ -373,7 +373,7 @@ for(int now = 0; now < instr_num; now++)
 						rt = (int)((code >> 16) & 0b11111);
 						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 						if((code>>15)&0b1){
-							if((int)reg[rs] == (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+							if((int)reg[rs] == (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 						}else{
 							if((int)reg[rs] == (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 						}
@@ -384,7 +384,7 @@ for(int now = 0; now < instr_num; now++)
 			    	rt = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			     		if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			     		if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			    	}else{
 			      	if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -395,7 +395,7 @@ for(int now = 0; now < instr_num; now++)
 			      rt = (int)((code >> 16) & 0b11111);
 			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			      if((code>>15)&0b1){
-			        if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			        if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			      }else{
 			        if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			      }
@@ -406,7 +406,7 @@ for(int now = 0; now < instr_num; now++)
 			    	rt = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			    	  if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			   	 	}else{
 			   	    if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			   	 	}
@@ -417,7 +417,7 @@ for(int now = 0; now < instr_num; now++)
 			      rt = (int)((code >> 16) & 0b11111);
 			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			      if((code>>15)&0b1){
-			        if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			        if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			      }else{
 			        if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			      }
@@ -428,7 +428,7 @@ for(int now = 0; now < instr_num; now++)
 			    	rt = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if((int)reg[rs] != (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			    	  if((int)reg[rs] != (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			    	}else{
 			    	  if((int)reg[rs] != (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -439,7 +439,7 @@ for(int now = 0; now < instr_num; now++)
 			    	ft = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if(freg[fs] > freg[ft]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			    	  if(freg[fs] > freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			    	}else{
 			   	  	if(freg[fs] > freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -450,7 +450,7 @@ for(int now = 0; now < instr_num; now++)
 			      ft = (int)((code >> 16) & 0b11111);
 			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			      if((code>>15)&0b1){
-			        if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			        if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			      }else{
 			        if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			      }
@@ -461,7 +461,7 @@ for(int now = 0; now < instr_num; now++)
 						ft = (int)((code >> 16) & 0b11111);
 						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if(freg[fs] != freg[ft]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
+			    	  if(freg[fs] != freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
 			    	}else{
 			     	 if(freg[fs] != freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -471,7 +471,7 @@ for(int now = 0; now < instr_num; now++)
 			      base = (int)((code >> 21) & 0b11111);
 			      rt = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
+			        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 			      }else{
 			        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
 			      }
@@ -481,7 +481,7 @@ for(int now = 0; now < instr_num; now++)
 			      base = (int)((code >> 21) & 0b11111);
 			      ft = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        x.i = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
+			        x.i = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 			        freg[ft] = x.f;
 			      }else{
 			        x.i = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
@@ -493,7 +493,7 @@ for(int now = 0; now < instr_num; now++)
 			      base = (int)((code >> 21) & 0b11111);
 			      rt = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = reg[rt];
+			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
 			      }else{
 			        inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
 			      }
@@ -504,7 +504,7 @@ for(int now = 0; now < instr_num; now++)
 			      ft = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
 			        x.f = freg[ft];
-			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = x.i;
+			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
 			      }else{
 			        x.f = freg[ft];
 			        inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
@@ -532,7 +532,7 @@ for(int now = 0; now < instr_num; now++)
 						base = (int)((code >> 21) & 0b11111);
 						rt = (int)((code >> 16) & 0b11111);
 						if((code>>15)&0b1){
-				      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
+				      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 				    }else{
 			        //cout << mem[(int)reg[base] + (int)(code&0b1111111111111111)] << endl;
 				      reg[rt] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
@@ -543,7 +543,7 @@ for(int now = 0; now < instr_num; now++)
 						base = (int)((code >> 21) & 0b11111);
 				    ft = (int)((code >> 16) & 0b11111);
 						if((code>>15)&0b1){
-			        x.i = mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
+			        x.i = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 				      freg[ft] = x.f;
 				    }else{
 			        x.i = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
@@ -562,7 +562,7 @@ for(int now = 0; now < instr_num; now++)
 			      rs = (int)((code >> 21) & 0b11111);
 			      rt = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        immediate = (int)(code&0b111111111111111) - pow(2,15);
+			        immediate = (int)(code&0b111111111111111) - power(2,15);
 			      }else{
 			        immediate = (int)(code&0b1111111111111111);
 			      }
@@ -573,7 +573,7 @@ for(int now = 0; now < instr_num; now++)
 				    base = (int)((code >> 21) & 0b11111);
 				    rt = (int)((code >> 16) & 0b11111);
 				    if((code>>15)&0b1){
-				      mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = reg[rt];
+				      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
 				    }else{
 				      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
 				    }
@@ -584,7 +584,7 @@ for(int now = 0; now < instr_num; now++)
 				    ft = (int)((code >> 16) & 0b11111);
 				    if((code>>15)&0b1){
 			        x.f = freg[ft];
-				      mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = x.i;
+				      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
 				    }else{
 			        x.f = freg[ft];
 				      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
