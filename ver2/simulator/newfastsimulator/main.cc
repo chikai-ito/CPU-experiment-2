@@ -3,7 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <utility>
-#include "exec.h"
 #include "assembler.h"
 #include "label_solver.h"
 #include "operation.h"
@@ -125,58 +124,6 @@ int main(int argc, char**argv){
 
 
 
-/*
-	// create machine code file
-  if(argc==3){
-	  if(strcmp(argv[2], "-a")== 0){
-		  ofstream writing_file;
-		  writing_file.open("machine_code.txt");
-      // write jump to machine_code.txt
-      string one_machine_code = assemble(instruction_set[0],0,0);
-      writing_file << one_machine_code << endl;
-      for(int i = 0; i < data_num; i++){
-        writing_file << decimal_to_binary(inst_mem[i],32) << endl;
-      }
-		  for(int i=1; i<line_num - data_num; i++){
-			  string one_machine_code = assemble(instruction_set[i],0,data_num*2+i);
-			  writing_file << one_machine_code << endl;
-		  }
-	  writing_file.close();
-    free(mem);
-    free(inst_mem);
-    free(label_list);
-    free(execute_instruction);
-    free(instruction_set);
-    free(reg);
-    free(freg);
-	  return 0;
-	  }
-    else if (strcmp(argv[2], "-a2")== 0){
-      ofstream writing_file;
-      writing_file.open("machine_code_comment.txt");
-      // write jump to machine_code.txt
-      string one_machine_code = assemble(instruction_set[0],1,0);
-      writing_file << one_machine_code << endl;
-      for(int i = 0; i < data_num; i++){
-        writing_file << decimal_to_binary(inst_mem[i],32) << "  \\\\ " << "immediate" << endl;
-      }
-      for(int i=1; i<line_num - data_num; i++){
-        string one_machine_code = assemble(instruction_set[i],1,data_num*2+i);
-        writing_file << one_machine_code << endl;
-      }
-    writing_file.close();
-    free(mem);
-    free(inst_mem);
-    free(label_list);
-    free(execute_instruction);
-    free(instruction_set);
-    free(reg);
-    free(freg);
-    return 0;
-    }
-  }
-*/
-
 	//it is for executing simulator
 	ofstream writing_file;
   writing_file.open("machine_code.txt");
@@ -282,7 +229,6 @@ for(int now = 0; now < instr_num; now++)
 			      fs = (int)((code >> 21) & 0b11111);
 			      float f;
 			      (fin) >> f;
-			      //cout << "fin " <<  f << endl;
 			      freg[fs] = f;
 			      break;
 			    case 0b101010 :
@@ -297,14 +243,12 @@ for(int now = 0; now < instr_num; now++)
 			    case 0b001000 :
 			      //execute jr
 			      rs = (int)((code >> 21) & 0b11111);
-			      now = (int)reg[rs] -1;
+			      now = (int)reg[rs] - 1;
 			      break;
 			    case 0b010101:
 			      //execute OUT
 			      //using fout, output binary code
 			      rs = (int)((code >> 21) & 0b11111);
-			      //convert.i = reg[rs];
-			      //fwrite(&convert,sizeof(char),1,fout);
 			      (fout).write((char *)&reg[rs],1);
 			      break;
 					case 0b100010 :
@@ -350,14 +294,12 @@ for(int now = 0; now < instr_num; now++)
 			          //exec mfc1
 			          rt = (int)((code >> 16) & 0b11111);
 			          fs = (int)((code >> 11) & 0b11111);
-			          //cout << "round(mfc1) " << freg[fs] << "-> " << round(freg[fs]) << endl;
 			          reg[rt] = (unsigned int) round(freg[fs]);
 			          break;
 			        case 0b00100 :
 			          //exec mtc1
 			          rt = (int)((code >> 16) & 0b11111);
 			          fs = (int)((code >> 11) & 0b11111);
-			          //cout << "mtc " << (int) reg[rt] << "-> " << (float)((int)reg[rt]) << endl;
 			          freg[fs] = (float)((int)reg[rt]);
 			          break;
 			        }
@@ -367,14 +309,12 @@ for(int now = 0; now < instr_num; now++)
 			      ft = (int)((code >> 16) & 0b11111);
 			      fs = (int)((code >> 11) & 0b11111);
 			      fd = (int)((code >> 6) & 0b11111);
-			      //cout << "div " << freg[fs] << "/" << freg[ft] << "=" <<  freg[fs] / freg[ft] << endl;
 			      freg[fd] = freg[fs] / freg[ft];
 			      break;
 			    case 0b001111 :
 			      //exec floor
 			      fs = (int)((code >> 11) & 0b11111);
 			      fd = (int)((code >> 6) & 0b11111);
-			      //cout << "floor " << freg[fs] << "-> " << floor(freg[fs]) << endl;
 			      freg[fd] = floor(freg[fs]);
 			      break;
 					case 0b000111 :
@@ -394,7 +334,6 @@ for(int now = 0; now < instr_num; now++)
 			      //exec sqrt code
 			      fs = (int)((code >> 11) & 0b11111);
 			      fd = (int)((code >> 6) & 0b11111);
-			      //cout << "sqrt " << freg[fs] << "-> " << sqrtf(freg[fs]) << endl;
 			      freg[fd] = sqrtf(freg[fs]);
 			      break;
 					case 0b000001 :
@@ -422,7 +361,7 @@ for(int now = 0; now < instr_num; now++)
 						rt = (int)((code >> 16) & 0b11111);
 						//immediateは場合分けが必要
 						if((code>>15)&0b1){
-							immediate = (int)(code&0b111111111111111) - power(2,15);
+							immediate = (int)(code&0b111111111111111) - pow(2,15);
 						}else{
 							immediate = (int)(code&0b1111111111111111);
 						}
@@ -434,7 +373,7 @@ for(int now = 0; now < instr_num; now++)
 						rt = (int)((code >> 16) & 0b11111);
 						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 						if((code>>15)&0b1){
-							if((int)reg[rs] == (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+							if((int)reg[rs] == (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 						}else{
 							if((int)reg[rs] == (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 						}
@@ -445,7 +384,7 @@ for(int now = 0; now < instr_num; now++)
 			    	rt = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			     		if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			     		if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			    	}else{
 			      	if((int)reg[rs] > (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -456,7 +395,7 @@ for(int now = 0; now < instr_num; now++)
 			      rt = (int)((code >> 16) & 0b11111);
 			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			      if((code>>15)&0b1){
-			        if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			        if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			      }else{
 			        if((int)reg[rs] >= (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			      }
@@ -467,7 +406,7 @@ for(int now = 0; now < instr_num; now++)
 			    	rt = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			    	  if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			   	 	}else{
 			   	    if((int)reg[rs] < (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			   	 	}
@@ -478,7 +417,7 @@ for(int now = 0; now < instr_num; now++)
 			      rt = (int)((code >> 16) & 0b11111);
 			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			      if((code>>15)&0b1){
-			        if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			        if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			      }else{
 			        if((int)reg[rs] <= (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			      }
@@ -489,7 +428,7 @@ for(int now = 0; now < instr_num; now++)
 			    	rt = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if((int)reg[rs] != (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			    	  if((int)reg[rs] != (int)reg[rt]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			    	}else{
 			    	  if((int)reg[rs] != (int)reg[rt]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -500,7 +439,7 @@ for(int now = 0; now < instr_num; now++)
 			    	ft = (int)((code >> 16) & 0b11111);
 			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if(freg[fs] > freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			    	  if(freg[fs] > freg[ft]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			    	}else{
 			   	  	if(freg[fs] > freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -511,7 +450,7 @@ for(int now = 0; now < instr_num; now++)
 			      ft = (int)((code >> 16) & 0b11111);
 			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			      if((code>>15)&0b1){
-			        if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			        if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			      }else{
 			        if(freg[fs] >= freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			      }
@@ -522,7 +461,7 @@ for(int now = 0; now < instr_num; now++)
 						ft = (int)((code >> 16) & 0b11111);
 						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
 			    	if((code>>15)&0b1){
-			    	  if(freg[fs] != freg[ft]) { now = now + (int)(code&0b111111111111111) -power(2,15)- 1; }
+			    	  if(freg[fs] != freg[ft]) { now = now + (int)(code&0b111111111111111) -pow(2,15)- 1; }
 			    	}else{
 			     	 if(freg[fs] != freg[ft]) { now = now + (int)(code&0b1111111111111111) - 1; }
 			    	}
@@ -532,7 +471,7 @@ for(int now = 0; now < instr_num; now++)
 			      base = (int)((code >> 21) & 0b11111);
 			      rt = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+			        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
 			      }else{
 			        reg[rt] = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
 			      }
@@ -542,7 +481,7 @@ for(int now = 0; now < instr_num; now++)
 			      base = (int)((code >> 21) & 0b11111);
 			      ft = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        x.i = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+			        x.i = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
 			        freg[ft] = x.f;
 			      }else{
 			        x.i = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
@@ -554,7 +493,7 @@ for(int now = 0; now < instr_num; now++)
 			      base = (int)((code >> 21) & 0b11111);
 			      rt = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
+			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = reg[rt];
 			      }else{
 			        inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
 			      }
@@ -565,7 +504,7 @@ for(int now = 0; now < instr_num; now++)
 			      ft = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
 			        x.f = freg[ft];
-			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
+			        inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = x.i;
 			      }else{
 			        x.f = freg[ft];
 			        inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
@@ -593,7 +532,7 @@ for(int now = 0; now < instr_num; now++)
 						base = (int)((code >> 21) & 0b11111);
 						rt = (int)((code >> 16) & 0b11111);
 						if((code>>15)&0b1){
-				      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+				      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
 				    }else{
 			        //cout << mem[(int)reg[base] + (int)(code&0b1111111111111111)] << endl;
 				      reg[rt] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
@@ -604,7 +543,7 @@ for(int now = 0; now < instr_num; now++)
 						base = (int)((code >> 21) & 0b11111);
 				    ft = (int)((code >> 16) & 0b11111);
 						if((code>>15)&0b1){
-			        x.i = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+			        x.i = mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)];
 				      freg[ft] = x.f;
 				    }else{
 			        x.i = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
@@ -616,10 +555,6 @@ for(int now = 0; now < instr_num; now++)
 						rt = (int)((code >> 16) & 0b11111);
 						rd = (int)((code >> 11) & 0b11111);
 						sa = (int)((code >> 6) & 0b11111);
-			      /*cout << "sll" << endl;
-			      cout << reg[rt] << endl;
-			      cout << reg[sa] << endl;
-			      cout << ((reg[rt]) << reg[sa]) << endl;*/
 			      reg[rd] = (reg[rt]) << reg[sa];
 						break;
 			    case 0b111110 :
@@ -627,7 +562,7 @@ for(int now = 0; now < instr_num; now++)
 			      rs = (int)((code >> 21) & 0b11111);
 			      rt = (int)((code >> 16) & 0b11111);
 			      if((code>>15)&0b1){
-			        immediate = (int)(code&0b111111111111111) - power(2,15);
+			        immediate = (int)(code&0b111111111111111) - pow(2,15);
 			      }else{
 			        immediate = (int)(code&0b1111111111111111);
 			      }
@@ -638,7 +573,7 @@ for(int now = 0; now < instr_num; now++)
 				    base = (int)((code >> 21) & 0b11111);
 				    rt = (int)((code >> 16) & 0b11111);
 				    if((code>>15)&0b1){
-				      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
+				      mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = reg[rt];
 				    }else{
 				      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
 				    }
@@ -649,7 +584,7 @@ for(int now = 0; now < instr_num; now++)
 				    ft = (int)((code >> 16) & 0b11111);
 				    if((code>>15)&0b1){
 			        x.f = freg[ft];
-				      mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
+				      mem[(int)reg[base] + (int)(code&0b111111111111111) - (int)pow(2,15)] = x.i;
 				    }else{
 			        x.f = freg[ft];
 				      mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
@@ -663,26 +598,8 @@ for(int now = 0; now < instr_num; now++)
     howmany_instructions++;
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
-    /*
-      cout << "---------------------------" << endl;
-    for(int i = 0; i<32; i++){
-      if (i%5 == 0) { cout << "" << endl; }
-      cout << "r" << i << " = " << reg[i] << "  ";
-    }
-    cout << "" << endl;
-    for(int i = 0; i<32; i++){
-      if (i%3 == 0) { cout << "" << endl; }
-      cout << "f" << i << " = " << freg[i] << "  ";
-    }
-    */
     }
 	}
-  /*
-  if (fclose(fout) == EOF) {
-   		perror("close error");
-   		exit(1);
- 	}
-  */
 
 
   cout << "---------------------------" << endl;
