@@ -14,7 +14,7 @@ using namespace std;
 
 //file stream for IN and OUT instructions
 //get input from "input.txt" and output to "output.txt"
-//FILE *fout;
+
 
 int main(int argc, char**argv){
 	string filename = argv[1];
@@ -596,9 +596,12 @@ for(int now = 0; now < instr_num; now++)
 
 
     howmany_instructions++;
+    /*
     if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
     }
+    */
+
 	}
 
 
