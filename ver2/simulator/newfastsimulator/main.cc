@@ -196,13 +196,6 @@ for(int now = 0; now < instr_num; now++)
 						rd = (int)((code >> 11) & 0b11111);
 						reg[rd] = (unsigned int)((int)reg[rs] + (int)reg[rt]);
 						break;
-					case 0b011000 :
-						//execute MULTH
-						rs = (int)((code >> 21) & 0b11111);
-						rt = (int)((code >> 16) & 0b11111);
-						rd = (int)((code >> 11) & 0b11111);
-						reg[rd] = (int)(((long long)reg[rs] * (long long)reg[rt]) / 4294967296);
-						break;
 					case 0b011001 :
 						//execute MUL
 						rs = (int)((code >> 21) & 0b11111);
@@ -236,9 +229,7 @@ for(int now = 0; now < instr_num; now++)
 			      rs = (int)((code >> 21) & 0b11111);
 			      int inp;
 			      (fin) >> inp;
-			      //cout << inp << endl;
 			      reg[rs] = (unsigned int)inp;
-			      //reg[rs] = convert.i;
 			      break;
 			    case 0b001000 :
 			      //execute jr
@@ -534,7 +525,6 @@ for(int now = 0; now < instr_num; now++)
 						if((code>>15)&0b1){
 				      reg[rt] = mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
 				    }else{
-			        //cout << mem[(int)reg[base] + (int)(code&0b1111111111111111)] << endl;
 				      reg[rt] = mem[(int)reg[base] + (int)(code&0b1111111111111111)];
 				    }
 						break;
