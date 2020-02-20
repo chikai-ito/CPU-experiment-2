@@ -179,6 +179,7 @@ union Convert{
 unsigned int howmany_instructions = 0;
 
 int now = 0;
+int rs,rt,rd,fs,ft,fd,base,immediate,sa;
 
 while(1)
 	{
@@ -188,7 +189,6 @@ while(1)
 			case 0b000000 :
 				//最初のopecodeがspecialつまり000000だった場合
         switch (code & 0b111111) {
-					int rs,rt,rd,fs;
 					case 0b100000 :
 						//ADDの実行 rd = rs + rt
 						rs = (int)((code >> 21) & 0b11111);
@@ -290,7 +290,6 @@ while(1)
 			case 0b010001 :
 				//code for fpu
 				switch (code & 0b111111){
-					int rt,ft,fs,fd;
 					case 0b000101 :
 						//exec ABS.S code
 			    	fs = (int)((code >> 11) & 0b11111);
@@ -368,169 +367,164 @@ while(1)
 						break;
 				}
 				break;
-			default :
-				//最初の6文字で命令の判別が可能な場合
-				switch(code >> 26){
-					int rt,rs,ft,base,fs,rd,sa,immediate;
-					case 0b001000 :
-						//ADDI命令の実行
-						rs = (int)((code >> 21) & 0b11111);
-						rt = (int)((code >> 16) & 0b11111);
-						//immediateは場合分けが必要
-            immediate = (short)(code&0b1111111111111111);
-						reg[rt] = (unsigned int)((int)reg[rs] + immediate);
-						break;
-					case 0b000100 :
-			    	//BEQ命令の実行
-			      rs = (int)((code >> 21) & 0b11111);
-						rt = (int)((code >> 16) & 0b11111);
-						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-            if((int)reg[rs] == (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
-						break;
-					case 0b000110 :
-						//execute bg
-						rs = (int)((code >> 21) & 0b11111);
-			    	rt = (int)((code >> 16) & 0b11111);
-			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			    	if((int)reg[rs] > (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
-						break;
-			    case 0b001001 :
-			      //execute bge
-			      rs = (int)((code >> 21) & 0b11111);
-			      rt = (int)((code >> 16) & 0b11111);
-			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			      if((int)reg[rs] >= (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
-			      break;
-					case 0b000001 :
-						//execute bl
-						rs = (int)((code >> 21) & 0b11111);
-			    	rt = (int)((code >> 16) & 0b11111);
-			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			    	if((int)reg[rs] < (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
-						break;
-			    case 0b001011 :
-			      //execute ble
-			      rs = (int)((code >> 21) & 0b11111);
-			      rt = (int)((code >> 16) & 0b11111);
-			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			      if((int)reg[rs] <= (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
-			      break;
-					case 0b000101 :
-						//execute bne
-						rs = (int)((code >> 21) & 0b11111);
-			    	rt = (int)((code >> 16) & 0b11111);
-			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			    	if((int)reg[rs] != (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
-						break;
-					case 0b000111 :
-			    	//execute fbg
-			    	fs = (int)((code >> 21) & 0b11111);
-			    	ft = (int)((code >> 16) & 0b11111);
-			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			    	if(freg[fs] > freg[ft]) { now = now + (short)(code&0b1111111111111111) - 1; }
-						break;
-			    case 0b001110 :
-			      //execute fbge
-			      fs = (int)((code >> 21) & 0b11111);
-			      ft = (int)((code >> 16) & 0b11111);
-			      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			      if(freg[fs] >= freg[ft]) { now = now + (short)(code&0b1111111111111111) - 1; }
-			      break;
-					case 0b000011 :
-						//execute fbne
-						fs = (int)((code >> 21) & 0b11111);
-						ft = (int)((code >> 16) & 0b11111);
-						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			    	if(freg[fs] != freg[ft]) { now = now + (short)(code&0b1111111111111111) - 1; }
-						break;
-			    case 0b101111 :
-			      //execute ilw
-			      base = (int)((code >> 21) & 0b11111);
-			      rt = (int)((code >> 16) & 0b11111);
-			      reg[rt] = inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)];
-			      break;
-			    case 0b100111 :
-			      //exec ilw.s instruction
-			      base = (int)((code >> 21) & 0b11111);
-			      ft = (int)((code >> 16) & 0b11111);
-			      x.i = inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)];
-            freg[ft] = x.f;
-			      break;
-			    case 0b110111 :
-			      //exec isw instruction
-			      base = (int)((code >> 21) & 0b11111);
-			      rt = (int)((code >> 16) & 0b11111);
-			      inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)] = reg[rt];
-			      break;
-			    case 0b111011 :
-			      //exec isw.s instruction
-			      base = (int)((code >> 21) & 0b11111);
-			      ft = (int)((code >> 16) & 0b11111);
-			      x.f = freg[ft];
-            inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)] = x.i;
-			      break;
-					case 0b000010 :
-						//JUMP命令の実行
-						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-						now = (int)(code&0b11111111111111111111111111) - 1;
-						break;
-					case 0b011000 :
-			    	//execute jal
-						reg[28] = now;
-			    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
-			    	now = (int)(code&0b11111111111111111111111111) - 1;
-						break;
-			    case 0b111000 :
-			      //execute jalr
-			      rs = (int)((code >> 21) & 0b11111);
-			      reg[28] = now;
-			      now = reg[rs] - 1;
-			      break;
-					case 0b100011 :
-						//execute lw instruction
-						base = (int)((code >> 21) & 0b11111);
-						rt = (int)((code >> 16) & 0b11111);
-						reg[rt] = mem[(int)reg[base] + (short)(code&0b1111111111111111)];
-						break;
-					case 0b100100 :
-						//exec lw.s instruction
-						base = (int)((code >> 21) & 0b11111);
-				    ft = (int)((code >> 16) & 0b11111);
-						x.i = mem[(int)reg[base] + (short)(code&0b1111111111111111)];
-            freg[ft] = x.f;
-						break;
-					case 0b111111 :
-						//execute sll instruction
-						rt = (int)((code >> 16) & 0b11111);
-						rd = (int)((code >> 11) & 0b11111);
-						sa = (int)((code >> 6) & 0b11111);
-			      reg[rd] = (reg[rt]) << reg[sa];
-						break;
-			    case 0b111110 :
-			      //execute slli instruction
-			      rs = (int)((code >> 21) & 0b11111);
-			      rt = (int)((code >> 16) & 0b11111);
-			      immediate = (short)(code&0b1111111111111111);
-			      reg[rt] = (reg[rs]) << immediate;
-			      break;
-					case 0b101011 :
-						//execute sw instruction
-				    base = (int)((code >> 21) & 0b11111);
-				    rt = (int)((code >> 16) & 0b11111);
-				    mem[(int)reg[base] + (short)(code&0b1111111111111111)] = reg[rt];
-						break;
-					case 0b101100 :
-				    //execute sw.s instruction
-				    base = (int)((code >> 21) & 0b11111);
-				    ft = (int)((code >> 16) & 0b11111);
-				    x.f = freg[ft];
-            mem[(int)reg[base] + (short)(code&0b1111111111111111)] = x.i;
-						break;
-				}
+			case 0b001000 :
+				//ADDI命令の実行
+				rs = (int)((code >> 21) & 0b11111);
+				rt = (int)((code >> 16) & 0b11111);
+				//immediateは場合分けが必要
+        immediate = (short)(code&0b1111111111111111);
+				reg[rt] = (unsigned int)((int)reg[rs] + immediate);
 				break;
-		}
+			case 0b000100 :
+	    	//BEQ命令の実行
+	      rs = (int)((code >> 21) & 0b11111);
+				rt = (int)((code >> 16) & 0b11111);
+				//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+        if((int)reg[rs] == (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
+				break;
+			case 0b000110 :
+				//execute bg
+				rs = (int)((code >> 21) & 0b11111);
+	    	rt = (int)((code >> 16) & 0b11111);
+	    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	    	if((int)reg[rs] > (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
+				break;
+	    case 0b001001 :
+	      //execute bge
+	      rs = (int)((code >> 21) & 0b11111);
+	      rt = (int)((code >> 16) & 0b11111);
+	      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	      if((int)reg[rs] >= (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
+	      break;
+			case 0b000001 :
+				//execute bl
+				rs = (int)((code >> 21) & 0b11111);
+	    	rt = (int)((code >> 16) & 0b11111);
+	    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	    	if((int)reg[rs] < (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
+				break;
+	    case 0b001011 :
+	      //execute ble
+	      rs = (int)((code >> 21) & 0b11111);
+	      rt = (int)((code >> 16) & 0b11111);
+	      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	      if((int)reg[rs] <= (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
+	      break;
+			case 0b000101 :
+				//execute bne
+				rs = (int)((code >> 21) & 0b11111);
+	    	rt = (int)((code >> 16) & 0b11111);
+	    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	    	if((int)reg[rs] != (int)reg[rt]) { now = now + (short)(code&0b1111111111111111) - 1; }
+				break;
+			case 0b000111 :
+	    	//execute fbg
+	    	fs = (int)((code >> 21) & 0b11111);
+	    	ft = (int)((code >> 16) & 0b11111);
+	    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	    	if(freg[fs] > freg[ft]) { now = now + (short)(code&0b1111111111111111) - 1; }
+				break;
+	    case 0b001110 :
+	      //execute fbge
+	      fs = (int)((code >> 21) & 0b11111);
+	      ft = (int)((code >> 16) & 0b11111);
+	      //nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	      if(freg[fs] >= freg[ft]) { now = now + (short)(code&0b1111111111111111) - 1; }
+	      break;
+			case 0b000011 :
+				//execute fbne
+				fs = (int)((code >> 21) & 0b11111);
+				ft = (int)((code >> 16) & 0b11111);
+				//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	    	if(freg[fs] != freg[ft]) { now = now + (short)(code&0b1111111111111111) - 1; }
+				break;
+	    case 0b101111 :
+	      //execute ilw
+	      base = (int)((code >> 21) & 0b11111);
+	      rt = (int)((code >> 16) & 0b11111);
+	      reg[rt] = inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)];
+	      break;
+	    case 0b100111 :
+	      //exec ilw.s instruction
+	      base = (int)((code >> 21) & 0b11111);
+	      ft = (int)((code >> 16) & 0b11111);
+	      x.i = inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)];
+        freg[ft] = x.f;
+	      break;
+	    case 0b110111 :
+	      //exec isw instruction
+	      base = (int)((code >> 21) & 0b11111);
+	      rt = (int)((code >> 16) & 0b11111);
+	      inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)] = reg[rt];
+	      break;
+	    case 0b111011 :
+	      //exec isw.s instruction
+	      base = (int)((code >> 21) & 0b11111);
+	      ft = (int)((code >> 16) & 0b11111);
+	      x.f = freg[ft];
+        inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)] = x.i;
+	      break;
+			case 0b000010 :
+				//JUMP命令の実行
+				//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+				now = (int)(code&0b11111111111111111111111111) - 1;
+				break;
+			case 0b011000 :
+	    	//execute jal
+				reg[28] = now;
+	    	//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない
+	    	now = (int)(code&0b11111111111111111111111111) - 1;
+				break;
+	    case 0b111000 :
+	      //execute jalr
+	      rs = (int)((code >> 21) & 0b11111);
+	      reg[28] = now;
+	      now = reg[rs] - 1;
+	      break;
+			case 0b100011 :
+				//execute lw instruction
+				base = (int)((code >> 21) & 0b11111);
+				rt = (int)((code >> 16) & 0b11111);
+				reg[rt] = mem[(int)reg[base] + (short)(code&0b1111111111111111)];
+				break;
+			case 0b100100 :
+				//exec lw.s instruction
+				base = (int)((code >> 21) & 0b11111);
+		    ft = (int)((code >> 16) & 0b11111);
+				x.i = mem[(int)reg[base] + (short)(code&0b1111111111111111)];
+        freg[ft] = x.f;
+				break;
+			case 0b111111 :
+				//execute sll instruction
+				rt = (int)((code >> 16) & 0b11111);
+				rd = (int)((code >> 11) & 0b11111);
+				sa = (int)((code >> 6) & 0b11111);
+	      reg[rd] = (reg[rt]) << reg[sa];
+				break;
+	    case 0b111110 :
+	      //execute slli instruction
+	      rs = (int)((code >> 21) & 0b11111);
+	      rt = (int)((code >> 16) & 0b11111);
+	      immediate = (short)(code&0b1111111111111111);
+	      reg[rt] = (reg[rs]) << immediate;
+	      break;
+			case 0b101011 :
+				//execute sw instruction
+		    base = (int)((code >> 21) & 0b11111);
+		    rt = (int)((code >> 16) & 0b11111);
+		    mem[(int)reg[base] + (short)(code&0b1111111111111111)] = reg[rt];
+				break;
+			case 0b101100 :
+		    //execute sw.s instruction
+		    base = (int)((code >> 21) & 0b11111);
+		    ft = (int)((code >> 16) & 0b11111);
+		    x.f = freg[ft];
+        mem[(int)reg[base] + (short)(code&0b1111111111111111)] = x.i;
+				break;
+			}
 
-    
+
+
     now++;
     howmany_instructions++;
     /*
@@ -542,16 +536,6 @@ while(1)
 	}
 
 
-
-  fin.close();
-  fout.close();
-  free(mem);
-  free(inst_mem);
-  free(label_list);
-  free(execute_instruction);
-  free(instruction_set);
-  free(reg);
-  free(freg);
 
 	return 0;
 }
