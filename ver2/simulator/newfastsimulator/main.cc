@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <utility>
+#include <vector>
+#include <queue>
 #include "assembler.h"
 #include "label_solver.h"
 #include "operation.h"
@@ -17,7 +19,8 @@ using namespace std;
 
 
 int main(int argc, char**argv){
-	string filename = argv[1];
+  clock_t start = std::clock();
+  string filename = argv[1];
 
 	ifstream reading_file;
 	reading_file.open(filename,ios::in);
@@ -56,6 +59,7 @@ int main(int argc, char**argv){
   execute_instruction = (string *)malloc(66536 * sizeof(string));
   memset(execute_instruction, 0, (66536 * sizeof(string)));
 
+  clock_t end = std::clock();
 
 	//label解決をまず行う
 	int line_num = 0; //line number
@@ -176,10 +180,21 @@ union Convert{
 
 
 
+const double time = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000.0;
+printf("time %lf[ms]\n", time);
+
+
 unsigned int howmany_instructions = 0;
 
 int now = 0;
 int rs,rt,rd,fs,ft,fd,base,immediate,sa;
+vector<int> output_data;;
+queue<float> input_data;;
+while(!fin.eof()){
+  float n;
+  fin >> n;
+  input_data.push(n);
+}
 
 while(1)
 	{
@@ -219,16 +234,14 @@ while(1)
 			    case 0b111010 :
 			      //execute FIN
 			      fs = (int)((code >> 21) & 0b11111);
-			      float f;
-			      (fin) >> f;
-			      freg[fs] = f;
+            freg[fs] = input_data.front();
+            input_data.pop();
 			      break;
 			    case 0b101010 :
 			      //execute IN
 			      rs = (int)((code >> 21) & 0b11111);
-			      int inp;
-			      (fin) >> inp;
-			      reg[rs] = (unsigned int)inp;
+			      reg[rs] = (unsigned int)input_data.front();
+            input_data.pop();
 			      break;
 			    case 0b001000 :
 			      //execute jr
@@ -237,9 +250,8 @@ while(1)
 			      break;
 			    case 0b010101:
 			      //execute OUT
-			      //using fout, output binary code
 			      rs = (int)((code >> 21) & 0b11111);
-			      (fout).write((char *)&reg[rs],1);
+            output_data.push_back(reg[rs]);
 			      break;
 					case 0b100010 :
 						//SUBの実行
@@ -261,6 +273,7 @@ while(1)
           case 0b000000:
             //これで実行終了であることがわかる
             if(code == 0)  {
+              /*
               cout << "---------------------------" << endl;
               for(int i = 0; i<32; i++){
                 if (i%5 == 0) { cout << "" << endl; }
@@ -271,7 +284,13 @@ while(1)
                 if (i%3 == 0) { cout << "" << endl; }
                 cout << "f" << i << " = " << freg[i] << "  ";
               }
+              */
+              //dataの出力
+              for(int i:output_data){
+                (fout).write((char *)&i,1);
+              }
               cout << "number of executed instructions is " << howmany_instructions << endl;
+              /*
               fin.close();
               fout.close();
               free(mem);
@@ -281,6 +300,7 @@ while(1)
               free(instruction_set);
               free(reg);
               free(freg);
+              */
               return 0;
             }
             break;
