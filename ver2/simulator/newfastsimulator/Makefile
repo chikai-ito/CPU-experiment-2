@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wextra -O3 -o
+CFLAGS = -Wextra -O3 -mtune=native -march=native -mfpmath=both -o
 SRCS = $(shell find . -name "*.cc")
 OBJS = $(SRCS:.cc=.o)
 

@@ -351,11 +351,14 @@ for(int now = 0; now < instr_num; now++)
 						rs = (int)((code >> 21) & 0b11111);
 						rt = (int)((code >> 16) & 0b11111);
 						//immediateは場合分けが必要
-						if((code>>15)&0b1){
+            immediate = (int)(code&0b111111111111111) - power(2,15)*((int)((code >> 15)&0b1));
+						/*
+            if((code>>15)&0b1){
 							immediate = (int)(code&0b111111111111111) - power(2,15);
 						}else{
 							immediate = (int)(code&0b1111111111111111);
 						}
+            */
 						reg[rt] = (unsigned int)((int)reg[rs] + immediate);
 						break;
 					case 0b000100 :
