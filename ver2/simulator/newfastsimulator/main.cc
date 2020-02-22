@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <queue>
+#include "time.h"
 #include "assembler.h"
 #include "label_solver.h"
 #include "operation.h"
@@ -36,27 +37,26 @@ int main(int argc, char**argv){
   reg[0] = 0;
   reg[26] = 10000;
 
-
-
   //main memory
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
-  memset(mem , 1 , 8e+8 * sizeof(unsigned int) );
+  //memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
+
 
   unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
-  memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
+  //memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
 
   int clock = 0;
 	int pc = 0;
 
   pair<string,int>* label_list;
   label_list = (pair<string,int>*)malloc(66536 * sizeof(pair<string,int>));
-  memset(label_list,0,66536*sizeof(pair<string,int>));
+  //memset(label_list,0,66536*sizeof(pair<string,int>));
 
   string* execute_instruction;
   execute_instruction = (string *)malloc(66536 * sizeof(string));
-  memset(execute_instruction, 0, (66536 * sizeof(string)));
+  //memset(execute_instruction, 0, (66536 * sizeof(string)));
 
 
 	//label解決をまず行う
@@ -80,6 +80,7 @@ int main(int argc, char**argv){
         string lon, number;
         istringstream s1(data_code);
         s1 >> lon >> number;
+        //ここでinst_memに一時的に情報を格納している、これはやめるべき
         inst_mem[data_num] = StringToUInt0x(number);
         label_list[array_num].first = label_name;
         label_list[array_num].second = line_num;
@@ -125,7 +126,7 @@ int main(int argc, char**argv){
   reading_file1.close();
 
 
-
+// ----                   ------------------
 	//it is for executing simulator
 	ofstream writing_file;
   writing_file.open("machine_code.txt");
@@ -141,10 +142,6 @@ int main(int argc, char**argv){
   }
   writing_file.close();
 
-
-
-
-
   // --- using machine_code, create inst_mem ---
   ifstream reading_file2; // file stream for machine_code.txt
   reading_file2.open("machine_code.txt",ios::in);
@@ -158,6 +155,8 @@ int main(int argc, char**argv){
     instr_num = instr_num + 1;
   }while(!reading_file2.eof());
   reading_file2.close();
+// -------               ------------------------
+
 
 
 //file stream creation
