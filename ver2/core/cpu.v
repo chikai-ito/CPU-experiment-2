@@ -1,6 +1,6 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 1406) (
+module top #(CLK_PER_HALF_BIT = 1875) (
     input wire clk,
     input wire rstn,
     
@@ -181,7 +181,7 @@ module top #(CLK_PER_HALF_BIT = 1406) (
     assign f_argument = (instr_reg[1][31:26] == cop1 && instr_reg[1][25:21] == f_mtc1) ? (register_int[instr_reg[1][20:16]]) : (register_float[instr_reg[1][20:16]]);
     
     // メインFPU
-    fpu2 fpu11(
+    fpu2_0 fpu11(
         instr_reg[1][31:26],
         instr_reg[1][25:21],
         argument2[1],
@@ -460,7 +460,7 @@ module top #(CLK_PER_HALF_BIT = 1406) (
                 case (instr_reg[0][31:26])
                     special:
                         case (instr_reg[0][5:0])
-                            s_add, s_sub, s_mult, s_div: begin
+                            s_add, s_sub, s_mult: begin
                                 argument1[1] <= register_int[instr_reg[0][25:21]];
                                 argument2[1] <= register_int[instr_reg[0][20:16]];
                                 stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
@@ -710,8 +710,10 @@ module top #(CLK_PER_HALF_BIT = 1406) (
                                 result[2] <= argument1[1] - argument2[1];
                             s_mult:
                                 result[2] <= argument1[1] * argument2[1];
+                            /*
                             s_div:
                                 result[2] <= argument1[1] / argument2[1];
+                            */
                             s_mov:
                                 result[2] <= argument1[1];
                             s_out: begin
@@ -862,7 +864,7 @@ module top #(CLK_PER_HALF_BIT = 1406) (
                 case (instr_reg[2][31:26])
                     special:
                         case (instr_reg[2][5:0])
-                            s_add, s_sub, s_mult, s_div: begin
+                            s_add, s_sub, s_mult: begin
                                 register_int[instr_reg[2][15:11]] <= result[2];
                                 int_data_flag[instr_reg[2][15:11]] <= 1'b0;
                                 validate_flag[3] <= 1'b0;
