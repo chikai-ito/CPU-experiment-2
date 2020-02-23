@@ -167,6 +167,9 @@ let output_simple_op oc dregmap uregmap operation =
   | Div((x, _), y, z) -> Printf.fprintf oc "\tdiv\t%s %s %s\n" (ulu y) (ulu z) (dlu x)
   | SLLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s %d\n" (ulu y) (dlu x) i
   | SLL((x, _), y, z) -> Printf.fprintf oc "\tsll\t%s %s %s\n" (ulu y) (dlu x) (ulu z)
+  | SRLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s -%d\n" (ulu y) (dlu x) i
+  | SRL((x, _), y, z) -> assert false
+    (* Printf.fprintf oc "\tsrl\t%s %s %s\n" (ulu y) (dlu x) (ulu z) *)
   | Ld((x, _), y, i) ->
      Printf.fprintf oc "\tlw\t%s %s %d\n" (ulu y) (dlu x) i
   | St(x, y, i) ->

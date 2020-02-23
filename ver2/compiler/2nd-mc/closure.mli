@@ -11,6 +11,7 @@ type t =
   | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
+  | LSR of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t

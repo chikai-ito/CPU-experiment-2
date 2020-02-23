@@ -11,6 +11,7 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
+  | LSR of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
@@ -48,7 +49,7 @@ let rec fv = function
   | Unit | Const _ | ExtArray(_) -> S.empty
   | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | GetL(_, x)
     | FNeg(x) | Ftoi(x) | Floor(x) | FSqrt(x) -> S.singleton x
-  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | PutL(_, x, y)
+  | Add(x, y) | LSR(x, y)| Sub(x, y) | Mul(x, y) | Div(x, y) | PutL(_, x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y)
     -> S.of_list [x; y]
   | If(_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
@@ -80,6 +81,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.Fin(x) -> Fin(x)
   | KNormal.Out(x) -> Out(x)                     
   | KNormal.Add(x, y) -> Add(x, y)
+  | KNormal.LSR(x, y) -> LSR(x, y)
   | KNormal.Sub(x, y) -> Sub(x, y)
   | KNormal.Mul(x, y) -> Mul(x, y)
   | KNormal.Div(x, y) -> Div(x, y)

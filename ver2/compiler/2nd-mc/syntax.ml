@@ -10,6 +10,7 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | Fin of t
   | Out of t
   | Add of t * t
+  | LSR of t * t
   | Sub of t * t
   | Mul of t * t
   | Div of t * t
@@ -97,6 +98,12 @@ and print_syntax =
       depth := !depth -1
     | Add (s1,s2) ->
       Printf.printf "ADD\n";
+      depth := !depth + 1;
+      print_syntax s1;
+      print_syntax s2;
+      depth := !depth -1
+    | LSR (s1,s2) ->
+      Printf.printf "LSR\n";
       depth := !depth + 1;
       print_syntax s1;
       print_syntax s2;

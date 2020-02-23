@@ -22,6 +22,8 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | Div of (Id.t * Type.t) * Id.t * Id.t
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
+  | SRL of (Id.t * Type.t) * Id.t * Id.t
+  | SRLI of (Id.t * Type.t) * Id.t * int
   | Ld of (Id.t * Type.t) * Id.t * int (* Ld(x,y,imm) = x <- y + imm *)
   | St of Id.t * Id.t * int
   | FMov of (Id.t * Type.t) * Id.t
@@ -94,6 +96,8 @@ let nontail_simple_instr xt = function
   | Asm.Div(y, z) -> new_instr (Div(xt, y, z))
   | Asm.SLL(y, z) -> new_instr (SLL(xt, y, z))
   | Asm.SLLI(y, i) -> new_instr (SLLI(xt, y, i))
+  | Asm.SRL(y, z) -> new_instr (SRL(xt, y, z))
+  | Asm.SRLI(y, i) -> new_instr (SRLI(xt, y, i))
   | Asm.Ld(y, i) -> new_instr (Ld(xt, y, i))
   | Asm.St(y, z, i) -> new_instr (St(y, z, i))
   | Asm.FMov(y) -> new_instr (FMov(xt, y))
@@ -270,8 +274,10 @@ let make_block_postl prs = (* ループの直後に挿入するブロックを�
   let br = ref dummy_block in
   let sc = Cnfl(br) in
 
+  (* let new_b = { label = Id.L(l); l_dep = !loop_depth;
+   *               code = restores; prev = []; next = sc } in *)
   let new_b = { label = Id.L(l); l_dep = !loop_depth;
-                code = restores; prev = []; next = sc } in
+                code = []; prev = []; next = sc } in
 
   join_flows prs new_b;
   new_b, br
@@ -339,7 +345,7 @@ let rec make_cfg : flow_t list -> (Id.t * Type.t) -> Asm.t -> block * flow_t lis
 
      
 and if_routine prs yt exp =
-  let ty = (match exp with If _ -> Type.Int | FIf _ -> Type.Float | _ -> assert false) in
+  let ty = (match exp with Asm.If _ -> Type.Int | Asm.FIf _ -> Type.Float | _ -> assert false) in
   (match exp with
    | Asm.If(cmp,z,w,e1,e2) | Asm.FIf(cmp,z,w,e1,e2) ->
       let new_b, (b_l, b_r) = make_branching_block prs ty cmp z w in (* あとでphi関数を挿入するブロック *)
@@ -394,7 +400,8 @@ and loop_routine prs yt exp =
       (* let L(l') = looptop.label in
        * Format.eprintf "changed label %s to %s@." l' l; *)
 
-      pre_b.code <- pre_b.code @ saves; (* preloop blockにsaveを挿入する *)
+      (* pre_b.code <- pre_b.code @ saves; (\* preloop blockにsaveを挿入する *\) *)
+      pre_b.code <- pre_b.code @ movs;
       looptop.label <- Id.L(l); (* looptopのラベルをループのラベルにする *)
 
       looptop.code <- phis @ looptop.code;

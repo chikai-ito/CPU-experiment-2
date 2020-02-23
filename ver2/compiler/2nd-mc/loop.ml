@@ -77,7 +77,7 @@ let rec loop_conv f l yts = function
        Format.eprintf "in %s, loop parameter is empty@." l
      else
        Format.eprintf "in %s, loop parameter is nonempty@." l);
-     Jump(yzts, L(l)), s (* スタート地点へのjump back *)
+     Jump(yzts, Id.L(l)), s (* スタート地点へのjump back *)
   | LetTuple(xts, y, e) ->
      let e', s = loop_conv f l yts e in
      LetTuple(xts, y, e'), s
@@ -137,7 +137,7 @@ let rec f = function
                                (fun (y, t) -> S.mem y s) yts)) in
         let env = M.add_list2 ys (List.map fst yts') M.empty in
         let loop' = Alpha.g env (elim_params env loop) in
-        let e1' = (Loop(L(x'), yts', ys, loop')) in
+        let e1' = (Loop(Id.L(x'), yts', ys, loop')) in
         LetRec({ name = (x, t); args = yts; body = e1' }, f e2))
      else
        (Format.eprintf "function %s is not convertible to a loop@." x;

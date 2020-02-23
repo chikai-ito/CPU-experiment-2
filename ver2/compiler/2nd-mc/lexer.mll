@@ -42,6 +42,7 @@ rule token = parse
     { AST }
 | '/'
     { SLASH }
+| "lsr" { LSR }
 | "sqrt"
     { FSQRT }
 | "floor"

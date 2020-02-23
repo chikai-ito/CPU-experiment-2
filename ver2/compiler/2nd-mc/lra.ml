@@ -92,6 +92,8 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Div((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | SRL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | SRLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ld((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | St _ -> idset
   | FMov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -177,6 +179,8 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Div((x, t), y, z) -> [x], [y; z]
   | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
+  | SRL((x, t), y, z) -> [x], [y; z]
+  | SRLI((x, t), y, i) -> [x], [y]
   | Ld((x, t), y, i) -> [x], [y]
   | St(y, z, i) -> [], [y; z]
   | FMov((x, t), y) -> [x], [y]
@@ -267,7 +271,7 @@ let compute_liveout : lra_sets_t list -> S.t =
     S.empty lrasets_list
 
 let update_liveout lratbl block =
-  let Id.L(l) = block.label in
+  (* let Id.L(l) = block.label in *)
   let lrasets = lrasets_of_block lratbl block in
   let next_lrasets_list =
     List.map (lrasets_of_block lratbl) (Cfg.next_blocks block) in

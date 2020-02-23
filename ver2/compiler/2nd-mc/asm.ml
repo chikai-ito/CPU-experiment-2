@@ -25,7 +25,9 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
+  | SRL of Id.t * Id.t
   | SLLI of Id.t * int
+  | SRLI of Id.t * int
   | Ld of Id.t * int
   | St of Id.t * Id.t * int
   | FMov of Id.t
@@ -109,10 +111,10 @@ let rec fv_exp = function
   | Nop | Set(_) | SetF _ | SetL(_) | Comment(_) | Restore(_)
     | ILd _ | ILdF _ -> []
   | Mov(x) | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | FMov(x) | Ftoi(x) | FNeg(x)
-    | FSqrt(x) | Floor(x) | Save(x, _) | AddI(x,_) | SLLI(x,_) -> [x]
+    | FSqrt(x) | Floor(x) | Save(x, _) | AddI(x,_) | SLLI(x,_) | SRLI(x, _)-> [x]
   | Ld(x, _) | LdF(x, _) -> [x]
   | St(x, y, _) | StF(x, y, _) -> [x; y]
-  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y)
+  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | SLL(x, y) | SRL(x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) -> [x; y]
   | If(_,x,y,e1,e2) | FIf(_,x,y,e1,e2) ->
      x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)

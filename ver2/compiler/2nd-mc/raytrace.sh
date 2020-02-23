@@ -14,13 +14,21 @@ do
     esac
 done
 
-rm ./result.ppm
+if [ -e "result.ppm" ]; then
+    rm ./result.ppm
+    echo "deleted result.ppm"
+fi
+
 cp ./minrt.s ../../simulator/newsimulator/test/minrt.s
 
 cat ./data/raytracer/sld/$1.sld > ../../simulator/newsimulator/input.txt
 
 cd ../../simulator/newsimulator
-rm ./result.bin
+
+if [ -e "result.bin" ]; then
+    rm ./result.bin
+    echo "deleted result.bin"
+fi
 
 make
 

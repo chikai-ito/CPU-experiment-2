@@ -77,6 +77,8 @@ let replace_id_with_lr : lr_info H.t -> Type.t H.t -> Cfg.instr -> Cfg.instr =
   | Div((x, t), y, z) -> rt x t; { instr_id = iid; op = Div((lu x, t), lu y, lu z) }
   | SLL((x, t), y, z) -> rt x t; { instr_id = iid; op = SLL((lu x, t), lu y, lu z) }
   | SLLI((x, t), y, i) -> rt x t; { instr_id = iid; op = SLLI((lu x, t), lu y, i) }
+  | SRL((x, t), y, z) -> rt x t; { instr_id = iid; op = SRL((lu x, t), lu y, lu z) }
+  | SRLI((x, t), y, i) -> rt x t; { instr_id = iid; op = SRLI((lu x, t), lu y, i) }
   | Ld((x, t), y, i) -> rt x t; { instr_id = iid; op = Ld((lu x, t), lu y, i) }
   | St(y, z, i) -> { instr_id = iid; op = St(lu y, lu z, i) }
   | FMov((x, t), y) -> rt x t; { instr_id = iid; op = FMov((lu x, t), lu y) }
