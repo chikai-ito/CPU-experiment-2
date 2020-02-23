@@ -65,7 +65,7 @@ type prog = Prog of MemAlloc.t list * (Id.l * Asm.data_t) list *
 let loop_depth = ref 0 (* これを参照してブロックを作る *)
 
 let label_of_block block =
-  let L(l) = block.label in l
+  let Id.L(l) = block.label in l
 
 let next_blocks block =
   match block.next with
@@ -120,7 +120,7 @@ let rename_equiv_ids equiv_ids x =
   | [(y, zls)] -> [(x, zls)]
   | _ -> assert false
             
-let dummy_block = { label = L("0"); l_dep = 0; code = []; prev = []; next = End(false) } (*  領域を確保するためのダミーブロック *)
+let dummy_block = { label = Id.L("0"); l_dep = 0; code = []; prev = []; next = End(false) } (*  領域を確保するためのダミーブロック *)
 
 
 let insert_moves yzts =
@@ -215,11 +215,11 @@ let join_flows : flow_t list -> block -> unit =
 let join_back_flows : flow_t list -> block -> unit =
   (* backsをループの先頭ブロックであるloop_bに繋ぐ *)
   fun backs loop_b ->
-  let L(l) = loop_b.label in
+  let Id.L(l) = loop_b.label in
   List.iter (* backsとloop_bを繋ぐ *)
     (fun flw ->
       match (flw.b).next with
-      | Back(L(l'), _) when l = l' ->
+      | Back(Id.L(l'), _) when l = l' ->
          flw.bref := loop_b; loop_b.prev <- flw.b :: loop_b.prev
       | _ -> assert false) backs (* これには他のループへのbackが上がってきた場合も含まれる *)  
 
@@ -260,7 +260,7 @@ let make_block_prel prs = (* ループの手前に挿入するブロックを新
   let br1 = ref dummy_block in
   let br2 = ref dummy_block in
   let sc = Loop(br1, br2) in
-  let new_b = { label = L(l); l_dep = !loop_depth;
+  let new_b = { label = Id.L(l); l_dep = !loop_depth;
                 code = c; prev = []; next = sc } in
   join_flows prs new_b;
   new_b, br1, br2
@@ -269,8 +269,10 @@ let make_block_postl prs = (* ループの直後に挿入するブロックを�
   let l = Id.genid "postloop_b" in
   let br = ref dummy_block in
   let sc = Cnfl(br) in
-  let new_b = { label = L(l); l_dep = !loop_depth;
-                code = []; prev = []; next = sc } in
+
+  let new_b = { label = Id.L(l); l_dep = !loop_depth;
+                code = restores; prev = []; next = sc } in
+
   join_flows prs new_b;
   new_b, br
   
@@ -284,7 +286,7 @@ let make_branching_block prs ty cmp x y = (* 分岐の起点となるbranching b
   let sc = Brc(compr, b_l, b_r) in (* nextはdummyで取るしかない *)
   (* refを実行する度に領域が新しく確保されるから，上の２つのdummy_blockはaliasしてないはず! *)
   (* nextを繋ぐのはsuper routineの責任 *)
-  let new_b = {label = L(l); l_dep = !loop_depth; code = c; prev = []; next = sc} in (* 新しいブロックを作成 *)
+  let new_b = {label = Id.L(l); l_dep = !loop_depth; code = c; prev = []; next = sc} in (* 新しいブロックを作成 *)
   (* 上で，new_b -> prsは繋いだ *)
   join_flows prs new_b; (* ここで, prs -> new_bを繋ぐ *)
   new_b, (b_l, b_r)  (* new_bと2つの分岐先への参照を返す *)
@@ -376,7 +378,7 @@ and resolve_phis phis zts ws = (* 不必要なphi命令を削除し，必要なs
   
 and loop_routine prs yt exp =
   (match exp with
-   | Asm.Loop(L(l), zts, ws, e') -> (* ループのラベルlをそのままブロックのラベルにすれば良い *)
+   | Asm.Loop(Id.L(l), zts, ws, e') -> (* ループのラベルlをそのままブロックのラベルにすれば良い *)
       let pre_b, br1, br2 = make_block_prel prs in (* ループの前に挿入する新しいブロック *)
       (* ---- loop start ---- *)
       incr loop_depth; (* loop_depthを１つ上げる *)
@@ -391,9 +393,10 @@ and loop_routine prs yt exp =
       (* let phis, saves, restores = resolve_phis phis zts ws in *)
       (* let L(l') = looptop.label in
        * Format.eprintf "changed label %s to %s@." l' l; *)
-      (* pre_b.code <- pre_b.code @ saves; (\* preloop blockにsaveを挿入する *\) *)
-      pre_b.code <- pre_b.code @ movs;
-      looptop.label <- L(l); (* looptopのラベルをループのラベルにする *)
+
+      pre_b.code <- pre_b.code @ saves; (* preloop blockにsaveを挿入する *)
+      looptop.label <- Id.L(l); (* looptopのラベルをループのラベルにする *)
+
       looptop.code <- phis @ looptop.code;
       join_back_flows backs looptop; (* backsをlooptopに繋ぐ *)
       decr loop_depth; (* もとのルーチンに復帰する前にloop_depthを戻す *)
@@ -415,7 +418,7 @@ and loop_routine prs yt exp =
       (* post_bの先頭にloop後の合流のphiを挿入 *)
       (* このNopからループ後の生存変数の情報を取る *)
       let flw' = { b = post_b; bref = br;
-                   equiv_ids = [(fst yt, [y', L(label_of_block post_b)])] } in
+                   equiv_ids = [(fst yt, [y', Id.L(label_of_block post_b)])] } in
       pre_b, [flw'] (* save, restoreは処理したので，あとはこの2つを繋いでもらう *)
    | _ -> assert false)
 
@@ -473,7 +476,7 @@ let e_to_cfg l xt int_args float_args e is_ret =
   let phi = phi_cnfl_if xt equiv_ids in
   assert (!loop_depth = 0);
   let ret = if snd xt = Type.Unit then [] else [new_instr (Return(xt))] in
-  let return_block = { label = L(return_label); (* 他のblock labelはId.genidを通しているのでかぶる心配はない *)
+  let return_block = { label = Id.L(return_label); (* 他のblock labelはId.genidを通しているのでかぶる心配はない *)
                        l_dep = !loop_depth;
                        code = phi @ ret;
                        prev = [];
