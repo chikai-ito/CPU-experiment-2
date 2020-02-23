@@ -130,9 +130,6 @@ let rec f = function
         (* 変数束縛のためのプレースホルダ *)
         let x' = Id.genid ((Id.getbody x) ^ "_loop") in
         let loop, s = loop_conv x x' yts e1' in
-        (* let env = M.add_list
-         *             (List.map (fun (y, _) -> (y, Id.genid y)) yts)
-         *             M.empty in *)
         let yts', ys = List.split
                          (List.map
                             (fun (y, t) -> ((Id.genid y, t), y))

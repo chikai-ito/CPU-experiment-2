@@ -156,7 +156,8 @@ let blocklist_to_lrtbl : Cfg.block list -> lr_info H.t * S.t * S.t =
 let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   fun instr ->
   match instr.op with
-  | Phi ((x, t), yls) -> [x], [] (* これが正解? *)
+  (* | Phi ((x, t), yls) -> [x], [] (\* これが正解? *\) *)
+  | Phi((x, t), yls) -> [x], (List.map fst yls)
      (* let ys = List.map fst yls in [x], ys *)
   | Nop -> [], []
   | Set((x, t), _) -> [x], []

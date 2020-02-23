@@ -178,15 +178,20 @@ let phi_cnfl_if : (Id.t * Type.t) -> equiv_ids_t -> code_t =
   | [(y, yls)] when x = y -> eliminate_phi (minimize_phi (Phi((x, t), yls)))
   | _ -> assert false
 
-let phi_back_loop : (Id.t * Type.t) list -> Id.t list -> equiv_ids_t -> Id.l -> op_t list =
+let phi_back_loop : (Id.t * Type.t) list -> Id.t list -> equiv_ids_t
+                    -> Id.l -> instr list * instr list =
   (* labelは上からの流れ *)
   fun xts ys equiv_ids label ->
   List.iter2 (fun (x, _) (z, _) -> assert (x = z)) xts equiv_ids;
-  let yls = List.map (fun y -> (y, label)) ys in
+  let ys' = List.map Id.genid ys in
+  let yls = List.map (fun y -> (y, label)) ys' in
   let equiv_ids = List.map2 (fun yl (z, zls) -> (z, yl :: zls)) yls equiv_ids in
   let phis = List.map2 (fun xt (_, zls) -> Phi(xt, zls)) xts equiv_ids in
   (* List.concat (List.map minimize_phi phis) *)
-  List.map minimize_phi phis
+  let yts' = List.map2 (fun (_, t) y' -> (y', t)) xts ys' in
+  let movs = List.map2 (fun yt' y ->  new_instr (Mov(yt', y))) yts' ys in
+  let phis = List.map new_instr (List.map minimize_phi phis) in
+  movs, phis
 
 
 let flow_classify : flow_t list -> (flow_t list * flow_t list) =
@@ -260,12 +265,12 @@ let make_block_prel prs = (* ループの手前に挿入するブロックを新
   join_flows prs new_b;
   new_b, br1, br2
 
-let make_block_postl prs restores = (* ループの直後に挿入するブロックを新しく生成 *)
+let make_block_postl prs = (* ループの直後に挿入するブロックを新しく生成 *)
   let l = Id.genid "postloop_b" in
   let br = ref dummy_block in
   let sc = Cnfl(br) in
   let new_b = { label = L(l); l_dep = !loop_depth;
-                code = restores; prev = []; next = sc } in
+                code = []; prev = []; next = sc } in
   join_flows prs new_b;
   new_b, br
   
@@ -381,18 +386,20 @@ and loop_routine prs yt exp =
       let cnfls, backs = flow_classify bts in
       let equiv_ids = back_return_equiv_ids backs in
       (* 上がってきた代入をphiでlooptopに吸収 *)
-      let phis = phi_back_loop zts ws equiv_ids pre_b.label in
+      let movs, phis = phi_back_loop zts ws equiv_ids pre_b.label in
       (* pre_b.labelは上からの流れのラベル, この情報だけflowにはない *)
-      let phis, saves, restores = resolve_phis phis zts ws in
+      (* let phis, saves, restores = resolve_phis phis zts ws in *)
       (* let L(l') = looptop.label in
        * Format.eprintf "changed label %s to %s@." l' l; *)
-      pre_b.code <- pre_b.code @ saves; (* preloop blockにsaveを挿入する *)
+      (* pre_b.code <- pre_b.code @ saves; (\* preloop blockにsaveを挿入する *\) *)
+      pre_b.code <- pre_b.code @ movs;
       looptop.label <- L(l); (* looptopのラベルをループのラベルにする *)
       looptop.code <- phis @ looptop.code;
       join_back_flows backs looptop; (* backsをlooptopに繋ぐ *)
       decr loop_depth; (* もとのルーチンに復帰する前にloop_depthを戻す *)
       (* ---- loop end ---- *)
-      let post_b, br = make_block_postl cnfls restores in
+      (* let post_b, br = make_block_postl cnfls restores in *)
+      let post_b, br = make_block_postl cnfls in
       (* ループ後の処理を担当するブロック *)
       br2 := post_b;
       let equiv_ids =

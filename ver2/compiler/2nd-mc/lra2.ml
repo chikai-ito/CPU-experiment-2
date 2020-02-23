@@ -210,7 +210,8 @@ let build_igraph : Cfg.block list ->
   (if !print_option then
      print_livenow livenow_tbl);
   Format.eprintf "completed computation of livenow@.";
-  Cfg_elim.elim_save livenow_tbl blocks;
+  Cfg_elim.f livenow_tbl blocks;
+  (* Cfg_elim.elim_save livenow_tbl blocks; *)
   (if !print_option then
      (Printf.printf "-------------------------------------------\n\n";
       List.iter Cfg_db.print_block blocks;
