@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <queue>
+#include "time.h"
 #include "assembler.h"
 #include "label_solver.h"
 #include "operation.h"
@@ -28,35 +29,34 @@ int main(int argc, char**argv){
 
   unsigned int* reg; // register
   reg = (unsigned int *)malloc(32 * sizeof(unsigned int));
-  memset(reg, 0, 32 * sizeof(unsigned int));
+  //memset(reg, 0, 32 * sizeof(unsigned int));
   float* freg; // float register
   freg = (float *)malloc(32 * sizeof(float));
-  memset(freg, 0, 32 * sizeof(float));
+  //memset(freg, 0, 32 * sizeof(float));
 
   reg[0] = 0;
   reg[26] = 10000;
 
-
-
   //main memory
   unsigned int * mem;
   mem = (unsigned int *)malloc(8e+8 * sizeof(unsigned int));
-  memset(mem , 1 , 8e+8 * sizeof(unsigned int) );
+  //memset(mem , 0 , 8e+8 * sizeof(unsigned int) );
+
 
   unsigned int* inst_mem; //instruction memory
   inst_mem = (unsigned int *)malloc(65536 * sizeof(unsigned int));
-  memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
+  //memset(inst_mem , 0 , 65536 * sizeof(unsigned int) );
 
   int clock = 0;
 	int pc = 0;
 
   pair<string,int>* label_list;
   label_list = (pair<string,int>*)malloc(66536 * sizeof(pair<string,int>));
-  memset(label_list,0,66536*sizeof(pair<string,int>));
+  //memset(label_list,0,66536*sizeof(pair<string,int>));
 
   string* execute_instruction;
   execute_instruction = (string *)malloc(66536 * sizeof(string));
-  memset(execute_instruction, 0, (66536 * sizeof(string)));
+  //memset(execute_instruction, 0, (66536 * sizeof(string)));
 
 
 	//label解決をまず行う
@@ -80,6 +80,7 @@ int main(int argc, char**argv){
         string lon, number;
         istringstream s1(data_code);
         s1 >> lon >> number;
+        //ここでinst_memに一時的に情報を格納している、これはやめるべき
         inst_mem[data_num] = StringToUInt0x(number);
         label_list[array_num].first = label_name;
         label_list[array_num].second = line_num;
@@ -125,7 +126,7 @@ int main(int argc, char**argv){
   reading_file1.close();
 
 
-
+// ----                   ------------------
 	//it is for executing simulator
 	ofstream writing_file;
   writing_file.open("machine_code.txt");
@@ -141,10 +142,6 @@ int main(int argc, char**argv){
   }
   writing_file.close();
 
-
-
-
-
   // --- using machine_code, create inst_mem ---
   ifstream reading_file2; // file stream for machine_code.txt
   reading_file2.open("machine_code.txt",ios::in);
@@ -158,6 +155,8 @@ int main(int argc, char**argv){
     instr_num = instr_num + 1;
   }while(!reading_file2.eof());
   reading_file2.close();
+// -------               ------------------------
+
 
 
 //file stream creation
@@ -177,6 +176,10 @@ union Convert{
 } convert;
 
 
+
+//もう使わないメモリ領域はfreeしておく
+free(label_list);
+free(execute_instruction);
 
 
 
@@ -388,56 +391,56 @@ while(1)
 	      rs = (int)((code >> 21) & 0b11111);
 	      rt = (int)((code >> 16) & 0b11111);
 	      if((int)reg[rs] >= (int)reg[rt]) { now = now + (short)(code&0b1111111111111111); }
-	      else{now++;}
+	      else{++now;}
         break;
 			case 0b000001 :
 				//execute bl
 				rs = (int)((code >> 21) & 0b11111);
 	    	rt = (int)((code >> 16) & 0b11111);
 	    	if((int)reg[rs] < (int)reg[rt]) { now = now + (short)(code&0b1111111111111111); }
-				else{now++;}
+				else{++now;}
         break;
 	    case 0b001011 :
 	      //execute ble
 	      rs = (int)((code >> 21) & 0b11111);
 	      rt = (int)((code >> 16) & 0b11111);
 	      if((int)reg[rs] <= (int)reg[rt]) { now = now + (short)(code&0b1111111111111111); }
-	      else{now++;}
+	      else{++now;}
         break;
 			case 0b000101 :
 				//execute bne
 				rs = (int)((code >> 21) & 0b11111);
 	    	rt = (int)((code >> 16) & 0b11111);
 	    	if((int)reg[rs] != (int)reg[rt]) { now = now + (short)(code&0b1111111111111111); }
-				else{now++;}
+				else{++now;}
         break;
 			case 0b000111 :
 	    	//execute fbg
 	    	fs = (int)((code >> 21) & 0b11111);
 	    	ft = (int)((code >> 16) & 0b11111);
 	    	if(freg[fs] > freg[ft]) { now = now + (short)(code&0b1111111111111111) ; }
-				else{now++;}
+				else{++now;}
         break;
 	    case 0b001110 :
 	      //execute fbge
 	      fs = (int)((code >> 21) & 0b11111);
 	      ft = (int)((code >> 16) & 0b11111);
 	      if(freg[fs] >= freg[ft]) { now = now + (short)(code&0b1111111111111111); }
-	      else{now++;}
+	      else{++now;}
         break;
 			case 0b000011 :
 				//execute fbne
 				fs = (int)((code >> 21) & 0b11111);
 				ft = (int)((code >> 16) & 0b11111);
 	    	if(freg[fs] != freg[ft]) { now = now + (short)(code&0b1111111111111111); }
-				else{now++;}
+				else{++now;}
         break;
 	    case 0b101111 :
 	      //execute ilw
 	      base = (int)((code >> 21) & 0b11111);
 	      rt = (int)((code >> 16) & 0b11111);
 	      reg[rt] = inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)];
-	      now++;
+	      ++now;
         break;
 	    case 0b100111 :
 	      //exec ilw.s instruction
@@ -445,14 +448,14 @@ while(1)
 	      ft = (int)((code >> 16) & 0b11111);
 	      x.i = inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)];
         freg[ft] = x.f;
-        now++;
+        ++now;
 	      break;
 	    case 0b110111 :
 	      //exec isw instruction
 	      base = (int)((code >> 21) & 0b11111);
 	      rt = (int)((code >> 16) & 0b11111);
 	      inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)] = reg[rt];
-	      now++;
+	      ++now;
         break;
 	    case 0b111011 :
 	      //exec isw.s instruction
@@ -460,7 +463,7 @@ while(1)
 	      ft = (int)((code >> 16) & 0b11111);
 	      x.f = freg[ft];
         inst_mem[(int)reg[base] + (short)(code&0b1111111111111111)] = x.i;
-	      now++;
+	      ++now;
         break;
 			case 0b000010 :
 				//JUMP命令の実行
@@ -482,7 +485,7 @@ while(1)
 				base = (int)((code >> 21) & 0b11111);
 				rt = (int)((code >> 16) & 0b11111);
 				reg[rt] = mem[(int)reg[base] + (short)(code&0b1111111111111111)];
-        now++;
+        ++now;
 				break;
 			case 0b100100 :
 				//exec lw.s instruction
@@ -490,7 +493,7 @@ while(1)
 		    ft = (int)((code >> 16) & 0b11111);
 				x.i = mem[(int)reg[base] + (short)(code&0b1111111111111111)];
         freg[ft] = x.f;
-        now++;
+        ++now;
 				break;
 			case 0b111111 :
 				//execute sll instruction
@@ -498,7 +501,7 @@ while(1)
 				rd = (int)((code >> 11) & 0b11111);
 				sa = (int)((code >> 6) & 0b11111);
 	      reg[rd] = (reg[rt]) << reg[sa];
-        now++;
+        ++now;
 				break;
 	    case 0b111110 :
 	      //execute slli instruction
@@ -506,14 +509,14 @@ while(1)
 	      rt = (int)((code >> 16) & 0b11111);
 	      immediate = (short)(code&0b1111111111111111);
 	      reg[rt] = (reg[rs]) << immediate;
-        now++;
+        ++now;
 	      break;
 			case 0b101011 :
 				//execute sw instruction
 		    base = (int)((code >> 21) & 0b11111);
 		    rt = (int)((code >> 16) & 0b11111);
 		    mem[(int)reg[base] + (short)(code&0b1111111111111111)] = reg[rt];
-				now++;
+				++now;
         break;
 			case 0b101100 :
 		    //execute sw.s instruction
@@ -521,13 +524,13 @@ while(1)
 		    ft = (int)((code >> 16) & 0b11111);
 		    x.f = freg[ft];
         mem[(int)reg[base] + (short)(code&0b1111111111111111)] = x.i;
-				now++;
+				++now;
         break;
 			}
 
 
 
-    howmany_instructions++;
+    ++howmany_instructions;
     /*
      * if(howmany_instructions % 10000000 == 0){
       cout << howmany_instructions << endl;
