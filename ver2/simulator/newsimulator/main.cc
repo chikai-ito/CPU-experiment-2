@@ -1213,7 +1213,11 @@ while(1)
 	      rs = (int)((code >> 21) & 0b11111);
 	      rt = (int)((code >> 16) & 0b11111);
 	      immediate = (short)(code&0b1111111111111111);
+        if (immediate >= 0){
 	      reg[rt] = (reg[rs]) << immediate;
+        }else{
+          reg[rt] = (reg[rs]) >> (-immediate);
+        }
         now++;
 	      break;
 			case 0b101011 :
