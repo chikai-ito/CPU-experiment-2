@@ -1,6 +1,6 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 1321) (
+module top #(CLK_PER_HALF_BIT = 1875) (
     input wire clk,
     input wire rstn,
     
@@ -33,50 +33,50 @@ module top #(CLK_PER_HALF_BIT = 1321) (
     output reg [3:0] err_pc,
     output wire we);
 
-	localparam inst_size	 = 15000;
-	localparam buffer_size	 = 5000;
+    localparam inst_size     = 15000;
+    localparam buffer_size   = 5000;
 
     reg [3:0]             err;
 
     // 命令コード一覧
-    localparam special  	= 6'b000000;
-    localparam s_add 		= 6'b100000;
+    localparam special      = 6'b000000;
+    localparam s_add        = 6'b100000;
     localparam s_sub        = 6'b100010;
     localparam s_mult       = 6'b011001;
     localparam s_div        = 6'b011010;
     localparam s_mod        = 6'b011011;
     localparam s_mov        = 6'b001001;
-    localparam s_retl		= 6'b111111;
-    localparam s_jr			= 6'b001000;
+    localparam s_retl       = 6'b111111;
+    localparam s_jr         = 6'b001000;
     localparam s_ret        = 6'b000000;
     localparam s_in         = 6'b101010;
-    localparam s_fin		= 6'b111010;
+    localparam s_fin        = 6'b111010;
     localparam s_out        = 6'b010101;
-    localparam j			= 6'b000010;
-    localparam addi     	= 6'b001000;
-    localparam lw       	= 6'b100011;
-    localparam ilw			= 6'b101111;
-    localparam sw       	= 6'b101011;
-    localparam lws			= 6'b100100;
-    localparam ilws			= 6'b100111;
-    localparam sws			= 6'b101100;
+    localparam j            = 6'b000010;
+    localparam addi         = 6'b001000;
+    localparam lw           = 6'b100011;
+    localparam ilw          = 6'b101111;
+    localparam sw           = 6'b101011;
+    localparam lws          = 6'b100100;
+    localparam ilws         = 6'b100111;
+    localparam sws          = 6'b101100;
     localparam cop1         = 6'b010001;
     localparam f_others     = 5'b10000;
-    localparam f_mfc1		= 5'b00000;
-    localparam f_mtc1		= 5'b00100;
-    localparam beq			= 6'b000100;
-    localparam jal			= 6'b011000;
-    localparam jalr			= 6'b111000;
-    localparam bne 			= 6'b000101;
-    localparam bl			= 6'b000001;
-    localparam bg 			= 6'b000110;
-    localparam fbne			= 6'b000011;
-    localparam fbg			= 6'b000111;
+    localparam f_mfc1       = 5'b00000;
+    localparam f_mtc1       = 5'b00100;
+    localparam beq          = 6'b000100;
+    localparam jal          = 6'b011000;
+    localparam jalr         = 6'b111000;
+    localparam bne          = 6'b000101;
+    localparam bl           = 6'b000001;
+    localparam bg           = 6'b000110;
+    localparam fbne         = 6'b000011;
+    localparam fbg          = 6'b000111;
     localparam fbge         = 6'b001110;
-    localparam sll 			= 6'b111111;
+    localparam sll          = 6'b111111;
     localparam slli         = 6'b111110;
-    localparam ble			= 6'b001011;
-    localparam bge 			= 6'b001001;
+    localparam ble          = 6'b001011;
+    localparam bge          = 6'b001001;
 
 
     // レジスタ
@@ -181,7 +181,7 @@ module top #(CLK_PER_HALF_BIT = 1321) (
     assign f_argument = (instr_reg[1][31:26] == cop1 && instr_reg[1][25:21] == f_mtc1) ? (register_int[instr_reg[1][20:16]]) : (register_float[instr_reg[1][20:16]]);
     
     // メインFPU
-    fpu2 fpu11(
+    fpu2_0 fpu11(
         instr_reg[1][31:26],
         instr_reg[1][25:21],
         argument2[1],
@@ -195,16 +195,16 @@ module top #(CLK_PER_HALF_BIT = 1321) (
 
     // fequal(fbne用)
     fequal fequall(
-    	argument1[1],
-    	argument2[1],
-    	fequal_res
+        argument1[1],
+        argument2[1],
+        fequal_res
     );
 
     // fless(fbg用)
     fless flessl(
-    	argument2[1],
-    	argument1[1],
-    	fless_res
+        argument2[1],
+        argument1[1],
+        fless_res
     );
 
     
@@ -223,7 +223,7 @@ module top #(CLK_PER_HALF_BIT = 1321) (
     assign write_data = (instr_reg[0][31:26] == sw) ? register_int[instr_reg[0][20:16]] : register_float[instr_reg[0][20:16]];
     
     // UART出力用のフラグ　これが立っていたら通信を開始
-    assign sender_ready = output_flag || first_send;
+    assign sender_ready = (instr_reg[2][31:26] == special && instr_reg[2][5:0] == s_out && validate_flag[2]) || first_send;
 
     initial begin
         // 各種初期化
@@ -231,8 +231,8 @@ module top #(CLK_PER_HALF_BIT = 1321) (
         iteration <= 32'b0;
         first_send <= 1'b1;
         buffer_valid_idx <= 32'b0;
-        buffer_reading_idx <= 32'b0;
-        sw_waiting <= 1'b0;
+        buffer_reading_idx <= 32'b0; 
+        reading <= 1'b0;
         for(i=0;i<32;i=i+1) begin
             register_int[i] <= 32'b0;
             register_float[i] <= 32'b0;
@@ -241,22 +241,25 @@ module top #(CLK_PER_HALF_BIT = 1321) (
         end
         for(i=0;i<5;i=i+1) begin
             jump[i] <= 1'b0;
-        	result[i] <= 32'b0;
-        	argument1[i] <= 32'b0;
-        	argument2[i] <= 32'b0;
-        	argument3[i] <= 32'b0;
-        	prop_pc[i] <= 32'b0;
+            result[i] <= 32'b0;
+            argument1[i] <= 32'b0;
+            argument2[i] <= 32'b0;
+            argument3[i] <= 32'b0;
+            prop_pc[i] <= 32'b0;
             prop_iteration[i] <= 32'b0;
             prop_reading_idx[i] <= 32'b0;
-        	validate_flag[i] <= 1'b0;
+            validate_flag[i] <= 1'b0;
+        end
+        for(i=0;i<500;i=i+1) begin
+            buffer[i] <= 8'b0;
         end
         waiting <= 2;
-    	pc <= 32'b0;
-    	$readmemb("copy.mem", inst);
+        pc <= 32'b0;
+        $readmemb("copy.mem", inst);
     end
     
     // LEDに表示したいものをここでassignする
-    assign out_led = iteration[7:0];
+    assign out_led = buffer_valid_idx[7:0];
 
     reg ferr;
 
@@ -287,89 +290,93 @@ module top #(CLK_PER_HALF_BIT = 1321) (
             buffer_valid_idx <= buffer_valid_idx + 1;
             reading <= 1'b1;
         end else if(!receiver_valid) begin 
-        	reading <= 1'b0;
+            reading <= 1'b0;
         end
         
         if (~rstn) begin
+            reading <= 1'b0;
             inst_stop <= 1'b0;
-	        iteration <= 32'b0;
+            iteration <= 32'b0;
             first_send <= 1'b1;
-	        buffer_valid_idx <= 32'b0;
-	        buffer_reading_idx <= 32'b0;
+            buffer_valid_idx <= 32'b0;
+            buffer_reading_idx <= 32'b0;
             sw_waiting <= 1'b0;
-	        for(i=0;i<32;i=i+1) begin
-	            register_int[i] <= 32'b0;
-	            register_float[i] <= 32'b0;
-	            int_data_flag[i] <= 1'b0;
-	            float_data_flag[i] <= 1'b0;
-	        end
-	        for(i=0;i<5;i=i+1) begin
+            for(i=0;i<32;i=i+1) begin
+                register_int[i] <= 32'b0;
+                register_float[i] <= 32'b0;
+                int_data_flag[i] <= 1'b0;
+                float_data_flag[i] <= 1'b0;
+            end
+            for(i=0;i<5;i=i+1) begin
                 jump[i] <= 1'b0;
                 instr_reg[i] <= 32'b0;
-	        	result[i] <= 32'b0;
-	        	argument1[i] <= 32'b0;
-	        	argument2[i] <= 32'b0;
-	        	argument3[i] <= 32'b0;
-	        	prop_pc[i] <= 32'b0;
+                result[i] <= 32'b0;
+                argument1[i] <= 32'b0;
+                argument2[i] <= 32'b0;
+                argument3[i] <= 32'b0;
+                prop_pc[i] <= 32'b0;
                 prop_iteration[i] <= 32'b0;
                 prop_reading_idx[i] <= 32'b0;
-	        	validate_flag[i] <= 1'b0;
-	        end
-	        waiting <= 2;
-	    	pc <= 32'b0;
-	    	$readmemb("copy.mem", inst);
-    	end else if (~inst_stop && ~sender_sending) begin
-    		// パイプライン実装
+                validate_flag[i] <= 1'b0;
+            end
+            for(i=0;i<500;i=i+1) begin
+                buffer[i] <= 8'b0;
+            end
+            waiting <= 2;
+            pc <= 32'b0;
+            $readmemb("copy.mem", inst);
+        end else if (~inst_stop) begin
+            // パイプライン実装
 
-    		// ********************
-    		// フェッチフェーズ
-    		// ********************
+            // ********************
+            // フェッチフェーズ
+            // ********************
             if (waiting == 3'b0) begin 
 
                 instr_reg[0] <= inst[pc];
-	    		prop_pc[0] <= pc;
+                prop_pc[0] <= pc;
                 prop_iteration[0] <= iteration;
                 prop_reading_idx[0] <= buffer_reading_idx;
                 validate_flag[0] <= 1'b1;
                 jump[0] <= 1'b0;
 
-	    		// 分岐予測
-	    		// 常にジャンプするように予測
-	    		case (inst[pc][31:26])
-	    			special:
-	    				case (inst[pc][5:0])
-	    					s_jr: begin
-	    						if (int_data_flag[inst[pc][25:21]]) begin
-				    				// Read After Writeハザードが発生
-				    				// パイプラインの伝搬を１つ遅らせる
-				    				validate_flag[0] <= 1'b0;
+                // 分岐予測
+                // 常にジャンプするように予測
+                case (inst[pc][31:26])
+                    special:
+                        case (inst[pc][5:0])
+                            s_jr: begin
+                                if (int_data_flag[inst[pc][25:21]]) begin
+                                    // Read After Writeハザードが発生
+                                    // パイプラインの伝搬を１つ遅らせる
+                                    validate_flag[0] <= 1'b0;
                                     iteration <= iteration;
-				    				pc <= pc;
-				    			end else begin
+                                    pc <= pc;
+                                end else begin
                                     iteration <= iteration + 1;
-				    				pc <= register_int[inst[pc][25:21]];
-			    				end
-			    			end
-			    			s_retl: begin
-			    				if (int_data_flag[28]) begin
-			    					validate_flag[0] <= 1'b0;
+                                    pc <= register_int[inst[pc][25:21]];
+                                end
+                            end
+                            s_retl: begin
+                                if (int_data_flag[28]) begin
+                                    validate_flag[0] <= 1'b0;
                                     iteration <= iteration;
-			    					pc <= pc;
-			    				end else begin
-			    					pc <= register_int[28] + 1;
+                                    pc <= pc;
+                                end else begin
+                                    pc <= register_int[28] + 1;
                                     iteration <= iteration + 1;
-			    				end
-			    			end
+                                end
+                            end
                             s_out: begin
                                 pc <= pc + 1;
                                 iteration <= iteration + 1;
                                 waiting <= waiting + 1;
                             end
-			    			default: begin
-			    				pc <= pc + 1;
+                            default: begin
+                                pc <= pc + 1;
                                 iteration <= iteration + 1;
                             end
-			    		endcase // inst[pc][5:0]
+                        endcase // inst[pc][5:0]
                     cop1: begin
                         // 6クロック命令の実行
                         // 待機カウンタをインクリメント
@@ -377,25 +384,25 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         iteration <= iteration + 1;
                         waiting <= waiting + 2;
                     end
-			    	j, jal: begin
-	    				pc <= {6'b0, inst[pc][25:0]};
+                    j, jal: begin
+                        pc <= {6'b0, inst[pc][25:0]};
                         iteration <= iteration + 1;
                     end
-			    	jalr: begin
-			    		if (int_data_flag[inst[pc][25:21]]) begin
-		    				validate_flag[0] <= 1'b0;
-		    				pc <= pc;
+                    jalr: begin
+                        if (int_data_flag[inst[pc][25:21]]) begin
+                            validate_flag[0] <= 1'b0;
+                            pc <= pc;
                             iteration <= iteration;
-		    			end else begin
-		    				pc <= register_int[inst[pc][25:21]];
+                        end else begin
+                            pc <= register_int[inst[pc][25:21]];
                             iteration <= iteration + 1;
-		    			end
-		    		end
-		    		beq, bne, bl, ble, bg, bge, fbg, fbge, fbne: begin
+                        end
+                    end
+                    beq, bne, bl, ble, bg, bge, fbg, fbge, fbne: begin
                         jump[0] <= 1'b1;
                         iteration <= iteration + 1;
-	    				pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
-	    			end
+                        pc <= pc + {{16{inst[pc][15]}}, inst[pc][15:0]};
+                    end
                     sw: begin
                         if (int_data_flag[inst[pc][20:16]] || 
                             int_data_flag[inst[pc][25:21]] || 
@@ -415,7 +422,7 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                     end
                     sws: begin
                         if (float_data_flag[inst[pc][20:16]] || 
-                            float_data_flag[inst[pc][25:21]] || 
+                            int_data_flag[inst[pc][25:21]] || 
                             (validate_flag[1] && jump[1]) ||
                             (validate_flag[2] && jump[2]) || 
                             validate_flag[0]) begin
@@ -433,40 +440,40 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         end 
                     end
 
-	    			default: begin
+                    default: begin
                         iteration <= iteration + 1;
-	    				pc <= pc + 1;
-	    		    end
-	    		endcase // inst[pc][5:0]
-	    	end else begin
-	    		waiting <= waiting - 1;
+                        pc <= pc + 1;
+                    end
+                endcase // inst[pc][5:0]
+            end else begin
+                waiting <= waiting - 1;
 
                 validate_flag[0] <= 1'b0;
-	    	end
+            end
 
-    		// ********************
-    		// デコードフェーズ
-    		// ********************
+            // ********************
+            // デコードフェーズ
+            // ********************
 
-    		stallflag = 0;
+            stallflag = 0;
             if (validate_flag[0]) begin
-        		case (instr_reg[0][31:26])
-        			special:
-        				case (instr_reg[0][5:0])
-        					s_add, s_sub, s_mult, s_div: begin
+                case (instr_reg[0][31:26])
+                    special:
+                        case (instr_reg[0][5:0])
+                            s_add, s_sub, s_mult: begin
                                 argument1[1] <= register_int[instr_reg[0][25:21]];
                                 argument2[1] <= register_int[instr_reg[0][20:16]];
                                 stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
                                 if (~stallflag) begin
-    								int_data_flag[instr_reg[0][15:11]] <= 1'b1;
-    							end
+                                    int_data_flag[instr_reg[0][15:11]] <= 1'b1;
+                                end
                             end
                             s_mov: begin
-                            	argument1[1] <= register_int[instr_reg[0][25:21]];
-                            	stallflag = int_data_flag[instr_reg[0][25:21]];
-                            	if (~stallflag) begin
-    		                    	int_data_flag[instr_reg[0][20:16]] <= 1'b1;
-    		                    end
+                                argument1[1] <= register_int[instr_reg[0][25:21]];
+                                stallflag = int_data_flag[instr_reg[0][25:21]];
+                                if (~stallflag) begin
+                                    int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                                end
                             end
                             s_jr: begin
                                 if (int_data_flag[instr_reg[0][25:21]]) begin
@@ -488,7 +495,10 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                             end
                             s_out: begin
                                 argument1[1] <= register_int[instr_reg[0][25:21]];
-                                stallflag = int_data_flag[instr_reg[0][25:21]] | sender_sending;
+                                stallflag = int_data_flag[instr_reg[0][25:21]] | 
+                                            sender_sending | 
+                                            (instr_reg[1][5:0] == s_out && validate_flag[1]) |
+                                            (instr_reg[2][5:0] == s_out && validate_flag[2]);
                             end
                             s_in: begin
                                 argument1[1] <= {buffer[buffer_reading_idx+3], 
@@ -496,7 +506,9 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                                                 buffer[buffer_reading_idx+1],
                                                 buffer[buffer_reading_idx]};
                                 stallflag = (buffer_reading_idx + 3 > buffer_valid_idx) | 
-                                            (buffer_reading_idx + 3 == buffer_valid_idx);
+                                            (buffer_reading_idx + 3 == buffer_valid_idx) |
+                                            (jump[1] && validate_flag[1]) |
+                                            (jump[2] && validate_flag[2]);
                                 if (~stallflag) begin
                                     buffer_reading_idx <= buffer_reading_idx + 4;
                                     int_data_flag[instr_reg[0][25:21]] <= 1'b1;
@@ -508,7 +520,9 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                                                 buffer[buffer_reading_idx+1],
                                                 buffer[buffer_reading_idx]};
                                 stallflag = (buffer_reading_idx + 3 > buffer_valid_idx) | 
-                                            (buffer_reading_idx + 3 == buffer_valid_idx);
+                                            (buffer_reading_idx + 3 == buffer_valid_idx) |
+                                            (jump[1] && validate_flag[1]) |
+                                            (jump[2] && validate_flag[2]);
                                 if (~stallflag) begin
                                     buffer_reading_idx <= buffer_reading_idx + 4;
                                     float_data_flag[instr_reg[0][25:21]] <= 1'b1;
@@ -527,7 +541,7 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         end
                     end
                     sws: begin
-                        if (float_data_flag[instr_reg[0][20:16]] || float_data_flag[instr_reg[0][25:21]]) begin
+                        if (float_data_flag[instr_reg[0][20:16]] || int_data_flag[instr_reg[0][25:21]]) begin
                             validate_flag[0] <= 1'b0;
                             validate_flag[1] <= 1'b0;
                             iteration <= prop_iteration[0];
@@ -573,14 +587,14 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         end
                     end
                     lw: begin
-                    	stallflag = int_data_flag[instr_reg[0][25:21]];
-                    	if (~stallflag) begin
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
+                        if (~stallflag) begin
 
-                    		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
-                    	end
+                            int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                        end
                     end
                     lws: begin
-                        stallflag = float_data_flag[instr_reg[0][25:21]];
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
                         if (~stallflag) begin
 
                             float_data_flag[instr_reg[0][20:16]] <= 1'b1;
@@ -607,8 +621,8 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
                         stallflag = int_data_flag[instr_reg[0][25:21]];
                         if (~stallflag) begin
-                    		int_data_flag[instr_reg[0][20:16]] <= 1'b1;
-                    	end
+                            int_data_flag[instr_reg[0][20:16]] <= 1'b1;
+                        end
                     end
                     sll: begin
                         argument1[1] <= register_int[instr_reg[0][20:16]];
@@ -627,10 +641,10 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         end
                     end
                     j: begin
-                    	stallflag = int_data_flag[instr_reg[0][25:21]];
+                        stallflag = int_data_flag[instr_reg[0][25:21]];
                     end
                     jal: begin
-                    	int_data_flag[28] <= 1'b1;
+                        int_data_flag[28] <= 1'b1;
                     end
                     jalr: begin
                         if (int_data_flag[instr_reg[0][25:21]]) begin
@@ -640,37 +654,19 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                             iteration <= prop_iteration[0];
                             pc <= prop_pc[0];
                             buffer_reading_idx <= prop_reading_idx[0];
-                    	end else begin
+                        end else begin
                             int_data_flag[28] <= 1'b1;
                         end
                     end
                     beq, bne, bl, ble, bg, bge: begin
-                    	argument1[1] <= register_int[instr_reg[0][25:21]];
-                    	argument2[1] <= register_int[instr_reg[0][20:16]];
-                    	stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+                        argument1[1] <= register_int[instr_reg[0][25:21]];
+                        argument2[1] <= register_int[instr_reg[0][20:16]];
+                        stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
                     end
                     fbne, fbg, fbge: begin
                         argument1[1] <= register_float[instr_reg[0][25:21]];
                         argument2[1] <= register_float[instr_reg[0][20:16]];
                         stallflag = float_data_flag[instr_reg[0][25:21]] | float_data_flag[instr_reg[0][20:16]];
-                    end
-                    sw: begin
-                        if (int_data_flag[instr_reg[0][20:16]]) begin
-                            validate_flag[0] <= 1'b0;
-                            validate_flag[1] <= 1'b0;
-                            iteration <= prop_iteration[0];
-                            pc <= prop_pc[0];
-                            buffer_reading_idx <= prop_reading_idx[0];
-                        end
-                    end
-                    sws: begin
-                        if (float_data_flag[instr_reg[0][20:16]]) begin
-                            validate_flag[0] <= 1'b0;
-                            validate_flag[1] <= 1'b0;
-                            iteration <= prop_iteration[0];
-                            pc <= prop_pc[0];
-                            buffer_reading_idx <= prop_reading_idx[0];
-                        end 
                     end
                 endcase // now_inst[31:26]
             end
@@ -684,42 +680,46 @@ module top #(CLK_PER_HALF_BIT = 1321) (
             jump[1] <= jump[0];
 
             if (stallflag && validate_flag[0]) begin
-            	// Read After Writeハザードが発生する
-            	// パイプラインの伝搬を一つ遅らせる
-            	validate_flag[1] <= 1'b0;
-            	instr_reg[0] <= instr_reg[0];
-            	prop_pc[0] <= prop_pc[0];
+                // Read After Writeハザードが発生する
+                // パイプラインの伝搬を一つ遅らせる
+                validate_flag[1] <= 1'b0;
+                instr_reg[0] <= instr_reg[0];
+                prop_pc[0] <= prop_pc[0];
                 jump[0] <= jump[0];
                 prop_iteration[0] <= prop_iteration[0];
                 prop_reading_idx[0] <= prop_reading_idx[0];
-            	validate_flag[0] <= validate_flag[0];
-            	pc <= pc;
+                validate_flag[0] <= validate_flag[0];
+                pc <= pc;
                 waiting <= waiting;
                 iteration <= iteration;
             end
 
-    		// ********************
-    		// 実行フェーズその1
-    		// ********************
+            // ********************
+            // 実行フェーズその1
+            // ********************
 
 
             out = 1'b0;
             if (validate_flag[1]) begin
-        		case (instr_reg[1][31:26])
-        			special:
-        				case (instr_reg[1][5:0])
-        					s_add:
+                case (instr_reg[1][31:26])
+                    special:
+                        case (instr_reg[1][5:0])
+                            s_add:
                                 result[2] <= argument1[1] + argument2[1];
                             s_sub:
                                 result[2] <= argument1[1] - argument2[1];
                             s_mult:
                                 result[2] <= argument1[1] * argument2[1];
+                            /*
                             s_div:
                                 result[2] <= argument1[1] / argument2[1];
+                            */
                             s_mov:
-                            	result[2] <= argument1[1];
-                            s_out:
                                 result[2] <= argument1[1];
+                            s_out: begin
+                                result[2] <= argument1[1];
+                                output_content = argument1[1];
+                            end
                             s_in, s_fin:
                                 result[2] <= argument1[1];
                         endcase // instr_reg[1][5:0]
@@ -733,78 +733,78 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                     ilw, ilws:
                         argument1[2] <= argument1[1];
                     addi:
-                    	result[2] <= argument1[1] + argument2[1];
+                        result[2] <= argument1[1] + argument2[1];
                     jal, jalr: begin
-                    	result[2] <= prop_pc[1];
+                        result[2] <= prop_pc[1];
                     end
 
 
                     beq: begin
-                    	if (argument1[1] != argument2[1]) begin
-                    		out = 1'b1;
-                    	end
+                        if (argument1[1] != argument2[1]) begin
+                            out = 1'b1;
+                        end
                     end
 
                     bne: begin
-                    	if (argument1[1] == argument2[1]) begin
-                    		out = 1'b1;
-                    	end
+                        if (argument1[1] == argument2[1]) begin
+                            out = 1'b1;
+                        end
                     end
 
                     bl: begin
-                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
-                    		if (argument1[1] >= argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
-                    		if (argument1[1] <= argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
-                    		out = 1'b1;
-                    	end
+                        if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                            if (argument1[1] >= argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                            if (argument1[1] <= argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
+                            out = 1'b1;
+                        end
                     end
 
                     ble: begin
-                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
-                    		if (argument1[1] > argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
-                    		if (argument1[1] < argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
-                    		out = 1'b1;
-                    	end 
+                        if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                            if (argument1[1] > argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                            if (argument1[1] < argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b1) begin
+                            out = 1'b1;
+                        end 
                     end
                     
                     bg: begin
-                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
-                    		if (argument1[1] <= argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
-                    		if (argument1[1] >= argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
-                    		out = 1'b1;
-                    	end
+                        if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                            if (argument1[1] <= argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                            if (argument1[1] >= argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
+                            out = 1'b1;
+                        end
                     end
 
                     bge: begin
-                    	if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
-                    		if (argument1[1] < argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
-                    		if (argument1[1] > argument2[1]) begin
-                    			out = 1'b1;
-                    		end
-                    	end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
-                    		out = 1'b1;
-                    	end
+                        if (argument1[1][31:31] == 1'b0 && argument2[1][31:31] == 1'b0) begin
+                            if (argument1[1] < argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b1) begin
+                            if (argument1[1] > argument2[1]) begin
+                                out = 1'b1;
+                            end
+                        end else if (argument1[1][31:31] == 1'b1 && argument2[1][31:31] == 1'b0) begin
+                            out = 1'b1;
+                        end
                     end
 
                     fbne: begin
@@ -814,13 +814,13 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                     end
 
                     fbg: begin
-                        if (fequal_res | !fless_res) begin
+                        if (fequal_res | ~fless_res) begin
                             out = 1'b1;
                         end
                     end
 
                     fbge: begin
-                        if (!fequal_res && !fless_res) begin
+                        if (~fequal_res && ~fless_res) begin
                             out = 1'b1;
                         end
                     end
@@ -830,19 +830,19 @@ module top #(CLK_PER_HALF_BIT = 1321) (
             end
 
             if (out == 1'b1 && validate_flag[1]) begin
-        		// 分岐予測が外れた場合
-        		validate_flag[0] <= 1'b0;
-        		validate_flag[1] <= 1'b0;
-        		validate_flag[2] <= 1'b0;
-        		for(i=0;i<32;i=i+1) begin
-        			int_data_flag[i] <= 1'b0;
-        			float_data_flag[i] <= 1'b0;
-        		end
+                // 分岐予測が外れた場合
+                validate_flag[0] <= 1'b0;
+                validate_flag[1] <= 1'b0;
+                validate_flag[2] <= 1'b0;
+                for(i=0;i<32;i=i+1) begin
+                    int_data_flag[i] <= 1'b0;
+                    float_data_flag[i] <= 1'b0;
+                end
                 waiting <= 1'b0;
                 iteration <= prop_iteration[1] + 1;
-        		pc <= prop_pc[1] + 1;
+                pc <= prop_pc[1] + 1;
                 buffer_reading_idx <= prop_reading_idx[1];
-        	end
+            end
 
             instr_reg[2] <= instr_reg[1];
             prop_pc[2] <= prop_pc[1];
@@ -852,34 +852,34 @@ module top #(CLK_PER_HALF_BIT = 1321) (
             jump[2] <= jump[1];
 
 
-    		// ********************
-    		// 実行フェーズその2(レジスタへの書き込みは常にここで行う)
-    		// ********************
+            // ********************
+            // 実行フェーズその2(レジスタへの書き込みは常にここで行う)
+            // ********************
 
             validate_flag[3] <= validate_flag[2];
             output_flag <= 1'b0;
 
-    		if (validate_flag[2]) begin
+            if (validate_flag[2]) begin
                 // validate_flag[3]を下げる関係上、ここには6クロック命令を入れてはいけない
-    			case (instr_reg[2][31:26])
-    				special:
-    					case (instr_reg[2][5:0])
-    						s_add, s_sub, s_mult, s_div: begin
-    							register_int[instr_reg[2][15:11]] <= result[2];
-    							int_data_flag[instr_reg[2][15:11]] <= 1'b0;
+                case (instr_reg[2][31:26])
+                    special:
+                        case (instr_reg[2][5:0])
+                            s_add, s_sub, s_mult: begin
+                                register_int[instr_reg[2][15:11]] <= result[2];
+                                int_data_flag[instr_reg[2][15:11]] <= 1'b0;
                                 validate_flag[3] <= 1'b0;
-    						end
-    						s_mov: begin
-    							register_int[instr_reg[2][20:16]] <= result[2];
-    							int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                            end
+                            s_mov: begin
+                                register_int[instr_reg[2][20:16]] <= result[2];
+                                int_data_flag[instr_reg[2][20:16]] <= 1'b0;
                                 validate_flag[3] <= 1'b0;
-    						end
-    						s_ret: begin
-    							inst_stop <= 1'b1;
+                            end
+                            s_ret: begin
+                                inst_stop <= 1'b1;
                                 validate_flag[3] <= 1'b0;
                             end
                             s_out: begin
-                                output_content <= result[2];
+                                // output_content <= result[2];
                                 output_flag <= 1'b1;
                                 validate_flag[3] <= 1'b0;
                             end
@@ -893,7 +893,7 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                                 float_data_flag[instr_reg[2][25:21]] <= 1'b0;
                                 validate_flag[3] <= 1'b0;
                             end
-    					endcase // instr_reg[2][5:0]
+                        endcase // instr_reg[2][5:0]
                     cop1: begin
                         if (instr_reg[2][5:0] == s_mov) begin
                             register_float[instr_reg[2][20:16]] <= result[2];
@@ -911,11 +911,11 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         int_data_flag[instr_reg[2][20:16]] <= 1'b0;
                         validate_flag[3] <= 1'b0;
                     end
-    				lw: begin
-    					register_int[instr_reg[2][20:16]] <= read_data;
-    					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                    lw: begin
+                        register_int[instr_reg[2][20:16]] <= read_data;
+                        int_data_flag[instr_reg[2][20:16]] <= 1'b0;
                         validate_flag[3] <= 1'b0;
-    				end
+                    end
                     lws: begin
                         register_float[instr_reg[2][20:16]] <= read_data;
                         float_data_flag[instr_reg[2][20:16]] <= 1'b0;
@@ -931,19 +931,19 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                         float_data_flag[instr_reg[2][20:16]] <= 1'b0;
                         validate_flag[3] <= 1'b0;
                     end
-    				addi: begin
-    					register_int[instr_reg[2][20:16]] <= result[2];
-    					int_data_flag[instr_reg[2][20:16]] <= 1'b0;
+                    addi: begin
+                        register_int[instr_reg[2][20:16]] <= result[2];
+                        int_data_flag[instr_reg[2][20:16]] <= 1'b0;
                         validate_flag[3] <= 1'b0;
-    				end
-    				jal, jalr: begin
-	    				register_int[28] <= result[2];
-	    				int_data_flag[28] <= 1'b0;
+                    end
+                    jal, jalr: begin
+                        register_int[28] <= result[2];
+                        int_data_flag[28] <= 1'b0;
                         validate_flag[3] <= 1'b0;
-	    			end
-    			endcase // instr_reg[2][31:26]
-    			
-    		end
+                    end
+                endcase // instr_reg[2][31:26]
+                
+            end
 
             instr_reg[3] <= instr_reg[2];
             prop_pc[3] <= prop_pc[2];
@@ -951,9 +951,9 @@ module top #(CLK_PER_HALF_BIT = 1321) (
             prop_reading_idx[3] <= prop_reading_idx[2];
             jump[3] <= jump[2];
 
-    		// ********************
-    		// 実行フェーズその3
-    		// ********************
+            // ********************
+            // 実行フェーズその3
+            // ********************
 
 
             instr_reg[4] <= instr_reg[3];
@@ -964,9 +964,9 @@ module top #(CLK_PER_HALF_BIT = 1321) (
             jump[4] <= jump[3];
 
 
-    		// ********************
-    		// ストアフェーズ
-    		// ********************
+            // ********************
+            // ストアフェーズ
+            // ********************
 
             if (validate_flag[4]) begin
                 case (instr_reg[4][31:26])
@@ -987,7 +987,7 @@ module top #(CLK_PER_HALF_BIT = 1321) (
                     end
                 endcase // instr_reg[4][31:26]
             end
-    	end
+        end
     end
 endmodule
 `default_nettype wire
