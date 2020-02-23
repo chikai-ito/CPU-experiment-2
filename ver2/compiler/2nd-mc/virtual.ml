@@ -64,6 +64,7 @@ let rec g memtbl env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
   | Closure.Fin(x) -> Ans(Fin(x))
   | Closure.Out(x) -> Ans(Out(x))
   | Closure.Add(x,y) -> Ans(Add(x,y))
+  | Closure.LSR(x, y) -> Ans(SRL(x, y))
   | Closure.Sub(x,y) -> Ans(Sub(x,y))
   | Closure.Mul(x,y) -> Ans(Mul(x,y))
   | Closure.Div(x,y) -> Ans(Div(x,y))

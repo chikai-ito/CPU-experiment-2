@@ -21,6 +21,7 @@ let addtyp x = (x, Type.gentyp ())
 %token PLUS
 %token AST
 %token SLASH
+%token LSR
 %token MINUS_DOT
 %token PLUS_DOT
 %token AST_DOT
@@ -124,6 +125,8 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
     { Mul($1, $3) }
 | exp SLASH exp
     { Div($1, $3) }
+| exp LSR exp
+    { LSR($1, $3) }
 | exp EQUAL exp
     { Eq($1, $3) }
 | exp LESS_GREATER exp

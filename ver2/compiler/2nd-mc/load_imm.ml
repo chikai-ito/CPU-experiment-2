@@ -63,6 +63,17 @@ let routine_for_asm = function
                      l in
        Let((reg_sub1, Type.Int), ILd(l),
            Ans(SLL(x, reg_sub1)))
+  | SRLI(x, i) ->
+    if inside_range i then
+      Ans(SRLI(x, i))
+    else
+      let l = try search_data (Int(i)) 
+        with Not_found ->
+          let l = Id.genlab "l" in
+          data := (l, Asm.I(i)) :: !data;
+          l in
+      Let((reg_sub1, Type.Int), ILd(l),
+          Ans(SRL(x, reg_sub1)))
   | Ld(x, i) ->
      if inside_range i then
        Ans(Ld(x, i))

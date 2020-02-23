@@ -24,7 +24,9 @@ and exp =
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
   | SLL of Id.t * Id.t
+  | SRL of Id.t * Id.t
   | SLLI of Id.t * int
+  | SRLI of Id.t * int
   | Ld of Id.t * int
   | St of Id.t * Id.t * int
   | FMov of Id.t

@@ -12,6 +12,7 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
+  | LSR of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
@@ -82,7 +83,7 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit | Const _ | ExtArray(_) -> S.empty
   | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | GetL(_, x)
     | FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
-  | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y) | PutL(_, x, y)
+  | Add(x,y) | LSR(x, y) | Sub(x,y) | Mul(x,y) | Div(x,y) | PutL(_, x, y)
     | FAdd(x,y) | FSub(x,y) | FMul(x,y) | FDiv(x,y)
     | Get(x,y) -> S.of_list [x;y]
   | If (_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
@@ -138,7 +139,11 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Add(e1, e2) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)
-                    (fun y -> Add(x, y), Type.Int))
+            (fun y -> Add(x, y), Type.Int))
+  | Syntax.LSR(e1, e2) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+    insert_let (g env e1)
+      (fun x -> insert_let (g env e2)
+          (fun y -> LSR(x, y), Type.Int))
   | Syntax.Sub(e1, e2) ->
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)
@@ -339,6 +344,12 @@ and print_kNormal =
       Printf.printf "\n"
     | Add (id1, id2) ->
       Printf.printf "ADD ";
+      Id.print_id id1;
+      Printf.printf " ";
+      Id.print_id id2;
+      Printf.printf "\n"
+    | LSR (id1, id2) ->
+      Printf.printf "LSR ";
       Id.print_id id1;
       Printf.printf " ";
       Id.print_id id2;
