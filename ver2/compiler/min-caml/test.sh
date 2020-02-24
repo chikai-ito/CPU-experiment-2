@@ -1,15 +1,33 @@
 #!/bin/bash
 
-./min-caml $1
+cp ./test/$1.s ../../simulator/simulator/test/$1.s
 
-cp ./$1.s ../../simulator/simulator/test/$1.s
+INPUT=FALSE
+
+while :
+do
+    case $1 in
+	-i) INPUT=TRUE
+	     shift
+	     ;;
+	--) shift
+	    break
+	    ;;
+	*) break
+	   ;;
+    esac
+done
+
+if [ "$INPUT" = "TRUE" ]; then
+    cat ./input.txt > ../../simulator/simulator/input.txt
+fi
 
 cd ../../simulator/simulator
+rm ./result.bin
 
 make
 
-./simulator ./test/$1.s
+./simulator ./test/$1.s $2 $3
 
-echo -ne '\n' >> ./result.bin 
+cp ./result.bin ../../compiler/min-caml/result.ppm
 
-cp ./result.bin ../compiler/min-caml/result.txt

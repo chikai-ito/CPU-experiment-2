@@ -7,6 +7,7 @@ option :
   -a2 : create machine code file as machine_code.txt in the current directory with comment
 
   -l number : stops at the numberth line.
+              press l : execute until numberth line again
               press e : end
               press c : continue
               press 1 : execute 10 instructions
@@ -22,6 +23,13 @@ option :
               press 2 : execute 100 instructions
               press 3 : execute 1000 instructions
 
+   -l2 number1 number2 : stops at the number1th line after number2 instructions are executed
+              press l : execute until numberth line again
+              press e : end
+              press c : continue
+              press 1 : execute 10 instructions
+              press 2 : execute 100 instructions
+              press 3 : execute 1000 instructions
 
 <caution>
   input file's name must be "input.txt"

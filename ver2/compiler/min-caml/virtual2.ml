@@ -15,7 +15,7 @@ let classify xts ini addf addi =
       | Type.Float -> addf acc x (* Floatの時はaddfでaccにxを追加 *)
       (* 下の場合は型の情報もaddiの引数に取れるようになってる *)
       | _ -> addi acc x t) (* その他の型の時はaddiでaccにxを追加 *)
-    ini (* accの初期値, initのこと *) (* 超わかりにくい *)
+    ini (* accの初期値, initのこと *)
     xts (* 変数と型のリスト *) (* 典型的には関数の引数 *)
 
 let separate xts = (* classifyを用いて変数をInt型とFloat型に分ける *)
@@ -47,33 +47,35 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: vir
         try
           (* すでに定数テーブルにあったら再利用 *)
           let (l, _) =
-            List.find (fun (_,i') ->
-                match i' with
-                  I(vali') -> i = vali'
+            List.find (fun (_, d) ->
+                match d with
+                  I(i') -> i = i'
                 | _ -> false) !data in (* data : data_tのリストへの参照 *) (* gを呼び出すfで確保する *)
           l
         with Not_found ->
           let l = Id.L(Id.genid "l") in
           data := (l, I(i)) :: !data;
           l in
-      let x = Id.genid "l" in
-      Let((x, Type.Int), SetL(l), Ans(ILd(x, C(0))))
+      (* let x = Id.genid "l" in
+       * Let((x, Type.Int), SetL(l), Ans(Ld(I, x, C(0)))) *)
+      Ans(ILd(l))
   | Closure2.Float(f) ->
     let l =
       try
         (* すでに定数テーブルにあったら再利用 *)
         let (l, _) =
-          List.find (fun (_, f') ->
-              match f' with
-                F (valf') -> f = valf'
+          List.find (fun (_, d) ->
+              match d with
+                F (f') -> f = f'
               | _ -> false) !data in
         l
       with Not_found ->
         let l = Id.L(Id.genid "l") in
         data := (l, F(f)) :: !data;
         l in
-    let x = Id.genid "l" in
-    Let((x, Type.Int), SetL(l), Ans(ILdF(x, C(0))))
+    (* let x = Id.genid "l" in
+     * Let((x, Type.Int), SetL(l), Ans(LdF(I, x, C(0)))) *)
+    Ans(ILd(l))
   | Closure2.Neg(x) -> Ans(Neg(x))
   | Closure2.Itof(x) -> Ans(Itof(x))
   | Closure2.In(x) -> Ans(In(x))
@@ -121,7 +123,7 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: vir
           (fun y offset store_fv -> seq(StF(y, x, C(offset)), store_fv))
           (fun y _ offset store_fv -> seq(St(y, x, C(offset)), store_fv)) in
       Let((x, t), Mov(reg_hp),
-          Let((reg_hp, Type.Int), AddI(reg_hp, C(align offset)),
+          Let((reg_hp, Type.Int), AddI(reg_hp, align offset),
               let z = Id.genid "l" in
               Let((z, Type.Int), SetL(l), 
                   seq(St(z, x, C(0)),
@@ -146,7 +148,7 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: vir
           (fun x offset store -> seq(StF(x, y, C(offset)), store))
           (fun x _ offset store -> seq(St(x, y, C(offset)), store)) in
       Let((y, Type.Tuple(List.map (fun x -> M.find x env) xs)), Mov(reg_hp),
-          Let((reg_hp, Type.Int), AddI(reg_hp, C(align offset)), (* reg_hpを次に割り当て可能なアドレスにずらす *)
+          Let((reg_hp, Type.Int), AddI(reg_hp, align offset), (* reg_hpを次に割り当て可能なアドレスにずらす *)
               store)) (* 要素を格納してyを返す *) (* simmで最適化できなかったロード，ストアはこれ? *)
   | Closure2.LetTuple(xts, y, e2) ->
       let s = Closure2.fv e2 in
@@ -168,10 +170,10 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: vir
       (match M.find x env with
       | Type.Array(Type.Unit) -> Ans(Nop)
       | Type.Array(Type.Float) ->
-          Let((offset, Type.Int), SLLI(y, C(2)),
+          Let((offset, Type.Int), SLLI(y, 2),
               Ans(LdF(x, V(offset))))
       | Type.Array(_) ->
-          Let((offset, Type.Int), SLLI(y, C(2)),
+          Let((offset, Type.Int), SLLI(y, 2),
               Ans(Ld(x, V(offset))))
       | _ -> assert false)
   | Closure2.Put(x, y, z) ->
@@ -179,14 +181,15 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: vir
       (match M.find x env with
       | Type.Array(Type.Unit) -> Ans(Nop)
       | Type.Array(Type.Float) ->
-          Let((offset, Type.Int), SLLI(y, C(2)),
+          Let((offset, Type.Int), SLLI(y, 2),
               Ans(StF(z, x, V(offset)))) (* Jump前の変数の移動はこれに準じることになりそう *)
       | Type.Array(_) ->
-          Let((offset, Type.Int), SLLI(y, C(2)),
+          Let((offset, Type.Int), SLLI(y, 2),
               Ans(St(z, x, V(offset))))
       | _ -> assert false)
-  | Closure2.Loop(l,e) -> Ans(Loop(l, g env e)) (* ここの扱いはIf文と同様 *)
-  | Closure2.Jump(yzs, l) -> Ans(Jump(yzs,l)) (* これでいいはず...? *)
+  | Closure2.Loop(l, yts, zs, e) -> Ans(Loop(l, yts, zs, g (M.add_list yts env) e))
+  (* | Closure2.Loop(l, yts, zs, e) -> Ans(Loop(l, yts, zs, Ans(Nop))) *)
+  | Closure2.Jump(yzts, l) -> Ans(Jump(yzts, l)) (* これでいいはず...? *)
   (* JumpはLetLoopの最深部にしかない *)
   (* 従って，Ans(Jump _)が直接コードに束縛されるようなコードにはならないはず *)
   (* 以降ではJumpに束縛された変数はassertする *)

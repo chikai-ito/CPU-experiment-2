@@ -35,18 +35,15 @@ type t =
   | Get of Id.t * Id.t
   | Put of Id.t * Id.t * Id.t
   (* Loopの取り扱いはひとまずIfに準じることにする *)
-  (* 型の情報は必要ないはず *)
-  | Loop of Id.l * t (* ループはコードと番地の組として表現 *)
-  (* | Subst of Id.t * Id.t * t (\* ループ構造のための変数の上書きに必要 *\)
-   * | Jump of Id.l (\* ジャンプ命令 *\) *)
-  | Jump of (Id.t * Id.t) list * Id.l (* 上のJumpとSubstを合わせた *)
+(* やっぱり型の情報が必要そう *)
+  | Loop of Id.l * ((Id.t * Type.t) list) * (Id.t list) * t
+  (* ループ前のループ内変数への束縛の情報もデータ型に含めることにした *)
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 (* KNormal.tをLNormal.tに変換するための関数 *)
-(* 正直クソ無駄．こういう時のためのinheritanceなのか *)
-(* 勉強だと思って書いた *)
 let rec ktol = function
   | KNormal.Unit -> Unit
   | KNormal.Int(i) -> Int(i)
@@ -81,7 +78,7 @@ let rec ktol = function
   | KNormal.ExtArray(x) -> ExtArray(x)
   | KNormal.ExtFunApp(x,ys) -> ExtFunApp(x,ys)
 
-(* ループのインライン化に使う，Alpha.gを丸パクリした *)
+(* ループのインライン化に使う，Alpha.gとほぼ同じ *)
 let find x env = try M.find x env with Not_found -> x
 let rec subst env lenv = function
   | Unit -> Unit
@@ -127,14 +124,18 @@ let rec subst env lenv = function
               subst env' lenv e)
   | Get(x, y) -> Get(find x env, find y env)
   | Put(x, y, z) -> Put(find x env, find y env, find z env)
-  | Loop(L(x),e) ->
-     let x' = Id.genid x in
-     Loop(L(x'), subst env (M.add x x' lenv) e)
-  (* | Subst(x,y,e) -> Subst(find x env, find y env, subst env lenv e)
-   * | Jump(L(x)) -> Jump(L(find lenv x)) *)
-  | Jump(yzs, L(x)) -> (* 上の２つの操作を合併 *)
-     let yzs' = List.map (fun (y,z) -> (find y env, find z env)) yzs in
-     Jump(yzs', L(find x lenv))
+  (* | Loop(L(x),e) -> Loop(L(find x lenv), subst env lenv e) *)
+  | Loop(L(x),yts,zs,e) -> (* 変数の束縛 yts <- zs はLetやLetTupleを参考にした *)
+     let x' = Id.genid x in (* ループを埋め込む度にラベルを新しくしてラベルの一意性を保証 *)
+     let yts' = List.map (fun (y,t) -> (Id.genid y, t)) yts in
+     let zs' = List.map (fun z -> find z env) zs in
+     let env' = M.add_list2 (List.map fst yts) (List.map fst yts') env in
+     Loop(L(x'), yts', zs', subst env' (M.add x x' lenv) e)
+  (* substはlenvを拡張しない *) (* ラベルの発行はloop_inlineの責任 *)
+  (* Loop.loop_inlineで埋め込むラベルを新しくlenvに束縛している *)
+  | Jump(yzts, L(x)) -> (* 上の２つの操作を合併 *)
+     let yzts' = List.map (fun (y, z, t) -> (find y env, find z env, t)) yzts in
+     Jump(yzts', L(find x lenv))
   | ExtArray(x) -> ExtArray(x)
   | ExtFunApp(x, ys) -> ExtFunApp(x, List.map (fun y -> find y env) ys)
 

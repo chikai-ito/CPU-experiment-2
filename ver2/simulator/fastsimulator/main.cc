@@ -127,13 +127,13 @@ int main(int argc, char**argv){
 		  ofstream writing_file;
 		  writing_file.open("machine_code.txt");
       // write jump to machine_code.txt
-      string one_machine_code = assemble(instruction_set[0],1);
+      string one_machine_code = assemble(instruction_set[0],1,0);
       writing_file << one_machine_code << endl;
       for(int i = 0; i < data_num; i++){
         writing_file << decimal_to_binary(inst_mem[i],32) << "  \\\\ " << "immediate" << endl;
       }
 		  for(int i=1; i<line_num - data_num; i++){
-			  string one_machine_code = assemble(instruction_set[i],1);
+			  string one_machine_code = assemble(instruction_set[i],1,data_num*2+i);
 			  writing_file << one_machine_code << endl;
 		  }
 	  writing_file.close();
@@ -154,13 +154,13 @@ int main(int argc, char**argv){
 	ofstream writing_file;
   writing_file.open("machine_code.txt");
   // write jump to machine_code.txt
-  string one_machine_code = assemble(instruction_set[0],0);
+  string one_machine_code = assemble(instruction_set[0],0,0);
   writing_file << one_machine_code << endl;
   for(int i = 0; i < data_num; i++){
     writing_file << decimal_to_binary(inst_mem[i],32) << endl;
   }
   for(int i=1; i<line_num - data_num; i++){
-    string one_machine_code = assemble(instruction_set[i],0);
+    string one_machine_code = assemble(instruction_set[i],0,line_num*2+i);
     writing_file << one_machine_code << endl;
   }
   writing_file.close();
@@ -548,10 +548,37 @@ for(int now = 0; now < instr_num; now++)
 			    case 0b100111 :
 			      //exec ilw.s instruction
 			      base = (int)((code >> 21) & 0b11111);
-			      ft = (int)((code >> 16) & 0b11111);
-			      x.i = inst_mem[(int)reg[base]];
-			      freg[ft] = x.f;
-			      break;
+            ft = (int)((code >> 16) & 0b11111);
+            if((code>>15)&0b1){
+              x.i = inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)];
+              freg[ft] = x.f;
+            }else{
+              x.i = inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)];
+              freg[ft] = x.f;
+            }
+            break;
+          case 0b110111 :
+            //exec isw instruction
+            base = (int)((code >> 21) & 0b11111);
+            rt = (int)((code >> 16) & 0b11111);
+            if((code>>15)&0b1){
+              inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = reg[rt];
+            }else{
+            inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)] = reg[rt];
+            }
+            break;
+          case 0b111011 :
+            //exec isw.s instruction
+            base = (int)((code >> 21) & 0b11111);
+            ft = (int)((code >> 16) & 0b11111);
+            if((code>>15)&0b1){
+              x.f = freg[ft];
+              inst_mem[(int)reg[base] + (int)(code&0b111111111111111) - power(2,15)] = x.i;
+            }else{
+              x.f = freg[ft];
+              inst_mem[(int)reg[base] + (int)(code&0b1111111111111111)] = x.i;
+            }
+            break;
 					case 0b000010 :
 						//JUMP命令の実行
 						//nowの値はそのあとでnow++されるのでここで1を引いとかなければならない

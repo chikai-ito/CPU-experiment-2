@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#$1== .sld file
+$file = "rec"
 
 cd ../../compiler/min-caml
 

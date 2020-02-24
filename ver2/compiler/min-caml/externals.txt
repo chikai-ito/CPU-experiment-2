@@ -1,2 +1,0 @@
-free variable read_float assumed as external
-free variable read_int assumed as external
