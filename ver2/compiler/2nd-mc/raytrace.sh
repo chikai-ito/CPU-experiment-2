@@ -36,4 +36,5 @@ make
 
 if [ -e "result.bin" ]; then
     cp "result.bin" ../../compiler/2nd-mc/result.ppm
+    cp "result.bin" ../../compiler/2nd-mc/result.txt
 fi

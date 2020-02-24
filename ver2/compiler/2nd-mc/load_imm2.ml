@@ -76,12 +76,13 @@ let routine_for_instr { instr_id = iid; op = op } =
     if inside_range i then
       tag_iid [SRLI(xt, y, i)]
     else
-      let l = try search_data (Int(i)) 
-        with Not_found ->
-          let l = Id.genlab "l" in
-          data := (l, Asm.I(i)) :: !data;
-          l in
-      tag_iid [ILd(tmpt, l); SRL(xt, y, tmp)]
+      assert false
+      (* let l = try search_data (Int(i)) 
+       *   with Not_found ->
+       *     let l = Id.genlab "l" in
+       *     data := (l, Asm.I(i)) :: !data;
+       *     l in
+       * tag_iid [ILd(tmpt, l); SRL(xt, y, tmp)] *)
   | Ld(xt, y, i) ->
      if inside_range i then
      tag_iid [Ld(xt, y, i)]

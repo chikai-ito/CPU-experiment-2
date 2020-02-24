@@ -168,7 +168,7 @@ let output_simple_op oc dregmap uregmap operation =
   | SLLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s %d\n" (ulu y) (dlu x) i
   | SLL((x, _), y, z) -> Printf.fprintf oc "\tsll\t%s %s %s\n" (ulu y) (dlu x) (ulu z)
   | SRLI((x, _), y, i) -> Printf.fprintf oc "\tslli\t%s %s -%d\n" (ulu y) (dlu x) i
-  | SRL((x, _), y, z) -> assert false
+  (* | SRL((x, _), y, z) -> assert false *)
     (* Printf.fprintf oc "\tsrl\t%s %s %s\n" (ulu y) (dlu x) (ulu z) *)
   | Ld((x, _), y, i) ->
      Printf.fprintf oc "\tlw\t%s %s %d\n" (ulu y) (dlu x) i
@@ -333,13 +333,13 @@ let move_val oc regtbl reg x t =
         Printf.fprintf oc "\tmov.s\t%s %s\n" reg r
      | _ -> ())
   else
-    if (not (is_freg reg)) then
-      Format.eprintf "EmitAux : ----- reg = %s ----@." reg;
-    (assert (not (is_freg reg));
-     match alloc with
-     | Alloc(r) when r <> reg ->
-        Printf.fprintf oc "\tmov\t%s %s\n" reg r
-     | _ -> ())
+    (if (not (is_freg reg)) then
+       Format.eprintf "EmitAux : ----- reg = %s ----@." reg;
+     (assert (not (is_freg reg));
+      match alloc with
+      | Alloc(r) when r <> reg ->
+         Printf.fprintf oc "\tmov\t%s %s\n" reg r
+      | _ -> ()))
 
 
 (* functions for Emit2.push_next *)

@@ -105,6 +105,7 @@ and create_array_routine oc livenow_tbl regtbl instr is_float =
                                          []
                                     | Spill _ -> [])
                       livenow') in
+     (* let saves = if List.mem regs.(0) saves then saves else regs.(0) :: saves in *)
      let new_top, savemap = make_savemap saves !stacktop in
      let rrs, xrs = make_int_argmap regtbl ys in
      let frrs, fxrs = make_float_argmap regtbl zs in
@@ -115,14 +116,14 @@ and create_array_routine oc livenow_tbl regtbl instr is_float =
      Printf.fprintf oc "\tjal\t%s\n" l;
      (* Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (- (new_top - 4)); *)
      Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
+     move_return_val oc regtbl x t;
      (if S.mem y livenow then
         move_val oc regtbl "%r30" y (Type.Int));
-     (if S.mem z livenow then
-        if is_float then
-          move_val oc regtbl "%f0" z (Type.Float)
-        else
+     (if S.mem z livenow && not is_float then
+        (* if is_float then
+         *   move_val oc regtbl "%f0" z (Type.Float)
+         * else *)
           move_val oc regtbl "%r2" z (Type.Int));
-     move_return_val oc regtbl x t;
      restore_live_regs oc savemap;
      false
   | _ -> assert false
@@ -397,7 +398,7 @@ let arrange_data oc data =
          Printf.fprintf oc "\t.float\t0x%lx\n" (get d);
       | I (d) ->
          Printf.fprintf oc "%s :\t# %d\n" x d;
-         Printf.fprintf oc "\t.int\t%d\n" d)
+         Printf.fprintf oc "\t.int\t0x%x\n" d)
     data;
   hp, sp
 

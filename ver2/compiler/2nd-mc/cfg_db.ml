@@ -44,7 +44,7 @@ let print_instr = function
   | Div(xt, y, z) -> print_xt xt; print_op "Div" [y;z]; newline ()
   | SLL(xt, y, z) -> print_xt xt; print_op "SLL" [y;z]; newline ()
   | SLLI(xt, y, i) -> print_xt xt; print_op "SLLI" [y]; Printf.printf "\b, %d)\n" i;
-  | SRL(xt, y, z) -> print_xt xt; print_op "SRL" [y;z]; newline ()
+  (* | SRL(xt, y, z) -> print_xt xt; print_op "SRL" [y;z]; newline () *)
   | SRLI(xt, y, i) -> print_xt xt; print_op "SRLI" [y]; Printf.printf "\b, %d)\n" i;
   | Ld(xt, y, i) -> print_xt xt; print_op "Ld" [y];
                     space (); print_int i; newline ()

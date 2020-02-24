@@ -22,7 +22,7 @@ and op_t = (* 単純命令の表現するデータ型 x <- op(xs) の形 *)
   | Div of (Id.t * Type.t) * Id.t * Id.t
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
-  | SRL of (Id.t * Type.t) * Id.t * Id.t
+  (* | SRL of (Id.t * Type.t) * Id.t * Id.t *)
   | SRLI of (Id.t * Type.t) * Id.t * int
   | Ld of (Id.t * Type.t) * Id.t * int (* Ld(x,y,imm) = x <- y + imm *)
   | St of Id.t * Id.t * int
@@ -96,7 +96,8 @@ let nontail_simple_instr xt = function
   | Asm.Div(y, z) -> new_instr (Div(xt, y, z))
   | Asm.SLL(y, z) -> new_instr (SLL(xt, y, z))
   | Asm.SLLI(y, i) -> new_instr (SLLI(xt, y, i))
-  | Asm.SRL(y, z) -> new_instr (SRL(xt, y, z))
+  | Asm.SRL(y, z) -> assert false;
+  (* new_instr (SRL(xt, y, z)) *)
   | Asm.SRLI(y, i) -> new_instr (SRLI(xt, y, i))
   | Asm.Ld(y, i) -> new_instr (Ld(xt, y, i))
   | Asm.St(y, z, i) -> new_instr (St(y, z, i))
