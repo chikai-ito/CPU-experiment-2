@@ -22,7 +22,7 @@ and op_t =
   | Div of (Id.t * Type.t) * Id.t * Id.t
   | SLL of (Id.t * Type.t) * Id.t * Id.t
   | SLLI of (Id.t * Type.t) * Id.t * int
-  | SRL of (Id.t * Type.t) * Id.t * Id.t
+  (* | SRL of (Id.t * Type.t) * Id.t * Id.t *)
   | SRLI of (Id.t * Type.t) * Id.t * int
   | Ld of (Id.t * Type.t) * Id.t * int
   | St of Id.t * Id.t * int

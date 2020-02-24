@@ -44,6 +44,7 @@ and g' env = function (* 各命令の13bit即値最適化 (caml2html: simm13_gprime) *)
   | LdF(x, i) when M.mem x env -> LdF(reg_zero, (M.find x env) + i)
   | StF(x, y, i) when M.mem y env -> StF(x, reg_zero, (M.find y env) + i)
   | If(cmp, x, y, e1, e2) -> If(cmp, x, y, g env e1, g env e2)
+  | FIf(cmp, x, y, e1, e2) -> FIf(cmp, x, y, g env e1, g env e2)
   | Loop(l, xts, ys, e) -> Loop(l, xts, ys, g env e)
   | e -> e
 
@@ -52,6 +53,6 @@ let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関
 
 let f (Prog(mems, data, fundefs, e)) = (* プログラム全体の13bit即値最適化 *)
   try
-  Format.eprintf "start Simm.f\n";
-  Prog(mems, data, List.map h fundefs, g M.empty e)
+    Format.eprintf "start Simm.f\n";
+    Prog(mems, data, List.map h fundefs, g M.empty e)
   with Not_found -> assert false

@@ -29,9 +29,7 @@ let rec is_recfun { name = (x, t); args = yts; body = e } =
 let rec inline2 env = function
   | If(cmp, x, y, e1, e2) -> If(cmp, x, y, inline2 env e1, inline2 env e2)
   | Let((x, t), e1, e2) -> Let((x, t), inline2 env e1, inline2 env e2)
-(* | LetRec(fd, e2) -> *)
   | LetRec({ name = (x, t); args = yts; body = e1 }, e2) ->
-     (* let (x,_) = fd.name in *)
      let env =
        if not (exists_call x e1) (* i.e. the e1 does not contain recursive call *)
           && ((size e1) <= !threshold || !unlimited) then
@@ -49,12 +47,6 @@ let rec inline2 env = function
          zts
          ys in
      Alpha.g env' e
-     (* (try
-      *    let { name = (x,t); args = yts; body = e } = M.find x env in
-      *    let e = Alpha.g (M.add_list2 (List.map fst yts) ys M.empty) e in
-      *    e
-      *  with
-      *    Not_found -> App(x,ys)) *)
   | LetTuple(xts,y,e) -> LetTuple(xts,y,inline2 env e)
   | Loop(l, xts, ys, e) -> Loop(l, xts, ys, inline2 env e)
   | e -> e

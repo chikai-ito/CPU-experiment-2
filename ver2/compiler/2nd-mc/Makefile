@@ -17,7 +17,8 @@ inline.ml inline.mli constFold.mli constFold.ml elim.mli elim.ml \
 sarray.ml memAlloc.mli memAlloc.ml constExpand.mli constExpand.ml \
 loop.mli loop.ml closure.mli closure.ml \
 asm.mli asm.ml virtual.mli virtual.ml \
-simm.mli simm.ml cfg.mli cfg.ml cfg_db.ml \
+simm.mli simm.ml loadElim.ml \
+cfg.mli cfg.ml cfg_db.ml \
 igraph.mli igraph.ml lra.mli lra.ml \
 cfg_elim.ml collect_lr.mli collect_lr.ml lra2.ml \
 memMap.ml load_imm2.ml \

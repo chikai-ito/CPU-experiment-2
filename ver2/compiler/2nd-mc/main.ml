@@ -35,7 +35,10 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   let memtbl, mems = MemAlloc.f out_chan sarrays in
   let kNormal = ConstExpand.f kNormal in
   let kNormal = Loop.f kNormal in
+  let kNormal = Inline2.f kNormal in
+  (* let kNormal = Inline2.f (Inline2.f kNormal) in *)
   let virtCode = Simm.f (Virtual.f memtbl mems (Closure.f kNormal)) in
+  let virtCode = LoadElim.f virtCode in
   let prog = Cfg.f virtCode tp in
   let prog = Load_imm2.f prog in
   Emit2.f outchan memtbl prog

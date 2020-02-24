@@ -92,7 +92,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Div((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
-  | SRL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  (* | SRL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset *)
   | SRLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ld((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | St _ -> idset
@@ -158,7 +158,6 @@ let blocklist_to_lrtbl : Cfg.block list -> lr_info H.t * S.t * S.t =
 let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   fun instr ->
   match instr.op with
-  (* | Phi ((x, t), yls) -> [x], [] (\* これが正解? *\) *)
   | Phi((x, t), yls) -> [x], (List.map fst yls)
      (* let ys = List.map fst yls in [x], ys *)
   | Nop -> [], []
@@ -179,7 +178,7 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Div((x, t), y, z) -> [x], [y; z]
   | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
-  | SRL((x, t), y, z) -> [x], [y; z]
+  (* | SRL((x, t), y, z) -> [x], [y; z] *)
   | SRLI((x, t), y, i) -> [x], [y]
   | Ld((x, t), y, i) -> [x], [y]
   | St(y, z, i) -> [], [y; z]
