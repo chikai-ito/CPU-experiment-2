@@ -729,6 +729,13 @@ module top #(CLK_PER_HALF_BIT = 1875) (
                         end
                     end
                     sll, slli:
+                    	if(argument2[1][31] == 1'b1) begin
+                    		// 負の数のシフト
+                    		result[2] <= argument1[1] >> (32'b0 - argument2[1]);
+                    	end else begin
+                    		result[2] <= argument1[1] << argument2[1];
+                    	end
+
                         result[2] <= argument1[1] << argument2[1];
                     ilw, ilws:
                         argument1[2] <= argument1[1];
