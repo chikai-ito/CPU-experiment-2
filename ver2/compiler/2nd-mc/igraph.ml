@@ -197,7 +197,7 @@ and color_routine =
   else
     (try
        let lr, tp = search_colorable_node dup_graph imax fmax in
-       Format.eprintf "node %s is colorable@." lr;
+       (* Format.eprintf "node %s is colorable@." lr; *)
        Stack.push (lr, tp) stack;
        delete_node dup_graph lr;
        (if !print_option then
@@ -210,7 +210,7 @@ and color_routine =
      with
        Not_found ->
        let (lr, tp), srl = choose_spill dup_graph.node_tbl spill_rank_list in
-       Format.eprintf "spill live range : %s@." lr;
+       (* Format.eprintf "spill live range : %s@." lr; *)
        delete_node graph lr; (* spillするので元の干渉グラフからもnodeを消す *)
        delete_node dup_graph lr;
        (if !print_option then

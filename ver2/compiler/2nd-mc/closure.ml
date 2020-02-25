@@ -11,6 +11,7 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
+  | LSR of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
@@ -34,6 +35,8 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | GetL of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
   | PutL of Id.l * Id.t * Id.t
+  | Loop of Id.l * ((Id.t * Type.t) list) * Id.t list * t
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   | ExtArray of Id.l
 and const = Int of int | Float of float | Ptr of Id.l
 type fundef = { name : Id.l * Type.t;
@@ -46,7 +49,7 @@ let rec fv = function
   | Unit | Const _ | ExtArray(_) -> S.empty
   | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | GetL(_, x)
     | FNeg(x) | Ftoi(x) | Floor(x) | FSqrt(x) -> S.singleton x
-  | Add(x, y) | Sub(x, y) | Mul(x, y) | Div(x, y) | PutL(_, x, y)
+  | Add(x, y) | LSR(x, y)| Sub(x, y) | Mul(x, y) | Div(x, y) | PutL(_, x, y)
     | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) | Get(x, y)
     -> S.of_list [x; y]
   | If(_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
@@ -58,6 +61,9 @@ let rec fv = function
   | AppDir(_, xs) | Tuple(xs) -> S.of_list xs
   | LetTuple(xts, y, e) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xts)))
   | Put(x, y, z) -> S.of_list [x; y; z]
+  | Loop(_, yts, zs, e) -> S.union (S.of_list zs) (S.diff (fv e) (S.of_list (List.map fst yts)))
+  | Jump(yzts, _) ->List.fold_left
+                  (fun acc (y, z, _) -> S.add y (S.add z acc)) S.empty yzts
 
 let toplevel : fundef list ref = ref []
 
@@ -69,14 +75,13 @@ let g_const = function
 let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
   | KNormal.Unit -> Unit
   | KNormal.Const(cns) -> Const(g_const cns)
-  (* | KNormal.Int(i) -> Int(i)
-   * | KNormal.Float(f) -> Float(f) *)
   | KNormal.Neg(x) -> Neg(x)
   | KNormal.Itof(x) -> Itof(x)
   | KNormal.In(x) -> In(x)
   | KNormal.Fin(x) -> Fin(x)
   | KNormal.Out(x) -> Out(x)                     
   | KNormal.Add(x, y) -> Add(x, y)
+  | KNormal.LSR(x, y) -> LSR(x, y)
   | KNormal.Sub(x, y) -> Sub(x, y)
   | KNormal.Mul(x, y) -> Mul(x, y)
   | KNormal.Div(x, y) -> Div(x, y)
@@ -137,6 +142,9 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.PutL(l, x, y) -> PutL(l, x, y)
   | KNormal.ExtArray(x) -> ExtArray(Id.L(x))
   | KNormal.ExtFunApp(x, ys) -> AppDir(Id.L("min_caml_" ^ x), ys)
+  | KNormal.Loop (l, yts, zs, e) -> (* zsはすでに定義された変数のuseだから環境に加える必要はない *)
+     Loop(l, yts, zs, g (M.add_list yts env) known e)
+  | KNormal.Jump(yzts, l) -> Jump(yzts, l)
 
 let f e =
   Format.eprintf "start Closure.f@.";

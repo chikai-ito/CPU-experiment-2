@@ -1,5 +1,5 @@
 let limit = ref 0
-let limit2 = ref 25
+let limit2 = ref 10
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
   Format.eprintf "iteration %d@." n;
@@ -19,23 +19,6 @@ let print_set set =
   let list = S.elements set in
   List.iter (Printf.printf "%s, ") list;
   print_string "\n"
-
-(* let lexbuf2 outchan l = (\* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *\)
- *   Id.counter := 0;
- *   Typing.extenv := M.empty;
- *   let syntax = Parser.exp Lexer.token l in
- *   let syntax, ty = Typing.f syntax in
- *   (\* Syntax.print_syntax syntax; *\)
- *   let kNormal = Alpha.f (KNormal.f syntax) in
- *   let kNormal = iter !limit kNormal in
- *   let kNormal = ANormal.f (iter2 !limit2 kNormal) in
- *   let lNormal = Loop.f (LNormal.ktol kNormal) in
- *   (\* let lNormal = Loop.f (Linline.f lNormal) in *\)
- *   let virtCode = Simm2.f (Virtual2.f (Closure2.f lNormal)) in
- *   (\* Printf.printf "----ANormal----\n";
- *    * KNormal.print_kNormal kNormal; *\)
- *   Emit2.f outchan virtCode ty *)
-  
   
 
 let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
@@ -47,18 +30,27 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   (* Syntax.print_syntax syntax; *)
   let kNormal = Alpha.f (KNormal.f syntax) in
   let kNormal = iter !limit kNormal in
-  let kNormal = ANormal.f (iter2 !limit2 kNormal) in
+  let kNormal = Assoc.f (iter2 !limit2 kNormal) in
   let kNormal, sarrays = Sarray.f out_chan kNormal in
   let memtbl, mems = MemAlloc.f out_chan sarrays in
   let kNormal = ConstExpand.f kNormal in
+  let kNormal = Loop.f kNormal in
+  let kNormal = Inline2.f kNormal in
+  (* let kNormal = Inline2.f (Inline2.f kNormal) in *)
+  let virtCode = Simm.f (Virtual.f memtbl mems (Closure.f kNormal)) in
+  let virtCode = LoadElim.f virtCode in
+  let prog = Cfg.f virtCode tp in
+  let prog = Load_imm2.f prog in
+  Emit2.f outchan memtbl prog
+    
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
-  Emit.f outchan memtbl
-    (Load_imm.f 
-       (RegAlloc.f tp
-          (Simm.f
-             (Virtual.f memtbl mems
-                (Closure.f kNormal)))))
+  (* Emit.f outchan memtbl
+   *   (Load_imm.f 
+   *      (RegAlloc.f tp
+   *         (Simm.f
+   *            (Virtual.f memtbl mems
+   *               (Closure.f kNormal))))) *)
 
 let string s = lexbuf stdout (Lexing.from_string s) (* 文字列をコンパイルして標準出力に表示する (caml2html: main_string) *)
 
@@ -84,16 +76,16 @@ let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
     [("-inline", Arg.Int(fun i -> Inline.threshold := i), "maximum size of functions inlined");
      ("-iter", Arg.Int(fun i -> limit := i), "maximum number of optimizations iterated");
      ("-iter2", Arg.Int(fun i -> limit2 := i),
-      "maximum number of optimizations involving recursive functions iterated")]
+      "maximum number of optimizations involving recursive functions iterated");
      (* ("-argmax", Arg.Int(fun i -> Lamlift.argsize_max := i),
       *  "maximum number of arguments functions can have after lambda lifting"); *)
-     (* ("-m", Arg.Unit(fun _ -> compile_mode := 1), "compile mode");
-      * ("-dfs", Arg.Unit(fun _ -> Cfg_db.scan_mode := 1), "scan mode: 0 -> bfs, 1 -> dfs");
-      * ("-p", Arg.Unit(fun _ -> Lra2.print_option := true),
-      *  "whether to print intermedeate infomations");
-      * ("-p2", Arg.Unit(fun _ -> Igraph.print_option := true),
-      *  "whether to print coloring of graphs");
-      * ("-r", Arg.Unit(fun _ -> Cfg_db.is_reverse := 1), "scan in reverse direction")] *)
+     ("-m", Arg.Unit(fun _ -> compile_mode := 1), "compile mode");
+     ("-dfs", Arg.Unit(fun _ -> Cfg_db.scan_mode := 1), "scan mode: 0 -> bfs, 1 -> dfs");
+     ("-p", Arg.Unit(fun _ -> Lra2.print_option := true),
+      "whether to print intermedeate infomations");
+     ("-p2", Arg.Unit(fun _ -> Igraph.print_option := true),
+      "whether to print coloring of graphs");
+     ("-r", Arg.Unit(fun _ -> Cfg_db.is_reverse := 1), "scan in reverse direction")]
     (fun s -> files := !files @ [s])
     ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^
      Printf.sprintf "usage: %s [-inline m] [-iter n] ...filenames without \".ml\"..." Sys.argv.(0));

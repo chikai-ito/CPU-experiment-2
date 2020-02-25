@@ -8,6 +8,9 @@ let rec g env = function (* 命令列の13bit即値最適化 (caml2html: simm13_g) *)
       if List.mem x (fv e') then Let((x, t), Set(i), e') else
       ((* Format.eprintf "erased redundant Set to %s@." x; *)
        e')
+  | Let((x, t), SetF(f), e) ->
+     let e' = g env e in
+     if List.mem x (fv e') then Let((x, t), SetF(f), e') else e'
   | Let((x,t) as xt, SLLI(y, i), e) when M.mem y env -> (* for array access *)
      (* Format.eprintf "erased redundant SLL on %s: %d@." x (M.find y env);  *)
      g env (Let(xt, Set((M.find y env) lsl i), e))
@@ -30,11 +33,19 @@ and g' env = function (* 各命令の13bit即値最適化 (caml2html: simm13_gprime) *)
       | 0 -> Mov(y) | _ as i ->  AddI(y, i))
   | Sub(x, y) when M.mem y env -> AddI(x, - (M.find y env))
   | SLL(x, y) when M.mem y env -> SLLI(x, M.find y env)
+  | SRL(x, y) when M.mem y env -> SRLI(x, M.find y env)
+  | Div(x, y) when M.mem y env && (M.find y env) = 2 -> SLLI(x, 1)
+  | Div(x, y) when M.mem y env && (M.find y env) = 4 -> SLLI(x, 2)
+  | Div(x, y) when M.mem y env && (M.find y env) = 8 -> SLLI(x, 3)
+  | Div(x, y) when M.mem y env && (M.find y env) = 16 -> SLLI(x, 4)
+  | Div(x, y) when M.mem y env && (M.find y env) = 32 -> SLLI(x, 5)
   | Ld(x, i) when M.mem x env -> Ld(reg_zero, (M.find x env) + i)
   | St(x, y, i) when M.mem y env -> St(x, reg_zero, (M.find y env) + i)
   | LdF(x, i) when M.mem x env -> LdF(reg_zero, (M.find x env) + i)
   | StF(x, y, i) when M.mem y env -> StF(x, reg_zero, (M.find y env) + i)
   | If(cmp, x, y, e1, e2) -> If(cmp, x, y, g env e1, g env e2)
+  | FIf(cmp, x, y, e1, e2) -> FIf(cmp, x, y, g env e1, g env e2)
+  | Loop(l, xts, ys, e) -> Loop(l, xts, ys, g env e)
   | e -> e
 
 let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関数の13bit即値最適化 *)
@@ -42,6 +53,6 @@ let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関
 
 let f (Prog(mems, data, fundefs, e)) = (* プログラム全体の13bit即値最適化 *)
   try
-  Format.eprintf "start Simm.f\n";
-  Prog(mems, data, List.map h fundefs, g M.empty e)
+    Format.eprintf "start Simm.f\n";
+    Prog(mems, data, List.map h fundefs, g M.empty e)
   with Not_found -> assert false

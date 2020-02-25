@@ -17,4 +17,5 @@ let rec f e =
   | LetRec({ name = xt; args = yts; body = e1 }, e2) ->
       LetRec({ name = xt; args = yts; body = f e1 }, f e2)
   | LetTuple(xts, y, e) -> LetTuple(xts, y, f e)
+  | Loop(l, xts, ys, e) -> Loop(l, xts, ys, f e)
   | e -> e

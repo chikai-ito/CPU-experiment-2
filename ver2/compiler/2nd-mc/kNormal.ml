@@ -1,4 +1,5 @@
- (* give names to intermediate values (K-normalization) *)
+(* give names to intermediate values (K-normalization) *)
+(* Added types for loop *)
 open Enums
 type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Unit
@@ -11,6 +12,7 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Fin of Id.t
   | Out of Id.t
   | Add of Id.t * Id.t
+  | LSR of Id.t * Id.t
   | Sub of Id.t * Id.t
   | Mul of Id.t * Id.t
   | Div of Id.t * Id.t
@@ -33,6 +35,8 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | GetL of Id.l * Id.t
   | Put of Id.t * Id.t * Id.t
   | PutL of Id.l * Id.t * Id.t
+  | Loop of Id.l * ((Id.t * Type.t) list) * Id.t list * t
+  | Jump of (Id.t * Id.t * Type.t) list * Id.l
   | ExtArray of Id.t
   | ExtFunApp of Id.t * Id.t list
 and const = Int of int | Float of float | Ptr of Id.l (* PrtはTupleに必要 *)
@@ -79,7 +83,7 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit | Const _ | ExtArray(_) -> S.empty
   | Neg(x) | Itof(x) | In(x) | Fin(x) | Out(x) | GetL(_, x)
     | FNeg(x) | FSqrt(x) | Ftoi(x) | Floor(x) -> S.singleton x
-  | Add(x,y) | Sub(x,y) | Mul(x,y) | Div(x,y) | PutL(_, x, y)
+  | Add(x,y) | LSR(x, y) | Sub(x,y) | Mul(x,y) | Div(x,y) | PutL(_, x, y)
     | FAdd(x,y) | FSub(x,y) | FMul(x,y) | FDiv(x,y)
     | Get(x,y) -> S.of_list [x;y]
   | If (_,x,y,e1,e2) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
@@ -92,6 +96,15 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Tuple(xs) | ExtFunApp(_,xs) -> S.of_list xs
   | Put(x,y,z) -> S.of_list [x;y;z]
   | LetTuple(xs,y,e) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xs)))
+  | Loop(_, xts, ys, e) ->
+     let xs = S.of_list (List.map fst xts) in
+     let ys = S.of_list ys in
+     S.union ys (S.diff (fv e) xs)
+  | Jump(xyts, _) ->
+     List.fold_left
+       (fun acc (x, y, _) -> S.union (S.of_list [x; y]) acc)
+       S.empty
+       xyts
 
 let insert_let (e, t) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *)
   match e with
@@ -126,7 +139,11 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Add(e1, e2) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)
-                    (fun y -> Add(x, y), Type.Int))
+            (fun y -> Add(x, y), Type.Int))
+  | Syntax.LSR(e1, e2) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+    insert_let (g env e1)
+      (fun x -> insert_let (g env e2)
+          (fun y -> LSR(x, y), Type.Int))
   | Syntax.Sub(e1, e2) ->
       insert_let (g env e1)
         (fun x -> insert_let (g env e2)
@@ -331,6 +348,12 @@ and print_kNormal =
       Printf.printf " ";
       Id.print_id id2;
       Printf.printf "\n"
+    | LSR (id1, id2) ->
+      Printf.printf "LSR ";
+      Id.print_id id1;
+      Printf.printf " ";
+      Id.print_id id2;
+      Printf.printf "\n"
     | Sub (id1, id2) ->
       Printf.printf "SUB ";
       Id.print_id id1;
@@ -504,6 +527,32 @@ and print_kNormal =
       Printf.printf " ";
       Id.print_id id3;
       Printf.printf "\n"
+    | Loop(Id.L(l), xts, ys, e) ->
+       Printf.printf "Loop ";
+       Id.print_id l;
+       print_string " ";
+       List.iter
+         (fun (x, t) ->
+           Id.print_id x; print_string " : "; Type.print_type t)
+         xts;
+       print_string " <- ";
+       List.iter
+         (fun y ->
+           Id.print_id y; print_string " ")
+         ys;
+       print_string "\n";
+       indent !depth;
+       print_kNormal e
+    | Jump(xyts, Id.L(l)) ->
+       Printf.printf "Jump ";
+       Printf.printf "to %s " l;
+       let xs, ys = List.fold_right
+                      (fun (x, y, _) (acc1, acc2) -> (x :: acc1, y :: acc2))
+                      xyts ([], []) in
+       List.iter (Printf.printf "%s ") xs;
+       print_string " <- ";
+       List.iter (Printf.printf "%s ") ys;
+       print_string "\n"
     | ExtArray id ->
       Printf.printf "EXTARRAY ";
       Id.print_id id;

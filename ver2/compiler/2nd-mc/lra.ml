@@ -76,6 +76,7 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Phi((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Nop -> idset
   | Set((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
+  | SetF((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SetL((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | ILd((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Mov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -91,6 +92,8 @@ let collect_lr_from_op : lr_info H.t -> S.t -> Cfg.instr -> S.t =
   | Div((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | SLLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
+  (* | SRL((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset *)
+  | SRLI((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | Ld((x, t), _, _) -> add_lr_tbl lrtbl x t; S.add x idset
   | St _ -> idset
   | FMov((x, t), _) -> add_lr_tbl lrtbl x t; S.add x idset
@@ -127,7 +130,7 @@ let merge_lr_on_block : lr_info H.t -> Cfg.block -> unit =
   List.iter (merge_lr lrtbl) code
 
 let lookup_lr lrtbl x =
-  if Asm2.is_reg x then x
+  if Asm.is_reg x then x
   else
     (try
        let lr_i = H.find lrtbl x in
@@ -155,10 +158,11 @@ let blocklist_to_lrtbl : Cfg.block list -> lr_info H.t * S.t * S.t =
 let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   fun instr ->
   match instr.op with
-  | Phi ((x, t), yls) -> [x], [] (* これが正解? *)
+  | Phi((x, t), yls) -> [x], (List.map fst yls)
      (* let ys = List.map fst yls in [x], ys *)
   | Nop -> [], []
-  | Set((x, t), i) -> [x], []
+  | Set((x, t), _) -> [x], []
+  | SetF((x, t), _) -> [x], []
   | SetL((x, t), l) -> [x], []
   | ILd((x, t), l) -> [x], []
   | Mov((x, t), y) -> [x], [y]
@@ -174,10 +178,10 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | Div((x, t), y, z) -> [x], [y; z]
   | SLL((x, t), y, z) -> [x], [y; z]
   | SLLI((x, t), y, i) -> [x], [y]
-  | Ld((x, t), y, Asm2.V(z)) -> [x], [y; z]
-  | Ld((x, t), y, Asm2.C(i)) -> [x], [y]
-  | St(y, z, Asm2.V(w)) -> [], [y; z; w]
-  | St(y, z, Asm2.C(i)) -> [], [y; z]
+  (* | SRL((x, t), y, z) -> [x], [y; z] *)
+  | SRLI((x, t), y, i) -> [x], [y]
+  | Ld((x, t), y, i) -> [x], [y]
+  | St(y, z, i) -> [], [y; z]
   | FMov((x, t), y) -> [x], [y]
   | Ftoi((x, t), y) -> [x], [y]
   | FNeg((x, t), y) -> [x], [y]
@@ -187,13 +191,12 @@ let defs_uses_of_instr : instr -> Id.t list * Id.t list =
   | FSub((x, t), y, z) -> [x], [y; z]
   | FMul((x, t), y, z) -> [x], [y; z]
   | FDiv((x, t), y, z) -> [x], [y; z]
-  | LdF((x, t), y, Asm2.V(z)) -> [x], [y; z]
-  | LdF((x, t), y, Asm2.C(i)) -> [x], [y]
-  | StF(y, z, Asm2.V(w)) -> [], [y; z; w]
-  | StF(y, z, Asm2.C(i)) -> [], [y; z]
+  | LdF((x, t), y, i) -> [x], [y]
+  | StF(y, z, i) -> [], [y; z]
   | CallCls((x, t), f, ys, zs) -> [x], (f :: (ys @ zs))
   | CallDir((x, t), l, ys, zs) -> [x], (ys @ zs)
   | Entry(l, xs, ys) -> (l :: (xs @ ys)), []
+  | Return((_, t)) when t = Type.Unit -> [], []
   | Return((x, t)) -> [], [x] (* 一見逆だけどこれが正しいはず *)
   | Save(x) -> [], []
   | Restore(x) -> [], []
@@ -233,7 +236,7 @@ let update_use_kill : lra_sets_t -> instr -> unit =
   update_kill defs lrasets
 
 let setup_use_kill_of_block lratbl block = 
-  let L(l) = block.label in
+  let Id.L(l) = block.label in
   let lrasets = try H.find lratbl l with Not_found -> assert false in
   List.iter (update_use_kill lrasets) block.code;
   let uses_brnc = uses_of_branch block in
@@ -249,7 +252,7 @@ let setup_lra : Cfg.block list -> lra_sets_t H.t =
   let lratbl = H.create n in (* use, kill, liveoutの組を記録するテーブル *)
   List.iter
     (fun block ->
-      let L(l) = block.label in
+      let Id.L(l) = block.label in
       let lrasets = make_lrasets () in
       H.add lratbl l lrasets) blocks;
   setup_use_kill lratbl blocks;
@@ -267,7 +270,7 @@ let compute_liveout : lra_sets_t list -> S.t =
     S.empty lrasets_list
 
 let update_liveout lratbl block =
-  let L(l) = block.label in
+  (* let Id.L(l) = block.label in *)
   let lrasets = lrasets_of_block lratbl block in
   let next_lrasets_list =
     List.map (lrasets_of_block lratbl) (Cfg.next_blocks block) in

@@ -36,20 +36,21 @@ let g_const memtbl = function
   | Closure.Int(i) ->
      Ans(Set(i))
   | Closure.Float(f) ->
-     let l =
-       try
-         (* すでに定数テーブルにあったら再利用 *)
-         let (l, _) =
-           List.find (fun (_, d) ->
-               match d with
-                 F (f') -> f = f'
-               | _ -> false) !data in
-         l
-       with Not_found ->
-         let l = Id.L(Id.genid "l") in
-         data := (l, F(f)) :: !data;
-         l in
-     Ans(ILdF(l))
+     Ans(SetF(f)) (* この段階ではまだ値で持つことにした *)
+     (* let l =
+      *   try
+      *     (\* すでに定数テーブルにあったら再利用 *\)
+      *     let (l, _) =
+      *       List.find (fun (_, d) ->
+      *           match d with
+      *             F (f') -> f = f'
+      *           | _ -> false) !data in
+      *     l
+      *   with Not_found ->
+      *     let l = Id.L(Id.genid "l") in
+      *     data := (l, F(f)) :: !data;
+      *     l in
+      * Ans(ILdF(l)) *)
   | Closure.Ptr(l) ->
      Ans(Set(MemAlloc.lookup_addr memtbl l))
      
@@ -63,6 +64,7 @@ let rec g memtbl env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
   | Closure.Fin(x) -> Ans(Fin(x))
   | Closure.Out(x) -> Ans(Out(x))
   | Closure.Add(x,y) -> Ans(Add(x,y))
+  | Closure.LSR(x, y) -> Ans(SRL(x, y))
   | Closure.Sub(x,y) -> Ans(Sub(x,y))
   | Closure.Mul(x,y) -> Ans(Mul(x,y))
   | Closure.Div(x,y) -> Ans(Div(x,y))
@@ -89,7 +91,7 @@ let rec g memtbl env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
       | Type.Float -> Ans(FMov(x))
       | _ -> Ans(Mov(x)))
   | Closure.MakeCls((x, t), { Closure.entry = l; Closure.actual_fv = ys }, e2) -> (* クロージャの生成 (caml2html: virtual_makecls) *)
-     Printf.printf "---- creating closure : %s ----\n" (let L(x) = l in x);
+     Printf.printf "---- creating closure : %s ----\n" (let Id.L(x) = l in x);
      (* Closureのアドレスをセットしてから、自由変数の値をストア *)
      let e2' = g memtbl (M.add x t env) e2 in
      let offset, store_fv =
@@ -203,6 +205,8 @@ let rec g memtbl env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
                      Ans(St(z, abs, 0)))))
       | _ -> assert false)
   | Closure.ExtArray(Id.L(x)) -> Ans(SetL(Id.L("min_caml_" ^ x)))
+  | Closure.Loop(l, yts, zs, e) -> Ans(Loop(l, yts, zs, g memtbl (M.add_list yts env) e))
+  | Closure.Jump(yzts, l) -> Ans(Jump(yzts, l))
 
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
 let h memtbl

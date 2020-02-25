@@ -92,3 +92,12 @@ let y = x *. sin a4 +. cos a5 +. sin a2 in
 y
 (* let a0 = read_float () in
  * sin a0 *)
+(* let a0 = 4.5 in
+ * let a1 = -3.1 in
+ * let a2 = 33.2 in
+ * let a3 = 10.3 in
+ * let a4 = -22.5 in
+ * let a5 = 0.23 in
+ * let x = sin a0 +. cos a1 +. cos a3 in
+ * let y = x *. sin a4 +. cos a5 +. sin a2 in
+ * y *)

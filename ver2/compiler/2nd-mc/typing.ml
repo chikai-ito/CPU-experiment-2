@@ -30,6 +30,7 @@ let rec deref_term = function
   | Fin(e) -> Fin(deref_term e)
   | Out(e) -> Out(deref_term e)
   | Add(e1, e2) -> Add(deref_term e1, deref_term e2)
+  | LSR(e1, e2) -> LSR(deref_term e1, deref_term e2)
   | Sub(e1, e2) -> Sub(deref_term e1, deref_term e2)
   | Mul(e1, e2) -> Mul(deref_term e1, deref_term e2)
   | Div(e1, e2) -> Div(deref_term e1, deref_term e2)
@@ -116,7 +117,7 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Out(e) ->
         unify Type.Int (g env e);
         Type.Unit
-    | Add(e1, e2) | Sub(e1, e2)
+    | Add(e1, e2) | Sub(e1, e2) | LSR(e1, e2)
       | Mul(e1, e2) | Div(e1, e2) -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
         unify Type.Int (g env e1);
         unify Type.Int (g env e2);

@@ -30,13 +30,13 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   (* Syntax.print_syntax syntax; *)
   let kNormal = Alpha.f (KNormal.f syntax) in
   let kNormal = iter !limit kNormal in
-  let kNormal = ANormal.f (iter2 !limit2 kNormal) in
+  let kNormal = Assoc.f (iter2 !limit2 kNormal) in
   let kNormal, sarrays = Sarray.f oc2 kNormal in
   let memtbl, mems = MemAlloc.f oc2 sarrays in
   let kNormal = ConstExpand.f kNormal in
   (* Printf.printf "----ANormal----\n";
    * KNormal.print_kNormal kNormal; *)
-  Emit.f outchan memtbl
+  Emit.f outchan memtbl tp
     (Load_imm.f 
        (RegAlloc.f tp
           (Simm.f
@@ -53,17 +53,6 @@ let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file
   lexbuf outchan (Lexing.from_channel inchan);
   close_in inchan;
   close_out outchan
-  (* if !compile_mode = 0 then
-   * try
-   *   lexbuf outchan (Lexing.from_channel inchan);
-   *   close_in inchan;
-   *   close_out outchan;
-   * with e -> (close_in inchan; close_out outchan; raise e)
-   * else if !compile_mode = 1 then
-   *   ()
-   *   (\* lexbuf2 outchan (Lexing.from_channel inchan) *\)
-   * else
-   *   assert false *)
 
 let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
   let files = ref [] in

@@ -16,12 +16,12 @@ let counter = ref 0
  *     | x::_ -> x
  *     | _ -> assert false) in
  *  Printf.sprintf "%s.%d" s !counter *)
-let get_body s = (match Str.split (Str.regexp "\\.") s with
+let getbody s = (match Str.split (Str.regexp "\\.") s with
                      | x :: _ -> x
                      | _ -> assert false)
 let idtbl = H.create 50000 (* idtblには各変数につき次に割り当て可能な整数が格納されている *)
 let genid s =
-  let s = get_body s in
+  let s = getbody s in
   (* let s = (match Str.split (Str.regexp "\\.") s with
    *          | x::_ -> x
    *          | _ -> assert false) in *)
