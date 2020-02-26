@@ -1,6 +1,6 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 1875) (
+module top #(CLK_PER_HALF_BIT = 945) (
     input wire clk,
     input wire rstn,
     
@@ -33,8 +33,8 @@ module top #(CLK_PER_HALF_BIT = 1875) (
     output reg [3:0] err_pc,
     output wire we);
 
-    localparam inst_size     = 15000;
-    localparam buffer_size   = 5000;
+    localparam inst_size     = 12000;
+    localparam buffer_size   = 1500;
 
     reg [3:0]             err;
 
@@ -181,7 +181,7 @@ module top #(CLK_PER_HALF_BIT = 1875) (
     assign f_argument = (instr_reg[1][31:26] == cop1 && instr_reg[1][25:21] == f_mtc1) ? (register_int[instr_reg[1][20:16]]) : (register_float[instr_reg[1][20:16]]);
     
     // メインFPU
-    fpu2_0 fpu11(
+    fpu1 fpu11(
         instr_reg[1][31:26],
         instr_reg[1][25:21],
         argument2[1],
@@ -729,7 +729,12 @@ module top #(CLK_PER_HALF_BIT = 1875) (
                         end
                     end
                     sll, slli:
-                        result[2] <= argument1[1] << argument2[1];
+                    	if(argument2[1][31] == 1'b1) begin
+                    		// 負の数のシフト
+                    		result[2] <= argument1[1] >> (32'b0 - argument2[1]);
+                    	end else begin
+                    		result[2] <= argument1[1] << argument2[1];
+                    	end
                     ilw, ilws:
                         argument1[2] <= argument1[1];
                     addi:
