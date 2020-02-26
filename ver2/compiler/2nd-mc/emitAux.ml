@@ -337,7 +337,8 @@ let move_val oc regtbl reg x t =
        Format.eprintf "EmitAux : ----- reg = %s ----@." reg;
      (assert (not (is_freg reg));
       match alloc with
-      | Alloc(r) when r <> reg ->
+      | Alloc(r) when r <> reg && r <> "%r0" ->
+         Format.eprintf "%s to %s@." reg r;
          Printf.fprintf oc "\tmov\t%s %s\n" reg r
       | _ -> ()))
 

@@ -1,6 +1,6 @@
 open KNormal
 
-let threshold = ref 0
+let threshold = ref 200
 let unlimited = ref true
 
 let rec size = function

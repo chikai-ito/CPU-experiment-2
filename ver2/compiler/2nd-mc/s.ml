@@ -9,6 +9,8 @@ module S =
 include S
 
 let of_list l = List.fold_left (fun s e -> add e s) empty l
+let print_set s = (List.iter (fun x -> Printf.printf "%s, " x) (S.elements s));
+                  print_string "\n"
 let print x s =
   let s = S.elements s in
   Format.eprintf "%s : @." x;

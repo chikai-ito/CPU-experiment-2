@@ -196,6 +196,7 @@ let build_igraph : Cfg.block list ->
     (Printf.printf "------------------------------------------\n\n";
      List.iter Cfg_db.print_block blocks;
      Printf.printf "------------------------------------------\n\n"));
+  Lcm.f blocks;
   let lrtbl, idset, lrset = Lra.blocklist_to_lrtbl blocks in
   (* print_lr_tbl lrtbl; *)
   let lr_tp_tbl = cfg_replace_with_lr lrtbl blocks in (* ここで変数がLRに書き換わる *)

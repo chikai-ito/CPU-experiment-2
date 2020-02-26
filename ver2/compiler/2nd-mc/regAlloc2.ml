@@ -9,12 +9,13 @@ type alloc_result = Alloc of Id.t | Spill of Type.t
 type alloc_tbl_t = alloc_result H.t
 
 let lookup_alloc regtbl lr =
-  try
-    H.find regtbl lr
-  with
-    Not_found ->
-    Format.eprintf "variable %s is not on the alloc table@." lr;
-    assert false
+  if is_reg lr then Alloc(lr) else
+    try
+      H.find regtbl lr
+    with
+      Not_found ->
+      Format.eprintf "variable %s is not on the alloc table@." lr;
+      assert false
 
 let is_alloc alloc =
   match alloc with Alloc _ -> true | Spill _ -> false
@@ -44,10 +45,20 @@ let make_reg_list : alloc_tbl_t -> S.t -> Id.t list =
     lr_list
 
 (* これを書き換えてcoalescingする *)
-let choose_reg stat_tbl allregs regs lr =
+let choose_reg regtbl adjs stat_tbl allregs regs lr =
   if Asm.is_reg lr then lr
   else
     (let targets = tar_list allregs (get_status stat_tbl lr).target in
+     let targets = List.concat
+                     (List.map
+                        (fun x -> if is_reg x && not (S.mem x adjs) then [x] else
+                                    if H.mem regtbl x && not (S.mem x adjs) then
+                                      (match lookup_alloc regtbl x with
+                                       | Alloc (r) -> [r] | _ -> [])
+                                    else
+                                      [])
+                        (* targets) in *)
+                        (List.filter (fun x -> x <> "%r0") targets)) in
      try
        List.find (fun r -> not (List.mem r regs)) targets
      with
@@ -69,9 +80,10 @@ let assign_lr : alloc_tbl_t -> lr_stat_tbl_t -> inter_graph ->
     let adjs' = S.inter adjs (S.of_list !allocated) in
     let regs = make_reg_list regtbl adjs' in
     let reg = (match ty with
-               | Type.Float -> choose_reg stat_tbl fallregs regs lr
-               | _ -> choose_reg stat_tbl allregs regs lr) in
-    (* Format.eprintf "assign register %s to live range %s@." reg lr; *)
+               | Type.Float -> choose_reg regtbl adjs stat_tbl fallregs regs lr
+               | _ -> choose_reg regtbl adjs stat_tbl allregs regs lr) in
+    if !Lra2.print_option then
+      Printf.printf "assign register %s to live range %s\n" reg lr;
     add_reg regtbl lr reg;
     allocated := lr :: !allocated
   done
