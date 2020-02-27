@@ -1,5 +1,5 @@
 let limit = ref 0
-let limit2 = ref 20
+let limit2 = ref 10
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
   Format.eprintf "iteration %d@." n;
@@ -11,7 +11,6 @@ let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
 let rec iter2 n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
   Format.eprintf "iteration %d@." n;
   if n = 0 then e else
-    (* let e' = Elim.f (ConstFold.f (LoadElimK.f (Inline2.f (Assoc.f (Beta.f e))))) in *)
     let e' = Elim.f (ConstFold.f (Inline2.f (Assoc.f (Beta.f e)))) in
     if e = e' then e else
       iter2 (n - 1) e'
@@ -25,7 +24,6 @@ let print_set set =
 let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
   let out_chan = open_out "heap_map.txt" in
   Id.counter := 0;
-  Inline2.unlimited := true;
   Typing.extenv := M.empty;
   let syntax = Parser.exp Lexer.token l in
   let syntax, tp = Typing.f syntax in
@@ -33,22 +31,27 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
   let kNormal = Alpha.f (KNormal.f syntax) in
   let kNormal = iter !limit kNormal in
   let kNormal = Assoc.f (iter2 !limit2 kNormal) in
-  let kNormal = Inline2.f kNormal in
   let kNormal, sarrays = Sarray.f out_chan kNormal in
   let memtbl, mems = MemAlloc.f out_chan sarrays in
   let kNormal = ConstExpand.f kNormal in
   let kNormal = Loop.f kNormal in
-  (* let kNormal = Inline2.f kNormal in *)
   let kNormal = Elim.f (Inline2.f kNormal) in
-  (* let kNormal = Elim.f (ConstFold.f (LoadElimK.f (Inline2.f (Assoc.f (Beta.f kNormal))))) in *)
-  (* Inline2.unlimited := false; *)
+  (* let kNormal = Inline2.f (Inline2.f kNormal) in *)
   let virtCode = Simm.f (Virtual.f memtbl mems (Closure.f kNormal)) in
-  (* let virtCode = LoadElim.f virtCode in *)
+  let virtCode = LoadElim.f virtCode in
   let virtCode = LoadZero.f virtCode in
   let prog = Cfg.f virtCode tp in
   let prog = Load_imm2.f prog in
   Emit2.f outchan memtbl prog
-   
+    
+  (* Printf.printf "----ANormal----\n";
+   * KNormal.print_kNormal kNormal; *)
+  (* Emit.f outchan memtbl
+   *   (Load_imm.f 
+   *      (RegAlloc.f tp
+   *         (Simm.f
+   *            (Virtual.f memtbl mems
+   *               (Closure.f kNormal))))) *)
 
 let string s = lexbuf stdout (Lexing.from_string s) (* 文字列をコンパイルして標準出力に表示する (caml2html: main_string) *)
 

@@ -188,15 +188,7 @@ let phi_back_loop : (Id.t * Type.t) list -> Id.t list -> equiv_ids_t
   (* labelは上からの流れ *)
   fun xts ys equiv_ids label ->
   List.iter2 (fun (x, _) (z, _) -> assert (x = z)) xts equiv_ids;
-  (* let ys' = List.map Id.genid ys in *)
-  let ys' = List.map
-              (fun y -> if Asm.is_reg y then
-                          (if not (Asm.is_freg y) then
-                            Id.gentmp Type.Int
-                          else
-                            assert false)
-                        else
-                          Id.genid y) ys in
+  let ys' = List.map Id.genid ys in
   let yls = List.map (fun y -> (y, label)) ys' in
   let equiv_ids = List.map2 (fun yl (z, zls) -> (z, yl :: zls)) yls equiv_ids in
   let phis = List.map2 (fun xt (_, zls) -> Phi(xt, zls)) xts equiv_ids in
