@@ -1,6 +1,6 @@
 `default_nettype none
 
-module top #(CLK_PER_HALF_BIT = 945) (
+module top #(CLK_PER_HALF_BIT = 675) (
     input wire clk,
     input wire rstn,
     
@@ -33,8 +33,8 @@ module top #(CLK_PER_HALF_BIT = 945) (
     output reg [3:0] err_pc,
     output wire we);
 
-    localparam inst_size     = 12000;
-    localparam buffer_size   = 1500;
+    localparam inst_size     = 11700;
+    localparam buffer_size   = 2000;
 
     reg [3:0]             err;
 
@@ -99,7 +99,7 @@ module top #(CLK_PER_HALF_BIT = 945) (
 
     // バッファの中でコアが読み終えている部分
     reg [31:0] buffer_reading_idx;
-    reg [31:0] prop_reading_idx [0:4];
+    reg [31:0] prop_reading_idx [0:5];
 
     // 6クロック命令のためにパイプラインがストールするための時間
     reg [2:0] waiting;
@@ -116,38 +116,38 @@ module top #(CLK_PER_HALF_BIT = 945) (
     reg first_send;
    
     // RSレジスタ
-    reg [31:0] argument1 [0:4];
+    reg [31:0] argument1 [0:5];
     // RTレジスタ
-    reg [31:0] argument2 [0:4];
+    reg [31:0] argument2 [0:5];
     // 分岐用レジスタ
-    reg [31:0] argument3 [0:4];
+    reg [31:0] argument3 [0:5];
 
     reg [31:0] iteration;
 
     // 演算結果
-    reg [31:0] result [0:4];
+    reg [31:0] result [0:5];
     // 終了処理
     reg inst_stop;
     reg sw_waiting;
 
     // 伝搬する命令
-    reg [31:0] instr_reg [0:4];
+    reg [31:0] instr_reg [0:5];
 
     // 伝搬するプログラムカウンタ
-    reg [31:0] prop_pc [0:4];
+    reg [31:0] prop_pc [0:5];
 
     // 伝搬する実行命令数
-    reg [31:0] prop_iteration [0:4];
+    reg [31:0] prop_iteration [0:5];
 
     // 伝搬する分岐命令フラグ
-    reg [4:0] jump;
+    reg [5:0] jump;
 
     // レジスタの値がいま計算中であるかどうかを保持するフラグ
     reg [31:0] int_data_flag;
     reg [31:0] float_data_flag;
 
     // 伝搬する命令有効フラグ
-    reg [4:0] validate_flag;
+    reg [5:0] validate_flag;
 
     
     wire [31:0] immediate;
@@ -158,11 +158,19 @@ module top #(CLK_PER_HALF_BIT = 945) (
 
     // OUT命令で出力する中身
     reg [31:0] output_content;
+
+    // ストアフェーズの命令がどこに書こうとしているか
+    wire [31:0] want_to_write;
     
     
     // 即値として何を用いるか
     assign immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000000 + instr_reg[0][15:0]) : (instr_reg[0][15:0]);
     assign minus_immediate = (instr_reg[0][15:15] == 1'b1) ? (32'b11111111111111110000000000000001 + instr_reg[0][15:0]) : (instr_reg[0][15:0] - 1);
+    
+    /*
+    assign want_to_write = (validate_flag[1]) ? 
+                           ()
+    */
     
     // *******************
     // FPU modules
@@ -210,6 +218,8 @@ module top #(CLK_PER_HALF_BIT = 945) (
     
     
     // ********************
+    
+    reg reading;
 
     
 
@@ -239,7 +249,7 @@ module top #(CLK_PER_HALF_BIT = 945) (
             int_data_flag[i] <= 1'b0;
             float_data_flag[i] <= 1'b0;
         end
-        for(i=0;i<5;i=i+1) begin
+        for(i=0;i<6;i=i+1) begin
             jump[i] <= 1'b0;
             result[i] <= 32'b0;
             argument1[i] <= 32'b0;
@@ -268,7 +278,7 @@ module top #(CLK_PER_HALF_BIT = 945) (
 
     // 一つのデータを連続して読まないように立てるフラグ
     // 読むのを開始した瞬間に立てて、データが来なくなったら下ろす
-    reg reading;
+    
 
     // in命令で4バイト分の入力が終わっているか？
     reg finished_write;
@@ -277,7 +287,73 @@ module top #(CLK_PER_HALF_BIT = 945) (
 
     reg out;
 
+    reg want_validate;
+    reg [5:0] want_register;
+    reg int_or_float;
+    
+    reg [2:0] want_argument;
+
+    
+
     always @(posedge clk) begin
+    
+        want_validate = 1'b0;
+        want_register = 5'b0;
+        int_or_float = 1'b0;
+
+        /*
+        if (validate_flag[1]) begin
+            case (instr_reg[1][31:26])
+                special:
+                    case (instr_reg[1][5:0])
+                        s_add, s_sub, s_mult: begin
+                            want_validate = 1'b1;
+                            want_register = instr_reg[1][15:11];
+                            int_or_float = 1'b0;
+                        end
+                        s_mov: begin
+                            want_validate = 1'b1;
+                            want_register = instr_reg[1][20:16];
+                            int_or_float = 1'b0;
+                        end
+                        s_in: begin
+                            want_validate = 1'b1;
+                            want_register = instr_reg[1][25:21];
+                            int_or_float = 1'b0;
+                        end
+                        s_fin: begin
+                            want_validate = 1'b1;
+                            want_register = instr_reg[1][25:21];
+                            int_or_float = 1'b1;
+                        end
+                    endcase // inst1[31:26]
+                cop1: begin
+                    if(instr_reg[1][5:0] == s_mov) begin
+                        want_validate = 1'b1;
+                        want_register = instr_reg[1][20:16];
+                        int_or_float = 1'b1;
+                    end
+                end
+                sll: begin
+                    want_validate = 1'b1;
+                    want_register = instr_reg[1][15:11];
+                    int_or_float = 1'b0;
+                end
+                slli, ilw, addi: begin
+                    want_validate = 1'b1;
+                    want_register = instr_reg[1][20:16];
+                    int_or_float = 1'b0;
+                end
+                ilws: begin
+                    want_validate = 1'b1;
+                    want_register = instr_reg[1][20:16];
+                    int_or_float = 1'b1;
+                end
+            endcase // inst1[31:26]
+    
+        end
+        */
+        
         // 一番最初に0xaaを送信するための処理
         // 今考えるとコンパイラに頼んだほうが圧倒的に楽だったと思う
         if (first_send && ~sender_sending) begin
@@ -382,7 +458,7 @@ module top #(CLK_PER_HALF_BIT = 945) (
                         // 待機カウンタをインクリメント
                         pc <= pc + 1;
                         iteration <= iteration + 1;
-                        waiting <= waiting + 2;
+                        waiting <= waiting + 3;
                     end
                     j, jal: begin
                         pc <= {6'b0, inst[pc][25:0]};
@@ -439,7 +515,19 @@ module top #(CLK_PER_HALF_BIT = 945) (
                             pc <= pc + 1;
                         end 
                     end
-
+                    // フォワーディングしないならここはコメントアウトしても動くことを確認済み
+                    /*
+                    lw, lws: begin
+                        if (validate_flag[0] || validate_flag[1]) begin
+                            pc <= pc;
+                            iteration <= iteration;
+                            validate_flag[0] <= 1'b0;
+                        end else begin
+                            iteration <= iteration + 1;
+                            pc <= pc + 1;
+                        end
+                    end
+                    */
                     default: begin
                         iteration <= iteration + 1;
                         pc <= pc + 1;
@@ -456,6 +544,9 @@ module top #(CLK_PER_HALF_BIT = 945) (
             // ********************
 
             stallflag = 0;
+
+            want_argument = 0;
+
             if (validate_flag[0]) begin
                 case (instr_reg[0][31:26])
                     special:
@@ -464,13 +555,24 @@ module top #(CLK_PER_HALF_BIT = 945) (
                                 argument1[1] <= register_int[instr_reg[0][25:21]];
                                 argument2[1] <= register_int[instr_reg[0][20:16]];
                                 stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+                                if(stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b0 && !int_data_flag[instr_reg[0][20:16]]) begin
+                                    stallflag = 1'b0;
+                                    want_argument = 1;
+                                end else if(stallflag && want_register == instr_reg[0][20:16] && int_or_float == 1'b0 && !int_data_flag[instr_reg[0][25:21]]) begin
+                                    stallflag = 1'b0;
+                                    want_argument = 2;
+                                end
                                 if (~stallflag) begin
                                     int_data_flag[instr_reg[0][15:11]] <= 1'b1;
                                 end
                             end
                             s_mov: begin
                                 argument1[1] <= register_int[instr_reg[0][25:21]];
-                                stallflag = int_data_flag[instr_reg[0][25:21]];
+                                stallflag = (int_data_flag[instr_reg[0][25:21]]);
+                                if(stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b0) begin
+                                    stallflag = 1'b0;
+                                    want_argument = 1;
+                                end
                                 if (~stallflag) begin
                                     int_data_flag[instr_reg[0][20:16]] <= 1'b1;
                                 end
@@ -499,6 +601,14 @@ module top #(CLK_PER_HALF_BIT = 945) (
                                             sender_sending | 
                                             (instr_reg[1][5:0] == s_out && validate_flag[1]) |
                                             (instr_reg[2][5:0] == s_out && validate_flag[2]);
+                                if (stallflag && (want_register == instr_reg[0][25:21]) && 
+                                    !sender_sending && 
+                                    !(instr_reg[1][5:0] == s_out && validate_flag[1]) && 
+                                    !(instr_reg[2][5:0] == s_out && validate_flag[2]) && 
+                                    int_or_float == 1'b0) begin
+                                    stallflag = 1'b0;
+                                    want_argument = 1;
+                                end
                             end
                             s_in: begin
                                 argument1[1] <= {buffer[buffer_reading_idx+3], 
@@ -554,6 +664,11 @@ module top #(CLK_PER_HALF_BIT = 945) (
                             // mov.s
                             argument1[1] <= register_float[instr_reg[0][25:21]];
                             stallflag = float_data_flag[instr_reg[0][25:21]];
+                            if(stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b1) begin
+                                stallflag = 1'b0;
+                                want_argument = 1;
+                            end
+
                             if (~stallflag) begin
                                 float_data_flag[instr_reg[0][20:16]] <= 1'b1;
                             end
@@ -563,6 +678,10 @@ module top #(CLK_PER_HALF_BIT = 945) (
                             argument1[1] <= register_int[instr_reg[0][20:16]];
                             argument2[1] <= register_float[instr_reg[0][15:11]];
                             stallflag = int_data_flag[instr_reg[0][20:16]];
+                            if(stallflag && want_register == instr_reg[0][20:16] && int_or_float == 1'b0) begin
+                                stallflag = 1'b0;
+                                want_argument = 1;
+                            end
                             if (~stallflag) begin
                                 float_data_flag[instr_reg[0][15:11]] <= 1'b1;
                             end
@@ -571,6 +690,10 @@ module top #(CLK_PER_HALF_BIT = 945) (
                             argument1[1] <= register_int[instr_reg[0][20:16]];
                             argument2[1] <= register_float[instr_reg[0][15:11]];
                             stallflag = float_data_flag[instr_reg[0][15:11]];
+                            if(stallflag && want_register == instr_reg[0][15:11] && int_or_float == 1'b1) begin
+                                stallflag = 1'b0;
+                                want_argument = 2;
+                            end
                             if (~stallflag) begin
                                 int_data_flag[instr_reg[0][20:16]] <= 1'b1;
                             end
@@ -580,10 +703,18 @@ module top #(CLK_PER_HALF_BIT = 945) (
                             argument2[1] <= register_float[instr_reg[0][15:11]];
                             // 本当は命令によって使うレジスタの場所は違うけどこれでも動きはするのでサボっている
                             stallflag = float_data_flag[instr_reg[0][20:16]] | float_data_flag[instr_reg[0][15:11]];
+
+                            if(stallflag && want_register == instr_reg[0][20:16] && int_or_float == 1'b1 && !float_data_flag[instr_reg[0][15:11]]) begin
+                                stallflag = 1'b0;
+                                want_argument = 1;
+                            end else if(stallflag && want_register == instr_reg[0][15:11] && int_or_float == 1'b1 && !float_data_flag[instr_reg[0][20:16]]) begin
+                                stallflag = 1'b0;
+                                want_argument = 2;
+                            end
+
                             if (~stallflag) begin
                                 float_data_flag[instr_reg[0][10:6]] <= 1'b1;
                             end
-
                         end
                     end
                     lw: begin
@@ -620,6 +751,10 @@ module top #(CLK_PER_HALF_BIT = 945) (
                         argument1[1] <= register_int[instr_reg[0][25:21]];
                         argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
                         stallflag = int_data_flag[instr_reg[0][25:21]];
+                        if(stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b0) begin
+                            stallflag = 1'b0;
+                            want_argument = 1;
+                        end
                         if (~stallflag) begin
                             int_data_flag[instr_reg[0][20:16]] <= 1'b1;
                         end
@@ -628,6 +763,15 @@ module top #(CLK_PER_HALF_BIT = 945) (
                         argument1[1] <= register_int[instr_reg[0][20:16]];
                         argument2[1] <= register_int[instr_reg[0][10:6]];
                         stallflag = int_data_flag[instr_reg[0][20:16]] | int_data_flag[instr_reg[0][10:6]];
+
+                        if(stallflag && want_register == instr_reg[0][20:16] && int_or_float == 1'b0 && !int_data_flag[instr_reg[0][10:6]]) begin
+                            stallflag = 1'b0;
+                            want_argument = 1;
+                        end else if(stallflag && want_register == instr_reg[0][10:6] && int_or_float == 1'b0 && !int_data_flag[instr_reg[0][20:16]]) begin
+                            stallflag = 1'b0;
+                            want_argument = 2;
+                        end
+
                         if (~stallflag) begin
                             int_data_flag[instr_reg[0][15:11]] <= 1'b1;
                         end 
@@ -636,6 +780,12 @@ module top #(CLK_PER_HALF_BIT = 945) (
                         argument1[1] <= register_int[instr_reg[0][25:21]];
                         argument2[1] <= {{16{instr_reg[0][15]}}, instr_reg[0][15:0]};
                         stallflag = int_data_flag[instr_reg[0][25:21]];
+
+                        if(stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b0) begin
+                            stallflag = 1'b0;
+                            want_argument = 1;
+                        end
+
                         if (~stallflag) begin
                             int_data_flag[instr_reg[0][20:16]] <= 1'b1;
                         end
@@ -662,11 +812,28 @@ module top #(CLK_PER_HALF_BIT = 945) (
                         argument1[1] <= register_int[instr_reg[0][25:21]];
                         argument2[1] <= register_int[instr_reg[0][20:16]];
                         stallflag = int_data_flag[instr_reg[0][25:21]] | int_data_flag[instr_reg[0][20:16]];
+
+                        if(stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b0 && !int_data_flag[instr_reg[0][20:16]]) begin
+                            stallflag = 1'b0;
+                            want_argument = 1;
+                        end else if(stallflag && want_register == instr_reg[0][20:16] && int_or_float == 1'b0 && !int_data_flag[instr_reg[0][25:21]]) begin
+                            stallflag = 1'b0;
+                            want_argument = 2;
+                        end
+
                     end
                     fbne, fbg, fbge: begin
                         argument1[1] <= register_float[instr_reg[0][25:21]];
                         argument2[1] <= register_float[instr_reg[0][20:16]];
                         stallflag = float_data_flag[instr_reg[0][25:21]] | float_data_flag[instr_reg[0][20:16]];
+
+                        if (stallflag && want_register == instr_reg[0][25:21] && int_or_float == 1'b1 && !float_data_flag[instr_reg[0][20:16]]) begin
+                            stallflag = 1'b0;
+                            want_argument = 1;
+                        end else if (stallflag && want_register == instr_reg[0][20:16] && int_or_float == 1'b1 && !float_data_flag[instr_reg[0][25:21]]) begin
+                            stallflag = 1'b0;
+                            want_argument = 2;
+                        end
                     end
                 endcase // now_inst[31:26]
             end
@@ -704,41 +871,99 @@ module top #(CLK_PER_HALF_BIT = 945) (
                 case (instr_reg[1][31:26])
                     special:
                         case (instr_reg[1][5:0])
-                            s_add:
+                            s_add: begin
+                                if(want_argument == 1) begin
+                                    argument1[1] <= argument1[1] + argument2[1];
+                                end else if(want_argument == 2) begin
+                                    argument2[1] <= argument1[1] + argument2[1];
+                                end
                                 result[2] <= argument1[1] + argument2[1];
-                            s_sub:
+                            end
+                            s_sub: begin
+                                if(want_argument == 1) begin
+                                    argument1[1] <= argument1[1] - argument2[1];
+                                end else if(want_argument == 2) begin
+                                    argument2[1] <= argument1[1] - argument2[1];
+                                end
                                 result[2] <= argument1[1] - argument2[1];
-                            s_mult:
+                            end
+                            s_mult: begin
+                                if(want_argument == 1) begin
+                                    argument1[1] <= argument1[1] * argument2[1];
+                                end else if(want_argument == 2) begin
+                                    argument2[1] <= argument1[1] * argument2[1];
+                                end
                                 result[2] <= argument1[1] * argument2[1];
+                            end
                             /*
                             s_div:
                                 result[2] <= argument1[1] / argument2[1];
                             */
-                            s_mov:
+                            s_mov: begin
+                                if (want_argument == 1) begin
+                                    argument1[1] <= argument1[1];
+                                end else if (want_argument == 2) begin
+                                    argument2[1] <= argument1[1];
+                                end
                                 result[2] <= argument1[1];
+                            end
                             s_out: begin
                                 result[2] <= argument1[1];
                                 output_content = argument1[1];
                             end
-                            s_in, s_fin:
+                            s_in, s_fin: begin
+                                if (want_argument == 1) begin
+                                    argument1[1] <= argument1[1];
+                                end else if (want_argument == 2) begin
+                                    argument2[1] <= argument1[1];
+                                end 
                                 result[2] <= argument1[1];
+                            end
                         endcase // instr_reg[1][5:0]
                     cop1: begin
                         if (instr_reg[1][5:0] == s_mov) begin
+                            if (want_argument == 1) begin
+                                argument1[1] <= argument1[1];
+                            end else if (want_argument == 2) begin
+                                argument2[1] <= argument1[1];
+                            end
                             result[2] <= argument1[1];
                         end
                     end
-                    sll, slli:
+                    sll, slli: begin
                     	if(argument2[1][31] == 1'b1) begin
                     		// 負の数のシフト
+                            if (want_argument == 1) begin
+                                argument1[1] <= argument1[1] >> (32'b0 - argument2[1]);
+                            end else if (want_argument == 2) begin
+                                argument2[1] <= argument1[1] >> (32'b0 - argument2[1]);
+                            end
                     		result[2] <= argument1[1] >> (32'b0 - argument2[1]);
                     	end else begin
+                            if (want_argument == 1) begin
+                                argument1[1] <= argument1[1] << argument2[1];
+                            end else if (want_argument == 2) begin
+                                argument2[1] <= argument1[1] << argument2[1];
+                            end
                     		result[2] <= argument1[1] << argument2[1];
                     	end
-                    ilw, ilws:
+                    end
+                    ilw, ilws: begin
+                        if (want_argument == 1) begin
+                            argument1[1] <= argument1[1];
+                        end else if (want_argument == 2) begin
+                            argument2[1] <= argument1[1];
+                        end
                         argument1[2] <= argument1[1];
-                    addi:
+                    end
+                    addi: begin
+                        if (want_argument == 1) begin
+                            argument1[1] <= argument1[1] + argument2[1];
+                        end else if (want_argument == 2) begin
+                            argument2[1] <= argument1[1] + argument2[1];
+                        end
                         result[2] <= argument1[1] + argument2[1];
+                    end
                     jal, jalr: begin
                         result[2] <= prop_pc[1];
                     end
@@ -968,25 +1193,36 @@ module top #(CLK_PER_HALF_BIT = 945) (
             prop_reading_idx[4] <= prop_reading_idx[3];
             jump[4] <= jump[3];
 
+            // ********************
+            // 実行フェーズその4
+            // ********************
+
+            instr_reg[5] <= instr_reg[4];
+            prop_pc[5] <= prop_pc[4];
+            validate_flag[5] <= validate_flag[4];
+            prop_iteration[5] <= prop_iteration[4];
+            prop_reading_idx[5] <= prop_reading_idx[4];
+            jump[5] <= jump[4];
+
 
             // ********************
             // ストアフェーズ
             // ********************
 
-            if (validate_flag[4]) begin
-                case (instr_reg[4][31:26])
+            if (validate_flag[5]) begin
+                case (instr_reg[5][31:26])
                     cop1: begin
-                        if (instr_reg[4][25:21] == f_others) begin
-                            float_data_flag[instr_reg[4][10:6]] <= 1'b0;
-                            register_float[instr_reg[4][10:6]] <= f_result;
+                        if (instr_reg[5][25:21] == f_others) begin
+                            float_data_flag[instr_reg[5][10:6]] <= 1'b0;
+                            register_float[instr_reg[5][10:6]] <= f_result;
 
-                        end else if (instr_reg[4][25:21] == f_mfc1) begin
-                            int_data_flag[instr_reg[4][20:16]] <= 1'b0;
-                            register_int[instr_reg[4][20:16]] <= f_result;
+                        end else if (instr_reg[5][25:21] == f_mfc1) begin
+                            int_data_flag[instr_reg[5][20:16]] <= 1'b0;
+                            register_int[instr_reg[5][20:16]] <= f_result;
 
-                        end else if (instr_reg[4][25:21] == f_mtc1) begin
-                            float_data_flag[instr_reg[4][15:11]] <= 1'b0;
-                            register_float[instr_reg[4][15:11]] <= f_result;
+                        end else if (instr_reg[5][25:21] == f_mtc1) begin
+                            float_data_flag[instr_reg[5][15:11]] <= 1'b0;
+                            register_float[instr_reg[5][15:11]] <= f_result;
 
                         end
                     end
@@ -995,4 +1231,5 @@ module top #(CLK_PER_HALF_BIT = 945) (
         end
     end
 endmodule
+
 `default_nettype wire
