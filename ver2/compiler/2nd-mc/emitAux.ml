@@ -8,43 +8,32 @@ let stacktop = ref 0
              
 (* table mapping ids to its offset in AR *)
 let stackmap = H.create 5000
-             
-(* loopの前後に上書きされる変数をsaveするmap *)
-let stackmap_sub = H.create 100
 
+let saveset = ref S.empty
 
 let save x =
   if not (H.mem stackmap x) then
     (H.add stackmap x !stacktop;
+     saveset := S.add x !saveset;
      stacktop := !stacktop - 4)
 
+let spill x =
+  if not (H.mem stackmap x) then
+    (H.add stackmap x !stacktop;
+     stacktop := !stacktop - 4)
 
-let save_sub x =
-  (* 以前のsaveの結果も後々必要になるので，stackに積み重ねていく *)
-  H.add stackmap_sub x !stacktop;
-  stacktop := !stacktop - 4
-
-  
-let remov_sub x =
-  assert (H.mem stackmap_sub x);
-  H.remove stackmap_sub x
-  
 
 let add_list_to_stackmap regtbl xs =
   let xs = List.map fst (* spillされた変数を集める *)
              (List.filter
                 (fun (x, a) -> not (is_alloc a))
                 (List.map (fun x -> (x, lookup_alloc regtbl x)) xs)) in
-  List.iter save xs
+  List.iter spill xs
 
 
 let get_offset x =
   H.find stackmap x
 (* try H.find stackmap x with Not_found -> assert false *)
-
-
-let get_offset_sub x =
-  try H.find stackmap_sub x with Not_found -> assert false
 
 
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
@@ -72,7 +61,7 @@ let add_regmap regtbl =
       | Type.Float -> (* float型のspillの時 *)
          if not (List.mem_assoc x regmap) then
            ((* まだregmapに追加されていないとき *)
-            save x; (* AR上に追加 *)
+            spill x; (* AR上に追加 *)
             match fspl_regs with
             | r :: rs -> (spl_regs, rs, (x, r) :: regmap, (x, t) :: spilled)
             | [] -> assert false (* spill regは２つあれば足りるはず *))
@@ -80,7 +69,7 @@ let add_regmap regtbl =
            (spl_regs, fspl_regs, regmap, spilled)
       | _ -> (* その他の型の時 *)
          if not (List.mem_assoc x regmap) then
-           (save x;
+           (spill x;
             match spl_regs with
             | r :: rs -> (rs, fspl_regs, (x, r) :: regmap, (x, t) :: spilled)
             | [] -> assert false)
@@ -133,8 +122,32 @@ let insert_save oc regmap spilled =
 
 
 let output_simple_op oc dregmap uregmap operation =
-  let dlu = lookup_regmap dregmap in
-  let ulu = lookup_regmap uregmap in
+  let dlu x =
+    if S.mem x !saveset then
+      (saveset := S.remove x !saveset;
+       let r = lookup_regmap dregmap x in
+       (if is_freg r then
+         Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r (try get_offset x with Not_found -> assert false)
+       else
+         Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r (try get_offset x with Not_found -> assert false));
+       H.remove stackmap x;
+       r)
+    else
+      lookup_regmap dregmap x in 
+      (* lookup_regmap dregmap in *)
+  (* let ulu = lookup_regmap uregmap in *)
+  let ulu x =
+    if S.mem x !saveset then
+      (saveset := S.remove x !saveset;
+       let r = lookup_regmap uregmap x in
+       (if is_freg r then
+          Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r (get_offset x)
+        else
+          Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r (get_offset x));
+       H.remove stackmap x;
+       r)
+    else
+      lookup_regmap uregmap x in 
   match operation with
   | Phi _ -> () (* Phi関数は単純に消す *)
   | Nop -> ()
@@ -200,13 +213,41 @@ let output_simple_op oc dregmap uregmap operation =
 
 
 (* functions for calling convention *)
-let make_savemap saves top =
+let make_savemap_old saves top =
   let new_top, savemap =
     List.fold_left
       (fun (ofs, acc) r ->
         (ofs - 4, (r, ofs) :: acc))
       (top, []) saves in
   new_top, savemap
+
+let make_savemap saves =
+  let savemap = 
+    List.concat
+      (List.map 
+         (fun (x, r) -> if S.mem x !saveset then []
+           else (save x; [(r, H.find stackmap x)]))
+         saves) in
+  !stacktop, savemap
+
+
+let restore_saves oc regtbl saves =
+  List.iter
+    (fun x ->
+       if S.mem x !saveset then
+         (saveset := S.remove x !saveset;
+         match lookup_alloc regtbl x with
+         | Alloc(r) -> 
+           if is_freg r then
+             (Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r (get_offset x);
+              H.remove stackmap x)
+           else
+             (Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r (get_offset x);
+              H.remove stackmap x)
+         | Spill _ -> assert false))
+    saves
+  
+         
 
 
 let save_live_regs oc savemap =
@@ -240,7 +281,7 @@ let make_int_argmap regtbl xs =
                    (fun (_, a, _) -> is_alloc a)
                    shuffle_map in
   let rrs = List.map (fun (_, a, r) -> (alloced_reg a, r)) xrrs in
-  let xrs = List.map (fun (x, _, r) -> save x; (x, r)) xsrs in
+  let xrs = List.map (fun (x, _, r) -> spill x; (x, r)) xsrs in
   rrs, xrs
 
 
@@ -255,7 +296,7 @@ let make_float_argmap regtbl xs =
                    (fun (_, a, _) -> is_alloc a)
                    shuffle_map in
   let rrs = List.map (fun (_, a, r) -> (alloced_reg a, r)) xrrs in
-  let xrs = List.map (fun (x, _, r) -> save x; (x, r)) xsrs in
+  let xrs = List.map (fun (x, _, r) -> spill x; (x, r)) xsrs in
   rrs, xrs
 
 
@@ -313,14 +354,14 @@ let move_return_val oc regtbl x t =
         Printf.fprintf oc "\tmov.s\t%s %s\n" fregs.(0) r
      | Alloc _ -> ()
      | Spill _ ->
-        Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp fregs.(0) (get_offset x))
+        Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp fregs.(0) (try get_offset x with Not_found -> assert false))
   else
     (match lookup_alloc regtbl x with
      | Alloc(r) when r <> regs.(0) ->
         Printf.fprintf oc "\tmov\t%s %s\n" regs.(0) r
      | Alloc _ -> ()
      | Spill _ ->
-        Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp regs.(0) (get_offset x))
+        Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp regs.(0) (try get_offset x with Not_found -> assert false))
 
   
 let move_val oc regtbl reg x t =

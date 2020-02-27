@@ -31,44 +31,6 @@ let rec output_instr oc livenow_tbl regtbl instr =
   | CallDir _ -> calldir_routine oc livenow_tbl regtbl instr
   | Entry _ -> entry_routine oc regtbl instr
   | Return((x, t)) -> move_return_val oc regtbl x t; false
-  | Save(x) -> (* これはループ前の変数の退避 *) (* これ，cfg作る時にmovを挟めばいい *)
-     save_sub x; (* ループ前退避用のテーブルに記録 *)
-     let alloc = lookup_alloc regtbl x in
-     (match alloc with
-      | Alloc(r) ->
-         if is_freg r then
-           Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp r (get_offset_sub x)
-         else
-           Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp r (get_offset_sub x)
-      | Spill(t) ->
-         if t = Type.Float then
-           (Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp freg_sub1
-              (try get_offset x with Not_found -> assert false);
-            Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp freg_sub1 (get_offset_sub x))
-         else
-           (Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_sub1
-              (try get_offset x with Not_found -> assert false);
-            Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_sub1 (get_offset_sub x)));
-     false
-  | Restore(x) -> (* ループ後の変数の復帰 *)
-     let alloc = lookup_alloc regtbl x in
-     (match alloc with
-      | Alloc(r) ->
-         if is_freg r then
-           Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r (get_offset_sub x)
-         else
-           Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r (get_offset_sub x)
-      | Spill(t) ->
-         if t = Type.Float then
-           (Printf.fprintf oc "\tsw.s\t%s %s %d\n" reg_sp freg_sub1 (get_offset_sub x);
-            Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp freg_sub1
-              (try get_offset x with Not_found -> assert false))
-         else
-           (Printf.fprintf oc "\tsw\t%s %s %d\n" reg_sp reg_sub1 (get_offset_sub x);
-            Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_sub1
-              (try get_offset x with Not_found -> assert false)));
-     remov_sub x; (* ループ前退避用のoffset tableの一番上をクリア *)
-     false
   | e -> (* case of simple operations *)
      let defs, uses = Lra.defs_uses_of_instr instr in
      out_sor oper defs uses; false
@@ -87,6 +49,7 @@ and create_array_routine oc livenow_tbl regtbl instr is_float =
          match ys, zs with
          | [y; z], [] -> y, z
          | _ -> assert false in
+     restore_saves oc regtbl [y; z];
      let livenow = S.remove x (Lra.lookup_livenow livenow_tbl iid) in
      let livenow' = S.elements
                       (S.diff livenow (S.of_list [y; z])) in
@@ -106,7 +69,7 @@ and create_array_routine oc livenow_tbl regtbl instr is_float =
                                     | Spill _ -> [])
                       livenow') in
      (* let saves = if List.mem regs.(0) saves then saves else regs.(0) :: saves in *)
-     let new_top, savemap = make_savemap saves !stacktop in
+     let new_top, savemap = make_savemap_old saves !stacktop in
      let rrs, xrs = make_int_argmap regtbl ys in
      let frrs, fxrs = make_float_argmap regtbl zs in
      save_live_regs oc savemap;
@@ -133,7 +96,8 @@ and callcls_routine oc livenow_tbl regtbl instr =
   let oper = instr.op in
   match oper with
   | CallCls((x, t), f, ys, zs) ->
-     add_list_to_stackmap regtbl (x :: f :: (ys @ zs));
+    restore_saves oc regtbl (f :: ys @ zs);
+    add_list_to_stackmap regtbl (x :: f :: (ys @ zs));
      let livenow = S.remove x (Lra.lookup_livenow livenow_tbl iid) in
      let is_tail = Lra.lookup_is_tail livenow_tbl iid in
        (* try H.find livenow_tbl iid with Not_found -> assert false in *)
@@ -144,17 +108,18 @@ and callcls_routine oc livenow_tbl regtbl instr =
                                 | Alloc(r) ->
                                    if r <> Asm.reg_zero
                                       && r <> Asm.reg_sp
-                                      && r <> Asm.reg_hp then [r]
+                                      && r <> Asm.reg_hp then [(x, r)]
                                    else
                                      []
                                 | Spill _ -> [])
                       livenow) in
-     let new_top, savemap = make_savemap saves !stacktop in
+     (* let new_top, savemap = make_savemap saves !stacktop in *)
+     let new_top, savemap = make_savemap saves in
      let rrs, xrs = make_int_argmap regtbl ys in
      let rrs, xrs = 
        (match lookup_alloc regtbl f with
         | Alloc(r) -> ((r, reg_cl) :: rrs), xrs
-        | Spill _ -> save f; rrs, ((f, reg_cl) :: xrs)) in
+        | Spill _ -> spill f; rrs, ((f, reg_cl) :: xrs)) in
      let frrs, fxrs = make_float_argmap regtbl zs in
      if is_tail then
        tail_callcls_routine oc rrs xrs frrs fxrs
@@ -168,7 +133,7 @@ and callcls_routine oc livenow_tbl regtbl instr =
         Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (- (new_top - 4));
         Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
         move_return_val oc regtbl x t;
-        restore_live_regs oc savemap;
+        (* restore_live_regs oc savemap; *)
         false)
   | _ -> assert false
 
@@ -183,6 +148,7 @@ and calldir_routine oc livenow_tbl regtbl instr =
   let oper = instr.op in
   match oper with
   | CallDir((x, t), Id.L(l), ys, zs) ->
+    restore_saves oc regtbl (ys @ zs);
      add_list_to_stackmap regtbl (x :: (ys @ zs));
      let livenow = S.remove x (Lra.lookup_livenow livenow_tbl iid) in
      let is_tail = Lra.lookup_is_tail livenow_tbl iid in
@@ -194,12 +160,13 @@ and calldir_routine oc livenow_tbl regtbl instr =
                                 | Alloc(r) ->
                                    if r <> Asm.reg_zero
                                       && r <> Asm.reg_sp
-                                      && r <> Asm.reg_hp then [r]
+                                      && r <> Asm.reg_hp then [(x, r)]
                                    else
                                      []                
                                 | Spill _ -> [])
                       livenow) in
-     let new_top, savemap = make_savemap saves !stacktop in
+     (* let new_top, savemap = make_savemap saves !stacktop in *)
+     let new_top, savemap = make_savemap saves in
      let rrs, xrs = make_int_argmap regtbl ys in
      let frrs, fxrs = make_float_argmap regtbl zs in
      if is_tail then
@@ -213,7 +180,7 @@ and calldir_routine oc livenow_tbl regtbl instr =
         Printf.fprintf oc "\taddi\t%s %s %d\n" reg_sp reg_sp (- (new_top - 4));
         Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp reg_ra new_top;
         move_return_val oc regtbl x t;
-        restore_live_regs oc savemap;
+        (* restore_live_regs oc savemap; *)
         false)
   | _ -> assert false
 
@@ -235,7 +202,7 @@ and entry_routine oc regtbl instr =
                         ((reg_cl, r) :: rrs), xrs
                       else
                         rrs, xrs
-        | Spill _ -> rrs, (save l; (l, reg_cl) :: xrs)) in
+        | Spill _ -> rrs, (spill l; (l, reg_cl) :: xrs)) in
      let frrs, fxrs = make_float_argmap regtbl ys in
      let frrs = List.map (fun (x, y) -> (y, x)) frrs in
      insert_int_save oc xrs;
@@ -248,9 +215,25 @@ and entry_routine oc regtbl instr =
 
 
 let output_block oc livenow_tbl regtbl block =
-  List.fold_left
-    (fun _ instr -> output_instr oc livenow_tbl regtbl instr)
-    false block.code
+  assert (S.is_empty !saveset);
+  let bool = List.fold_left
+      (fun _ instr -> output_instr oc livenow_tbl regtbl instr)
+      false block.code in
+  let saves = S.elements !saveset in
+  saveset := S.empty;
+  List.iter 
+    (fun x ->
+       match lookup_alloc regtbl x with
+       | Alloc(r) ->
+         if is_freg r then
+           Printf.fprintf oc "\tlw.s\t%s %s %d\n" reg_sp r (try get_offset x with Not_found -> assert false)
+         else
+           Printf.fprintf oc "\tlw\t%s %s %d\n" reg_sp r (try get_offset x with Not_found -> assert false)
+       | Spill _ -> assert false)
+    saves;
+  List.iter
+    (fun x -> H.remove stackmap x) saves;
+  bool
 
 
 let is_done tbl block =
@@ -407,8 +390,8 @@ let f : out_channel -> MemAlloc.memtbl_t -> Cfg.prog -> unit =
   fun oc memtbl (Prog(mems, data, f_cfgs, cfg)) ->
   let reset_ar _ =
     stacktop := 0;
-    H.clear stackmap;
-    H.clear stackmap_sub in
+    H.clear stackmap in
+    (* H.clear stackmap_sub in *)
   (* let Prog (mems, data, f_cfgs, cfg) = Cfg.f virtCode tp in *)
   let hp, sp = arrange_data oc data in
   Printf.fprintf oc "#text_section\n";
