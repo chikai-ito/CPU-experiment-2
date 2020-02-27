@@ -5,7 +5,7 @@ let rec effect = function (* 副作用の有無 (caml2html: elim_effect) *)
      effect e1 || effect e2
   | LetRec(_, e) | LetTuple(_, _, e) -> effect e
   | Out _ | In _ | Fin _ | App _ | ExtFunApp _ | Put _
-    | PutL _ | Loop _ -> true
+  | PutL _ | Loop _ -> true
   | _ -> false
 
 let rec f = function (* 不要定義削除ルーチン本体 (caml2html: elim_f) *)
@@ -15,9 +15,8 @@ let rec f = function (* 不要定義削除ルーチン本体 (caml2html: elim_f) *)
       let e1' = f e1 in
       let e2' = f e2 in
       if effect e1' || S.mem x (fv e2') then Let((x, t), e1', e2') else
-        ((match e2' with App (x, _) -> Format.eprintf "application of %s is unnecessary\n" x | _ -> ());
-         Format.eprintf "eliminating variable %s@." x;
-         e2')
+      (Format.eprintf "eliminating variable %s@." x;
+       e2')
   | LetRec({ name = (x, t); args = yts; body = e1 }, e2) -> (* let recの場合 (caml2html: elim_letrec) *)
       let e2' = f e2 in
       if S.mem x (fv e2') then

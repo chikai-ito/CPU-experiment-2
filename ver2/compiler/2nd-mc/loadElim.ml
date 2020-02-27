@@ -24,18 +24,13 @@ and g' ivals fvals env = function
   | Mov(x) -> Mov(find x env)
   | Neg(x) -> Neg(find x env)
   | Itof(x) -> Itof(find x env)
-  | Out(x) -> Out(find x env)
   | AddI(x, i) -> AddI(find x env, i)
   | Add(x, y) -> Add(find x env, find y env)
   | Sub(x, y) -> Sub(find x env, find y env)
   | Mul(x, y) -> Mul(find x env, find y env)
   | Div(x, y) -> Div(find x env, find y env)
-  | SRL(x, y) -> SRL(find x env, find y env)
   | SLL(x, y) -> SLL(find x env, find y env)
   | SLLI(x, i) -> SLLI(find x env, i)
-  | SRLI(x, i) -> SRLI(find x env, i)
-  | Ld(x, i) -> Ld(find x env, i)
-  | St(x, y, i) -> St(find x env, find y env, i)
   | FMov(x) -> FMov(find x env)
   | Ftoi(x) -> Ftoi(find x env)
   | FNeg(x) -> FNeg(find x env)
@@ -45,18 +40,12 @@ and g' ivals fvals env = function
   | FSub(x, y) -> FSub(find x env, find y env)
   | FMul(x, y) -> FMul(find x env, find y env)
   | FDiv(x, y) -> FDiv(find x env, find y env)
-  | LdF(x, i) -> LdF(find x env, i)
-  | StF(x, y, i) -> StF(find x env, find y env, i)
   | If(cmp, x, y, e1, e2) -> 
      If(cmp, find x env, find y env, g ivals fvals env e1, g ivals fvals env e2)
   | FIf(cmp, x, y, e1, e2) ->
      FIf(cmp, find x env, find y env, g ivals fvals env e1, g ivals fvals env e2)
-  (* | Loop(l, xts, ys, e) -> 
-   *    Loop(l, xts, List.map (fun y -> find y env) ys, g ivals fvals env e)
-   * | Jump(xyts, l) -> Jump(List.map (fun (x, y, t) -> (x, find y env, t)) xyts, l) *)
-  | CallCls(f, xs, ys) -> CallCls(f, List.map (fun x -> find x env) xs, List.map (fun y -> find y env) ys)
-  | CallDir(Id.L(l), xs, ys) when l <> "min_caml_create_array" && l <> "min_caml_create_float_array" ->
-     CallDir(Id.L(l), List.map (fun x -> find x env) xs, List.map (fun y -> find y env) ys)
+  | Loop(l, xts, ys, e) -> 
+     Loop(l, xts, List.map (fun y -> find y env) ys, g ivals fvals env e)
   | e -> e
 
 let h { name = l; args = xs; fargs = ys; body = e; ret = t } =

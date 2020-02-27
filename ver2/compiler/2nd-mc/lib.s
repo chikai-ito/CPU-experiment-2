@@ -1,5 +1,4 @@
 min_caml_create_array :
-	bl	%r1 %r0 program_end
 	mov	%r1 %r30
 	mov	%r1 %r31
 	mov	%r27 %r1
@@ -12,7 +11,6 @@ create_array_loop :
 create_array_ret :
 	retl
 min_caml_create_float_array :
-	bl	%r1 %r0 program_end
 	mov	%r1 %r30
 	mov	%r1 %r31
 	mov	%r27 %r1

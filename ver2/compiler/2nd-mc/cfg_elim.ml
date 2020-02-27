@@ -2,39 +2,21 @@ open Cfg
 open Lra
 
 let eliminate_useless_code livenow_tbl code =
-  (* List.filter
-   *   (fun instr ->
-   *     let iid = instr.instr_id in
-   *     let oper = instr.op in
-   *     match oper with
-   *     | Phi _ | Nop | Fin _ | In _ | Out _
-   *       | St _ | StF _ | CallCls _ | CallDir _
-   *       | Entry _ | Save _ | Restore _ -> true
-   *     | Return(_, t) when t = Type.Unit -> false
-   *     | Return _ -> true
-   *     | _ -> let defs, _ = defs_uses_of_instr instr in
-   *            let livenow = lookup_livenow livenow_tbl iid in
-   *            let x = match defs with [x] -> x | _ -> assert false in
-   *            Asm.is_reg x || S.mem x livenow)
-   *   code *)
-  List.concat
-    (List.map
-       (fun instr ->
-         let iid = instr.instr_id in
-         let oper = instr.op in
-         match oper with
-         (* | Set((x, t), i) when i = 0 ->
-          *    [{ instr_id = iid; op = (Mov((x, t), "%r0")) }] *)
-         | Phi _ | Nop | Fin _ | In _ | Out _
-           | St _ | StF _ | CallCls _ | CallDir _
-           | Entry _ | Save _ | Restore _  -> [instr]
-         | Return(_, t) when t = Type.Unit -> []
-         | Return _ -> [instr]
-         | _ -> let defs, _ = defs_uses_of_instr instr in
-                let livenow = lookup_livenow livenow_tbl iid in
-                let x = match defs with [x] -> x | _ -> assert false in
-                if Asm.is_reg x || S.mem x livenow then [instr] else [])
-    code)
+  List.filter
+    (fun instr ->
+      let iid = instr.instr_id in
+      let oper = instr.op in
+      match oper with
+      | Phi _ | Nop | Fin _ | In _ | Out _
+        | St _ | StF _ | CallCls _ | CallDir _
+        | Entry _ | Save _ | Restore _ -> true
+      | Return(_, t) when t = Type.Unit -> false
+      | Return _ -> true
+      | _ -> let defs, _ = defs_uses_of_instr instr in
+             let livenow = lookup_livenow livenow_tbl iid in
+             let x = match defs with [x] -> x | _ -> assert false in
+             Asm.is_reg x || S.mem x livenow)
+    code
 
 let f livenow_tbl cfg =
   List.iter

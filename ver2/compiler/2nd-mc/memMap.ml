@@ -24,20 +24,20 @@ let f : out_channel -> memtbl_t -> MemAlloc.t list -> unit =
         (match cns with
          | I _ | IL _ ->
             li "%r1" (I(addr));
-            Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
+            (* Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n"; *)
             li "%r1" (I(n));
             li "%r2" cns;
             Printf.fprintf oc "\tjal\tmin_caml_create_array\n";
          | F _ | FL _ ->
             li "%r1" (I(addr));
-            Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
+            (* Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n"; *)
             li "%r1" (I(n));
             li "%f0" cns;
             Printf.fprintf oc "\tjal\tmin_caml_create_float_array\n")
      | T(l, cnss) ->
         let addr = lookup_addr memtbl l in
         li "%r1" (I(addr));
-        Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n";
+        (* Printf.fprintf oc "\tbne\t%%r1 %%r27 program_end\n"; *)
         let top =
           List.fold_left
             (fun ofs cns ->

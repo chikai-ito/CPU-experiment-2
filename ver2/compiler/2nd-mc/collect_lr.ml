@@ -1,6 +1,5 @@
 open Cfg
 open Lra
-
 (* codes for collecting the infomations of live ranges *)
 (* the infomations are used when allocating registers in regAllo2.ml *)
 
@@ -8,7 +7,7 @@ open Lra
 (* 第一要素がレジスタオフセット，第二要素がループの深さ *)
 (* compare関数の定義より，target offsetはループの深さの降順に管理される *)
 type tar = R of int | L of Id.t
-   
+
 module TarS =
   Set.Make
     (struct
@@ -21,25 +20,25 @@ include TarS
 (* 重要度も加味したtarget register listを返す *)
 (* ofs = -1はreg_clを表す *)
 let tar_list regs tarset =
-  let tarofs = List.concat
-                 (List.map (fun tar -> match fst tar with
-                                       | R(ofs) -> [ofs] | _ -> [])
-                    (TarS.elements tarset)) in
-  let tar = List.concat
-              (List.map (fun tar -> match fst tar with
-                                    | L(lr) -> [lr] | _ -> [])
-                 (TarS.elements tarset)) in
   (* let tarofs = List.map fst (TarS.elements tarset) in *)
+  let tarofs = List.concat
+      (List.map (fun tar -> match fst tar with
+           | R(ofs) -> [ofs] | _ -> [])
+          (TarS.elements tarset)) in
+  let tar = List.concat
+      (List.map (fun tar -> match fst tar with
+           | L(lr) -> [lr] | _ -> [])
+        (TarS.elements tarset)) in
   let tarofs = List.filter (fun x -> x < (List.length regs)) tarofs in
-  tar @ (List.map
-           (fun x ->
-             if x >= 0 then
-               List.nth regs x
-             else if x = (-1) then
-               Asm.reg_cl
-             else
-               assert false)
-           tarofs)
+  tar @  (List.map
+            (fun x ->
+               if x >= 0 then
+                 List.nth regs x
+               else if x = (-1) then
+                 Asm.reg_cl
+               else
+                 assert false)
+            tarofs)
 
 let scale = ref 3
 
@@ -62,20 +61,21 @@ let new_status tar use ls =
 
 (* ofs_dep = (ofs, dep) *)
 let add_target ofs_dep stat =
-  { target = TarS.add ((fun (ofs, dep) -> (R(ofs), dep)) ofs_dep)
-               stat.target; use_count = stat.use_count;
-    lifespan = stat.lifespan }
-
-let add_mvtar lr_dep stat =
-  { target = TarS.add ((fun (lr, dep) -> (L(lr), dep)) lr_dep) stat.target;
+  { target = TarS.add ((fun (ofs, dep) -> (R(ofs), dep)) ofs_dep) stat.target;
     use_count = stat.use_count;
     lifespan = stat.lifespan }
+
+
+let add_mvtar lr_dep stat = 
+  { target = TarS.add ((fun (lr, dep) -> (L(lr), dep)) lr_dep) stat.target;
+  use_count = stat.use_count;
+  lifespan = stat.lifespan }
   
 
 let add_use_count dep stat =
   { target = stat.target; use_count = (!scale * dep) + stat.use_count;
     lifespan = stat.lifespan }
-  
+
 
 let add_lifespan label stat =
   let Id.L(l) = label in
@@ -171,15 +171,14 @@ let collect_stats_from_instr stat_tbl dep label instr =
      add_ofs_deps stat_tbl dep label xs;
      add_ofs_deps stat_tbl dep label ys
   | Return((x, _)) ->
-     add_tar_to_stat stat_tbl x (0, dep) label
+    add_tar_to_stat stat_tbl x (0, dep) label
   | Mov((x, _), y) ->
-     add_mvtar_to_stat stat_tbl x (y, dep) label;
-     add_mvtar_to_stat stat_tbl y (x, dep) label
+    add_mvtar_to_stat stat_tbl x (y, dep) label;
+    add_mvtar_to_stat stat_tbl y (x, dep) label
   | FMov((x, _), y) ->
-     add_mvtar_to_stat stat_tbl x (y, dep) label;
-     add_mvtar_to_stat stat_tbl y (x, dep) label
+    add_mvtar_to_stat stat_tbl x (y, dep) label;
+    add_mvtar_to_stat stat_tbl y (x, dep) label
   | _ -> ()
-
 
 let collect_stats_from_brnc stat_tbl dep label = function
   | Brc(cmpr, _, _) ->
