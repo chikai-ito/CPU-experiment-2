@@ -3330,208 +3330,88 @@ tail_b.3226 :
 tail_b.3225 :
 	mov	%r10 %r1
 	lw.s	%r1 %f0 0
-	sw.s	%r26 %f2 -36
-	sw.s	%r26 %f3 -32
-	sw	%r26 %r6 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
 	sw	%r26 %r4 0
+	sw	%r26 %r5 -4
+	sw	%r26 %r2 -8
+	sw	%r26 %r8 -12
+	sw	%r26 %r9 -16
+	sw	%r26 %r10 -20
+	sw	%r26 %r3 -24
+	sw	%r26 %r6 -28
+	sw.s	%r26 %f3 -32
+	sw.s	%r26 %f2 -36
 	sw	%r26 %r28 -40
 	addi	%r26 %r26 -44
 	jal	cos.0
 	addi	%r26 %r26 44
 	lw	%r26 %r28 -40
 	mov.s	%f0 %f7
-	lw.s	%r26 %f2 -36
-	lw.s	%r26 %f3 -32
-	lw	%r26 %r6 -28
-	lw	%r26 %r3 -24
 	lw	%r26 %r10 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
 	mov	%r10 %r1
 	lw.s	%r1 %f0 0
-	sw.s	%r26 %f2 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r6 -32
-	sw	%r26 %r3 -28
-	sw.s	%r26 %f7 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
-	jal	sin.0
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw.s	%r26 %f2 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r6 -32
-	lw	%r26 %r3 -28
-	lw.s	%r26 %f7 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
-	addi	%r10 %r1 4
-	lw.s	%r1 %f1 0
-	sw.s	%r26 %f2 -44
-	sw.s	%r26 %f3 -40
-	sw	%r26 %r6 -36
-	sw	%r26 %r3 -32
-	sw.s	%r26 %f0 -28
-	sw.s	%r26 %f7 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	mov.s	%f1 %f0
+	sw	%r26 %r10 -40
+	sw.s	%r26 %f7 -44
 	sw	%r26 %r28 -48
 	addi	%r26 %r26 -52
-	jal	cos.0
+	jal	sin.0
 	addi	%r26 %r26 52
 	lw	%r26 %r28 -48
-	mov.s	%f0 %f6
-	lw.s	%r26 %f2 -44
-	lw.s	%r26 %f3 -40
-	lw	%r26 %r6 -36
-	lw	%r26 %r3 -32
-	lw.s	%r26 %f0 -28
-	lw.s	%r26 %f7 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r10 -40
 	addi	%r10 %r1 4
 	lw.s	%r1 %f1 0
-	sw.s	%r26 %f2 -48
-	sw.s	%r26 %f3 -44
-	sw	%r26 %r6 -40
-	sw	%r26 %r3 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f0 -28
-	sw.s	%r26 %f7 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	mov.s	%f1 %f0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
-	jal	sin.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	mov.s	%f0 %f14
-	lw.s	%r26 %f2 -48
-	lw.s	%r26 %f3 -44
-	lw	%r26 %r6 -40
-	lw	%r26 %r3 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f0 -28
-	lw.s	%r26 %f7 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
-	addi	%r10 %r1 8
-	lw.s	%r1 %f1 0
-	sw.s	%r26 %f2 -52
-	sw.s	%r26 %f3 -48
-	sw	%r26 %r6 -44
-	sw	%r26 %r3 -40
-	sw.s	%r26 %f14 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f0 -28
-	sw.s	%r26 %f7 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r10 -48
+	sw.s	%r26 %f0 -52
 	mov.s	%f1 %f0
 	sw	%r26 %r28 -56
 	addi	%r26 %r26 -60
 	jal	cos.0
 	addi	%r26 %r26 60
 	lw	%r26 %r28 -56
-	mov.s	%f0 %f9
-	lw.s	%r26 %f2 -52
-	lw.s	%r26 %f3 -48
-	lw	%r26 %r6 -44
-	lw	%r26 %r3 -40
-	lw.s	%r26 %f14 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f0 -28
-	lw.s	%r26 %f7 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	mov.s	%f0 %f6
+	lw	%r26 %r10 -48
+	addi	%r10 %r1 4
+	lw.s	%r1 %f1 0
+	sw	%r26 %r10 -56
+	sw.s	%r26 %f6 -60
+	mov.s	%f1 %f0
+	sw	%r26 %r28 -64
+	addi	%r26 %r26 -68
+	jal	sin.0
+	addi	%r26 %r26 68
+	lw	%r26 %r28 -64
+	mov.s	%f0 %f14
+	lw	%r26 %r10 -56
 	addi	%r10 %r1 8
 	lw.s	%r1 %f1 0
-	sw.s	%r26 %f2 -56
-	sw.s	%r26 %f3 -52
-	sw	%r26 %r6 -48
-	sw	%r26 %r3 -44
-	sw.s	%r26 %f9 -40
-	sw.s	%r26 %f14 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f0 -28
-	sw.s	%r26 %f7 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r10 -64
+	sw.s	%r26 %f14 -68
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -72
+	addi	%r26 %r26 -76
+	jal	cos.0
+	addi	%r26 %r26 76
+	lw	%r26 %r28 -72
+	mov.s	%f0 %f9
+	lw	%r26 %r10 -64
+	addi	%r10 %r1 8
+	lw.s	%r1 %f1 0
+	sw	%r26 %r10 -72
+	sw.s	%r26 %f9 -76
+	mov.s	%f1 %f0
+	sw	%r26 %r28 -80
+	addi	%r26 %r26 -84
 	jal	sin.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
+	addi	%r26 %r26 84
+	lw	%r26 %r28 -80
 	mov.s	%f0 %f4
-	lw.s	%r26 %f2 -56
-	lw.s	%r26 %f3 -52
-	lw	%r26 %r6 -48
-	lw	%r26 %r3 -44
-	lw.s	%r26 %f9 -40
-	lw.s	%r26 %f14 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f0 -28
-	lw.s	%r26 %f7 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	lw.s	%r26 %f6 -60
+	lw.s	%r26 %f9 -76
 	mul.s	%f9 %f6 %f10
+	lw.s	%r26 %f0 -52
+	lw.s	%r26 %f14 -68
 	mul.s	%f14 %f0 %f1
 	mul.s	%f9 %f1 %f5
+	lw.s	%r26 %f7 -44
 	mul.s	%f4 %f7 %f1
 	sub.s	%f1 %f5 %f11
 	mul.s	%f14 %f7 %f1
@@ -3550,6 +3430,7 @@ tail_b.3225 :
 	neg.s	%f14 %f1
 	mul.s	%f6 %f0 %f9
 	mul.s	%f6 %f7 %f15
+	lw	%r26 %r9 -16
 	mov	%r9 %r1
 	lw.s	%r1 %f7 0
 	addi	%r9 %r1 4
@@ -3596,6 +3477,7 @@ tail_b.3225 :
 	mul.s	%f15 %f0 %f0
 	add.s	%f0 %f16 %f0
 	mul.s	%f0 %f4 %f0
+	lw	%r26 %r10 -72
 	mov	%r10 %r1
 	sw.s	%r1 %f0 0
 	mul.s	%f10 %f7 %f0
@@ -3620,6 +3502,14 @@ tail_b.3225 :
 	mul.s	%f0 %f4 %f0
 	addi	%r10 %r1 8
 	sw.s	%r1 %f0 0
+	lw	%r26 %r4 0
+	lw	%r26 %r5 -4
+	lw	%r26 %r2 -8
+	lw	%r26 %r8 -12
+	lw	%r26 %r3 -24
+	lw	%r26 %r6 -28
+	lw.s	%r26 %f3 -32
+	lw.s	%r26 %f2 -36
 tail_b.3227 :
 	addi	%r0 %r1 1
 branching_b.2039 :
@@ -3635,29 +3525,29 @@ preloop_b.82 :
 	mov	%r5 %r8
 	addi	%r0 %r2 -1
 read_and_network_loop.1 :
-	sw.s	%r26 %f2 -24
-	sw	%r26 %r6 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -80
+	sw	%r26 %r5 -84
+	sw	%r26 %r2 -88
+	sw	%r26 %r8 -92
+	sw	%r26 %r3 -96
+	sw	%r26 %r6 -100
+	sw.s	%r26 %f2 -104
 	mov	%r0 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -108
+	addi	%r26 %r26 -112
 	jal	read_net_item.0
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
+	addi	%r26 %r26 112
+	lw	%r26 %r28 -108
 	mov	%r1 %r7
-	lw.s	%r26 %f2 -24
-	lw	%r26 %r6 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
 	mov	%r7 %r1
 	lw	%r1 %r1 0
+	lw	%r26 %r4 -80
+	lw	%r26 %r5 -84
+	lw	%r26 %r2 -88
+	lw	%r26 %r8 -92
+	lw	%r26 %r3 -96
+	lw	%r26 %r6 -100
+	lw.s	%r26 %f2 -104
 	beq	%r1 %r2 tail_b.3232
 tail_b.3233 :
 	slli	%r8 %r1 2
@@ -3669,22 +3559,17 @@ tail_b.3233 :
 tail_b.3232 :
 postloop_b.82 :
 branching_b.2041 :
-	sw.s	%r26 %f2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -108
+	sw	%r26 %r5 -112
+	sw	%r26 %r3 -116
+	sw	%r26 %r6 -120
+	sw.s	%r26 %f2 -124
 	mov	%r0 %r1
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 -128
+	addi	%r26 %r26 -132
 	jal	read_or_network.0
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
-	lw.s	%r26 %f2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 132
+	lw	%r26 %r28 -128
 	sw	%r0 %r1 536
 	addi	%r0 %r1 80
 	out	%r1
@@ -3708,6 +3593,11 @@ branching_b.2041 :
 	sub	%r2 %r7 %r7
 	mul	%r1 %r8 %r2
 	sub	%r7 %r2 %r2
+	lw	%r26 %r4 -108
+	lw	%r26 %r5 -112
+	lw	%r26 %r3 -116
+	lw	%r26 %r6 -120
+	lw.s	%r26 %f2 -124
 	bl	%r0 %r11 tail_b.3234
 branching_b.2042 :
 	bl	%r0 %r1 tail_b.3235
@@ -3785,30 +3675,30 @@ tail_b.3240 :
 	addi	%r0 %r7 120
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -128
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -128
 	mov	%r1 %r9
 	lw	%r0 %r1 0
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -128
 	mov	%r9 %r2
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -132
 	jal	min_caml_create_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -132
 	mov	%r2 %r9
-	lw	%r26 %r2 0
+	lw	%r26 %r2 -128
 	mov	%r27 %r10
 	addi	%r27 %r27 8
 	sw	%r10 %r1 4
 	sw	%r10 %r9 0
 	mov	%r10 %r1
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -128
 	mov	%r1 %r2
 	mov	%r7 %r1
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -132
 	jal	min_caml_create_array
-	lw	%r26 %r28 -4
-	lw	%r26 %r2 0
+	lw	%r26 %r28 -132
+	lw	%r26 %r2 -128
 	slli	%r8 %r7 2
 	addi	%r7 %r7 716
 	sw	%r7 %r1 0
@@ -3816,29 +3706,29 @@ tail_b.3240 :
 	addi	%r1 %r1 716
 	lw	%r1 %r7 0
 	addi	%r0 %r1 118
-	sw.s	%r26 %f2 -24
-	sw	%r26 %r6 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -128
+	sw	%r26 %r5 -132
+	sw	%r26 %r2 -136
+	sw	%r26 %r8 -140
+	sw	%r26 %r3 -144
+	sw	%r26 %r6 -148
+	sw.s	%r26 %f2 -152
 	mov	%r1 %r2
 	mov	%r7 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -156
+	addi	%r26 %r26 -160
 	jal	create_dirvec_elements.0
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
-	lw.s	%r26 %f2 -24
-	lw	%r26 %r6 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 160
+	lw	%r26 %r28 -156
+	lw	%r26 %r8 -140
 	addi	%r8 %r1 -1
 	mov	%r1 %r8
+	lw	%r26 %r4 -128
+	lw	%r26 %r5 -132
+	lw	%r26 %r2 -136
+	lw	%r26 %r3 -144
+	lw	%r26 %r6 -148
+	lw.s	%r26 %f2 -152
 	j	create_dirvecs_loop.1
 postloop_b.83 :
 preloop_b.84 :
@@ -3857,34 +3747,34 @@ branching_b.2047 :
 	ilw.s	%r0 %f1 l.95
 	sub.s	%f1 %f0 %f0
 	addi	%r0 %r1 4
-	sw.s	%r26 %f2 -32
-	sw	%r26 %r6 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r9 -20
-	sw	%r26 %r8 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -156
+	sw	%r26 %r5 -160
+	sw	%r26 %r2 -164
+	sw	%r26 %r7 -168
+	sw	%r26 %r8 -172
+	sw	%r26 %r9 -176
+	sw	%r26 %r3 -180
+	sw	%r26 %r6 -184
+	sw.s	%r26 %f2 -188
 	mov	%r9 %r3
 	mov	%r8 %r2
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -192
+	addi	%r26 %r26 -196
 	jal	calc_dirvecs.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw.s	%r26 %f2 -32
-	lw	%r26 %r6 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r9 -20
-	lw	%r26 %r8 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 196
+	lw	%r26 %r28 -192
+	lw	%r26 %r7 -168
 	addi	%r7 %r7 -1
+	lw	%r26 %r8 -172
 	addi	%r8 %r8 2
 	addi	%r0 %r1 5
+	lw	%r26 %r4 -156
+	lw	%r26 %r5 -160
+	lw	%r26 %r2 -164
+	lw	%r26 %r9 -176
+	lw	%r26 %r3 -180
+	lw	%r26 %r6 -184
+	lw.s	%r26 %f2 -188
 	ble	%r1 %r8 tail_b.3242
 tail_b.3243 :
 	j	tail_b.3244
@@ -3906,29 +3796,29 @@ tail_b.3246 :
 	addi	%r1 %r1 716
 	lw	%r1 %r7 0
 	addi	%r0 %r1 119
-	sw.s	%r26 %f2 -24
-	sw	%r26 %r6 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r8 -12
-	sw	%r26 %r2 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -192
+	sw	%r26 %r5 -196
+	sw	%r26 %r2 -200
+	sw	%r26 %r8 -204
+	sw	%r26 %r3 -208
+	sw	%r26 %r6 -212
+	sw.s	%r26 %f2 -216
 	mov	%r1 %r2
 	mov	%r7 %r1
-	sw	%r26 %r28 -28
-	addi	%r26 %r26 -32
+	sw	%r26 %r28 -220
+	addi	%r26 %r26 -224
 	jal	init_dirvec_constants.0
-	addi	%r26 %r26 32
-	lw	%r26 %r28 -28
-	lw.s	%r26 %f2 -24
-	lw	%r26 %r6 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r8 -12
-	lw	%r26 %r2 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 224
+	lw	%r26 %r28 -220
+	lw	%r26 %r8 -204
 	addi	%r8 %r1 -1
 	mov	%r1 %r8
+	lw	%r26 %r4 -192
+	lw	%r26 %r5 -196
+	lw	%r26 %r2 -200
+	lw	%r26 %r3 -208
+	lw	%r26 %r6 -212
+	lw.s	%r26 %f2 -216
 	j	init_vecset_constants_loop.1
 postloop_b.85 :
 preloop_b.86 :
@@ -3959,9 +3849,9 @@ branching_b.2069 :
 branching_b.2072 :
 	addi	%r0 %r1 5
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r11
 	mov	%r10 %r1
 	lw.s	%r1 %f7 0
@@ -4011,9 +3901,9 @@ tail_b.3287 :
 branching_b.2070 :
 	addi	%r0 %r1 4
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r11
 	mov	%r10 %r1
 	lw.s	%r1 %f0 0
@@ -4044,9 +3934,9 @@ tail_b.3283 :
 branching_b.2051 :
 	addi	%r0 %r1 6
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r12
 	mov	%r10 %r1
 	lw.s	%r1 %f0 0
@@ -4440,18 +4330,18 @@ preloop_b.90 :
 	sub.s	%f0 %f4 %f0
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f4 l.51
-	sw.s	%r26 %f0 0
+	sw.s	%r26 %f0 -220
 	mov.s	%f4 %f0
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r11
-	lw.s	%r26 %f0 0
+	lw.s	%r26 %f0 -220
 	lw	%r0 %r1 0
 	mov	%r11 %r2
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r2 %r11
 	mov	%r27 %r2
 	addi	%r27 %r27 8
@@ -4483,9 +4373,9 @@ branching_b.2183 :
 branching_b.2186 :
 	addi	%r0 %r1 5
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r2
 	mov	%r14 %r1
 	lw.s	%r1 %f8 0
@@ -4535,9 +4425,9 @@ tail_b.3491 :
 branching_b.2184 :
 	addi	%r0 %r1 4
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r2
 	mov	%r14 %r1
 	lw.s	%r1 %f4 0
@@ -4568,9 +4458,9 @@ tail_b.3487 :
 branching_b.2165 :
 	addi	%r0 %r1 6
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r16
 	mov	%r14 %r1
 	lw.s	%r1 %f0 0
@@ -4597,18 +4487,18 @@ preloop_b.87 :
 	lw.s	%r0 %f0 312
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f1 l.51
-	sw.s	%r26 %f0 0
+	sw.s	%r26 %f0 -220
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r11
-	lw.s	%r26 %f0 0
+	lw.s	%r26 %f0 -220
 	lw	%r0 %r1 0
 	mov	%r11 %r2
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r2 %r11
 	mov	%r27 %r2
 	addi	%r27 %r27 8
@@ -4640,13 +4530,13 @@ branching_b.2101 :
 branching_b.2104 :
 	addi	%r0 %r2 5
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r1 0
+	sw	%r26 %r1 -220
 	mov	%r2 %r1
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r16
-	lw	%r26 %r1 0
+	lw	%r26 %r1 -220
 	mov	%r11 %r2
 	lw.s	%r2 %f1 0
 	addi	%r11 %r2 4
@@ -4696,13 +4586,13 @@ tail_b.3340 :
 branching_b.2102 :
 	addi	%r0 %r2 4
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r1 0
+	sw	%r26 %r1 -220
 	mov	%r2 %r1
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r16
-	lw	%r26 %r1 0
+	lw	%r26 %r1 -220
 	mov	%r11 %r2
 	lw.s	%r2 %f1 0
 	lw	%r15 %r2 16
@@ -4732,13 +4622,13 @@ tail_b.3336 :
 branching_b.2083 :
 	addi	%r0 %r2 6
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r1 0
+	sw	%r26 %r1 -220
 	mov	%r2 %r1
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r16
-	lw	%r26 %r1 0
+	lw	%r26 %r1 -220
 	mov	%r11 %r2
 	lw.s	%r2 %f0 0
 	fbne	%f0 %f2 tail_b.3302
@@ -5065,17 +4955,17 @@ preloop_b.88 :
 	lw.s	%r0 %f0 316
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f1 l.51
-	sw.s	%r26 %f0 0
+	sw.s	%r26 %f0 -220
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r2
-	lw.s	%r26 %f0 0
+	lw.s	%r26 %f0 -220
 	lw	%r0 %r1 0
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r13
 	mov	%r27 %r1
 	addi	%r27 %r27 8
@@ -5107,9 +4997,9 @@ branching_b.2128 :
 branching_b.2131 :
 	addi	%r0 %r1 5
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r17
 	mov	%r16 %r1
 	lw.s	%r1 %f9 0
@@ -5160,9 +5050,9 @@ tail_b.3390 :
 branching_b.2129 :
 	addi	%r0 %r1 4
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r17
 	mov	%r16 %r1
 	lw.s	%r1 %f1 0
@@ -5193,9 +5083,9 @@ tail_b.3386 :
 branching_b.2110 :
 	addi	%r0 %r1 6
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r18
 	mov	%r16 %r1
 	lw.s	%r1 %f0 0
@@ -5521,17 +5411,17 @@ preloop_b.89 :
 	lw.s	%r0 %f0 320
 	addi	%r0 %r1 3
 	ilw.s	%r0 %f1 l.51
-	sw.s	%r26 %f0 0
+	sw.s	%r26 %f0 -220
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -4
+	sw	%r26 %r28 -224
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 -4
+	lw	%r26 %r28 -224
 	mov	%r1 %r2
-	lw.s	%r26 %f0 0
+	lw.s	%r26 %f0 -220
 	lw	%r0 %r1 0
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r12
 	mov	%r27 %r1
 	addi	%r27 %r27 8
@@ -5563,9 +5453,9 @@ branching_b.2155 :
 branching_b.2158 :
 	addi	%r0 %r1 5
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r16
 	mov	%r2 %r1
 	lw.s	%r1 %f4 0
@@ -5616,9 +5506,9 @@ tail_b.3440 :
 branching_b.2156 :
 	addi	%r0 %r1 4
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r16
 	mov	%r2 %r1
 	lw.s	%r1 %f1 0
@@ -5649,9 +5539,9 @@ tail_b.3436 :
 branching_b.2137 :
 	addi	%r0 %r1 6
 	ilw.s	%r0 %f0 l.51
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -220
 	jal	min_caml_create_float_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -220
 	mov	%r1 %r17
 	mov	%r2 %r1
 	lw.s	%r1 %f0 0
@@ -6379,37 +6269,28 @@ branching_b.2193 :
 	add	%r3 %r1 %r1
 	lw	%r1 %r1 0
 	ilw.s	%r0 %f1 l.51
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r6 -36
-	sw	%r26 %r3 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r8 -24
-	sw	%r26 %r7 -20
-	sw.s	%r26 %f5 -16
-	sw.s	%r26 %f3 -12
-	sw.s	%r26 %f4 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -220
+	sw	%r26 %r5 -224
+	sw.s	%r26 %f4 -228
+	sw.s	%r26 %f3 -232
+	sw.s	%r26 %f5 -236
+	sw	%r26 %r7 -240
+	sw	%r26 %r8 -244
+	sw	%r26 %r9 -248
+	sw	%r26 %r3 -252
+	sw	%r26 %r6 -256
+	sw.s	%r26 %f2 -260
 	mov	%r1 %r3
 	mov	%r7 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 -264
+	addi	%r26 %r26 -268
 	jal	trace_ray.0
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r6 -36
-	lw	%r26 %r3 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r8 -24
-	lw	%r26 %r7 -20
-	lw.s	%r26 %f5 -16
-	lw.s	%r26 %f3 -12
-	lw.s	%r26 %f4 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 268
+	lw	%r26 %r28 -264
+	lw	%r26 %r8 -244
 	slli	%r8 %r1 2
+	lw	%r26 %r3 -252
 	add	%r3 %r1 %r1
 	lw	%r1 %r1 0
 	lw	%r1 %r2 0
@@ -6426,41 +6307,34 @@ branching_b.2193 :
 	add	%r3 %r1 %r1
 	lw	%r1 %r1 0
 	lw	%r1 %r1 24
+	lw	%r26 %r9 -248
 	sw	%r1 %r9 0
 	slli	%r8 %r1 2
 	add	%r3 %r1 %r1
 	lw	%r1 %r1 0
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r6 -36
-	sw	%r26 %r3 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r8 -24
-	sw	%r26 %r7 -20
-	sw.s	%r26 %f5 -16
-	sw.s	%r26 %f3 -12
-	sw.s	%r26 %f4 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r8 -264
+	sw	%r26 %r9 -268
+	sw	%r26 %r3 -272
 	mov	%r0 %r2
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 -276
+	addi	%r26 %r26 -280
 	jal	pretrace_diffuse_rays.0
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r6 -36
-	lw	%r26 %r3 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r8 -24
-	lw	%r26 %r7 -20
-	lw.s	%r26 %f5 -16
-	lw.s	%r26 %f3 -12
-	lw.s	%r26 %f4 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 280
+	lw	%r26 %r28 -276
+	lw	%r26 %r8 -264
 	addi	%r8 %r1 -1
+	lw	%r26 %r9 -268
 	addi	%r9 %r2 1
 	addi	%r0 %r8 5
+	lw	%r26 %r4 -220
+	lw	%r26 %r5 -224
+	lw.s	%r26 %f4 -228
+	lw.s	%r26 %f3 -232
+	lw.s	%r26 %f5 -236
+	lw	%r26 %r7 -240
+	lw	%r26 %r3 -272
+	lw	%r26 %r6 -256
+	lw.s	%r26 %f2 -260
 	ble	%r8 %r2 tail_b.3510
 tail_b.3511 :
 	j	tail_b.3512
@@ -6506,49 +6380,49 @@ tail_b.3514 :
 	add.s	%f0 %f2 %f2
 	lw	%r0 %r1 616
 	addi	%r1 %r1 -1
-	sw	%r26 %r2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -276
+	sw	%r26 %r4 -280
+	sw	%r26 %r3 -284
+	sw	%r26 %r6 -288
+	sw	%r26 %r2 -292
 	mov	%r2 %r3
 	mov	%r1 %r2
 	mov	%r6 %r1
 	mov.s	%f1 %f0
 	mov.s	%f3 %f1
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 -296
+	addi	%r26 %r26 -300
 	jal	pretrace_pixels.0
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
-	lw	%r26 %r2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 300
+	lw	%r26 %r28 -296
+	lw	%r26 %r5 -276
+	lw	%r26 %r4 -280
+	lw	%r26 %r3 -284
+	lw	%r26 %r6 -288
+	lw	%r26 %r2 -292
 branching_b.2196 :
-	sw	%r26 %r2 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -296
+	sw	%r26 %r3 -300
+	sw	%r26 %r6 -304
+	sw	%r26 %r2 -308
 	mov	%r5 %r2
 	mov	%r0 %r1
 	mov	%r6 %r5
 	mov	%r4 %r31
 	mov	%r3 %r4
 	mov	%r31 %r3
-	sw	%r26 %r28 -16
-	addi	%r26 %r26 -20
+	sw	%r26 %r28 -312
+	addi	%r26 %r26 -316
 	jal	scan_pixel.0
-	addi	%r26 %r26 20
-	lw	%r26 %r28 -16
-	lw	%r26 %r2 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 316
+	lw	%r26 %r28 -312
+	lw	%r26 %r5 -296
 	addi	%r5 %r1 1
+	lw	%r26 %r2 -308
 	addi	%r2 %r2 2
 	addi	%r0 %r4 5
+	lw	%r26 %r3 -300
+	lw	%r26 %r6 -304
 	ble	%r4 %r2 tail_b.3516
 tail_b.3517 :
 	j	tail_b.3518
@@ -6932,25 +6806,25 @@ branching_b.18 :
 	beq	%r3 %r1 tail_b.20
 tail_b.21 :
 	addi	%r2 %r1 1
-	sw	%r26 %r3 -4
 	sw	%r26 %r2 0
+	sw	%r26 %r3 -4
 	sw	%r26 %r28 -8
 	addi	%r26 %r26 -12
 	jal	read_net_item.0
 	addi	%r26 %r26 12
 	lw	%r26 %r28 -8
-	lw	%r26 %r3 -4
 	lw	%r26 %r2 0
 	slli	%r2 %r2 2
 	add	%r1 %r2 %r2
+	lw	%r26 %r3 -4
 	sw	%r2 %r3 0
 	j	return_point.2
 tail_b.20 :
 	addi	%r2 %r1 1
 	addi	%r0 %r2 -1
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -8
 	jal	min_caml_create_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -8
 return_point.2 :
 	retl
 read_or_network.0 :
@@ -6964,33 +6838,33 @@ branching_b.19 :
 	addi	%r26 %r26 8
 	lw	%r26 %r28 -4
 	mov	%r1 %r2
-	lw	%r26 %r4 0
 	mov	%r2 %r1
 	lw	%r1 %r1 0
 	addi	%r0 %r3 -1
+	lw	%r26 %r4 0
 	beq	%r1 %r3 tail_b.22
 tail_b.23 :
 	addi	%r4 %r1 1
-	sw	%r26 %r2 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -8
-	addi	%r26 %r26 -12
+	sw	%r26 %r4 -4
+	sw	%r26 %r2 -8
+	sw	%r26 %r28 -12
+	addi	%r26 %r26 -16
 	jal	read_or_network.0
-	addi	%r26 %r26 12
-	lw	%r26 %r28 -8
+	addi	%r26 %r26 16
+	lw	%r26 %r28 -12
 	mov	%r1 %r3
-	lw	%r26 %r2 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r4 -4
 	slli	%r4 %r1 2
 	add	%r3 %r1 %r1
+	lw	%r26 %r2 -8
 	sw	%r1 %r2 0
 	mov	%r3 %r1
 	j	return_point.3
 tail_b.22 :
 	addi	%r4 %r1 1
-	sw	%r26 %r28 0
+	sw	%r26 %r28 -12
 	jal	min_caml_create_array
-	lw	%r26 %r28 0
+	lw	%r26 %r28 -12
 return_point.3 :
 	retl
 setup_startp_constants.0 :
@@ -8401,11 +8275,11 @@ branching_b.161 :
 	mul.s	%f2 %f0 %f2
 	lw.s	%r0 %f0 560
 	add.s	%f0 %f2 %f2
-	sw	%r26 %r7 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r1 -8
-	sw	%r26 %r5 -4
 	sw	%r26 %r4 0
+	sw	%r26 %r5 -4
+	sw	%r26 %r1 -8
+	sw	%r26 %r6 -12
+	sw	%r26 %r7 -16
 	mov	%r6 %r2
 	mov	%r0 %r1
 	mov.s	%f3 %f0
@@ -8415,11 +8289,11 @@ branching_b.161 :
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
 	mov	%r1 %r2
-	lw	%r26 %r7 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r1 -8
-	lw	%r26 %r5 -4
 	lw	%r26 %r4 0
+	lw	%r26 %r5 -4
+	lw	%r26 %r1 -8
+	lw	%r26 %r6 -12
+	lw	%r26 %r7 -16
 	beq	%r2 %r0 tail_b.250
 tail_b.251 :
 	addi	%r0 %r2 1
@@ -8697,22 +8571,22 @@ branching_b.211 :
 	slli	%r1 %r1 2
 	addi	%r1 %r1 332
 	lw	%r1 %r2 0
-	sw	%r26 %r7 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
 	sw	%r26 %r4 0
+	sw	%r26 %r3 -4
+	sw	%r26 %r5 -8
+	sw	%r26 %r6 -12
+	sw	%r26 %r7 -16
 	mov	%r0 %r1
 	sw	%r26 %r28 -20
 	addi	%r26 %r26 -24
 	jal	shadow_check_and_group.0
 	addi	%r26 %r26 24
 	lw	%r26 %r28 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
 	lw	%r26 %r4 0
+	lw	%r26 %r3 -4
+	lw	%r26 %r5 -8
+	lw	%r26 %r6 -12
+	lw	%r26 %r7 -16
 	beq	%r1 %r0 tail_b.330
 tail_b.331 :
 	addi	%r0 %r1 1
@@ -8951,22 +8825,22 @@ branching_b.207 :
 	slli	%r1 %r1 2
 	addi	%r1 %r1 332
 	lw	%r1 %r2 0
-	sw	%r26 %r7 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -20
+	sw	%r26 %r3 -24
+	sw	%r26 %r5 -28
+	sw	%r26 %r6 -32
+	sw	%r26 %r7 -36
 	mov	%r0 %r1
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 -40
+	addi	%r26 %r26 -44
 	jal	shadow_check_and_group.0
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 44
+	lw	%r26 %r28 -40
+	lw	%r26 %r4 -20
+	lw	%r26 %r3 -24
+	lw	%r26 %r5 -28
+	lw	%r26 %r6 -32
+	lw	%r26 %r7 -36
 	beq	%r1 %r0 tail_b.323
 tail_b.324 :
 	addi	%r0 %r1 1
@@ -10553,18 +10427,18 @@ branching_b.356 :
 	mul.s	%f3 %f2 %f2
 	lw.s	%r0 %f4 644
 	add.s	%f4 %f2 %f2
-	sw.s	%r26 %f2 -44
-	sw.s	%r26 %f1 -40
-	sw.s	%r26 %f0 -36
-	sw.s	%r26 %f3 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r4 -24
-	sw	%r26 %r2 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r8 -8
-	sw	%r26 %r5 -4
 	sw	%r26 %r3 0
+	sw	%r26 %r5 -4
+	sw	%r26 %r8 -8
+	sw	%r26 %r6 -12
+	sw	%r26 %r7 -16
+	sw	%r26 %r2 -20
+	sw	%r26 %r4 -24
+	sw	%r26 %r9 -28
+	sw.s	%r26 %f3 -32
+	sw.s	%r26 %f0 -36
+	sw.s	%r26 %f1 -40
+	sw.s	%r26 %f2 -44
 	mov	%r7 %r2
 	mov	%r0 %r1
 	sw	%r26 %r28 -48
@@ -10572,18 +10446,18 @@ branching_b.356 :
 	jal	check_all_inside.0
 	addi	%r26 %r26 52
 	lw	%r26 %r28 -48
-	lw.s	%r26 %f2 -44
-	lw.s	%r26 %f1 -40
-	lw.s	%r26 %f0 -36
-	lw.s	%r26 %f3 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r4 -24
-	lw	%r26 %r2 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r8 -8
-	lw	%r26 %r5 -4
 	lw	%r26 %r3 0
+	lw	%r26 %r5 -4
+	lw	%r26 %r8 -8
+	lw	%r26 %r6 -12
+	lw	%r26 %r7 -16
+	lw	%r26 %r2 -20
+	lw	%r26 %r4 -24
+	lw	%r26 %r9 -28
+	lw.s	%r26 %f3 -32
+	lw.s	%r26 %f0 -36
+	lw.s	%r26 %f1 -40
+	lw.s	%r26 %f2 -44
 	beq	%r1 %r0 tail_b.567
 tail_b.568 :
 	sw.s	%r0 %f3 548
@@ -10906,12 +10780,12 @@ tail_b.575 :
 	slli	%r1 %r1 2
 	addi	%r1 %r1 332
 	lw	%r1 %r1 0
-	sw	%r26 %r7 -20
-	sw	%r26 %r2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r3 -4
 	sw	%r26 %r5 0
+	sw	%r26 %r3 -4
+	sw	%r26 %r4 -8
+	sw	%r26 %r6 -12
+	sw	%r26 %r2 -16
+	sw	%r26 %r7 -20
 	mov	%r1 %r2
 	mov	%r0 %r1
 	sw	%r26 %r28 -24
@@ -10920,12 +10794,12 @@ tail_b.575 :
 	addi	%r26 %r26 28
 	lw	%r26 %r28 -24
 	lw	%r26 %r7 -20
-	lw	%r26 %r2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r5 0
 	addi	%r7 %r7 1
+	lw	%r26 %r5 0
+	lw	%r26 %r3 -4
+	lw	%r26 %r4 -8
+	lw	%r26 %r6 -12
+	lw	%r26 %r2 -16
 	j	solve_one_or_network_loop.2
 tail_b.574 :
 postloop_b.17 :
@@ -11273,26 +11147,26 @@ tail_b.668 :
 	slli	%r1 %r1 2
 	addi	%r1 %r1 332
 	lw	%r1 %r1 0
-	sw	%r26 %r8 -20
-	sw	%r26 %r2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -24
+	sw	%r26 %r3 -28
+	sw	%r26 %r4 -32
+	sw	%r26 %r6 -36
+	sw	%r26 %r2 -40
+	sw	%r26 %r8 -44
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -24
-	addi	%r26 %r26 -28
+	sw	%r26 %r28 -48
+	addi	%r26 %r26 -52
 	jal	solve_each_element.0
-	addi	%r26 %r26 28
-	lw	%r26 %r28 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 52
+	lw	%r26 %r28 -48
+	lw	%r26 %r8 -44
 	addi	%r8 %r8 1
+	lw	%r26 %r5 -24
+	lw	%r26 %r3 -28
+	lw	%r26 %r4 -32
+	lw	%r26 %r6 -36
+	lw	%r26 %r2 -40
 	j	solve_one_or_network_loop.1
 tail_b.667 :
 	j	tail_b.671
@@ -12484,18 +12358,18 @@ branching_b.528 :
 	mul.s	%f0 %f1 %f1
 	lw.s	%r0 %f2 656
 	add.s	%f2 %f1 %f2
-	sw.s	%r26 %f2 -44
-	sw.s	%r26 %f3 -40
-	sw.s	%r26 %f4 -36
-	sw.s	%r26 %f0 -32
-	sw	%r26 %r3 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r4 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r8 -8
-	sw	%r26 %r9 -4
 	sw	%r26 %r7 0
+	sw	%r26 %r9 -4
+	sw	%r26 %r8 -8
+	sw	%r26 %r6 -12
+	sw	%r26 %r4 -16
+	sw	%r26 %r5 -20
+	sw	%r26 %r11 -24
+	sw	%r26 %r3 -28
+	sw.s	%r26 %f0 -32
+	sw.s	%r26 %f4 -36
+	sw.s	%r26 %f3 -40
+	sw.s	%r26 %f2 -44
 	mov	%r4 %r2
 	mov	%r0 %r1
 	mov.s	%f3 %f1
@@ -12505,18 +12379,18 @@ branching_b.528 :
 	jal	check_all_inside.0
 	addi	%r26 %r26 52
 	lw	%r26 %r28 -48
-	lw.s	%r26 %f2 -44
-	lw.s	%r26 %f3 -40
-	lw.s	%r26 %f4 -36
-	lw.s	%r26 %f0 -32
-	lw	%r26 %r3 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r4 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r8 -8
-	lw	%r26 %r9 -4
 	lw	%r26 %r7 0
+	lw	%r26 %r9 -4
+	lw	%r26 %r8 -8
+	lw	%r26 %r6 -12
+	lw	%r26 %r4 -16
+	lw	%r26 %r5 -20
+	lw	%r26 %r11 -24
+	lw	%r26 %r3 -28
+	lw.s	%r26 %f0 -32
+	lw.s	%r26 %f4 -36
+	lw.s	%r26 %f3 -40
+	lw.s	%r26 %f2 -44
 	beq	%r1 %r0 tail_b.847
 tail_b.848 :
 	sw.s	%r0 %f0 548
@@ -12726,12 +12600,12 @@ tail_b.855 :
 	slli	%r1 %r1 2
 	addi	%r1 %r1 332
 	lw	%r1 %r1 0
-	sw	%r26 %r2 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r4 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r3 -4
 	sw	%r26 %r5 0
+	sw	%r26 %r3 -4
+	sw	%r26 %r6 -8
+	sw	%r26 %r4 -12
+	sw	%r26 %r7 -16
+	sw	%r26 %r2 -20
 	mov	%r1 %r2
 	mov	%r0 %r1
 	sw	%r26 %r28 -24
@@ -12740,12 +12614,12 @@ tail_b.855 :
 	addi	%r26 %r26 28
 	lw	%r26 %r28 -24
 	lw	%r26 %r2 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r4 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r5 0
 	addi	%r2 %r2 1
+	lw	%r26 %r5 0
+	lw	%r26 %r3 -4
+	lw	%r26 %r6 -8
+	lw	%r26 %r4 -12
+	lw	%r26 %r7 -16
 	j	solve_one_or_network_fast_loop.2
 tail_b.854 :
 postloop_b.24 :
@@ -12975,26 +12849,26 @@ tail_b.919 :
 	slli	%r1 %r1 2
 	addi	%r1 %r1 332
 	lw	%r1 %r2 0
-	sw	%r26 %r8 -20
-	sw	%r26 %r7 -16
-	sw	%r26 %r4 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -24
+	sw	%r26 %r3 -28
+	sw	%r26 %r6 -32
+	sw	%r26 %r4 -36
+	sw	%r26 %r7 -40
+	sw	%r26 %r8 -44
 	mov	%r0 %r1
-	sw	%r26 %r28 -24
-	addi	%r26 %r26 -28
+	sw	%r26 %r28 -48
+	addi	%r26 %r26 -52
 	jal	solve_each_element_fast.0
-	addi	%r26 %r26 28
-	lw	%r26 %r28 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r7 -16
-	lw	%r26 %r4 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 52
+	lw	%r26 %r28 -48
+	lw	%r26 %r8 -44
 	addi	%r8 %r1 1
 	mov	%r1 %r8
+	lw	%r26 %r5 -24
+	lw	%r26 %r3 -28
+	lw	%r26 %r6 -32
+	lw	%r26 %r4 -36
+	lw	%r26 %r7 -40
 	j	solve_one_or_network_fast_loop.1
 tail_b.918 :
 	j	tail_b.922
@@ -13197,16 +13071,16 @@ tail_b.926 :
 	j	branching_b.578
 tail_b.924 :
 	addi	%r0 %r1 1
-	sw	%r26 %r10 -36
-	sw	%r26 %r8 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r4 -16
-	sw	%r26 %r7 -12
-	sw.s	%r26 %f2 -8
-	sw.s	%r26 %f3 -4
 	sw	%r26 %r6 0
+	sw.s	%r26 %f3 -4
+	sw.s	%r26 %f2 -8
+	sw	%r26 %r7 -12
+	sw	%r26 %r4 -16
+	sw	%r26 %r3 -20
+	sw	%r26 %r5 -24
+	sw	%r26 %r9 -28
+	sw	%r26 %r8 -32
+	sw	%r26 %r10 -36
 	mov	%r5 %r3
 	mov	%r11 %r2
 	sw	%r26 %r28 -40
@@ -13214,16 +13088,16 @@ tail_b.924 :
 	jal	solve_one_or_network_fast.0
 	addi	%r26 %r26 44
 	lw	%r26 %r28 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r8 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r4 -16
-	lw	%r26 %r7 -12
-	lw.s	%r26 %f2 -8
-	lw.s	%r26 %f3 -4
 	lw	%r26 %r6 0
+	lw.s	%r26 %f3 -4
+	lw.s	%r26 %f2 -8
+	lw	%r26 %r7 -12
+	lw	%r26 %r4 -16
+	lw	%r26 %r3 -20
+	lw	%r26 %r5 -24
+	lw	%r26 %r9 -28
+	lw	%r26 %r8 -32
+	lw	%r26 %r10 -36
 	j	tail_b.989
 tail_b.923 :
 postloop_b.25 :
@@ -13448,34 +13322,34 @@ branching_b.664 :
 	beq	%r1 %r0 tail_b.1067
 branching_b.665 :
 	addi	%r0 %r1 1
-	sw	%r26 %r2 -40
-	sw	%r26 %r11 -36
-	sw	%r26 %r10 -32
-	sw.s	%r26 %f5 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r4 -16
-	sw	%r26 %r7 -12
-	sw.s	%r26 %f2 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r6 -40
+	sw.s	%r26 %f3 -44
+	sw.s	%r26 %f2 -48
+	sw	%r26 %r7 -52
+	sw	%r26 %r4 -56
+	sw	%r26 %r3 -60
+	sw	%r26 %r5 -64
+	sw.s	%r26 %f5 -68
+	sw	%r26 %r10 -72
+	sw	%r26 %r11 -76
+	sw	%r26 %r2 -80
 	mov	%r9 %r2
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 -84
+	addi	%r26 %r26 -88
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw	%r26 %r2 -40
-	lw	%r26 %r11 -36
-	lw	%r26 %r10 -32
-	lw.s	%r26 %f5 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r4 -16
-	lw	%r26 %r7 -12
-	lw.s	%r26 %f2 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	addi	%r26 %r26 88
+	lw	%r26 %r28 -84
+	lw	%r26 %r6 -40
+	lw.s	%r26 %f3 -44
+	lw.s	%r26 %f2 -48
+	lw	%r26 %r7 -52
+	lw	%r26 %r4 -56
+	lw	%r26 %r3 -60
+	lw	%r26 %r5 -64
+	lw.s	%r26 %f5 -68
+	lw	%r26 %r10 -72
+	lw	%r26 %r11 -76
+	lw	%r26 %r2 -80
 	beq	%r1 %r0 tail_b.1068
 tail_b.1069 :
 	addi	%r0 %r1 1
@@ -13693,36 +13567,36 @@ branching_b.662 :
 	beq	%r1 %r0 tail_b.1063
 branching_b.663 :
 	addi	%r0 %r1 1
-	sw	%r26 %r9 -44
-	sw	%r26 %r2 -40
-	sw	%r26 %r11 -36
-	sw	%r26 %r10 -32
-	sw.s	%r26 %f5 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r4 -16
-	sw	%r26 %r7 -12
-	sw.s	%r26 %f2 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r6 -84
+	sw.s	%r26 %f3 -88
+	sw.s	%r26 %f2 -92
+	sw	%r26 %r7 -96
+	sw	%r26 %r4 -100
+	sw	%r26 %r3 -104
+	sw	%r26 %r5 -108
+	sw.s	%r26 %f5 -112
+	sw	%r26 %r10 -116
+	sw	%r26 %r11 -120
+	sw	%r26 %r2 -124
+	sw	%r26 %r9 -128
 	mov	%r9 %r2
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -132
+	addi	%r26 %r26 -136
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r2 -40
-	lw	%r26 %r11 -36
-	lw	%r26 %r10 -32
-	lw.s	%r26 %f5 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r4 -16
-	lw	%r26 %r7 -12
-	lw.s	%r26 %f2 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	addi	%r26 %r26 136
+	lw	%r26 %r28 -132
+	lw	%r26 %r6 -84
+	lw.s	%r26 %f3 -88
+	lw.s	%r26 %f2 -92
+	lw	%r26 %r7 -96
+	lw	%r26 %r4 -100
+	lw	%r26 %r3 -104
+	lw	%r26 %r5 -108
+	lw.s	%r26 %f5 -112
+	lw	%r26 %r10 -116
+	lw	%r26 %r11 -120
+	lw	%r26 %r2 -124
+	lw	%r26 %r9 -128
 	beq	%r1 %r0 tail_b.1064
 tail_b.1065 :
 	addi	%r0 %r1 1
@@ -14104,33 +13978,33 @@ branching_b.614 :
 	beq	%r1 %r0 tail_b.986
 tail_b.987 :
 	addi	%r0 %r1 1
-	sw	%r26 %r10 -36
-	sw	%r26 %r8 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r4 -16
-	sw	%r26 %r7 -12
-	sw.s	%r26 %f2 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r6 -132
+	sw.s	%r26 %f3 -136
+	sw.s	%r26 %f2 -140
+	sw	%r26 %r7 -144
+	sw	%r26 %r4 -148
+	sw	%r26 %r3 -152
+	sw	%r26 %r5 -156
+	sw	%r26 %r9 -160
+	sw	%r26 %r8 -164
+	sw	%r26 %r10 -168
 	mov	%r5 %r3
 	mov	%r11 %r2
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -172
+	addi	%r26 %r26 -176
 	jal	solve_one_or_network_fast.0
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r8 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r4 -16
-	lw	%r26 %r7 -12
-	lw.s	%r26 %f2 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	addi	%r26 %r26 176
+	lw	%r26 %r28 -172
+	lw	%r26 %r6 -132
+	lw.s	%r26 %f3 -136
+	lw.s	%r26 %f2 -140
+	lw	%r26 %r7 -144
+	lw	%r26 %r4 -148
+	lw	%r26 %r3 -152
+	lw	%r26 %r5 -156
+	lw	%r26 %r9 -160
+	lw	%r26 %r8 -164
+	lw	%r26 %r10 -168
 	j	tail_b.989
 tail_b.986 :
 	j	tail_b.989
@@ -14376,17 +14250,17 @@ tail_b.1085 :
 	j	branching_b.676
 tail_b.1083 :
 	addi	%r0 %r1 1
-	sw	%r26 %r11 -40
-	sw	%r26 %r12 -36
-	sw	%r26 %r8 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r4 -24
-	sw.s	%r26 %f1 -20
-	sw.s	%r26 %f2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
 	sw	%r26 %r2 0
+	sw	%r26 %r3 -4
+	sw	%r26 %r5 -8
+	sw	%r26 %r6 -12
+	sw.s	%r26 %f2 -16
+	sw.s	%r26 %f1 -20
+	sw	%r26 %r4 -24
+	sw	%r26 %r9 -28
+	sw	%r26 %r8 -32
+	sw	%r26 %r12 -36
+	sw	%r26 %r11 -40
 	mov	%r2 %r3
 	mov	%r10 %r2
 	sw	%r26 %r28 -44
@@ -14394,17 +14268,17 @@ tail_b.1083 :
 	jal	solve_one_or_network.0
 	addi	%r26 %r26 48
 	lw	%r26 %r28 -44
-	lw	%r26 %r11 -40
-	lw	%r26 %r12 -36
-	lw	%r26 %r8 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r4 -24
-	lw.s	%r26 %f1 -20
-	lw.s	%r26 %f2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
 	lw	%r26 %r2 0
+	lw	%r26 %r3 -4
+	lw	%r26 %r5 -8
+	lw	%r26 %r6 -12
+	lw.s	%r26 %f2 -16
+	lw.s	%r26 %f1 -20
+	lw	%r26 %r4 -24
+	lw	%r26 %r9 -28
+	lw	%r26 %r8 -32
+	lw	%r26 %r12 -36
+	lw	%r26 %r11 -40
 	j	tail_b.1177
 tail_b.1082 :
 postloop_b.28 :
@@ -16106,45 +15980,45 @@ branching_b.852 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f6 -56
-	sw.s	%r26 %f3 -52
-	sw	%r26 %r8 -48
-	sw	%r26 %r7 -44
-	sw.s	%r26 %f4 -40
-	sw	%r26 %r4 -36
-	sw.s	%r26 %f1 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r6 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r2 -12
-	sw	%r26 %r12 -8
-	sw	%r26 %r9 -4
-	sw	%r26 %r11 0
+	sw	%r26 %r11 -44
+	sw	%r26 %r9 -48
+	sw	%r26 %r12 -52
+	sw	%r26 %r2 -56
+	sw	%r26 %r3 -60
+	sw	%r26 %r5 -64
+	sw	%r26 %r6 -68
+	sw.s	%r26 %f2 -72
+	sw.s	%r26 %f1 -76
+	sw	%r26 %r4 -80
+	sw.s	%r26 %f4 -84
+	sw	%r26 %r7 -88
+	sw	%r26 %r8 -92
+	sw.s	%r26 %f3 -96
+	sw.s	%r26 %f6 -100
 	mov	%r12 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -104
+	addi	%r26 %r26 -108
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw.s	%r26 %f6 -56
-	lw.s	%r26 %f3 -52
-	lw	%r26 %r8 -48
-	lw	%r26 %r7 -44
-	lw.s	%r26 %f4 -40
-	lw	%r26 %r4 -36
-	lw.s	%r26 %f1 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r6 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r2 -12
-	lw	%r26 %r12 -8
-	lw	%r26 %r9 -4
-	lw	%r26 %r11 0
+	addi	%r26 %r26 108
+	lw	%r26 %r28 -104
 	lw.s	%r0 %f5 548
+	lw	%r26 %r11 -44
+	lw	%r26 %r9 -48
+	lw	%r26 %r12 -52
+	lw	%r26 %r2 -56
+	lw	%r26 %r3 -60
+	lw	%r26 %r5 -64
+	lw	%r26 %r6 -68
+	lw.s	%r26 %f2 -72
+	lw.s	%r26 %f1 -76
+	lw	%r26 %r4 -80
+	lw.s	%r26 %f4 -84
+	lw	%r26 %r7 -88
+	lw	%r26 %r8 -92
+	lw.s	%r26 %f3 -96
+	lw.s	%r26 %f6 -100
 	fbge	%f4 %f5 tail_b.1367
 tail_b.1366 :
 	addi	%r0 %r1 1
@@ -16177,43 +16051,43 @@ tail_b.1381 :
 	j	tail_b.1382
 branching_b.857 :
 	lw	%r0 %r1 536
-	sw.s	%r26 %f6 -56
-	sw.s	%r26 %f3 -52
-	sw	%r26 %r8 -48
-	sw	%r26 %r7 -44
-	sw.s	%r26 %f4 -40
-	sw	%r26 %r4 -36
-	sw.s	%r26 %f1 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r6 -24
-	sw	%r26 %r5 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r2 -12
-	sw	%r26 %r12 -8
-	sw	%r26 %r9 -4
-	sw	%r26 %r11 0
+	sw	%r26 %r11 -104
+	sw	%r26 %r9 -108
+	sw	%r26 %r12 -112
+	sw	%r26 %r2 -116
+	sw	%r26 %r3 -120
+	sw	%r26 %r5 -124
+	sw	%r26 %r6 -128
+	sw.s	%r26 %f2 -132
+	sw.s	%r26 %f1 -136
+	sw	%r26 %r4 -140
+	sw.s	%r26 %f4 -144
+	sw	%r26 %r7 -148
+	sw	%r26 %r8 -152
+	sw.s	%r26 %f3 -156
+	sw.s	%r26 %f6 -160
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -164
+	addi	%r26 %r26 -168
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw.s	%r26 %f6 -56
-	lw.s	%r26 %f3 -52
-	lw	%r26 %r8 -48
-	lw	%r26 %r7 -44
-	lw.s	%r26 %f4 -40
-	lw	%r26 %r4 -36
-	lw.s	%r26 %f1 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r6 -24
-	lw	%r26 %r5 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r2 -12
-	lw	%r26 %r12 -8
-	lw	%r26 %r9 -4
-	lw	%r26 %r11 0
+	addi	%r26 %r26 168
+	lw	%r26 %r28 -164
+	lw	%r26 %r11 -104
+	lw	%r26 %r9 -108
+	lw	%r26 %r12 -112
+	lw	%r26 %r2 -116
+	lw	%r26 %r3 -120
+	lw	%r26 %r5 -124
+	lw	%r26 %r6 -128
+	lw.s	%r26 %f2 -132
+	lw.s	%r26 %f1 -136
+	lw	%r26 %r4 -140
+	lw.s	%r26 %f4 -144
+	lw	%r26 %r7 -148
+	lw	%r26 %r8 -152
+	lw.s	%r26 %f3 -156
+	lw.s	%r26 %f6 -160
 	beq	%r1 %r0 branching_b.858
 tail_b.1380 :
 	j	tail_b.1382
@@ -16356,44 +16230,44 @@ branching_b.839 :
 	beq	%r1 %r0 tail_b.1345
 branching_b.840 :
 	addi	%r0 %r1 1
-	sw	%r26 %r13 -60
-	sw	%r26 %r11 -56
-	sw	%r26 %r12 -52
-	sw.s	%r26 %f6 -48
-	sw	%r26 %r10 -44
-	sw.s	%r26 %f3 -40
-	sw	%r26 %r8 -36
-	sw	%r26 %r7 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r4 -24
-	sw.s	%r26 %f1 -20
-	sw.s	%r26 %f2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -164
+	sw	%r26 %r3 -168
+	sw	%r26 %r5 -172
+	sw	%r26 %r6 -176
+	sw.s	%r26 %f2 -180
+	sw.s	%r26 %f1 -184
+	sw	%r26 %r4 -188
+	sw.s	%r26 %f4 -192
+	sw	%r26 %r7 -196
+	sw	%r26 %r8 -200
+	sw.s	%r26 %f3 -204
+	sw	%r26 %r10 -208
+	sw.s	%r26 %f6 -212
+	sw	%r26 %r12 -216
+	sw	%r26 %r11 -220
+	sw	%r26 %r13 -224
 	mov	%r14 %r2
-	sw	%r26 %r28 -64
-	addi	%r26 %r26 -68
+	sw	%r26 %r28 -228
+	addi	%r26 %r26 -232
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 68
-	lw	%r26 %r28 -64
-	lw	%r26 %r13 -60
-	lw	%r26 %r11 -56
-	lw	%r26 %r12 -52
-	lw.s	%r26 %f6 -48
-	lw	%r26 %r10 -44
-	lw.s	%r26 %f3 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r7 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r4 -24
-	lw.s	%r26 %f1 -20
-	lw.s	%r26 %f2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 232
+	lw	%r26 %r28 -228
+	lw	%r26 %r2 -164
+	lw	%r26 %r3 -168
+	lw	%r26 %r5 -172
+	lw	%r26 %r6 -176
+	lw.s	%r26 %f2 -180
+	lw.s	%r26 %f1 -184
+	lw	%r26 %r4 -188
+	lw.s	%r26 %f4 -192
+	lw	%r26 %r7 -196
+	lw	%r26 %r8 -200
+	lw.s	%r26 %f3 -204
+	lw	%r26 %r10 -208
+	lw.s	%r26 %f6 -212
+	lw	%r26 %r12 -216
+	lw	%r26 %r11 -220
+	lw	%r26 %r13 -224
 	beq	%r1 %r0 tail_b.1346
 tail_b.1347 :
 	addi	%r0 %r1 1
@@ -16611,46 +16485,46 @@ branching_b.837 :
 	beq	%r1 %r0 tail_b.1341
 branching_b.838 :
 	addi	%r0 %r1 1
-	sw	%r26 %r14 -64
-	sw	%r26 %r13 -60
-	sw	%r26 %r11 -56
-	sw	%r26 %r12 -52
-	sw.s	%r26 %f6 -48
-	sw	%r26 %r10 -44
-	sw.s	%r26 %f3 -40
-	sw	%r26 %r8 -36
-	sw	%r26 %r7 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r4 -24
-	sw.s	%r26 %f1 -20
-	sw.s	%r26 %f2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -228
+	sw	%r26 %r3 -232
+	sw	%r26 %r5 -236
+	sw	%r26 %r6 -240
+	sw.s	%r26 %f2 -244
+	sw.s	%r26 %f1 -248
+	sw	%r26 %r4 -252
+	sw.s	%r26 %f4 -256
+	sw	%r26 %r7 -260
+	sw	%r26 %r8 -264
+	sw.s	%r26 %f3 -268
+	sw	%r26 %r10 -272
+	sw.s	%r26 %f6 -276
+	sw	%r26 %r12 -280
+	sw	%r26 %r11 -284
+	sw	%r26 %r13 -288
+	sw	%r26 %r14 -292
 	mov	%r14 %r2
-	sw	%r26 %r28 -68
-	addi	%r26 %r26 -72
+	sw	%r26 %r28 -296
+	addi	%r26 %r26 -300
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 72
-	lw	%r26 %r28 -68
-	lw	%r26 %r14 -64
-	lw	%r26 %r13 -60
-	lw	%r26 %r11 -56
-	lw	%r26 %r12 -52
-	lw.s	%r26 %f6 -48
-	lw	%r26 %r10 -44
-	lw.s	%r26 %f3 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r7 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r4 -24
-	lw.s	%r26 %f1 -20
-	lw.s	%r26 %f2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 300
+	lw	%r26 %r28 -296
+	lw	%r26 %r2 -228
+	lw	%r26 %r3 -232
+	lw	%r26 %r5 -236
+	lw	%r26 %r6 -240
+	lw.s	%r26 %f2 -244
+	lw.s	%r26 %f1 -248
+	lw	%r26 %r4 -252
+	lw.s	%r26 %f4 -256
+	lw	%r26 %r7 -260
+	lw	%r26 %r8 -264
+	lw.s	%r26 %f3 -268
+	lw	%r26 %r10 -272
+	lw.s	%r26 %f6 -276
+	lw	%r26 %r12 -280
+	lw	%r26 %r11 -284
+	lw	%r26 %r13 -288
+	lw	%r26 %r14 -292
 	beq	%r1 %r0 tail_b.1342
 tail_b.1343 :
 	addi	%r0 %r1 1
@@ -17188,35 +17062,35 @@ branching_b.728 :
 	beq	%r1 %r0 tail_b.1174
 tail_b.1175 :
 	addi	%r0 %r1 1
-	sw	%r26 %r11 -40
-	sw	%r26 %r12 -36
-	sw	%r26 %r8 -32
-	sw	%r26 %r9 -28
-	sw	%r26 %r4 -24
-	sw.s	%r26 %f1 -20
-	sw.s	%r26 %f2 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r3 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -296
+	sw	%r26 %r3 -300
+	sw	%r26 %r5 -304
+	sw	%r26 %r6 -308
+	sw.s	%r26 %f2 -312
+	sw.s	%r26 %f1 -316
+	sw	%r26 %r4 -320
+	sw	%r26 %r9 -324
+	sw	%r26 %r8 -328
+	sw	%r26 %r12 -332
+	sw	%r26 %r11 -336
 	mov	%r2 %r3
 	mov	%r10 %r2
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 -340
+	addi	%r26 %r26 -344
 	jal	solve_one_or_network.0
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw	%r26 %r11 -40
-	lw	%r26 %r12 -36
-	lw	%r26 %r8 -32
-	lw	%r26 %r9 -28
-	lw	%r26 %r4 -24
-	lw.s	%r26 %f1 -20
-	lw.s	%r26 %f2 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r3 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 344
+	lw	%r26 %r28 -340
+	lw	%r26 %r2 -296
+	lw	%r26 %r3 -300
+	lw	%r26 %r5 -304
+	lw	%r26 %r6 -308
+	lw.s	%r26 %f2 -312
+	lw.s	%r26 %f1 -316
+	lw	%r26 %r4 -320
+	lw	%r26 %r9 -324
+	lw	%r26 %r8 -328
+	lw	%r26 %r12 -332
+	lw	%r26 %r11 -336
 	j	tail_b.1177
 tail_b.1174 :
 	j	tail_b.1177
@@ -17519,16 +17393,16 @@ tail_b.1632 :
 	j	branching_b.1024
 tail_b.1630 :
 	addi	%r0 %r1 1
-	sw	%r26 %r8 -36
-	sw	%r26 %r10 -32
-	sw	%r26 %r9 -28
-	sw.s	%r26 %f2 -24
-	sw	%r26 %r7 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
 	sw	%r26 %r3 0
+	sw	%r26 %r4 -4
+	sw	%r26 %r5 -8
+	sw	%r26 %r6 -12
+	sw.s	%r26 %f3 -16
+	sw	%r26 %r7 -20
+	sw.s	%r26 %f2 -24
+	sw	%r26 %r9 -28
+	sw	%r26 %r10 -32
+	sw	%r26 %r8 -36
 	mov	%r7 %r3
 	mov	%r11 %r2
 	sw	%r26 %r28 -40
@@ -17536,16 +17410,16 @@ tail_b.1630 :
 	jal	solve_one_or_network_fast.0
 	addi	%r26 %r26 44
 	lw	%r26 %r28 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r10 -32
-	lw	%r26 %r9 -28
-	lw.s	%r26 %f2 -24
-	lw	%r26 %r7 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
 	lw	%r26 %r3 0
+	lw	%r26 %r4 -4
+	lw	%r26 %r5 -8
+	lw	%r26 %r6 -12
+	lw.s	%r26 %f3 -16
+	lw	%r26 %r7 -20
+	lw.s	%r26 %f2 -24
+	lw	%r26 %r9 -28
+	lw	%r26 %r10 -32
+	lw	%r26 %r8 -36
 	j	tail_b.1695
 tail_b.1629 :
 	j	postloop_b.39
@@ -17632,32 +17506,32 @@ tail_b.1397 :
 	j	branching_b.873
 tail_b.1395 :
 	addi	%r0 %r1 1
-	sw	%r26 %r7 -36
-	sw	%r26 %r9 -32
-	sw	%r26 %r10 -28
-	sw.s	%r26 %f1 -24
-	sw	%r26 %r8 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -40
+	sw	%r26 %r4 -44
+	sw	%r26 %r5 -48
+	sw	%r26 %r6 -52
+	sw.s	%r26 %f3 -56
+	sw	%r26 %r8 -60
+	sw.s	%r26 %f1 -64
+	sw	%r26 %r10 -68
+	sw	%r26 %r9 -72
+	sw	%r26 %r7 -76
 	mov	%r8 %r3
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -80
+	addi	%r26 %r26 -84
 	jal	solve_one_or_network_fast.0
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
-	lw	%r26 %r7 -36
-	lw	%r26 %r9 -32
-	lw	%r26 %r10 -28
-	lw.s	%r26 %f1 -24
-	lw	%r26 %r8 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 84
+	lw	%r26 %r28 -80
+	lw	%r26 %r3 -40
+	lw	%r26 %r4 -44
+	lw	%r26 %r5 -48
+	lw	%r26 %r6 -52
+	lw.s	%r26 %f3 -56
+	lw	%r26 %r8 -60
+	lw.s	%r26 %f1 -64
+	lw	%r26 %r10 -68
+	lw	%r26 %r9 -72
+	lw	%r26 %r7 -76
 	j	tail_b.1460
 tail_b.1394 :
 postloop_b.35 :
@@ -18996,36 +18870,36 @@ branching_b.1015 :
 	beq	%r1 %r0 tail_b.1620
 branching_b.1016 :
 	addi	%r0 %r1 1
-	sw	%r26 %r11 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r2 -32
-	sw	%r26 %r7 -28
-	sw.s	%r26 %f4 -24
-	sw.s	%r26 %f1 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -80
+	sw	%r26 %r4 -84
+	sw	%r26 %r5 -88
+	sw	%r26 %r6 -92
+	sw.s	%r26 %f3 -96
+	sw.s	%r26 %f1 -100
+	sw.s	%r26 %f4 -104
+	sw	%r26 %r7 -108
+	sw	%r26 %r2 -112
+	sw	%r26 %r10 -116
+	sw	%r26 %r12 -120
+	sw	%r26 %r11 -124
 	mov	%r9 %r2
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -128
+	addi	%r26 %r26 -132
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r11 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r2 -32
-	lw	%r26 %r7 -28
-	lw.s	%r26 %f4 -24
-	lw.s	%r26 %f1 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 132
+	lw	%r26 %r28 -128
+	lw	%r26 %r3 -80
+	lw	%r26 %r4 -84
+	lw	%r26 %r5 -88
+	lw	%r26 %r6 -92
+	lw.s	%r26 %f3 -96
+	lw.s	%r26 %f1 -100
+	lw.s	%r26 %f4 -104
+	lw	%r26 %r7 -108
+	lw	%r26 %r2 -112
+	lw	%r26 %r10 -116
+	lw	%r26 %r12 -120
+	lw	%r26 %r11 -124
 	beq	%r1 %r0 tail_b.1621
 tail_b.1622 :
 	addi	%r0 %r1 1
@@ -19243,38 +19117,38 @@ branching_b.1013 :
 	beq	%r1 %r0 tail_b.1616
 branching_b.1014 :
 	addi	%r0 %r1 1
-	sw	%r26 %r9 -48
-	sw	%r26 %r11 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r2 -32
-	sw	%r26 %r7 -28
-	sw.s	%r26 %f4 -24
-	sw.s	%r26 %f1 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -128
+	sw	%r26 %r4 -132
+	sw	%r26 %r5 -136
+	sw	%r26 %r6 -140
+	sw.s	%r26 %f3 -144
+	sw.s	%r26 %f1 -148
+	sw.s	%r26 %f4 -152
+	sw	%r26 %r7 -156
+	sw	%r26 %r2 -160
+	sw	%r26 %r10 -164
+	sw	%r26 %r12 -168
+	sw	%r26 %r11 -172
+	sw	%r26 %r9 -176
 	mov	%r9 %r2
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -180
+	addi	%r26 %r26 -184
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r9 -48
-	lw	%r26 %r11 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r2 -32
-	lw	%r26 %r7 -28
-	lw.s	%r26 %f4 -24
-	lw.s	%r26 %f1 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 184
+	lw	%r26 %r28 -180
+	lw	%r26 %r3 -128
+	lw	%r26 %r4 -132
+	lw	%r26 %r5 -136
+	lw	%r26 %r6 -140
+	lw.s	%r26 %f3 -144
+	lw.s	%r26 %f1 -148
+	lw.s	%r26 %f4 -152
+	lw	%r26 %r7 -156
+	lw	%r26 %r2 -160
+	lw	%r26 %r10 -164
+	lw	%r26 %r12 -168
+	lw	%r26 %r11 -172
+	lw	%r26 %r9 -176
 	beq	%r1 %r0 tail_b.1617
 tail_b.1618 :
 	addi	%r0 %r1 1
@@ -19695,32 +19569,32 @@ branching_b.909 :
 	beq	%r1 %r0 tail_b.1457
 tail_b.1458 :
 	addi	%r0 %r1 1
-	sw	%r26 %r7 -36
-	sw	%r26 %r9 -32
-	sw	%r26 %r10 -28
-	sw.s	%r26 %f1 -24
-	sw	%r26 %r8 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -180
+	sw	%r26 %r4 -184
+	sw	%r26 %r5 -188
+	sw	%r26 %r6 -192
+	sw.s	%r26 %f3 -196
+	sw	%r26 %r8 -200
+	sw.s	%r26 %f1 -204
+	sw	%r26 %r10 -208
+	sw	%r26 %r9 -212
+	sw	%r26 %r7 -216
 	mov	%r8 %r3
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -220
+	addi	%r26 %r26 -224
 	jal	solve_one_or_network_fast.0
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
-	lw	%r26 %r7 -36
-	lw	%r26 %r9 -32
-	lw	%r26 %r10 -28
-	lw.s	%r26 %f1 -24
-	lw	%r26 %r8 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 224
+	lw	%r26 %r28 -220
+	lw	%r26 %r3 -180
+	lw	%r26 %r4 -184
+	lw	%r26 %r5 -188
+	lw	%r26 %r6 -192
+	lw.s	%r26 %f3 -196
+	lw	%r26 %r8 -200
+	lw.s	%r26 %f1 -204
+	lw	%r26 %r10 -208
+	lw	%r26 %r9 -212
+	lw	%r26 %r7 -216
 	j	tail_b.1460
 tail_b.1457 :
 	j	tail_b.1460
@@ -21153,36 +21027,36 @@ branching_b.1166 :
 	beq	%r1 %r0 tail_b.1855
 branching_b.1167 :
 	addi	%r0 %r1 1
-	sw	%r26 %r11 -44
-	sw	%r26 %r10 -40
-	sw	%r26 %r9 -36
-	sw	%r26 %r7 -32
-	sw	%r26 %r8 -28
-	sw.s	%r26 %f4 -24
-	sw.s	%r26 %f2 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -220
+	sw	%r26 %r4 -224
+	sw	%r26 %r5 -228
+	sw	%r26 %r6 -232
+	sw.s	%r26 %f3 -236
+	sw.s	%r26 %f2 -240
+	sw.s	%r26 %f4 -244
+	sw	%r26 %r8 -248
+	sw	%r26 %r7 -252
+	sw	%r26 %r9 -256
+	sw	%r26 %r10 -260
+	sw	%r26 %r11 -264
 	mov	%r12 %r2
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -268
+	addi	%r26 %r26 -272
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r11 -44
-	lw	%r26 %r10 -40
-	lw	%r26 %r9 -36
-	lw	%r26 %r7 -32
-	lw	%r26 %r8 -28
-	lw.s	%r26 %f4 -24
-	lw.s	%r26 %f2 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 272
+	lw	%r26 %r28 -268
+	lw	%r26 %r3 -220
+	lw	%r26 %r4 -224
+	lw	%r26 %r5 -228
+	lw	%r26 %r6 -232
+	lw.s	%r26 %f3 -236
+	lw.s	%r26 %f2 -240
+	lw.s	%r26 %f4 -244
+	lw	%r26 %r8 -248
+	lw	%r26 %r7 -252
+	lw	%r26 %r9 -256
+	lw	%r26 %r10 -260
+	lw	%r26 %r11 -264
 	beq	%r1 %r0 tail_b.1856
 tail_b.1857 :
 	addi	%r0 %r1 1
@@ -21400,38 +21274,38 @@ branching_b.1164 :
 	beq	%r1 %r0 tail_b.1851
 branching_b.1165 :
 	addi	%r0 %r1 1
-	sw	%r26 %r12 -48
-	sw	%r26 %r11 -44
-	sw	%r26 %r10 -40
-	sw	%r26 %r9 -36
-	sw	%r26 %r7 -32
-	sw	%r26 %r8 -28
-	sw.s	%r26 %f4 -24
-	sw.s	%r26 %f2 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -268
+	sw	%r26 %r4 -272
+	sw	%r26 %r5 -276
+	sw	%r26 %r6 -280
+	sw.s	%r26 %f3 -284
+	sw.s	%r26 %f2 -288
+	sw.s	%r26 %f4 -292
+	sw	%r26 %r8 -296
+	sw	%r26 %r7 -300
+	sw	%r26 %r9 -304
+	sw	%r26 %r10 -308
+	sw	%r26 %r11 -312
+	sw	%r26 %r12 -316
 	mov	%r12 %r2
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -320
+	addi	%r26 %r26 -324
 	jal	shadow_check_one_or_group.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r11 -44
-	lw	%r26 %r10 -40
-	lw	%r26 %r9 -36
-	lw	%r26 %r7 -32
-	lw	%r26 %r8 -28
-	lw.s	%r26 %f4 -24
-	lw.s	%r26 %f2 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 324
+	lw	%r26 %r28 -320
+	lw	%r26 %r3 -268
+	lw	%r26 %r4 -272
+	lw	%r26 %r5 -276
+	lw	%r26 %r6 -280
+	lw.s	%r26 %f3 -284
+	lw.s	%r26 %f2 -288
+	lw.s	%r26 %f4 -292
+	lw	%r26 %r8 -296
+	lw	%r26 %r7 -300
+	lw	%r26 %r9 -304
+	lw	%r26 %r10 -308
+	lw	%r26 %r11 -312
+	lw	%r26 %r12 -316
 	beq	%r1 %r0 tail_b.1852
 tail_b.1853 :
 	addi	%r0 %r1 1
@@ -21853,33 +21727,33 @@ branching_b.1060 :
 	beq	%r1 %r0 tail_b.1692
 tail_b.1693 :
 	addi	%r0 %r1 1
-	sw	%r26 %r8 -36
-	sw	%r26 %r10 -32
-	sw	%r26 %r9 -28
-	sw.s	%r26 %f2 -24
-	sw	%r26 %r7 -20
-	sw.s	%r26 %f3 -16
-	sw	%r26 %r6 -12
-	sw	%r26 %r5 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r3 0
+	sw	%r26 %r3 -320
+	sw	%r26 %r4 -324
+	sw	%r26 %r5 -328
+	sw	%r26 %r6 -332
+	sw.s	%r26 %f3 -336
+	sw	%r26 %r7 -340
+	sw.s	%r26 %f2 -344
+	sw	%r26 %r9 -348
+	sw	%r26 %r10 -352
+	sw	%r26 %r8 -356
 	mov	%r7 %r3
 	mov	%r11 %r2
-	sw	%r26 %r28 -40
-	addi	%r26 %r26 -44
+	sw	%r26 %r28 -360
+	addi	%r26 %r26 -364
 	jal	solve_one_or_network_fast.0
-	addi	%r26 %r26 44
-	lw	%r26 %r28 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r10 -32
-	lw	%r26 %r9 -28
-	lw.s	%r26 %f2 -24
-	lw	%r26 %r7 -20
-	lw.s	%r26 %f3 -16
-	lw	%r26 %r6 -12
-	lw	%r26 %r5 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r3 0
+	addi	%r26 %r26 364
+	lw	%r26 %r28 -360
+	lw	%r26 %r3 -320
+	lw	%r26 %r4 -324
+	lw	%r26 %r5 -328
+	lw	%r26 %r6 -332
+	lw.s	%r26 %f3 -336
+	lw	%r26 %r7 -340
+	lw.s	%r26 %f2 -344
+	lw	%r26 %r9 -348
+	lw	%r26 %r10 -352
+	lw	%r26 %r8 -356
 	j	tail_b.1695
 tail_b.1692 :
 	j	tail_b.1695
@@ -22225,18 +22099,18 @@ branching_b.1229 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r2 536
-	sw.s	%r26 %f4 -44
-	sw	%r26 %r1 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
 	sw	%r26 %r4 0
+	sw	%r26 %r5 -4
+	sw	%r26 %r6 -8
+	sw	%r26 %r7 -12
+	sw	%r26 %r9 -16
+	sw	%r26 %r3 -20
+	sw	%r26 %r10 -24
+	sw	%r26 %r8 -28
+	sw	%r26 %r11 -32
+	sw.s	%r26 %f3 -36
+	sw	%r26 %r1 -40
+	sw.s	%r26 %f4 -44
 	mov	%r1 %r3
 	mov	%r0 %r1
 	sw	%r26 %r28 -48
@@ -22245,20 +22119,20 @@ branching_b.1229 :
 	addi	%r26 %r26 52
 	lw	%r26 %r28 -48
 	mov	%r1 %r2
-	lw.s	%r26 %f4 -44
-	lw	%r26 %r1 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r4 0
+	lw	%r26 %r5 -4
+	lw	%r26 %r6 -8
+	lw	%r26 %r7 -12
+	lw	%r26 %r9 -16
+	lw	%r26 %r3 -20
+	lw	%r26 %r10 -24
+	lw	%r26 %r8 -28
+	lw	%r26 %r11 -32
+	lw.s	%r26 %f3 -36
+	lw	%r26 %r1 -40
+	lw.s	%r26 %f4 -44
 	fbge	%f0 %f1 tail_b.1953
 tail_b.1952 :
 	addi	%r0 %r2 1
@@ -22275,40 +22149,40 @@ branching_b.1183 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f4 -44
-	sw	%r26 %r2 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -48
+	sw	%r26 %r5 -52
+	sw	%r26 %r6 -56
+	sw	%r26 %r7 -60
+	sw	%r26 %r9 -64
+	sw	%r26 %r3 -68
+	sw	%r26 %r10 -72
+	sw	%r26 %r8 -76
+	sw	%r26 %r11 -80
+	sw.s	%r26 %f3 -84
+	sw	%r26 %r2 -88
+	sw.s	%r26 %f4 -92
 	mov	%r2 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -96
+	addi	%r26 %r26 -100
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw.s	%r26 %f4 -44
-	lw	%r26 %r2 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 100
+	lw	%r26 %r28 -96
 	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f1 l.68
+	lw	%r26 %r4 -48
+	lw	%r26 %r5 -52
+	lw	%r26 %r6 -56
+	lw	%r26 %r7 -60
+	lw	%r26 %r9 -64
+	lw	%r26 %r3 -68
+	lw	%r26 %r10 -72
+	lw	%r26 %r8 -76
+	lw	%r26 %r11 -80
+	lw.s	%r26 %f3 -84
+	lw	%r26 %r2 -88
+	lw.s	%r26 %f4 -92
 	fbge	%f1 %f0 tail_b.1879
 tail_b.1878 :
 	addi	%r0 %r1 1
@@ -22547,35 +22421,23 @@ tail_b.1911 :
 	sub.s	%f1 %f0 %f0
 	ilw.s	%r0 %f1 l.75
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r12 -44
-	sw.s	%r26 %f4 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r4 -96
+	sw	%r26 %r5 -100
+	sw	%r26 %r6 -104
+	sw	%r26 %r7 -108
+	sw	%r26 %r9 -112
+	sw	%r26 %r3 -116
+	sw	%r26 %r10 -120
+	sw	%r26 %r8 -124
+	sw	%r26 %r11 -128
+	sw.s	%r26 %f3 -132
+	sw.s	%r26 %f4 -136
+	sw	%r26 %r12 -140
+	sw	%r26 %r28 -144
+	addi	%r26 %r26 -148
 	jal	cos.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r12 -44
-	lw.s	%r26 %f4 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 148
+	lw	%r26 %r28 -144
 	mul.s	%f0 %f0 %f2
 	ilw.s	%r0 %f0 l.52
 	mul.s	%f0 %f2 %f1
@@ -22584,40 +22446,40 @@ tail_b.1911 :
 	sub.s	%f2 %f1 %f1
 	mul.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -96
+	lw	%r26 %r5 -100
+	lw	%r26 %r6 -104
+	lw	%r26 %r7 -108
+	lw	%r26 %r9 -112
+	lw	%r26 %r3 -116
+	lw	%r26 %r10 -120
+	lw	%r26 %r8 -124
+	lw	%r26 %r11 -128
+	lw.s	%r26 %f3 -132
+	lw.s	%r26 %f4 -136
+	lw	%r26 %r12 -140
 	j	branching_b.1226
 tail_b.1910 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.74
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r12 -44
-	sw.s	%r26 %f4 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r4 -144
+	sw	%r26 %r5 -148
+	sw	%r26 %r6 -152
+	sw	%r26 %r7 -156
+	sw	%r26 %r9 -160
+	sw	%r26 %r3 -164
+	sw	%r26 %r10 -168
+	sw	%r26 %r8 -172
+	sw	%r26 %r11 -176
+	sw.s	%r26 %f3 -180
+	sw.s	%r26 %f4 -184
+	sw	%r26 %r12 -188
+	sw	%r26 %r28 -192
+	addi	%r26 %r26 -196
 	jal	sin.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r12 -44
-	lw.s	%r26 %f4 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 196
+	lw	%r26 %r28 -192
 	mul.s	%f0 %f0 %f2
 	ilw.s	%r0 %f0 l.52
 	mul.s	%f2 %f0 %f1
@@ -22626,6 +22488,18 @@ tail_b.1910 :
 	sub.s	%f2 %f1 %f1
 	mul.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -144
+	lw	%r26 %r5 -148
+	lw	%r26 %r6 -152
+	lw	%r26 %r7 -156
+	lw	%r26 %r9 -160
+	lw	%r26 %r3 -164
+	lw	%r26 %r10 -168
+	lw	%r26 %r8 -172
+	lw	%r26 %r11 -176
+	lw.s	%r26 %f3 -180
+	lw.s	%r26 %f4 -184
+	lw	%r26 %r12 -188
 	j	branching_b.1226
 branching_b.1198 :
 	lw.s	%r0 %f1 552
@@ -23210,36 +23084,36 @@ tail_b.1944 :
 	sw.s	%r0 %f0 588
 branching_b.1226 :
 	lw	%r0 %r2 536
-	sw	%r26 %r12 -44
-	sw.s	%r26 %f4 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -192
+	sw	%r26 %r5 -196
+	sw	%r26 %r6 -200
+	sw	%r26 %r7 -204
+	sw	%r26 %r9 -208
+	sw	%r26 %r3 -212
+	sw	%r26 %r10 -216
+	sw	%r26 %r8 -220
+	sw	%r26 %r11 -224
+	sw.s	%r26 %f3 -228
+	sw.s	%r26 %f4 -232
+	sw	%r26 %r12 -236
 	mov	%r0 %r1
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -240
+	addi	%r26 %r26 -244
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r12 -44
-	lw.s	%r26 %f4 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 244
+	lw	%r26 %r28 -240
+	lw	%r26 %r4 -192
+	lw	%r26 %r5 -196
+	lw	%r26 %r6 -200
+	lw	%r26 %r7 -204
+	lw	%r26 %r9 -208
+	lw	%r26 %r3 -212
+	lw	%r26 %r10 -216
+	lw	%r26 %r8 -220
+	lw	%r26 %r11 -224
+	lw.s	%r26 %f3 -228
+	lw.s	%r26 %f4 -232
+	lw	%r26 %r12 -236
 	beq	%r1 %r0 branching_b.1227
 tail_b.1951 :
 	j	tail_b.2026
@@ -23561,35 +23435,23 @@ tail_b.1985 :
 	sub.s	%f0 %f1 %f0
 	ilw.s	%r0 %f1 l.75
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r2 -44
-	sw.s	%r26 %f4 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r4 -240
+	sw	%r26 %r5 -244
+	sw	%r26 %r6 -248
+	sw	%r26 %r7 -252
+	sw	%r26 %r9 -256
+	sw	%r26 %r3 -260
+	sw	%r26 %r10 -264
+	sw	%r26 %r8 -268
+	sw	%r26 %r11 -272
+	sw.s	%r26 %f3 -276
+	sw.s	%r26 %f4 -280
+	sw	%r26 %r2 -284
+	sw	%r26 %r28 -288
+	addi	%r26 %r26 -292
 	jal	cos.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r2 -44
-	lw.s	%r26 %f4 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 292
+	lw	%r26 %r28 -288
 	mul.s	%f0 %f0 %f2
 	ilw.s	%r0 %f1 l.52
 	mul.s	%f1 %f2 %f0
@@ -23598,40 +23460,40 @@ tail_b.1985 :
 	sub.s	%f2 %f0 %f0
 	mul.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -240
+	lw	%r26 %r5 -244
+	lw	%r26 %r6 -248
+	lw	%r26 %r7 -252
+	lw	%r26 %r9 -256
+	lw	%r26 %r3 -260
+	lw	%r26 %r10 -264
+	lw	%r26 %r8 -268
+	lw	%r26 %r11 -272
+	lw.s	%r26 %f3 -276
+	lw.s	%r26 %f4 -280
+	lw	%r26 %r2 -284
 	j	branching_b.1272
 tail_b.1984 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.74
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r2 -44
-	sw.s	%r26 %f4 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r4 -288
+	sw	%r26 %r5 -292
+	sw	%r26 %r6 -296
+	sw	%r26 %r7 -300
+	sw	%r26 %r9 -304
+	sw	%r26 %r3 -308
+	sw	%r26 %r10 -312
+	sw	%r26 %r8 -316
+	sw	%r26 %r11 -320
+	sw.s	%r26 %f3 -324
+	sw.s	%r26 %f4 -328
+	sw	%r26 %r2 -332
+	sw	%r26 %r28 -336
+	addi	%r26 %r26 -340
 	jal	sin.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r2 -44
-	lw.s	%r26 %f4 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 340
+	lw	%r26 %r28 -336
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f2 l.52
 	mul.s	%f1 %f2 %f0
@@ -23640,6 +23502,18 @@ tail_b.1984 :
 	sub.s	%f1 %f0 %f0
 	mul.s	%f0 %f2 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -288
+	lw	%r26 %r5 -292
+	lw	%r26 %r6 -296
+	lw	%r26 %r7 -300
+	lw	%r26 %r9 -304
+	lw	%r26 %r3 -308
+	lw	%r26 %r10 -312
+	lw	%r26 %r8 -316
+	lw	%r26 %r11 -320
+	lw.s	%r26 %f3 -324
+	lw.s	%r26 %f4 -328
+	lw	%r26 %r2 -332
 	j	branching_b.1272
 branching_b.1244 :
 	lw.s	%r0 %f0 552
@@ -24223,37 +24097,37 @@ tail_b.2018 :
 	sw.s	%r0 %f0 588
 branching_b.1272 :
 	lw	%r0 %r1 536
-	sw	%r26 %r2 -44
-	sw.s	%r26 %f4 -40
-	sw.s	%r26 %f3 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -336
+	sw	%r26 %r5 -340
+	sw	%r26 %r6 -344
+	sw	%r26 %r7 -348
+	sw	%r26 %r9 -352
+	sw	%r26 %r3 -356
+	sw	%r26 %r10 -360
+	sw	%r26 %r8 -364
+	sw	%r26 %r11 -368
+	sw.s	%r26 %f3 -372
+	sw.s	%r26 %f4 -376
+	sw	%r26 %r2 -380
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -384
+	addi	%r26 %r26 -388
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r2 -44
-	lw.s	%r26 %f4 -40
-	lw.s	%r26 %f3 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 388
+	lw	%r26 %r28 -384
+	lw	%r26 %r4 -336
+	lw	%r26 %r5 -340
+	lw	%r26 %r6 -344
+	lw	%r26 %r7 -348
+	lw	%r26 %r9 -352
+	lw	%r26 %r3 -356
+	lw	%r26 %r10 -360
+	lw	%r26 %r8 -364
+	lw	%r26 %r11 -368
+	lw.s	%r26 %f3 -372
+	lw.s	%r26 %f4 -376
+	lw	%r26 %r2 -380
 	beq	%r1 %r0 branching_b.1273
 tail_b.2025 :
 	j	tail_b.2026
@@ -24535,41 +24409,41 @@ branching_b.1330 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r2 536
-	sw.s	%r26 %f3 -48
-	sw	%r26 %r12 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -384
+	sw	%r26 %r5 -388
+	sw	%r26 %r6 -392
+	sw	%r26 %r7 -396
+	sw	%r26 %r9 -400
+	sw	%r26 %r3 -404
+	sw	%r26 %r10 -408
+	sw	%r26 %r8 -412
+	sw	%r26 %r11 -416
+	sw	%r26 %r13 -420
+	sw.s	%r26 %f1 -424
+	sw	%r26 %r12 -428
+	sw.s	%r26 %f3 -432
 	mov	%r12 %r3
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -436
+	addi	%r26 %r26 -440
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw.s	%r26 %f3 -48
-	lw	%r26 %r12 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 440
+	lw	%r26 %r28 -436
 	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f2 l.68
+	lw	%r26 %r4 -384
+	lw	%r26 %r5 -388
+	lw	%r26 %r6 -392
+	lw	%r26 %r7 -396
+	lw	%r26 %r9 -400
+	lw	%r26 %r3 -404
+	lw	%r26 %r10 -408
+	lw	%r26 %r8 -412
+	lw	%r26 %r11 -416
+	lw	%r26 %r13 -420
+	lw.s	%r26 %f1 -424
+	lw	%r26 %r12 -428
+	lw.s	%r26 %f3 -432
 	fbge	%f2 %f0 tail_b.2115
 tail_b.2114 :
 	addi	%r0 %r1 1
@@ -24586,41 +24460,41 @@ branching_b.1284 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r2 536
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r12 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -436
+	sw	%r26 %r5 -440
+	sw	%r26 %r6 -444
+	sw	%r26 %r7 -448
+	sw	%r26 %r9 -452
+	sw	%r26 %r3 -456
+	sw	%r26 %r10 -460
+	sw	%r26 %r8 -464
+	sw	%r26 %r11 -468
+	sw	%r26 %r13 -472
+	sw.s	%r26 %f1 -476
+	sw	%r26 %r12 -480
+	sw.s	%r26 %f2 -484
 	mov	%r12 %r3
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -488
+	addi	%r26 %r26 -492
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r12 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 492
+	lw	%r26 %r28 -488
 	lw.s	%r0 %f3 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r4 -436
+	lw	%r26 %r5 -440
+	lw	%r26 %r6 -444
+	lw	%r26 %r7 -448
+	lw	%r26 %r9 -452
+	lw	%r26 %r3 -456
+	lw	%r26 %r10 -460
+	lw	%r26 %r8 -464
+	lw	%r26 %r11 -468
+	lw	%r26 %r13 -472
+	lw.s	%r26 %f1 -476
+	lw	%r26 %r12 -480
+	lw.s	%r26 %f2 -484
 	fbge	%f0 %f3 tail_b.2041
 tail_b.2040 :
 	addi	%r0 %r1 1
@@ -24858,37 +24732,24 @@ tail_b.2073 :
 	sub.s	%f3 %f0 %f3
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f3 %f0
-	sw	%r26 %r1 -48
-	sw.s	%r26 %f2 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -488
+	sw	%r26 %r5 -492
+	sw	%r26 %r6 -496
+	sw	%r26 %r7 -500
+	sw	%r26 %r9 -504
+	sw	%r26 %r3 -508
+	sw	%r26 %r10 -512
+	sw	%r26 %r8 -516
+	sw	%r26 %r11 -520
+	sw	%r26 %r13 -524
+	sw.s	%r26 %f1 -528
+	sw.s	%r26 %f2 -532
+	sw	%r26 %r1 -536
+	sw	%r26 %r28 -540
+	addi	%r26 %r26 -544
 	jal	cos.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r1 -48
-	lw.s	%r26 %f2 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 544
+	lw	%r26 %r28 -540
 	mul.s	%f0 %f0 %f4
 	ilw.s	%r0 %f3 l.52
 	mul.s	%f3 %f4 %f0
@@ -24897,42 +24758,42 @@ tail_b.2073 :
 	sub.s	%f4 %f0 %f0
 	mul.s	%f3 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -488
+	lw	%r26 %r5 -492
+	lw	%r26 %r6 -496
+	lw	%r26 %r7 -500
+	lw	%r26 %r9 -504
+	lw	%r26 %r3 -508
+	lw	%r26 %r10 -512
+	lw	%r26 %r8 -516
+	lw	%r26 %r11 -520
+	lw	%r26 %r13 -524
+	lw.s	%r26 %f1 -528
+	lw.s	%r26 %f2 -532
+	lw	%r26 %r1 -536
 	j	branching_b.1327
 tail_b.2072 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f3 l.74
 	mul.s	%f3 %f0 %f0
-	sw	%r26 %r1 -48
-	sw.s	%r26 %f2 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -540
+	sw	%r26 %r5 -544
+	sw	%r26 %r6 -548
+	sw	%r26 %r7 -552
+	sw	%r26 %r9 -556
+	sw	%r26 %r3 -560
+	sw	%r26 %r10 -564
+	sw	%r26 %r8 -568
+	sw	%r26 %r11 -572
+	sw	%r26 %r13 -576
+	sw.s	%r26 %f1 -580
+	sw.s	%r26 %f2 -584
+	sw	%r26 %r1 -588
+	sw	%r26 %r28 -592
+	addi	%r26 %r26 -596
 	jal	sin.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r1 -48
-	lw.s	%r26 %f2 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 596
+	lw	%r26 %r28 -592
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f0 %f4 %f3
@@ -24941,6 +24802,19 @@ tail_b.2072 :
 	sub.s	%f0 %f3 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -540
+	lw	%r26 %r5 -544
+	lw	%r26 %r6 -548
+	lw	%r26 %r7 -552
+	lw	%r26 %r9 -556
+	lw	%r26 %r3 -560
+	lw	%r26 %r10 -564
+	lw	%r26 %r8 -568
+	lw	%r26 %r11 -572
+	lw	%r26 %r13 -576
+	lw.s	%r26 %f1 -580
+	lw.s	%r26 %f2 -584
+	lw	%r26 %r1 -588
 	j	branching_b.1327
 branching_b.1299 :
 	lw.s	%r0 %f3 552
@@ -25523,39 +25397,39 @@ tail_b.2106 :
 	sw.s	%r0 %f0 588
 branching_b.1327 :
 	lw	%r0 %r2 536
-	sw	%r26 %r1 -48
-	sw.s	%r26 %f2 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -592
+	sw	%r26 %r5 -596
+	sw	%r26 %r6 -600
+	sw	%r26 %r7 -604
+	sw	%r26 %r9 -608
+	sw	%r26 %r3 -612
+	sw	%r26 %r10 -616
+	sw	%r26 %r8 -620
+	sw	%r26 %r11 -624
+	sw	%r26 %r13 -628
+	sw.s	%r26 %f1 -632
+	sw.s	%r26 %f2 -636
+	sw	%r26 %r1 -640
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -644
+	addi	%r26 %r26 -648
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
+	addi	%r26 %r26 648
+	lw	%r26 %r28 -644
 	mov	%r1 %r2
-	lw	%r26 %r1 -48
-	lw.s	%r26 %f2 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r4 -592
+	lw	%r26 %r5 -596
+	lw	%r26 %r6 -600
+	lw	%r26 %r7 -604
+	lw	%r26 %r9 -608
+	lw	%r26 %r3 -612
+	lw	%r26 %r10 -616
+	lw	%r26 %r8 -620
+	lw	%r26 %r11 -624
+	lw	%r26 %r13 -628
+	lw.s	%r26 %f1 -632
+	lw.s	%r26 %f2 -636
+	lw	%r26 %r1 -640
 	beq	%r2 %r0 branching_b.1328
 tail_b.2113 :
 	j	tail_b.2188
@@ -25876,37 +25750,24 @@ tail_b.2147 :
 	sub.s	%f0 %f2 %f0
 	ilw.s	%r0 %f2 l.75
 	mul.s	%f2 %f0 %f0
-	sw	%r26 %r14 -48
-	sw.s	%r26 %f3 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -644
+	sw	%r26 %r5 -648
+	sw	%r26 %r6 -652
+	sw	%r26 %r7 -656
+	sw	%r26 %r9 -660
+	sw	%r26 %r3 -664
+	sw	%r26 %r10 -668
+	sw	%r26 %r8 -672
+	sw	%r26 %r11 -676
+	sw	%r26 %r13 -680
+	sw.s	%r26 %f1 -684
+	sw.s	%r26 %f3 -688
+	sw	%r26 %r14 -692
+	sw	%r26 %r28 -696
+	addi	%r26 %r26 -700
 	jal	cos.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r14 -48
-	lw.s	%r26 %f3 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 700
+	lw	%r26 %r28 -696
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f2 l.52
 	mul.s	%f2 %f0 %f4
@@ -25915,42 +25776,42 @@ tail_b.2147 :
 	sub.s	%f0 %f4 %f0
 	mul.s	%f2 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -644
+	lw	%r26 %r5 -648
+	lw	%r26 %r6 -652
+	lw	%r26 %r7 -656
+	lw	%r26 %r9 -660
+	lw	%r26 %r3 -664
+	lw	%r26 %r10 -668
+	lw	%r26 %r8 -672
+	lw	%r26 %r11 -676
+	lw	%r26 %r13 -680
+	lw.s	%r26 %f1 -684
+	lw.s	%r26 %f3 -688
+	lw	%r26 %r14 -692
 	j	branching_b.1373
 tail_b.2146 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f2 l.74
 	mul.s	%f2 %f0 %f0
-	sw	%r26 %r14 -48
-	sw.s	%r26 %f3 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -696
+	sw	%r26 %r5 -700
+	sw	%r26 %r6 -704
+	sw	%r26 %r7 -708
+	sw	%r26 %r9 -712
+	sw	%r26 %r3 -716
+	sw	%r26 %r10 -720
+	sw	%r26 %r8 -724
+	sw	%r26 %r11 -728
+	sw	%r26 %r13 -732
+	sw.s	%r26 %f1 -736
+	sw.s	%r26 %f3 -740
+	sw	%r26 %r14 -744
+	sw	%r26 %r28 -748
+	addi	%r26 %r26 -752
 	jal	sin.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r14 -48
-	lw.s	%r26 %f3 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 752
+	lw	%r26 %r28 -748
 	mul.s	%f0 %f0 %f2
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f2 %f4 %f0
@@ -25959,6 +25820,19 @@ tail_b.2146 :
 	sub.s	%f2 %f0 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -696
+	lw	%r26 %r5 -700
+	lw	%r26 %r6 -704
+	lw	%r26 %r7 -708
+	lw	%r26 %r9 -712
+	lw	%r26 %r3 -716
+	lw	%r26 %r10 -720
+	lw	%r26 %r8 -724
+	lw	%r26 %r11 -728
+	lw	%r26 %r13 -732
+	lw.s	%r26 %f1 -736
+	lw.s	%r26 %f3 -740
+	lw	%r26 %r14 -744
 	j	branching_b.1373
 branching_b.1345 :
 	lw.s	%r0 %f0 552
@@ -26541,38 +26415,38 @@ tail_b.2180 :
 	sw.s	%r0 %f0 588
 branching_b.1373 :
 	lw	%r0 %r2 536
-	sw	%r26 %r14 -48
-	sw.s	%r26 %f3 -44
-	sw.s	%r26 %f1 -40
-	sw	%r26 %r13 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -748
+	sw	%r26 %r5 -752
+	sw	%r26 %r6 -756
+	sw	%r26 %r7 -760
+	sw	%r26 %r9 -764
+	sw	%r26 %r3 -768
+	sw	%r26 %r10 -772
+	sw	%r26 %r8 -776
+	sw	%r26 %r11 -780
+	sw	%r26 %r13 -784
+	sw.s	%r26 %f1 -788
+	sw.s	%r26 %f3 -792
+	sw	%r26 %r14 -796
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -800
+	addi	%r26 %r26 -804
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r14 -48
-	lw.s	%r26 %f3 -44
-	lw.s	%r26 %f1 -40
-	lw	%r26 %r13 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 804
+	lw	%r26 %r28 -800
+	lw	%r26 %r4 -748
+	lw	%r26 %r5 -752
+	lw	%r26 %r6 -756
+	lw	%r26 %r7 -760
+	lw	%r26 %r9 -764
+	lw	%r26 %r3 -768
+	lw	%r26 %r10 -772
+	lw	%r26 %r8 -776
+	lw	%r26 %r11 -780
+	lw	%r26 %r13 -784
+	lw.s	%r26 %f1 -788
+	lw.s	%r26 %f3 -792
+	lw	%r26 %r14 -796
 	beq	%r1 %r0 branching_b.1374
 tail_b.2187 :
 	j	tail_b.2188
@@ -26852,44 +26726,44 @@ branching_b.1431 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f3 -52
-	sw	%r26 %r14 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -800
+	sw	%r26 %r5 -804
+	sw	%r26 %r6 -808
+	sw	%r26 %r7 -812
+	sw	%r26 %r9 -816
+	sw	%r26 %r3 -820
+	sw	%r26 %r10 -824
+	sw	%r26 %r8 -828
+	sw	%r26 %r11 -832
+	sw	%r26 %r2 -836
+	sw	%r26 %r12 -840
+	sw.s	%r26 %f2 -844
+	sw	%r26 %r14 -848
+	sw.s	%r26 %f3 -852
 	mov	%r14 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -856
+	addi	%r26 %r26 -860
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw.s	%r26 %f3 -52
-	lw	%r26 %r14 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 860
+	lw	%r26 %r28 -856
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r4 -800
+	lw	%r26 %r5 -804
+	lw	%r26 %r6 -808
+	lw	%r26 %r7 -812
+	lw	%r26 %r9 -816
+	lw	%r26 %r3 -820
+	lw	%r26 %r10 -824
+	lw	%r26 %r8 -828
+	lw	%r26 %r11 -832
+	lw	%r26 %r2 -836
+	lw	%r26 %r12 -840
+	lw.s	%r26 %f2 -844
+	lw	%r26 %r14 -848
+	lw.s	%r26 %f3 -852
 	fbge	%f0 %f1 tail_b.2277
 tail_b.2276 :
 	addi	%r0 %r1 1
@@ -26906,44 +26780,44 @@ branching_b.1385 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f3 -52
-	sw	%r26 %r14 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -856
+	sw	%r26 %r5 -860
+	sw	%r26 %r6 -864
+	sw	%r26 %r7 -868
+	sw	%r26 %r9 -872
+	sw	%r26 %r3 -876
+	sw	%r26 %r10 -880
+	sw	%r26 %r8 -884
+	sw	%r26 %r11 -888
+	sw	%r26 %r2 -892
+	sw	%r26 %r12 -896
+	sw.s	%r26 %f2 -900
+	sw	%r26 %r14 -904
+	sw.s	%r26 %f3 -908
 	mov	%r14 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -912
+	addi	%r26 %r26 -916
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw.s	%r26 %f3 -52
-	lw	%r26 %r14 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 916
+	lw	%r26 %r28 -912
 	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f1 l.68
+	lw	%r26 %r4 -856
+	lw	%r26 %r5 -860
+	lw	%r26 %r6 -864
+	lw	%r26 %r7 -868
+	lw	%r26 %r9 -872
+	lw	%r26 %r3 -876
+	lw	%r26 %r10 -880
+	lw	%r26 %r8 -884
+	lw	%r26 %r11 -888
+	lw	%r26 %r2 -892
+	lw	%r26 %r12 -896
+	lw.s	%r26 %f2 -900
+	lw	%r26 %r14 -904
+	lw.s	%r26 %f3 -908
 	fbge	%f1 %f0 tail_b.2203
 tail_b.2202 :
 	addi	%r0 %r1 1
@@ -27179,39 +27053,25 @@ tail_b.2235 :
 	sub.s	%f0 %f1 %f1
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r13 -52
-	sw.s	%r26 %f3 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r4 -912
+	sw	%r26 %r5 -916
+	sw	%r26 %r6 -920
+	sw	%r26 %r7 -924
+	sw	%r26 %r9 -928
+	sw	%r26 %r3 -932
+	sw	%r26 %r10 -936
+	sw	%r26 %r8 -940
+	sw	%r26 %r11 -944
+	sw	%r26 %r2 -948
+	sw	%r26 %r12 -952
+	sw.s	%r26 %f2 -956
+	sw.s	%r26 %f3 -960
+	sw	%r26 %r13 -964
+	sw	%r26 %r28 -968
+	addi	%r26 %r26 -972
 	jal	cos.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r13 -52
-	lw.s	%r26 %f3 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 972
+	lw	%r26 %r28 -968
 	mul.s	%f0 %f0 %f4
 	ilw.s	%r0 %f0 l.52
 	mul.s	%f0 %f4 %f1
@@ -27220,44 +27080,44 @@ tail_b.2235 :
 	sub.s	%f4 %f1 %f1
 	mul.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -912
+	lw	%r26 %r5 -916
+	lw	%r26 %r6 -920
+	lw	%r26 %r7 -924
+	lw	%r26 %r9 -928
+	lw	%r26 %r3 -932
+	lw	%r26 %r10 -936
+	lw	%r26 %r8 -940
+	lw	%r26 %r11 -944
+	lw	%r26 %r2 -948
+	lw	%r26 %r12 -952
+	lw.s	%r26 %f2 -956
+	lw.s	%r26 %f3 -960
+	lw	%r26 %r13 -964
 	j	branching_b.1428
 tail_b.2234 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.74
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r13 -52
-	sw.s	%r26 %f3 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r4 -968
+	sw	%r26 %r5 -972
+	sw	%r26 %r6 -976
+	sw	%r26 %r7 -980
+	sw	%r26 %r9 -984
+	sw	%r26 %r3 -988
+	sw	%r26 %r10 -992
+	sw	%r26 %r8 -996
+	sw	%r26 %r11 -1000
+	sw	%r26 %r2 -1004
+	sw	%r26 %r12 -1008
+	sw.s	%r26 %f2 -1012
+	sw.s	%r26 %f3 -1016
+	sw	%r26 %r13 -1020
+	sw	%r26 %r28 -1024
+	addi	%r26 %r26 -1028
 	jal	sin.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r13 -52
-	lw.s	%r26 %f3 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1028
+	lw	%r26 %r28 -1024
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f1 %f4 %f0
@@ -27266,6 +27126,20 @@ tail_b.2234 :
 	sub.s	%f1 %f0 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -968
+	lw	%r26 %r5 -972
+	lw	%r26 %r6 -976
+	lw	%r26 %r7 -980
+	lw	%r26 %r9 -984
+	lw	%r26 %r3 -988
+	lw	%r26 %r10 -992
+	lw	%r26 %r8 -996
+	lw	%r26 %r11 -1000
+	lw	%r26 %r2 -1004
+	lw	%r26 %r12 -1008
+	lw.s	%r26 %f2 -1012
+	lw.s	%r26 %f3 -1016
+	lw	%r26 %r13 -1020
 	j	branching_b.1428
 branching_b.1400 :
 	lw.s	%r0 %f0 552
@@ -27851,41 +27725,41 @@ tail_b.2268 :
 	sw.s	%r0 %f0 588
 branching_b.1428 :
 	lw	%r0 %r1 536
-	sw	%r26 %r13 -52
-	sw.s	%r26 %f3 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1024
+	sw	%r26 %r5 -1028
+	sw	%r26 %r6 -1032
+	sw	%r26 %r7 -1036
+	sw	%r26 %r9 -1040
+	sw	%r26 %r3 -1044
+	sw	%r26 %r10 -1048
+	sw	%r26 %r8 -1052
+	sw	%r26 %r11 -1056
+	sw	%r26 %r2 -1060
+	sw	%r26 %r12 -1064
+	sw.s	%r26 %f2 -1068
+	sw.s	%r26 %f3 -1072
+	sw	%r26 %r13 -1076
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -1080
+	addi	%r26 %r26 -1084
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r13 -52
-	lw.s	%r26 %f3 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1084
+	lw	%r26 %r28 -1080
+	lw	%r26 %r4 -1024
+	lw	%r26 %r5 -1028
+	lw	%r26 %r6 -1032
+	lw	%r26 %r7 -1036
+	lw	%r26 %r9 -1040
+	lw	%r26 %r3 -1044
+	lw	%r26 %r10 -1048
+	lw	%r26 %r8 -1052
+	lw	%r26 %r11 -1056
+	lw	%r26 %r2 -1060
+	lw	%r26 %r12 -1064
+	lw.s	%r26 %f2 -1068
+	lw.s	%r26 %f3 -1072
+	lw	%r26 %r13 -1076
 	beq	%r1 %r0 branching_b.1429
 tail_b.2275 :
 	j	tail_b.2350
@@ -28204,39 +28078,25 @@ tail_b.2309 :
 	sub.s	%f0 %f1 %f0
 	ilw.s	%r0 %f1 l.75
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r13 -52
-	sw.s	%r26 %f3 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r4 -1080
+	sw	%r26 %r5 -1084
+	sw	%r26 %r6 -1088
+	sw	%r26 %r7 -1092
+	sw	%r26 %r9 -1096
+	sw	%r26 %r3 -1100
+	sw	%r26 %r10 -1104
+	sw	%r26 %r8 -1108
+	sw	%r26 %r11 -1112
+	sw	%r26 %r2 -1116
+	sw	%r26 %r12 -1120
+	sw.s	%r26 %f2 -1124
+	sw.s	%r26 %f3 -1128
+	sw	%r26 %r13 -1132
+	sw	%r26 %r28 -1136
+	addi	%r26 %r26 -1140
 	jal	cos.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r13 -52
-	lw.s	%r26 %f3 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1140
+	lw	%r26 %r28 -1136
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f4 %f1 %f0
@@ -28245,44 +28105,44 @@ tail_b.2309 :
 	sub.s	%f1 %f0 %f0
 	mul.s	%f4 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -1080
+	lw	%r26 %r5 -1084
+	lw	%r26 %r6 -1088
+	lw	%r26 %r7 -1092
+	lw	%r26 %r9 -1096
+	lw	%r26 %r3 -1100
+	lw	%r26 %r10 -1104
+	lw	%r26 %r8 -1108
+	lw	%r26 %r11 -1112
+	lw	%r26 %r2 -1116
+	lw	%r26 %r12 -1120
+	lw.s	%r26 %f2 -1124
+	lw.s	%r26 %f3 -1128
+	lw	%r26 %r13 -1132
 	j	branching_b.1474
 tail_b.2308 :
 	lw.s	%r0 %f1 556
 	ilw.s	%r0 %f0 l.74
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r13 -52
-	sw.s	%r26 %f3 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r4 -1136
+	sw	%r26 %r5 -1140
+	sw	%r26 %r6 -1144
+	sw	%r26 %r7 -1148
+	sw	%r26 %r9 -1152
+	sw	%r26 %r3 -1156
+	sw	%r26 %r10 -1160
+	sw	%r26 %r8 -1164
+	sw	%r26 %r11 -1168
+	sw	%r26 %r2 -1172
+	sw	%r26 %r12 -1176
+	sw.s	%r26 %f2 -1180
+	sw.s	%r26 %f3 -1184
+	sw	%r26 %r13 -1188
+	sw	%r26 %r28 -1192
+	addi	%r26 %r26 -1196
 	jal	sin.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r13 -52
-	lw.s	%r26 %f3 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1196
+	lw	%r26 %r28 -1192
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f0 %f4 %f1
@@ -28291,6 +28151,20 @@ tail_b.2308 :
 	sub.s	%f0 %f1 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -1136
+	lw	%r26 %r5 -1140
+	lw	%r26 %r6 -1144
+	lw	%r26 %r7 -1148
+	lw	%r26 %r9 -1152
+	lw	%r26 %r3 -1156
+	lw	%r26 %r10 -1160
+	lw	%r26 %r8 -1164
+	lw	%r26 %r11 -1168
+	lw	%r26 %r2 -1172
+	lw	%r26 %r12 -1176
+	lw.s	%r26 %f2 -1180
+	lw.s	%r26 %f3 -1184
+	lw	%r26 %r13 -1188
 	j	branching_b.1474
 branching_b.1446 :
 	lw.s	%r0 %f0 552
@@ -28875,41 +28749,41 @@ tail_b.2342 :
 	sw.s	%r0 %f0 588
 branching_b.1474 :
 	lw	%r0 %r1 536
-	sw	%r26 %r13 -52
-	sw.s	%r26 %f3 -48
-	sw.s	%r26 %f2 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1192
+	sw	%r26 %r5 -1196
+	sw	%r26 %r6 -1200
+	sw	%r26 %r7 -1204
+	sw	%r26 %r9 -1208
+	sw	%r26 %r3 -1212
+	sw	%r26 %r10 -1216
+	sw	%r26 %r8 -1220
+	sw	%r26 %r11 -1224
+	sw	%r26 %r2 -1228
+	sw	%r26 %r12 -1232
+	sw.s	%r26 %f2 -1236
+	sw.s	%r26 %f3 -1240
+	sw	%r26 %r13 -1244
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -1248
+	addi	%r26 %r26 -1252
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r13 -52
-	lw.s	%r26 %f3 -48
-	lw.s	%r26 %f2 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1252
+	lw	%r26 %r28 -1248
+	lw	%r26 %r4 -1192
+	lw	%r26 %r5 -1196
+	lw	%r26 %r6 -1200
+	lw	%r26 %r7 -1204
+	lw	%r26 %r9 -1208
+	lw	%r26 %r3 -1212
+	lw	%r26 %r10 -1216
+	lw	%r26 %r8 -1220
+	lw	%r26 %r11 -1224
+	lw	%r26 %r2 -1228
+	lw	%r26 %r12 -1232
+	lw.s	%r26 %f2 -1236
+	lw.s	%r26 %f3 -1240
+	lw	%r26 %r13 -1244
 	beq	%r1 %r0 branching_b.1475
 tail_b.2349 :
 	j	tail_b.2350
@@ -29187,46 +29061,46 @@ branching_b.1532 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f3 -56
-	sw	%r26 %r15 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1248
+	sw	%r26 %r5 -1252
+	sw	%r26 %r6 -1256
+	sw	%r26 %r7 -1260
+	sw	%r26 %r9 -1264
+	sw	%r26 %r3 -1268
+	sw	%r26 %r10 -1272
+	sw	%r26 %r8 -1276
+	sw	%r26 %r11 -1280
+	sw	%r26 %r2 -1284
+	sw	%r26 %r12 -1288
+	sw	%r26 %r13 -1292
+	sw.s	%r26 %f2 -1296
+	sw	%r26 %r15 -1300
+	sw.s	%r26 %f3 -1304
 	mov	%r15 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -1308
+	addi	%r26 %r26 -1312
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw.s	%r26 %f3 -56
-	lw	%r26 %r15 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1312
+	lw	%r26 %r28 -1308
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r4 -1248
+	lw	%r26 %r5 -1252
+	lw	%r26 %r6 -1256
+	lw	%r26 %r7 -1260
+	lw	%r26 %r9 -1264
+	lw	%r26 %r3 -1268
+	lw	%r26 %r10 -1272
+	lw	%r26 %r8 -1276
+	lw	%r26 %r11 -1280
+	lw	%r26 %r2 -1284
+	lw	%r26 %r12 -1288
+	lw	%r26 %r13 -1292
+	lw.s	%r26 %f2 -1296
+	lw	%r26 %r15 -1300
+	lw.s	%r26 %f3 -1304
 	fbge	%f0 %f1 tail_b.2439
 tail_b.2438 :
 	addi	%r0 %r1 1
@@ -29243,46 +29117,46 @@ branching_b.1486 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f3 -56
-	sw	%r26 %r15 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1308
+	sw	%r26 %r5 -1312
+	sw	%r26 %r6 -1316
+	sw	%r26 %r7 -1320
+	sw	%r26 %r9 -1324
+	sw	%r26 %r3 -1328
+	sw	%r26 %r10 -1332
+	sw	%r26 %r8 -1336
+	sw	%r26 %r11 -1340
+	sw	%r26 %r2 -1344
+	sw	%r26 %r12 -1348
+	sw	%r26 %r13 -1352
+	sw.s	%r26 %f2 -1356
+	sw	%r26 %r15 -1360
+	sw.s	%r26 %f3 -1364
 	mov	%r15 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -1368
+	addi	%r26 %r26 -1372
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw.s	%r26 %f3 -56
-	lw	%r26 %r15 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1372
+	lw	%r26 %r28 -1368
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r4 -1308
+	lw	%r26 %r5 -1312
+	lw	%r26 %r6 -1316
+	lw	%r26 %r7 -1320
+	lw	%r26 %r9 -1324
+	lw	%r26 %r3 -1328
+	lw	%r26 %r10 -1332
+	lw	%r26 %r8 -1336
+	lw	%r26 %r11 -1340
+	lw	%r26 %r2 -1344
+	lw	%r26 %r12 -1348
+	lw	%r26 %r13 -1352
+	lw.s	%r26 %f2 -1356
+	lw	%r26 %r15 -1360
+	lw.s	%r26 %f3 -1364
 	fbge	%f0 %f1 tail_b.2365
 tail_b.2364 :
 	addi	%r0 %r1 1
@@ -29517,41 +29391,26 @@ tail_b.2397 :
 	sub.s	%f0 %f1 %f0
 	ilw.s	%r0 %f1 l.75
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r14 -56
-	sw.s	%r26 %f3 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r4 -1368
+	sw	%r26 %r5 -1372
+	sw	%r26 %r6 -1376
+	sw	%r26 %r7 -1380
+	sw	%r26 %r9 -1384
+	sw	%r26 %r3 -1388
+	sw	%r26 %r10 -1392
+	sw	%r26 %r8 -1396
+	sw	%r26 %r11 -1400
+	sw	%r26 %r2 -1404
+	sw	%r26 %r12 -1408
+	sw	%r26 %r13 -1412
+	sw.s	%r26 %f2 -1416
+	sw.s	%r26 %f3 -1420
+	sw	%r26 %r14 -1424
+	sw	%r26 %r28 -1428
+	addi	%r26 %r26 -1432
 	jal	cos.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw	%r26 %r14 -56
-	lw.s	%r26 %f3 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1432
+	lw	%r26 %r28 -1428
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f4 %f1 %f0
@@ -29560,46 +29419,46 @@ tail_b.2397 :
 	sub.s	%f1 %f0 %f0
 	mul.s	%f4 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -1368
+	lw	%r26 %r5 -1372
+	lw	%r26 %r6 -1376
+	lw	%r26 %r7 -1380
+	lw	%r26 %r9 -1384
+	lw	%r26 %r3 -1388
+	lw	%r26 %r10 -1392
+	lw	%r26 %r8 -1396
+	lw	%r26 %r11 -1400
+	lw	%r26 %r2 -1404
+	lw	%r26 %r12 -1408
+	lw	%r26 %r13 -1412
+	lw.s	%r26 %f2 -1416
+	lw.s	%r26 %f3 -1420
+	lw	%r26 %r14 -1424
 	j	branching_b.1529
 tail_b.2396 :
 	lw.s	%r0 %f1 556
 	ilw.s	%r0 %f0 l.74
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r14 -56
-	sw.s	%r26 %f3 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r4 -1428
+	sw	%r26 %r5 -1432
+	sw	%r26 %r6 -1436
+	sw	%r26 %r7 -1440
+	sw	%r26 %r9 -1444
+	sw	%r26 %r3 -1448
+	sw	%r26 %r10 -1452
+	sw	%r26 %r8 -1456
+	sw	%r26 %r11 -1460
+	sw	%r26 %r2 -1464
+	sw	%r26 %r12 -1468
+	sw	%r26 %r13 -1472
+	sw.s	%r26 %f2 -1476
+	sw.s	%r26 %f3 -1480
+	sw	%r26 %r14 -1484
+	sw	%r26 %r28 -1488
+	addi	%r26 %r26 -1492
 	jal	sin.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw	%r26 %r14 -56
-	lw.s	%r26 %f3 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1492
+	lw	%r26 %r28 -1488
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f0 %f4 %f1
@@ -29608,6 +29467,21 @@ tail_b.2396 :
 	sub.s	%f0 %f1 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -1428
+	lw	%r26 %r5 -1432
+	lw	%r26 %r6 -1436
+	lw	%r26 %r7 -1440
+	lw	%r26 %r9 -1444
+	lw	%r26 %r3 -1448
+	lw	%r26 %r10 -1452
+	lw	%r26 %r8 -1456
+	lw	%r26 %r11 -1460
+	lw	%r26 %r2 -1464
+	lw	%r26 %r12 -1468
+	lw	%r26 %r13 -1472
+	lw.s	%r26 %f2 -1476
+	lw.s	%r26 %f3 -1480
+	lw	%r26 %r14 -1484
 	j	branching_b.1529
 branching_b.1501 :
 	lw.s	%r0 %f1 552
@@ -30191,43 +30065,43 @@ tail_b.2430 :
 	sw.s	%r0 %f0 588
 branching_b.1529 :
 	lw	%r0 %r1 536
-	sw	%r26 %r14 -56
-	sw.s	%r26 %f3 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1488
+	sw	%r26 %r5 -1492
+	sw	%r26 %r6 -1496
+	sw	%r26 %r7 -1500
+	sw	%r26 %r9 -1504
+	sw	%r26 %r3 -1508
+	sw	%r26 %r10 -1512
+	sw	%r26 %r8 -1516
+	sw	%r26 %r11 -1520
+	sw	%r26 %r2 -1524
+	sw	%r26 %r12 -1528
+	sw	%r26 %r13 -1532
+	sw.s	%r26 %f2 -1536
+	sw.s	%r26 %f3 -1540
+	sw	%r26 %r14 -1544
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -1548
+	addi	%r26 %r26 -1552
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw	%r26 %r14 -56
-	lw.s	%r26 %f3 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1552
+	lw	%r26 %r28 -1548
+	lw	%r26 %r4 -1488
+	lw	%r26 %r5 -1492
+	lw	%r26 %r6 -1496
+	lw	%r26 %r7 -1500
+	lw	%r26 %r9 -1504
+	lw	%r26 %r3 -1508
+	lw	%r26 %r10 -1512
+	lw	%r26 %r8 -1516
+	lw	%r26 %r11 -1520
+	lw	%r26 %r2 -1524
+	lw	%r26 %r12 -1528
+	lw	%r26 %r13 -1532
+	lw.s	%r26 %f2 -1536
+	lw.s	%r26 %f3 -1540
+	lw	%r26 %r14 -1544
 	beq	%r1 %r0 branching_b.1530
 tail_b.2437 :
 	j	tail_b.2512
@@ -30545,41 +30419,26 @@ tail_b.2471 :
 	sub.s	%f0 %f1 %f1
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r14 -56
-	sw.s	%r26 %f3 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r4 -1548
+	sw	%r26 %r5 -1552
+	sw	%r26 %r6 -1556
+	sw	%r26 %r7 -1560
+	sw	%r26 %r9 -1564
+	sw	%r26 %r3 -1568
+	sw	%r26 %r10 -1572
+	sw	%r26 %r8 -1576
+	sw	%r26 %r11 -1580
+	sw	%r26 %r2 -1584
+	sw	%r26 %r12 -1588
+	sw	%r26 %r13 -1592
+	sw.s	%r26 %f2 -1596
+	sw.s	%r26 %f3 -1600
+	sw	%r26 %r14 -1604
+	sw	%r26 %r28 -1608
+	addi	%r26 %r26 -1612
 	jal	cos.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw	%r26 %r14 -56
-	lw.s	%r26 %f3 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1612
+	lw	%r26 %r28 -1608
 	mul.s	%f0 %f0 %f4
 	ilw.s	%r0 %f1 l.52
 	mul.s	%f1 %f4 %f0
@@ -30588,46 +30447,46 @@ tail_b.2471 :
 	sub.s	%f4 %f0 %f0
 	mul.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -1548
+	lw	%r26 %r5 -1552
+	lw	%r26 %r6 -1556
+	lw	%r26 %r7 -1560
+	lw	%r26 %r9 -1564
+	lw	%r26 %r3 -1568
+	lw	%r26 %r10 -1572
+	lw	%r26 %r8 -1576
+	lw	%r26 %r11 -1580
+	lw	%r26 %r2 -1584
+	lw	%r26 %r12 -1588
+	lw	%r26 %r13 -1592
+	lw.s	%r26 %f2 -1596
+	lw.s	%r26 %f3 -1600
+	lw	%r26 %r14 -1604
 	j	branching_b.1575
 tail_b.2470 :
 	lw.s	%r0 %f1 556
 	ilw.s	%r0 %f0 l.74
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r14 -56
-	sw.s	%r26 %f3 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r4 -1608
+	sw	%r26 %r5 -1612
+	sw	%r26 %r6 -1616
+	sw	%r26 %r7 -1620
+	sw	%r26 %r9 -1624
+	sw	%r26 %r3 -1628
+	sw	%r26 %r10 -1632
+	sw	%r26 %r8 -1636
+	sw	%r26 %r11 -1640
+	sw	%r26 %r2 -1644
+	sw	%r26 %r12 -1648
+	sw	%r26 %r13 -1652
+	sw.s	%r26 %f2 -1656
+	sw.s	%r26 %f3 -1660
+	sw	%r26 %r14 -1664
+	sw	%r26 %r28 -1668
+	addi	%r26 %r26 -1672
 	jal	sin.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw	%r26 %r14 -56
-	lw.s	%r26 %f3 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1672
+	lw	%r26 %r28 -1668
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f1 %f4 %f0
@@ -30636,6 +30495,21 @@ tail_b.2470 :
 	sub.s	%f1 %f0 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -1608
+	lw	%r26 %r5 -1612
+	lw	%r26 %r6 -1616
+	lw	%r26 %r7 -1620
+	lw	%r26 %r9 -1624
+	lw	%r26 %r3 -1628
+	lw	%r26 %r10 -1632
+	lw	%r26 %r8 -1636
+	lw	%r26 %r11 -1640
+	lw	%r26 %r2 -1644
+	lw	%r26 %r12 -1648
+	lw	%r26 %r13 -1652
+	lw.s	%r26 %f2 -1656
+	lw.s	%r26 %f3 -1660
+	lw	%r26 %r14 -1664
 	j	branching_b.1575
 branching_b.1547 :
 	lw.s	%r0 %f0 552
@@ -31219,43 +31093,43 @@ tail_b.2504 :
 	sw.s	%r0 %f0 588
 branching_b.1575 :
 	lw	%r0 %r1 536
-	sw	%r26 %r14 -56
-	sw.s	%r26 %f3 -52
-	sw.s	%r26 %f2 -48
-	sw	%r26 %r13 -44
-	sw	%r26 %r12 -40
-	sw	%r26 %r2 -36
-	sw	%r26 %r11 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r10 -24
-	sw	%r26 %r3 -20
-	sw	%r26 %r9 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1668
+	sw	%r26 %r5 -1672
+	sw	%r26 %r6 -1676
+	sw	%r26 %r7 -1680
+	sw	%r26 %r9 -1684
+	sw	%r26 %r3 -1688
+	sw	%r26 %r10 -1692
+	sw	%r26 %r8 -1696
+	sw	%r26 %r11 -1700
+	sw	%r26 %r2 -1704
+	sw	%r26 %r12 -1708
+	sw	%r26 %r13 -1712
+	sw.s	%r26 %f2 -1716
+	sw.s	%r26 %f3 -1720
+	sw	%r26 %r14 -1724
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -1728
+	addi	%r26 %r26 -1732
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw	%r26 %r14 -56
-	lw.s	%r26 %f3 -52
-	lw.s	%r26 %f2 -48
-	lw	%r26 %r13 -44
-	lw	%r26 %r12 -40
-	lw	%r26 %r2 -36
-	lw	%r26 %r11 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r10 -24
-	lw	%r26 %r3 -20
-	lw	%r26 %r9 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1732
+	lw	%r26 %r28 -1728
+	lw	%r26 %r4 -1668
+	lw	%r26 %r5 -1672
+	lw	%r26 %r6 -1676
+	lw	%r26 %r7 -1680
+	lw	%r26 %r9 -1684
+	lw	%r26 %r3 -1688
+	lw	%r26 %r10 -1692
+	lw	%r26 %r8 -1696
+	lw	%r26 %r11 -1700
+	lw	%r26 %r2 -1704
+	lw	%r26 %r12 -1708
+	lw	%r26 %r13 -1712
+	lw.s	%r26 %f2 -1716
+	lw.s	%r26 %f3 -1720
+	lw	%r26 %r14 -1724
 	beq	%r1 %r0 branching_b.1576
 tail_b.2511 :
 	j	tail_b.2512
@@ -31533,42 +31407,42 @@ branching_b.1633 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f1 -48
-	sw	%r26 %r9 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1728
+	sw	%r26 %r5 -1732
+	sw	%r26 %r6 -1736
+	sw	%r26 %r7 -1740
+	sw	%r26 %r3 -1744
+	sw	%r26 %r8 -1748
+	sw	%r26 %r11 -1752
+	sw	%r26 %r2 -1756
+	sw	%r26 %r12 -1760
+	sw	%r26 %r10 -1764
+	sw.s	%r26 %f2 -1768
+	sw	%r26 %r9 -1772
+	sw.s	%r26 %f1 -1776
 	mov	%r9 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -1780
+	addi	%r26 %r26 -1784
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw.s	%r26 %f1 -48
-	lw	%r26 %r9 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1784
+	lw	%r26 %r28 -1780
 	lw.s	%r0 %f0 548
 	ilw.s	%r0 %f3 l.68
+	lw	%r26 %r4 -1728
+	lw	%r26 %r5 -1732
+	lw	%r26 %r6 -1736
+	lw	%r26 %r7 -1740
+	lw	%r26 %r3 -1744
+	lw	%r26 %r8 -1748
+	lw	%r26 %r11 -1752
+	lw	%r26 %r2 -1756
+	lw	%r26 %r12 -1760
+	lw	%r26 %r10 -1764
+	lw.s	%r26 %f2 -1768
+	lw	%r26 %r9 -1772
+	lw.s	%r26 %f1 -1776
 	fbge	%f3 %f0 tail_b.2601
 tail_b.2600 :
 	addi	%r0 %r1 1
@@ -31585,42 +31459,42 @@ branching_b.1587 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f3 -48
-	sw	%r26 %r9 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1780
+	sw	%r26 %r5 -1784
+	sw	%r26 %r6 -1788
+	sw	%r26 %r7 -1792
+	sw	%r26 %r3 -1796
+	sw	%r26 %r8 -1800
+	sw	%r26 %r11 -1804
+	sw	%r26 %r2 -1808
+	sw	%r26 %r12 -1812
+	sw	%r26 %r10 -1816
+	sw.s	%r26 %f2 -1820
+	sw	%r26 %r9 -1824
+	sw.s	%r26 %f3 -1828
 	mov	%r9 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -1832
+	addi	%r26 %r26 -1836
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw.s	%r26 %f3 -48
-	lw	%r26 %r9 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1836
+	lw	%r26 %r28 -1832
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r4 -1780
+	lw	%r26 %r5 -1784
+	lw	%r26 %r6 -1788
+	lw	%r26 %r7 -1792
+	lw	%r26 %r3 -1796
+	lw	%r26 %r8 -1800
+	lw	%r26 %r11 -1804
+	lw	%r26 %r2 -1808
+	lw	%r26 %r12 -1812
+	lw	%r26 %r10 -1816
+	lw.s	%r26 %f2 -1820
+	lw	%r26 %r9 -1824
+	lw.s	%r26 %f3 -1828
 	fbge	%f0 %f1 tail_b.2527
 tail_b.2526 :
 	addi	%r0 %r1 1
@@ -31855,37 +31729,24 @@ tail_b.2559 :
 	sub.s	%f1 %f0 %f1
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r1 -48
-	sw.s	%r26 %f3 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -1832
+	sw	%r26 %r5 -1836
+	sw	%r26 %r6 -1840
+	sw	%r26 %r7 -1844
+	sw	%r26 %r3 -1848
+	sw	%r26 %r8 -1852
+	sw	%r26 %r11 -1856
+	sw	%r26 %r2 -1860
+	sw	%r26 %r12 -1864
+	sw	%r26 %r10 -1868
+	sw.s	%r26 %f2 -1872
+	sw.s	%r26 %f3 -1876
+	sw	%r26 %r1 -1880
+	sw	%r26 %r28 -1884
+	addi	%r26 %r26 -1888
 	jal	cos.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r1 -48
-	lw.s	%r26 %f3 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1888
+	lw	%r26 %r28 -1884
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f4 %f0 %f1
@@ -31894,42 +31755,42 @@ tail_b.2559 :
 	sub.s	%f0 %f1 %f0
 	mul.s	%f4 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -1832
+	lw	%r26 %r5 -1836
+	lw	%r26 %r6 -1840
+	lw	%r26 %r7 -1844
+	lw	%r26 %r3 -1848
+	lw	%r26 %r8 -1852
+	lw	%r26 %r11 -1856
+	lw	%r26 %r2 -1860
+	lw	%r26 %r12 -1864
+	lw	%r26 %r10 -1868
+	lw.s	%r26 %f2 -1872
+	lw.s	%r26 %f3 -1876
+	lw	%r26 %r1 -1880
 	j	branching_b.1630
 tail_b.2558 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.74
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r1 -48
-	sw.s	%r26 %f3 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -1884
+	sw	%r26 %r5 -1888
+	sw	%r26 %r6 -1892
+	sw	%r26 %r7 -1896
+	sw	%r26 %r3 -1900
+	sw	%r26 %r8 -1904
+	sw	%r26 %r11 -1908
+	sw	%r26 %r2 -1912
+	sw	%r26 %r12 -1916
+	sw	%r26 %r10 -1920
+	sw.s	%r26 %f2 -1924
+	sw.s	%r26 %f3 -1928
+	sw	%r26 %r1 -1932
+	sw	%r26 %r28 -1936
+	addi	%r26 %r26 -1940
 	jal	sin.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r1 -48
-	lw.s	%r26 %f3 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 1940
+	lw	%r26 %r28 -1936
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f0 %f4 %f1
@@ -31938,6 +31799,19 @@ tail_b.2558 :
 	sub.s	%f0 %f1 %f0
 	mul.s	%f0 %f4 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -1884
+	lw	%r26 %r5 -1888
+	lw	%r26 %r6 -1892
+	lw	%r26 %r7 -1896
+	lw	%r26 %r3 -1900
+	lw	%r26 %r8 -1904
+	lw	%r26 %r11 -1908
+	lw	%r26 %r2 -1912
+	lw	%r26 %r12 -1916
+	lw	%r26 %r10 -1920
+	lw.s	%r26 %f2 -1924
+	lw.s	%r26 %f3 -1928
+	lw	%r26 %r1 -1932
 	j	branching_b.1630
 branching_b.1602 :
 	lw.s	%r0 %f1 552
@@ -32522,40 +32396,40 @@ tail_b.2592 :
 	sw.s	%r0 %f0 588
 branching_b.1630 :
 	lw	%r0 %r9 536
-	sw	%r26 %r1 -48
-	sw.s	%r26 %f3 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -1936
+	sw	%r26 %r5 -1940
+	sw	%r26 %r6 -1944
+	sw	%r26 %r7 -1948
+	sw	%r26 %r3 -1952
+	sw	%r26 %r8 -1956
+	sw	%r26 %r11 -1960
+	sw	%r26 %r2 -1964
+	sw	%r26 %r12 -1968
+	sw	%r26 %r10 -1972
+	sw.s	%r26 %f2 -1976
+	sw.s	%r26 %f3 -1980
+	sw	%r26 %r1 -1984
 	mov	%r9 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -1988
+	addi	%r26 %r26 -1992
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
+	addi	%r26 %r26 1992
+	lw	%r26 %r28 -1988
 	mov	%r1 %r9
-	lw	%r26 %r1 -48
-	lw.s	%r26 %f3 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	lw	%r26 %r4 -1936
+	lw	%r26 %r5 -1940
+	lw	%r26 %r6 -1944
+	lw	%r26 %r7 -1948
+	lw	%r26 %r3 -1952
+	lw	%r26 %r8 -1956
+	lw	%r26 %r11 -1960
+	lw	%r26 %r2 -1964
+	lw	%r26 %r12 -1968
+	lw	%r26 %r10 -1972
+	lw.s	%r26 %f2 -1976
+	lw.s	%r26 %f3 -1980
+	lw	%r26 %r1 -1984
 	beq	%r9 %r0 branching_b.1631
 tail_b.2599 :
 	j	tail_b.2674
@@ -32873,37 +32747,24 @@ tail_b.2633 :
 	sub.s	%f0 %f3 %f3
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f3 %f0
-	sw	%r26 %r13 -48
-	sw.s	%r26 %f1 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -1988
+	sw	%r26 %r5 -1992
+	sw	%r26 %r6 -1996
+	sw	%r26 %r7 -2000
+	sw	%r26 %r3 -2004
+	sw	%r26 %r8 -2008
+	sw	%r26 %r11 -2012
+	sw	%r26 %r2 -2016
+	sw	%r26 %r12 -2020
+	sw	%r26 %r10 -2024
+	sw.s	%r26 %f2 -2028
+	sw.s	%r26 %f1 -2032
+	sw	%r26 %r13 -2036
+	sw	%r26 %r28 -2040
+	addi	%r26 %r26 -2044
 	jal	cos.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r13 -48
-	lw.s	%r26 %f1 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 2044
+	lw	%r26 %r28 -2040
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f4 %f0 %f3
@@ -32912,42 +32773,42 @@ tail_b.2633 :
 	sub.s	%f0 %f3 %f0
 	mul.s	%f4 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r4 -1988
+	lw	%r26 %r5 -1992
+	lw	%r26 %r6 -1996
+	lw	%r26 %r7 -2000
+	lw	%r26 %r3 -2004
+	lw	%r26 %r8 -2008
+	lw	%r26 %r11 -2012
+	lw	%r26 %r2 -2016
+	lw	%r26 %r12 -2020
+	lw	%r26 %r10 -2024
+	lw.s	%r26 %f2 -2028
+	lw.s	%r26 %f1 -2032
+	lw	%r26 %r13 -2036
 	j	branching_b.1676
 tail_b.2632 :
 	lw.s	%r0 %f3 556
 	ilw.s	%r0 %f0 l.74
 	mul.s	%f0 %f3 %f0
-	sw	%r26 %r13 -48
-	sw.s	%r26 %f1 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r4 -2040
+	sw	%r26 %r5 -2044
+	sw	%r26 %r6 -2048
+	sw	%r26 %r7 -2052
+	sw	%r26 %r3 -2056
+	sw	%r26 %r8 -2060
+	sw	%r26 %r11 -2064
+	sw	%r26 %r2 -2068
+	sw	%r26 %r12 -2072
+	sw	%r26 %r10 -2076
+	sw.s	%r26 %f2 -2080
+	sw.s	%r26 %f1 -2084
+	sw	%r26 %r13 -2088
+	sw	%r26 %r28 -2092
+	addi	%r26 %r26 -2096
 	jal	sin.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r13 -48
-	lw.s	%r26 %f1 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 2096
+	lw	%r26 %r28 -2092
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f3 l.52
 	mul.s	%f0 %f3 %f4
@@ -32956,6 +32817,19 @@ tail_b.2632 :
 	sub.s	%f0 %f4 %f0
 	mul.s	%f0 %f3 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r4 -2040
+	lw	%r26 %r5 -2044
+	lw	%r26 %r6 -2048
+	lw	%r26 %r7 -2052
+	lw	%r26 %r3 -2056
+	lw	%r26 %r8 -2060
+	lw	%r26 %r11 -2064
+	lw	%r26 %r2 -2068
+	lw	%r26 %r12 -2072
+	lw	%r26 %r10 -2076
+	lw.s	%r26 %f2 -2080
+	lw.s	%r26 %f1 -2084
+	lw	%r26 %r13 -2088
 	j	branching_b.1676
 branching_b.1648 :
 	lw.s	%r0 %f3 552
@@ -33540,39 +33414,39 @@ tail_b.2666 :
 	sw.s	%r0 %f0 588
 branching_b.1676 :
 	lw	%r0 %r1 536
-	sw	%r26 %r13 -48
-	sw.s	%r26 %f1 -44
-	sw.s	%r26 %f2 -40
-	sw	%r26 %r10 -36
-	sw	%r26 %r12 -32
-	sw	%r26 %r2 -28
-	sw	%r26 %r11 -24
-	sw	%r26 %r8 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r6 -8
-	sw	%r26 %r5 -4
-	sw	%r26 %r4 0
+	sw	%r26 %r4 -2092
+	sw	%r26 %r5 -2096
+	sw	%r26 %r6 -2100
+	sw	%r26 %r7 -2104
+	sw	%r26 %r3 -2108
+	sw	%r26 %r8 -2112
+	sw	%r26 %r11 -2116
+	sw	%r26 %r2 -2120
+	sw	%r26 %r12 -2124
+	sw	%r26 %r10 -2128
+	sw.s	%r26 %f2 -2132
+	sw.s	%r26 %f1 -2136
+	sw	%r26 %r13 -2140
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -2144
+	addi	%r26 %r26 -2148
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r13 -48
-	lw.s	%r26 %f1 -44
-	lw.s	%r26 %f2 -40
-	lw	%r26 %r10 -36
-	lw	%r26 %r12 -32
-	lw	%r26 %r2 -28
-	lw	%r26 %r11 -24
-	lw	%r26 %r8 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r6 -8
-	lw	%r26 %r5 -4
-	lw	%r26 %r4 0
+	addi	%r26 %r26 2148
+	lw	%r26 %r28 -2144
+	lw	%r26 %r4 -2092
+	lw	%r26 %r5 -2096
+	lw	%r26 %r6 -2100
+	lw	%r26 %r7 -2104
+	lw	%r26 %r3 -2108
+	lw	%r26 %r8 -2112
+	lw	%r26 %r11 -2116
+	lw	%r26 %r2 -2120
+	lw	%r26 %r12 -2124
+	lw	%r26 %r10 -2128
+	lw.s	%r26 %f2 -2132
+	lw.s	%r26 %f1 -2136
+	lw	%r26 %r13 -2140
 	beq	%r1 %r0 branching_b.1677
 tail_b.2673 :
 	j	tail_b.2674
@@ -33920,15 +33794,15 @@ branching_b.1736 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f4 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
 	sw	%r26 %r2 0
+	sw	%r26 %r4 -4
+	sw	%r26 %r3 -8
+	sw.s	%r26 %f3 -12
+	sw	%r26 %r6 -16
+	sw	%r26 %r7 -20
+	sw	%r26 %r5 -24
+	sw	%r26 %r8 -28
+	sw.s	%r26 %f4 -32
 	mov	%r8 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
@@ -33937,17 +33811,17 @@ branching_b.1736 :
 	jal	trace_or_matrix_fast.0
 	addi	%r26 %r26 40
 	lw	%r26 %r28 -36
-	lw.s	%r26 %f4 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r2 0
+	lw	%r26 %r4 -4
+	lw	%r26 %r3 -8
+	lw.s	%r26 %f3 -12
+	lw	%r26 %r6 -16
+	lw	%r26 %r7 -20
+	lw	%r26 %r5 -24
+	lw	%r26 %r8 -28
+	lw.s	%r26 %f4 -32
 	fbge	%f0 %f1 tail_b.2768
 tail_b.2767 :
 	addi	%r0 %r1 1
@@ -33964,34 +33838,34 @@ branching_b.1690 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r1 536
-	sw.s	%r26 %f2 -32
-	sw	%r26 %r8 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -36
+	sw	%r26 %r4 -40
+	sw	%r26 %r3 -44
+	sw.s	%r26 %f3 -48
+	sw	%r26 %r6 -52
+	sw	%r26 %r7 -56
+	sw	%r26 %r5 -60
+	sw	%r26 %r8 -64
+	sw.s	%r26 %f2 -68
 	mov	%r8 %r3
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -72
+	addi	%r26 %r26 -76
 	jal	trace_or_matrix_fast.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw.s	%r26 %f2 -32
-	lw	%r26 %r8 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 76
+	lw	%r26 %r28 -72
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r2 -36
+	lw	%r26 %r4 -40
+	lw	%r26 %r3 -44
+	lw.s	%r26 %f3 -48
+	lw	%r26 %r6 -52
+	lw	%r26 %r7 -56
+	lw	%r26 %r5 -60
+	lw	%r26 %r8 -64
+	lw.s	%r26 %f2 -68
 	fbge	%f0 %f1 tail_b.2694
 tail_b.2693 :
 	addi	%r0 %r1 1
@@ -34230,29 +34104,20 @@ tail_b.2726 :
 	sub.s	%f0 %f1 %f0
 	ilw.s	%r0 %f1 l.75
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r2 -72
+	sw	%r26 %r4 -76
+	sw	%r26 %r3 -80
+	sw.s	%r26 %f3 -84
+	sw	%r26 %r6 -88
+	sw	%r26 %r7 -92
+	sw	%r26 %r5 -96
+	sw.s	%r26 %f2 -100
+	sw	%r26 %r9 -104
+	sw	%r26 %r28 -108
+	addi	%r26 %r26 -112
 	jal	cos.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 112
+	lw	%r26 %r28 -108
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f4 l.52
 	mul.s	%f4 %f1 %f0
@@ -34261,34 +34126,34 @@ tail_b.2726 :
 	sub.s	%f1 %f0 %f0
 	mul.s	%f4 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r2 -72
+	lw	%r26 %r4 -76
+	lw	%r26 %r3 -80
+	lw.s	%r26 %f3 -84
+	lw	%r26 %r6 -88
+	lw	%r26 %r7 -92
+	lw	%r26 %r5 -96
+	lw.s	%r26 %f2 -100
+	lw	%r26 %r9 -104
 	j	branching_b.1733
 tail_b.2725 :
 	lw.s	%r0 %f1 556
 	ilw.s	%r0 %f0 l.74
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r2 -108
+	sw	%r26 %r4 -112
+	sw	%r26 %r3 -116
+	sw.s	%r26 %f3 -120
+	sw	%r26 %r6 -124
+	sw	%r26 %r7 -128
+	sw	%r26 %r5 -132
+	sw.s	%r26 %f2 -136
+	sw	%r26 %r9 -140
+	sw	%r26 %r28 -144
+	addi	%r26 %r26 -148
 	jal	sin.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 148
+	lw	%r26 %r28 -144
 	mul.s	%f0 %f0 %f4
 	ilw.s	%r0 %f0 l.52
 	mul.s	%f4 %f0 %f1
@@ -34297,6 +34162,15 @@ tail_b.2725 :
 	sub.s	%f4 %f1 %f1
 	mul.s	%f1 %f0 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r2 -108
+	lw	%r26 %r4 -112
+	lw	%r26 %r3 -116
+	lw.s	%r26 %f3 -120
+	lw	%r26 %r6 -124
+	lw	%r26 %r7 -128
+	lw	%r26 %r5 -132
+	lw.s	%r26 %f2 -136
+	lw	%r26 %r9 -140
 	j	branching_b.1733
 branching_b.1705 :
 	lw.s	%r0 %f0 552
@@ -34881,31 +34755,31 @@ tail_b.2759 :
 	sw.s	%r0 %f0 588
 branching_b.1733 :
 	lw	%r0 %r1 536
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f2 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -144
+	sw	%r26 %r4 -148
+	sw	%r26 %r3 -152
+	sw.s	%r26 %f3 -156
+	sw	%r26 %r6 -160
+	sw	%r26 %r7 -164
+	sw	%r26 %r5 -168
+	sw.s	%r26 %f2 -172
+	sw	%r26 %r9 -176
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -180
+	addi	%r26 %r26 -184
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f2 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 184
+	lw	%r26 %r28 -180
+	lw	%r26 %r2 -144
+	lw	%r26 %r4 -148
+	lw	%r26 %r3 -152
+	lw.s	%r26 %f3 -156
+	lw	%r26 %r6 -160
+	lw	%r26 %r7 -164
+	lw	%r26 %r5 -168
+	lw.s	%r26 %f2 -172
+	lw	%r26 %r9 -176
 	beq	%r1 %r0 branching_b.1734
 tail_b.2766 :
 	j	tail_b.2841
@@ -35227,29 +35101,20 @@ tail_b.2800 :
 	sub.s	%f0 %f1 %f1
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f1 %f0
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r2 -180
+	sw	%r26 %r4 -184
+	sw	%r26 %r3 -188
+	sw.s	%r26 %f3 -192
+	sw	%r26 %r6 -196
+	sw	%r26 %r7 -200
+	sw	%r26 %r5 -204
+	sw.s	%r26 %f4 -208
+	sw	%r26 %r9 -212
+	sw	%r26 %r28 -216
+	addi	%r26 %r26 -220
 	jal	cos.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 220
+	lw	%r26 %r28 -216
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f0 l.52
 	mul.s	%f0 %f1 %f2
@@ -35258,34 +35123,34 @@ tail_b.2800 :
 	sub.s	%f1 %f2 %f1
 	mul.s	%f0 %f1 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r2 -180
+	lw	%r26 %r4 -184
+	lw	%r26 %r3 -188
+	lw.s	%r26 %f3 -192
+	lw	%r26 %r6 -196
+	lw	%r26 %r7 -200
+	lw	%r26 %r5 -204
+	lw.s	%r26 %f4 -208
+	lw	%r26 %r9 -212
 	j	branching_b.1779
 tail_b.2799 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.74
 	mul.s	%f1 %f0 %f0
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r2 -216
+	sw	%r26 %r4 -220
+	sw	%r26 %r3 -224
+	sw.s	%r26 %f3 -228
+	sw	%r26 %r6 -232
+	sw	%r26 %r7 -236
+	sw	%r26 %r5 -240
+	sw.s	%r26 %f4 -244
+	sw	%r26 %r9 -248
+	sw	%r26 %r28 -252
+	addi	%r26 %r26 -256
 	jal	sin.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 256
+	lw	%r26 %r28 -252
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f2 l.52
 	mul.s	%f0 %f2 %f1
@@ -35294,6 +35159,15 @@ tail_b.2799 :
 	sub.s	%f0 %f1 %f0
 	mul.s	%f0 %f2 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r2 -216
+	lw	%r26 %r4 -220
+	lw	%r26 %r3 -224
+	lw.s	%r26 %f3 -228
+	lw	%r26 %r6 -232
+	lw	%r26 %r7 -236
+	lw	%r26 %r5 -240
+	lw.s	%r26 %f4 -244
+	lw	%r26 %r9 -248
 	j	branching_b.1779
 branching_b.1751 :
 	lw.s	%r0 %f1 552
@@ -35878,31 +35752,31 @@ tail_b.2833 :
 	sw.s	%r0 %f0 588
 branching_b.1779 :
 	lw	%r0 %r1 536
-	sw	%r26 %r9 -32
-	sw.s	%r26 %f4 -28
-	sw	%r26 %r5 -24
-	sw	%r26 %r7 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f3 -12
-	sw	%r26 %r3 -8
-	sw	%r26 %r4 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -252
+	sw	%r26 %r4 -256
+	sw	%r26 %r3 -260
+	sw.s	%r26 %f3 -264
+	sw	%r26 %r6 -268
+	sw	%r26 %r7 -272
+	sw	%r26 %r5 -276
+	sw.s	%r26 %f4 -280
+	sw	%r26 %r9 -284
 	mov	%r1 %r2
 	mov	%r0 %r1
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -288
+	addi	%r26 %r26 -292
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r9 -32
-	lw.s	%r26 %f4 -28
-	lw	%r26 %r5 -24
-	lw	%r26 %r7 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f3 -12
-	lw	%r26 %r3 -8
-	lw	%r26 %r4 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 292
+	lw	%r26 %r28 -288
+	lw	%r26 %r2 -252
+	lw	%r26 %r4 -256
+	lw	%r26 %r3 -260
+	lw.s	%r26 %f3 -264
+	lw	%r26 %r6 -268
+	lw	%r26 %r7 -272
+	lw	%r26 %r5 -276
+	lw.s	%r26 %f4 -280
+	lw	%r26 %r9 -284
 	beq	%r1 %r0 branching_b.1780
 tail_b.2840 :
 	j	tail_b.2841
@@ -36108,23 +35982,23 @@ branching_b.1786 :
 	ilw.s	%r0 %f0 l.53
 	sw.s	%r0 %f0 548
 	lw	%r0 %r2 536
-	sw	%r26 %r9 -64
-	sw.s	%r26 %f8 -60
-	sw.s	%r26 %f7 -56
-	sw	%r26 %r13 -52
-	sw	%r26 %r12 -48
-	sw	%r26 %r8 -44
-	sw	%r26 %r11 -40
-	sw.s	%r26 %f5 -36
-	sw.s	%r26 %f6 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
 	sw	%r26 %r5 0
+	sw.s	%r26 %f2 -4
+	sw.s	%r26 %f3 -8
+	sw.s	%r26 %f4 -12
+	sw	%r26 %r6 -16
+	sw	%r26 %r4 -20
+	sw	%r26 %r3 -24
+	sw	%r26 %r7 -28
+	sw.s	%r26 %f6 -32
+	sw.s	%r26 %f5 -36
+	sw	%r26 %r11 -40
+	sw	%r26 %r8 -44
+	sw	%r26 %r12 -48
+	sw	%r26 %r13 -52
+	sw.s	%r26 %f7 -56
+	sw.s	%r26 %f8 -60
+	sw	%r26 %r9 -64
 	mov	%r6 %r3
 	mov	%r0 %r1
 	sw	%r26 %r28 -68
@@ -36132,25 +36006,25 @@ branching_b.1786 :
 	jal	trace_or_matrix.0
 	addi	%r26 %r26 72
 	lw	%r26 %r28 -68
-	lw	%r26 %r9 -64
-	lw.s	%r26 %f8 -60
-	lw.s	%r26 %f7 -56
-	lw	%r26 %r13 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r8 -44
-	lw	%r26 %r11 -40
-	lw.s	%r26 %f5 -36
-	lw.s	%r26 %f6 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
 	lw.s	%r0 %f1 548
 	ilw.s	%r0 %f0 l.68
+	lw	%r26 %r5 0
+	lw.s	%r26 %f2 -4
+	lw.s	%r26 %f3 -8
+	lw.s	%r26 %f4 -12
+	lw	%r26 %r6 -16
+	lw	%r26 %r4 -20
+	lw	%r26 %r3 -24
+	lw	%r26 %r7 -28
+	lw.s	%r26 %f6 -32
+	lw.s	%r26 %f5 -36
+	lw	%r26 %r11 -40
+	lw	%r26 %r8 -44
+	lw	%r26 %r12 -48
+	lw	%r26 %r13 -52
+	lw.s	%r26 %f7 -56
+	lw.s	%r26 %f8 -60
+	lw	%r26 %r9 -64
 	fbge	%f0 %f1 tail_b.2852
 tail_b.2851 :
 	addi	%r0 %r1 1
@@ -36441,119 +36315,119 @@ tail_b.2888 :
 	sub.s	%f0 %f1 %f1
 	ilw.s	%r0 %f0 l.75
 	mul.s	%f0 %f1 %f0
-	sw.s	%r26 %f9 -80
-	sw	%r26 %r10 -76
-	sw	%r26 %r14 -72
-	sw	%r26 %r2 -68
-	sw	%r26 %r9 -64
-	sw.s	%r26 %f8 -60
-	sw.s	%r26 %f7 -56
-	sw	%r26 %r13 -52
-	sw	%r26 %r12 -48
-	sw	%r26 %r8 -44
-	sw	%r26 %r11 -40
-	sw.s	%r26 %f5 -36
-	sw.s	%r26 %f6 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
-	sw	%r26 %r28 -84
-	addi	%r26 %r26 -88
+	sw	%r26 %r5 -68
+	sw.s	%r26 %f2 -72
+	sw.s	%r26 %f3 -76
+	sw.s	%r26 %f4 -80
+	sw	%r26 %r6 -84
+	sw	%r26 %r4 -88
+	sw	%r26 %r3 -92
+	sw	%r26 %r7 -96
+	sw.s	%r26 %f6 -100
+	sw.s	%r26 %f5 -104
+	sw	%r26 %r11 -108
+	sw	%r26 %r8 -112
+	sw	%r26 %r12 -116
+	sw	%r26 %r13 -120
+	sw.s	%r26 %f7 -124
+	sw.s	%r26 %f8 -128
+	sw	%r26 %r9 -132
+	sw	%r26 %r2 -136
+	sw	%r26 %r14 -140
+	sw	%r26 %r10 -144
+	sw.s	%r26 %f9 -148
+	sw	%r26 %r28 -152
+	addi	%r26 %r26 -156
 	jal	cos.0
-	addi	%r26 %r26 88
-	lw	%r26 %r28 -84
-	lw.s	%r26 %f9 -80
-	lw	%r26 %r10 -76
-	lw	%r26 %r14 -72
-	lw	%r26 %r2 -68
-	lw	%r26 %r9 -64
-	lw.s	%r26 %f8 -60
-	lw.s	%r26 %f7 -56
-	lw	%r26 %r13 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r8 -44
-	lw	%r26 %r11 -40
-	lw.s	%r26 %f5 -36
-	lw.s	%r26 %f6 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 156
+	lw	%r26 %r28 -152
 	mul.s	%f0 %f0 %f0
 	ilw.s	%r0 %f10 l.52
 	mul.s	%f10 %f0 %f1
 	sw.s	%r0 %f1 584
+	lw.s	%r26 %f5 -104
 	sub.s	%f0 %f5 %f0
 	mul.s	%f10 %f0 %f0
 	sw.s	%r0 %f0 588
+	lw	%r26 %r5 -68
+	lw.s	%r26 %f2 -72
+	lw.s	%r26 %f3 -76
+	lw.s	%r26 %f4 -80
+	lw	%r26 %r6 -84
+	lw	%r26 %r4 -88
+	lw	%r26 %r3 -92
+	lw	%r26 %r7 -96
+	lw.s	%r26 %f6 -100
+	lw	%r26 %r11 -108
+	lw	%r26 %r8 -112
+	lw	%r26 %r12 -116
+	lw	%r26 %r13 -120
+	lw.s	%r26 %f7 -124
+	lw.s	%r26 %f8 -128
+	lw	%r26 %r9 -132
+	lw	%r26 %r2 -136
+	lw	%r26 %r14 -140
+	lw	%r26 %r10 -144
+	lw.s	%r26 %f9 -148
 	j	branching_b.1832
 tail_b.2887 :
 	lw.s	%r0 %f0 556
 	ilw.s	%r0 %f1 l.74
 	mul.s	%f1 %f0 %f0
-	sw.s	%r26 %f9 -80
-	sw	%r26 %r10 -76
-	sw	%r26 %r14 -72
-	sw	%r26 %r2 -68
-	sw	%r26 %r9 -64
-	sw.s	%r26 %f8 -60
-	sw.s	%r26 %f7 -56
-	sw	%r26 %r13 -52
-	sw	%r26 %r12 -48
-	sw	%r26 %r8 -44
-	sw	%r26 %r11 -40
-	sw.s	%r26 %f5 -36
-	sw.s	%r26 %f6 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
-	sw	%r26 %r28 -84
-	addi	%r26 %r26 -88
+	sw	%r26 %r5 -152
+	sw.s	%r26 %f2 -156
+	sw.s	%r26 %f3 -160
+	sw.s	%r26 %f4 -164
+	sw	%r26 %r6 -168
+	sw	%r26 %r4 -172
+	sw	%r26 %r3 -176
+	sw	%r26 %r7 -180
+	sw.s	%r26 %f6 -184
+	sw.s	%r26 %f5 -188
+	sw	%r26 %r11 -192
+	sw	%r26 %r8 -196
+	sw	%r26 %r12 -200
+	sw	%r26 %r13 -204
+	sw.s	%r26 %f7 -208
+	sw.s	%r26 %f8 -212
+	sw	%r26 %r9 -216
+	sw	%r26 %r2 -220
+	sw	%r26 %r14 -224
+	sw	%r26 %r10 -228
+	sw.s	%r26 %f9 -232
+	sw	%r26 %r28 -236
+	addi	%r26 %r26 -240
 	jal	sin.0
-	addi	%r26 %r26 88
-	lw	%r26 %r28 -84
-	lw.s	%r26 %f9 -80
-	lw	%r26 %r10 -76
-	lw	%r26 %r14 -72
-	lw	%r26 %r2 -68
-	lw	%r26 %r9 -64
-	lw.s	%r26 %f8 -60
-	lw.s	%r26 %f7 -56
-	lw	%r26 %r13 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r8 -44
-	lw	%r26 %r11 -40
-	lw.s	%r26 %f5 -36
-	lw.s	%r26 %f6 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 240
+	lw	%r26 %r28 -236
 	mul.s	%f0 %f0 %f1
 	ilw.s	%r0 %f10 l.52
 	mul.s	%f1 %f10 %f0
 	sw.s	%r0 %f0 580
+	lw.s	%r26 %f5 -188
 	sub.s	%f1 %f5 %f0
 	mul.s	%f0 %f10 %f0
 	sw.s	%r0 %f0 584
+	lw	%r26 %r5 -152
+	lw.s	%r26 %f2 -156
+	lw.s	%r26 %f3 -160
+	lw.s	%r26 %f4 -164
+	lw	%r26 %r6 -168
+	lw	%r26 %r4 -172
+	lw	%r26 %r3 -176
+	lw	%r26 %r7 -180
+	lw.s	%r26 %f6 -184
+	lw	%r26 %r11 -192
+	lw	%r26 %r8 -196
+	lw	%r26 %r12 -200
+	lw	%r26 %r13 -204
+	lw.s	%r26 %f7 -208
+	lw.s	%r26 %f8 -212
+	lw	%r26 %r9 -216
+	lw	%r26 %r2 -220
+	lw	%r26 %r14 -224
+	lw	%r26 %r10 -228
+	lw.s	%r26 %f9 -232
 	j	branching_b.1832
 branching_b.1804 :
 	lw.s	%r0 %f1 552
@@ -37246,54 +37120,54 @@ branching_b.1834 :
 	lw.s	%r1 %f0 0
 	mul.s	%f0 %f7 %f11
 	lw	%r0 %r2 536
-	sw.s	%r26 %f11 -80
-	sw.s	%r26 %f9 -76
-	sw	%r26 %r10 -72
-	sw	%r26 %r14 -68
-	sw	%r26 %r9 -64
-	sw.s	%r26 %f8 -60
-	sw.s	%r26 %f7 -56
-	sw	%r26 %r13 -52
-	sw	%r26 %r12 -48
-	sw	%r26 %r8 -44
-	sw	%r26 %r11 -40
-	sw.s	%r26 %f5 -36
-	sw.s	%r26 %f6 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -236
+	sw.s	%r26 %f2 -240
+	sw.s	%r26 %f3 -244
+	sw.s	%r26 %f4 -248
+	sw	%r26 %r6 -252
+	sw	%r26 %r4 -256
+	sw	%r26 %r3 -260
+	sw	%r26 %r7 -264
+	sw.s	%r26 %f6 -268
+	sw.s	%r26 %f5 -272
+	sw	%r26 %r11 -276
+	sw	%r26 %r8 -280
+	sw	%r26 %r12 -284
+	sw	%r26 %r13 -288
+	sw.s	%r26 %f7 -292
+	sw.s	%r26 %f8 -296
+	sw	%r26 %r9 -300
+	sw	%r26 %r14 -304
+	sw	%r26 %r10 -308
+	sw.s	%r26 %f9 -312
+	sw.s	%r26 %f11 -316
 	mov	%r0 %r1
-	sw	%r26 %r28 -84
-	addi	%r26 %r26 -88
+	sw	%r26 %r28 -320
+	addi	%r26 %r26 -324
 	jal	shadow_check_one_or_matrix.0
-	addi	%r26 %r26 88
-	lw	%r26 %r28 -84
-	lw.s	%r26 %f11 -80
-	lw.s	%r26 %f9 -76
-	lw	%r26 %r10 -72
-	lw	%r26 %r14 -68
-	lw	%r26 %r9 -64
-	lw.s	%r26 %f8 -60
-	lw.s	%r26 %f7 -56
-	lw	%r26 %r13 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r8 -44
-	lw	%r26 %r11 -40
-	lw.s	%r26 %f5 -36
-	lw.s	%r26 %f6 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 324
+	lw	%r26 %r28 -320
+	lw	%r26 %r5 -236
+	lw.s	%r26 %f2 -240
+	lw.s	%r26 %f3 -244
+	lw.s	%r26 %f4 -248
+	lw	%r26 %r6 -252
+	lw	%r26 %r4 -256
+	lw	%r26 %r3 -260
+	lw	%r26 %r7 -264
+	lw.s	%r26 %f6 -268
+	lw.s	%r26 %f5 -272
+	lw	%r26 %r11 -276
+	lw	%r26 %r8 -280
+	lw	%r26 %r12 -284
+	lw	%r26 %r13 -288
+	lw.s	%r26 %f7 -292
+	lw.s	%r26 %f8 -296
+	lw	%r26 %r9 -300
+	lw	%r26 %r14 -304
+	lw	%r26 %r10 -308
+	lw.s	%r26 %f9 -312
+	lw.s	%r26 %f11 -316
 	beq	%r1 %r0 branching_b.1835
 tail_b.2935 :
 	j	branching_b.1839
@@ -37382,103 +37256,67 @@ branching_b.1839 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r2 -1
-	sw.s	%r26 %f11 -80
-	sw.s	%r26 %f9 -76
-	sw	%r26 %r10 -72
-	sw	%r26 %r14 -68
-	sw	%r26 %r9 -64
-	sw.s	%r26 %f8 -60
-	sw.s	%r26 %f7 -56
-	sw	%r26 %r13 -52
-	sw	%r26 %r12 -48
-	sw	%r26 %r8 -44
-	sw	%r26 %r11 -40
-	sw.s	%r26 %f5 -36
-	sw.s	%r26 %f6 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -320
+	sw.s	%r26 %f2 -324
+	sw.s	%r26 %f3 -328
+	sw.s	%r26 %f4 -332
+	sw	%r26 %r6 -336
+	sw	%r26 %r4 -340
+	sw	%r26 %r3 -344
+	sw	%r26 %r7 -348
+	sw.s	%r26 %f6 -352
+	sw.s	%r26 %f5 -356
+	sw	%r26 %r11 -360
+	sw	%r26 %r8 -364
+	sw	%r26 %r12 -368
+	sw	%r26 %r13 -372
+	sw.s	%r26 %f7 -376
+	sw.s	%r26 %f8 -380
+	sw	%r26 %r9 -384
+	sw	%r26 %r14 -388
+	sw	%r26 %r10 -392
+	sw.s	%r26 %f9 -396
+	sw.s	%r26 %f11 -400
 	mov	%r8 %r1
-	sw	%r26 %r28 -84
-	addi	%r26 %r26 -88
+	sw	%r26 %r28 -404
+	addi	%r26 %r26 -408
 	jal	setup_startp_constants.0
-	addi	%r26 %r26 88
-	lw	%r26 %r28 -84
-	lw.s	%r26 %f11 -80
-	lw.s	%r26 %f9 -76
-	lw	%r26 %r10 -72
-	lw	%r26 %r14 -68
-	lw	%r26 %r9 -64
-	lw.s	%r26 %f8 -60
-	lw.s	%r26 %f7 -56
-	lw	%r26 %r13 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r8 -44
-	lw	%r26 %r11 -40
-	lw.s	%r26 %f5 -36
-	lw.s	%r26 %f6 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 408
+	lw	%r26 %r28 -404
 	lw	%r0 %r1 1736
 	addi	%r1 %r1 -1
-	sw	%r26 %r10 -72
-	sw	%r26 %r14 -68
-	sw	%r26 %r9 -64
-	sw.s	%r26 %f8 -60
-	sw.s	%r26 %f7 -56
-	sw	%r26 %r13 -52
-	sw	%r26 %r12 -48
-	sw	%r26 %r8 -44
-	sw	%r26 %r11 -40
-	sw.s	%r26 %f5 -36
-	sw.s	%r26 %f6 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
+	lw	%r26 %r6 -336
+	lw.s	%r26 %f9 -396
+	lw.s	%r26 %f11 -400
+	sw	%r26 %r6 -404
 	mov	%r6 %r2
 	mov.s	%f11 %f1
 	mov.s	%f9 %f0
-	sw	%r26 %r28 -76
-	addi	%r26 %r26 -80
+	sw	%r26 %r28 -408
+	addi	%r26 %r26 -412
 	jal	trace_reflections.0
-	addi	%r26 %r26 80
-	lw	%r26 %r28 -76
-	lw	%r26 %r10 -72
-	lw	%r26 %r14 -68
-	lw	%r26 %r9 -64
-	lw.s	%r26 %f8 -60
-	lw.s	%r26 %f7 -56
-	lw	%r26 %r13 -52
-	lw	%r26 %r12 -48
-	lw	%r26 %r8 -44
-	lw	%r26 %r11 -40
-	lw.s	%r26 %f5 -36
-	lw.s	%r26 %f6 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 412
+	lw	%r26 %r28 -408
 	ilw.s	%r0 %f0 l.92
+	lw	%r26 %r5 -320
+	lw.s	%r26 %f2 -324
+	lw.s	%r26 %f3 -328
+	lw.s	%r26 %f4 -332
+	lw	%r26 %r6 -404
+	lw	%r26 %r4 -340
+	lw	%r26 %r3 -344
+	lw	%r26 %r7 -348
+	lw.s	%r26 %f6 -352
+	lw.s	%r26 %f5 -356
+	lw	%r26 %r11 -360
+	lw	%r26 %r8 -364
+	lw	%r26 %r12 -368
+	lw	%r26 %r13 -372
+	lw.s	%r26 %f7 -376
+	lw.s	%r26 %f8 -380
+	lw	%r26 %r9 -384
+	lw	%r26 %r14 -388
+	lw	%r26 %r10 -392
 	fbge	%f0 %f7 tail_b.2937
 tail_b.2936 :
 	addi	%r0 %r1 1
@@ -37628,73 +37466,42 @@ tail_b.2945 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r2 -1
-	sw	%r26 %r11 -52
-	sw	%r26 %r13 -48
-	sw	%r26 %r12 -44
-	sw	%r26 %r10 -40
-	sw	%r26 %r8 -36
-	sw	%r26 %r9 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
+	sw	%r26 %r5 -408
+	sw.s	%r26 %f2 -412
+	sw.s	%r26 %f3 -416
+	sw.s	%r26 %f4 -420
+	sw	%r26 %r6 -424
+	sw	%r26 %r4 -428
+	sw	%r26 %r3 -432
+	sw	%r26 %r7 -436
+	sw	%r26 %r9 -440
+	sw	%r26 %r8 -444
+	sw	%r26 %r10 -448
+	sw	%r26 %r12 -452
+	sw	%r26 %r13 -456
+	sw	%r26 %r11 -460
 	mov	%r11 %r1
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -464
+	addi	%r26 %r26 -468
 	jal	setup_startp_constants.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw	%r26 %r11 -52
-	lw	%r26 %r13 -48
-	lw	%r26 %r12 -44
-	lw	%r26 %r10 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r9 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 468
+	lw	%r26 %r28 -464
 	addi	%r0 %r1 118
-	sw	%r26 %r10 -40
-	sw	%r26 %r8 -36
-	sw	%r26 %r9 -32
-	sw	%r26 %r7 -28
-	sw	%r26 %r3 -24
-	sw	%r26 %r4 -20
-	sw	%r26 %r6 -16
-	sw.s	%r26 %f4 -12
-	sw.s	%r26 %f3 -8
-	sw.s	%r26 %f2 -4
-	sw	%r26 %r5 0
+	lw	%r26 %r12 -452
+	lw	%r26 %r13 -456
+	lw	%r26 %r11 -460
 	mov	%r1 %r4
 	mov	%r11 %r3
 	mov	%r13 %r2
 	mov	%r12 %r1
-	sw	%r26 %r28 -44
-	addi	%r26 %r26 -48
+	sw	%r26 %r28 -464
+	addi	%r26 %r26 -468
 	jal	iter_trace_diffuse_rays.0
-	addi	%r26 %r26 48
-	lw	%r26 %r28 -44
-	lw	%r26 %r10 -40
-	lw	%r26 %r8 -36
-	lw	%r26 %r9 -32
-	lw	%r26 %r7 -28
-	lw	%r26 %r3 -24
-	lw	%r26 %r4 -20
-	lw	%r26 %r6 -16
-	lw.s	%r26 %f4 -12
-	lw.s	%r26 %f3 -8
-	lw.s	%r26 %f2 -4
-	lw	%r26 %r5 0
+	addi	%r26 %r26 468
+	lw	%r26 %r28 -464
+	lw	%r26 %r9 -440
 	lw	%r9 %r2 20
+	lw	%r26 %r10 -448
 	slli	%r10 %r1 2
 	add	%r2 %r1 %r1
 	lw	%r1 %r2 0
@@ -37707,6 +37514,15 @@ tail_b.2945 :
 	lw.s	%r0 %f0 600
 	addi	%r2 %r1 8
 	sw.s	%r1 %f0 0
+	lw	%r26 %r5 -408
+	lw.s	%r26 %f2 -412
+	lw.s	%r26 %f3 -416
+	lw.s	%r26 %f4 -420
+	lw	%r26 %r6 -424
+	lw	%r26 %r4 -428
+	lw	%r26 %r3 -432
+	lw	%r26 %r7 -436
+	lw	%r26 %r8 -444
 	j	tail_b.2946
 tail_b.2944 :
 tail_b.2946 :
@@ -37921,19 +37737,19 @@ tail_b.2959 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r1 -1
-	sw	%r26 %r3 -48
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
 	sw	%r26 %r2 0
+	sw	%r26 %r8 -4
+	sw	%r26 %r4 -8
+	sw	%r26 %r7 -12
+	sw	%r26 %r6 -16
+	sw	%r26 %r10 -20
+	sw	%r26 %r12 -24
+	sw	%r26 %r11 -28
+	sw	%r26 %r13 -32
+	sw	%r26 %r14 -36
+	sw	%r26 %r5 -40
+	sw	%r26 %r9 -44
+	sw	%r26 %r3 -48
 	mov	%r1 %r2
 	mov	%r9 %r1
 	sw	%r26 %r28 -52
@@ -37941,53 +37757,33 @@ tail_b.2959 :
 	jal	setup_startp_constants.0
 	addi	%r26 %r26 56
 	lw	%r26 %r28 -52
-	lw	%r26 %r3 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
 	addi	%r0 %r1 118
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	lw	%r26 %r3 -48
+	lw	%r26 %r5 -40
+	lw	%r26 %r9 -44
+	sw	%r26 %r5 -52
+	sw	%r26 %r9 -56
 	mov	%r1 %r4
 	mov	%r5 %r2
 	mov	%r3 %r1
 	mov	%r9 %r3
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -60
+	addi	%r26 %r26 -64
 	jal	iter_trace_diffuse_rays.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
+	addi	%r26 %r26 64
+	lw	%r26 %r28 -60
 	lw	%r26 %r2 0
+	lw	%r26 %r8 -4
+	lw	%r26 %r4 -8
+	lw	%r26 %r7 -12
+	lw	%r26 %r6 -16
+	lw	%r26 %r10 -20
+	lw	%r26 %r12 -24
+	lw	%r26 %r11 -28
+	lw	%r26 %r13 -32
+	lw	%r26 %r14 -36
+	lw	%r26 %r5 -52
+	lw	%r26 %r9 -56
 	j	branching_b.1857
 tail_b.2958 :
 tail_b.2970 :
@@ -38011,73 +37807,53 @@ tail_b.2961 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r1 -1
-	sw	%r26 %r3 -48
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -60
+	sw	%r26 %r8 -64
+	sw	%r26 %r4 -68
+	sw	%r26 %r7 -72
+	sw	%r26 %r6 -76
+	sw	%r26 %r10 -80
+	sw	%r26 %r12 -84
+	sw	%r26 %r11 -88
+	sw	%r26 %r13 -92
+	sw	%r26 %r14 -96
+	sw	%r26 %r5 -100
+	sw	%r26 %r9 -104
+	sw	%r26 %r3 -108
 	mov	%r1 %r2
 	mov	%r9 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -112
+	addi	%r26 %r26 -116
 	jal	setup_startp_constants.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r3 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 116
+	lw	%r26 %r28 -112
 	addi	%r0 %r1 118
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	lw	%r26 %r3 -108
+	lw	%r26 %r5 -100
+	lw	%r26 %r9 -104
+	sw	%r26 %r5 -112
+	sw	%r26 %r9 -116
 	mov	%r1 %r4
 	mov	%r5 %r2
 	mov	%r3 %r1
 	mov	%r9 %r3
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -120
+	addi	%r26 %r26 -124
 	jal	iter_trace_diffuse_rays.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 124
+	lw	%r26 %r28 -120
+	lw	%r26 %r2 -60
+	lw	%r26 %r8 -64
+	lw	%r26 %r4 -68
+	lw	%r26 %r7 -72
+	lw	%r26 %r6 -76
+	lw	%r26 %r10 -80
+	lw	%r26 %r12 -84
+	lw	%r26 %r11 -88
+	lw	%r26 %r13 -92
+	lw	%r26 %r14 -96
+	lw	%r26 %r5 -112
+	lw	%r26 %r9 -116
 branching_b.1858 :
 	addi	%r0 %r1 2
 	bne	%r14 %r1 tail_b.2963
@@ -38096,73 +37872,53 @@ tail_b.2963 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r1 -1
-	sw	%r26 %r3 -48
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -120
+	sw	%r26 %r8 -124
+	sw	%r26 %r4 -128
+	sw	%r26 %r7 -132
+	sw	%r26 %r6 -136
+	sw	%r26 %r10 -140
+	sw	%r26 %r12 -144
+	sw	%r26 %r11 -148
+	sw	%r26 %r13 -152
+	sw	%r26 %r14 -156
+	sw	%r26 %r5 -160
+	sw	%r26 %r9 -164
+	sw	%r26 %r3 -168
 	mov	%r1 %r2
 	mov	%r9 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -172
+	addi	%r26 %r26 -176
 	jal	setup_startp_constants.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r3 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 176
+	lw	%r26 %r28 -172
 	addi	%r0 %r1 118
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	lw	%r26 %r3 -168
+	lw	%r26 %r5 -160
+	lw	%r26 %r9 -164
+	sw	%r26 %r5 -172
+	sw	%r26 %r9 -176
 	mov	%r1 %r4
 	mov	%r5 %r2
 	mov	%r3 %r1
 	mov	%r9 %r3
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -180
+	addi	%r26 %r26 -184
 	jal	iter_trace_diffuse_rays.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 184
+	lw	%r26 %r28 -180
+	lw	%r26 %r2 -120
+	lw	%r26 %r8 -124
+	lw	%r26 %r4 -128
+	lw	%r26 %r7 -132
+	lw	%r26 %r6 -136
+	lw	%r26 %r10 -140
+	lw	%r26 %r12 -144
+	lw	%r26 %r11 -148
+	lw	%r26 %r13 -152
+	lw	%r26 %r14 -156
+	lw	%r26 %r5 -172
+	lw	%r26 %r9 -176
 branching_b.1859 :
 	addi	%r0 %r1 3
 	bne	%r14 %r1 tail_b.2965
@@ -38181,73 +37937,53 @@ tail_b.2965 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r1 -1
-	sw	%r26 %r3 -48
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -180
+	sw	%r26 %r8 -184
+	sw	%r26 %r4 -188
+	sw	%r26 %r7 -192
+	sw	%r26 %r6 -196
+	sw	%r26 %r10 -200
+	sw	%r26 %r12 -204
+	sw	%r26 %r11 -208
+	sw	%r26 %r13 -212
+	sw	%r26 %r14 -216
+	sw	%r26 %r5 -220
+	sw	%r26 %r9 -224
+	sw	%r26 %r3 -228
 	mov	%r1 %r2
 	mov	%r9 %r1
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r28 -232
+	addi	%r26 %r26 -236
 	jal	setup_startp_constants.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw	%r26 %r3 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 236
+	lw	%r26 %r28 -232
 	addi	%r0 %r1 118
-	sw	%r26 %r9 -44
-	sw	%r26 %r5 -40
-	sw	%r26 %r14 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	lw	%r26 %r3 -228
+	lw	%r26 %r5 -220
+	lw	%r26 %r9 -224
+	sw	%r26 %r5 -232
+	sw	%r26 %r9 -236
 	mov	%r1 %r4
 	mov	%r5 %r2
 	mov	%r3 %r1
 	mov	%r9 %r3
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -240
+	addi	%r26 %r26 -244
 	jal	iter_trace_diffuse_rays.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r9 -44
-	lw	%r26 %r5 -40
-	lw	%r26 %r14 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 244
+	lw	%r26 %r28 -240
+	lw	%r26 %r2 -180
+	lw	%r26 %r8 -184
+	lw	%r26 %r4 -188
+	lw	%r26 %r7 -192
+	lw	%r26 %r6 -196
+	lw	%r26 %r10 -200
+	lw	%r26 %r12 -204
+	lw	%r26 %r11 -208
+	lw	%r26 %r13 -212
+	lw	%r26 %r14 -216
+	lw	%r26 %r5 -232
+	lw	%r26 %r9 -236
 branching_b.1860 :
 	bne	%r14 %r12 tail_b.2967
 tail_b.2968 :
@@ -38265,65 +38001,47 @@ tail_b.2967 :
 	sw.s	%r0 %f0 656
 	lw	%r0 %r1 0
 	addi	%r1 %r1 -1
-	sw	%r26 %r3 -44
-	sw	%r26 %r9 -40
-	sw	%r26 %r5 -36
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -240
+	sw	%r26 %r8 -244
+	sw	%r26 %r4 -248
+	sw	%r26 %r7 -252
+	sw	%r26 %r6 -256
+	sw	%r26 %r10 -260
+	sw	%r26 %r12 -264
+	sw	%r26 %r11 -268
+	sw	%r26 %r13 -272
+	sw	%r26 %r5 -276
+	sw	%r26 %r9 -280
+	sw	%r26 %r3 -284
 	mov	%r1 %r2
 	mov	%r9 %r1
-	sw	%r26 %r28 -48
-	addi	%r26 %r26 -52
+	sw	%r26 %r28 -288
+	addi	%r26 %r26 -292
 	jal	setup_startp_constants.0
-	addi	%r26 %r26 52
-	lw	%r26 %r28 -48
-	lw	%r26 %r3 -44
-	lw	%r26 %r9 -40
-	lw	%r26 %r5 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 292
+	lw	%r26 %r28 -288
 	addi	%r0 %r1 118
-	sw	%r26 %r13 -32
-	sw	%r26 %r11 -28
-	sw	%r26 %r12 -24
-	sw	%r26 %r10 -20
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	lw	%r26 %r3 -284
+	lw	%r26 %r5 -276
+	lw	%r26 %r9 -280
 	mov	%r1 %r4
 	mov	%r5 %r2
 	mov	%r3 %r1
 	mov	%r9 %r3
-	sw	%r26 %r28 -36
-	addi	%r26 %r26 -40
+	sw	%r26 %r28 -288
+	addi	%r26 %r26 -292
 	jal	iter_trace_diffuse_rays.0
-	addi	%r26 %r26 40
-	lw	%r26 %r28 -36
-	lw	%r26 %r13 -32
-	lw	%r26 %r11 -28
-	lw	%r26 %r12 -24
-	lw	%r26 %r10 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 292
+	lw	%r26 %r28 -288
+	lw	%r26 %r2 -240
+	lw	%r26 %r8 -244
+	lw	%r26 %r4 -248
+	lw	%r26 %r7 -252
+	lw	%r26 %r6 -256
+	lw	%r26 %r10 -260
+	lw	%r26 %r12 -264
+	lw	%r26 %r11 -268
+	lw	%r26 %r13 -272
 tail_b.2969 :
 	slli	%r11 %r1 2
 	add	%r13 %r1 %r1
@@ -38655,22 +38373,22 @@ tail_b.2978 :
 	slli	%r6 %r1 2
 	add	%r4 %r1 %r1
 	lw	%r1 %r1 0
-	sw	%r26 %r6 -16
-	sw	%r26 %r7 -12
-	sw	%r26 %r4 -8
-	sw	%r26 %r8 -4
-	sw	%r26 %r2 0
+	sw	%r26 %r2 -288
+	sw	%r26 %r8 -292
+	sw	%r26 %r4 -296
+	sw	%r26 %r7 -300
+	sw	%r26 %r6 -304
 	mov	%r11 %r2
-	sw	%r26 %r28 -20
-	addi	%r26 %r26 -24
+	sw	%r26 %r28 -308
+	addi	%r26 %r26 -312
 	jal	do_without_neighbors.0
-	addi	%r26 %r26 24
-	lw	%r26 %r28 -20
-	lw	%r26 %r6 -16
-	lw	%r26 %r7 -12
-	lw	%r26 %r4 -8
-	lw	%r26 %r8 -4
-	lw	%r26 %r2 0
+	addi	%r26 %r26 312
+	lw	%r26 %r28 -308
+	lw	%r26 %r2 -288
+	lw	%r26 %r8 -292
+	lw	%r26 %r4 -296
+	lw	%r26 %r7 -300
+	lw	%r26 %r6 -304
 	j	postloop_b.62
 tail_b.2981 :
 	addi	%r11 %r1 1
@@ -39325,21 +39043,21 @@ tail_b.3034 :
 	j	calc_dirvecs_loop.0
 branching_b.1899 :
 	mul.s	%f6 %f0 %f0
-	sw.s	%r26 %f0 -56
-	sw.s	%r26 %f8 -52
-	sw.s	%r26 %f9 -48
-	sw	%r26 %r2 -44
-	sw	%r26 %r4 -40
-	sw	%r26 %r7 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f7 -28
-	sw.s	%r26 %f2 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
 	sw	%r26 %r6 0
+	sw.s	%r26 %f3 -4
+	sw	%r26 %r5 -8
+	sw	%r26 %r1 -12
+	sw	%r26 %r3 -16
+	sw.s	%r26 %f4 -20
+	sw.s	%r26 %f2 -24
+	sw.s	%r26 %f7 -28
+	sw.s	%r26 %f6 -32
+	sw	%r26 %r7 -36
+	sw	%r26 %r4 -40
+	sw	%r26 %r2 -44
+	sw.s	%r26 %f9 -48
+	sw.s	%r26 %f8 -52
+	sw.s	%r26 %f0 -56
 	sw	%r26 %r28 -60
 	addi	%r26 %r26 -64
 	jal	sin.0
@@ -39347,62 +39065,34 @@ branching_b.1899 :
 	lw	%r26 %r28 -60
 	mov.s	%f0 %f1
 	lw.s	%r26 %f0 -56
-	lw.s	%r26 %f8 -52
-	lw.s	%r26 %f9 -48
-	lw	%r26 %r2 -44
-	lw	%r26 %r4 -40
-	lw	%r26 %r7 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f7 -28
-	lw.s	%r26 %f2 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
-	sw.s	%r26 %f1 -56
-	sw.s	%r26 %f8 -52
-	sw.s	%r26 %f9 -48
-	sw	%r26 %r2 -44
-	sw	%r26 %r4 -40
-	sw	%r26 %r7 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f7 -28
-	sw.s	%r26 %f2 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw.s	%r26 %f1 -60
+	sw	%r26 %r28 -64
+	addi	%r26 %r26 -68
 	jal	cos.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw.s	%r26 %f1 -56
-	lw.s	%r26 %f8 -52
-	lw.s	%r26 %f9 -48
-	lw	%r26 %r2 -44
-	lw	%r26 %r4 -40
-	lw	%r26 %r7 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f7 -28
-	lw.s	%r26 %f2 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	addi	%r26 %r26 68
+	lw	%r26 %r28 -64
+	lw.s	%r26 %f1 -60
 	div.s	%f0 %f1 %f0
+	lw.s	%r26 %f9 -48
 	mul.s	%f9 %f0 %f9
+	lw	%r26 %r2 -44
 	addi	%r2 %r2 1
 	mul.s	%f9 %f9 %f0
+	lw.s	%r26 %f7 -28
 	add.s	%f7 %f0 %f0
 	sqrt.s	%f0 %f10
+	lw.s	%r26 %f8 -52
 	div.s	%f10 %f8 %f11
+	lw	%r26 %r6 0
+	lw.s	%r26 %f3 -4
+	lw	%r26 %r5 -8
+	lw	%r26 %r1 -12
+	lw	%r26 %r3 -16
+	lw.s	%r26 %f4 -20
+	lw.s	%r26 %f2 -24
+	lw.s	%r26 %f6 -32
+	lw	%r26 %r7 -36
+	lw	%r26 %r4 -40
 	fbg	%f2 %f11 branching_b.1902
 branching_b.1900 :
 	ilw.s	%r0 %f0 l.80
@@ -39607,161 +39297,107 @@ tail_b.3030 :
 	mul.s	%f8 %f0 %f0
 tail_b.3031 :
 	mul.s	%f3 %f0 %f1
-	sw.s	%r26 %f1 -56
-	sw.s	%r26 %f10 -52
-	sw	%r26 %r2 -48
-	sw.s	%r26 %f9 -44
-	sw	%r26 %r4 -40
-	sw	%r26 %r7 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f7 -28
-	sw.s	%r26 %f2 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r6 -64
+	sw.s	%r26 %f3 -68
+	sw	%r26 %r5 -72
+	sw	%r26 %r1 -76
+	sw	%r26 %r3 -80
+	sw.s	%r26 %f4 -84
+	sw.s	%r26 %f2 -88
+	sw.s	%r26 %f7 -92
+	sw.s	%r26 %f6 -96
+	sw	%r26 %r7 -100
+	sw	%r26 %r4 -104
+	sw.s	%r26 %f9 -108
+	sw	%r26 %r2 -112
+	sw.s	%r26 %f10 -116
+	sw.s	%r26 %f1 -120
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -124
+	addi	%r26 %r26 -128
 	jal	sin.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
-	lw.s	%r26 %f1 -56
-	lw.s	%r26 %f10 -52
-	lw	%r26 %r2 -48
-	lw.s	%r26 %f9 -44
-	lw	%r26 %r4 -40
-	lw	%r26 %r7 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f7 -28
-	lw.s	%r26 %f2 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
-	sw.s	%r26 %f0 -56
-	sw.s	%r26 %f10 -52
-	sw	%r26 %r2 -48
-	sw.s	%r26 %f9 -44
-	sw	%r26 %r4 -40
-	sw	%r26 %r7 -36
-	sw.s	%r26 %f6 -32
-	sw.s	%r26 %f7 -28
-	sw.s	%r26 %f2 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	addi	%r26 %r26 128
+	lw	%r26 %r28 -124
+	lw.s	%r26 %f1 -120
+	sw.s	%r26 %f0 -124
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -60
-	addi	%r26 %r26 -64
+	sw	%r26 %r28 -128
+	addi	%r26 %r26 -132
 	jal	cos.0
-	addi	%r26 %r26 64
-	lw	%r26 %r28 -60
+	addi	%r26 %r26 132
+	lw	%r26 %r28 -128
 	mov.s	%f0 %f1
-	lw.s	%r26 %f0 -56
-	lw.s	%r26 %f10 -52
-	lw	%r26 %r2 -48
-	lw.s	%r26 %f9 -44
-	lw	%r26 %r4 -40
-	lw	%r26 %r7 -36
-	lw.s	%r26 %f6 -32
-	lw.s	%r26 %f7 -28
-	lw.s	%r26 %f2 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	lw.s	%r26 %f0 -124
 	div.s	%f1 %f0 %f0
+	lw.s	%r26 %f10 -116
 	mul.s	%f10 %f0 %f1
+	lw	%r26 %r2 -112
+	lw.s	%r26 %f9 -108
 	mov.s	%f9 %f0
+	lw	%r26 %r6 -64
+	lw.s	%r26 %f3 -68
+	lw	%r26 %r5 -72
+	lw	%r26 %r1 -76
+	lw	%r26 %r3 -80
+	lw.s	%r26 %f4 -84
+	lw.s	%r26 %f2 -88
+	lw.s	%r26 %f7 -92
+	lw.s	%r26 %f6 -96
+	lw	%r26 %r7 -100
+	lw	%r26 %r4 -104
 	j	calc_dirvec_loop.1
 branching_b.1888 :
 	mul.s	%f6 %f0 %f1
-	sw.s	%r26 %f1 -52
-	sw.s	%r26 %f7 -48
-	sw.s	%r26 %f8 -44
-	sw.s	%r26 %f9 -40
-	sw	%r26 %r4 -36
-	sw	%r26 %r2 -32
-	sw.s	%r26 %f2 -28
-	sw.s	%r26 %f6 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	sw	%r26 %r6 -128
+	sw.s	%r26 %f3 -132
+	sw	%r26 %r5 -136
+	sw	%r26 %r1 -140
+	sw	%r26 %r3 -144
+	sw.s	%r26 %f4 -148
+	sw.s	%r26 %f6 -152
+	sw.s	%r26 %f2 -156
+	sw	%r26 %r2 -160
+	sw	%r26 %r4 -164
+	sw.s	%r26 %f9 -168
+	sw.s	%r26 %f8 -172
+	sw.s	%r26 %f7 -176
+	sw.s	%r26 %f1 -180
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -184
+	addi	%r26 %r26 -188
 	jal	sin.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
-	lw.s	%r26 %f1 -52
-	lw.s	%r26 %f7 -48
-	lw.s	%r26 %f8 -44
-	lw.s	%r26 %f9 -40
-	lw	%r26 %r4 -36
-	lw	%r26 %r2 -32
-	lw.s	%r26 %f2 -28
-	lw.s	%r26 %f6 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
-	sw.s	%r26 %f0 -52
-	sw.s	%r26 %f7 -48
-	sw.s	%r26 %f8 -44
-	sw.s	%r26 %f9 -40
-	sw	%r26 %r4 -36
-	sw	%r26 %r2 -32
-	sw.s	%r26 %f2 -28
-	sw.s	%r26 %f6 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
+	addi	%r26 %r26 188
+	lw	%r26 %r28 -184
+	lw.s	%r26 %f1 -180
+	sw.s	%r26 %f0 -184
 	mov.s	%f1 %f0
-	sw	%r26 %r28 -56
-	addi	%r26 %r26 -60
+	sw	%r26 %r28 -188
+	addi	%r26 %r26 -192
 	jal	cos.0
-	addi	%r26 %r26 60
-	lw	%r26 %r28 -56
+	addi	%r26 %r26 192
+	lw	%r26 %r28 -188
 	mov.s	%f0 %f1
-	lw.s	%r26 %f0 -52
-	lw.s	%r26 %f7 -48
-	lw.s	%r26 %f8 -44
-	lw.s	%r26 %f9 -40
-	lw	%r26 %r4 -36
-	lw	%r26 %r2 -32
-	lw.s	%r26 %f2 -28
-	lw.s	%r26 %f6 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	lw.s	%r26 %f0 -184
 	div.s	%f1 %f0 %f0
+	lw.s	%r26 %f8 -172
 	mul.s	%f8 %f0 %f8
+	lw	%r26 %r4 -164
 	addi	%r4 %r4 1
 	mul.s	%f8 %f8 %f0
+	lw.s	%r26 %f9 -168
 	add.s	%f9 %f0 %f0
 	sqrt.s	%f0 %f9
+	lw.s	%r26 %f7 -176
 	div.s	%f9 %f7 %f10
+	lw	%r26 %r6 -128
+	lw.s	%r26 %f3 -132
+	lw	%r26 %r5 -136
+	lw	%r26 %r1 -140
+	lw	%r26 %r3 -144
+	lw.s	%r26 %f4 -148
+	lw.s	%r26 %f6 -152
+	lw.s	%r26 %f2 -156
+	lw	%r26 %r2 -160
 	fbg	%f2 %f10 branching_b.1891
 branching_b.1889 :
 	ilw.s	%r0 %f0 l.80
@@ -39966,71 +39602,47 @@ tail_b.3016 :
 	mul.s	%f7 %f0 %f0
 tail_b.3017 :
 	mul.s	%f3 %f0 %f0
-	sw.s	%r26 %f0 -48
-	sw.s	%r26 %f9 -44
-	sw	%r26 %r4 -40
-	sw.s	%r26 %f8 -36
-	sw	%r26 %r2 -32
-	sw.s	%r26 %f2 -28
-	sw.s	%r26 %f6 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	sw	%r26 %r6 -188
+	sw.s	%r26 %f3 -192
+	sw	%r26 %r5 -196
+	sw	%r26 %r1 -200
+	sw	%r26 %r3 -204
+	sw.s	%r26 %f4 -208
+	sw.s	%r26 %f6 -212
+	sw.s	%r26 %f2 -216
+	sw	%r26 %r2 -220
+	sw.s	%r26 %f8 -224
+	sw	%r26 %r4 -228
+	sw.s	%r26 %f9 -232
+	sw.s	%r26 %f0 -236
+	sw	%r26 %r28 -240
+	addi	%r26 %r26 -244
 	jal	sin.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
+	addi	%r26 %r26 244
+	lw	%r26 %r28 -240
 	mov.s	%f0 %f1
-	lw.s	%r26 %f0 -48
-	lw.s	%r26 %f9 -44
-	lw	%r26 %r4 -40
-	lw.s	%r26 %f8 -36
-	lw	%r26 %r2 -32
-	lw.s	%r26 %f2 -28
-	lw.s	%r26 %f6 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
-	sw.s	%r26 %f1 -48
-	sw.s	%r26 %f9 -44
-	sw	%r26 %r4 -40
-	sw.s	%r26 %f8 -36
-	sw	%r26 %r2 -32
-	sw.s	%r26 %f2 -28
-	sw.s	%r26 %f6 -24
-	sw.s	%r26 %f4 -20
-	sw	%r26 %r3 -16
-	sw	%r26 %r1 -12
-	sw	%r26 %r5 -8
-	sw.s	%r26 %f3 -4
-	sw	%r26 %r6 0
-	sw	%r26 %r28 -52
-	addi	%r26 %r26 -56
+	lw.s	%r26 %f0 -236
+	sw.s	%r26 %f1 -240
+	sw	%r26 %r28 -244
+	addi	%r26 %r26 -248
 	jal	cos.0
-	addi	%r26 %r26 56
-	lw	%r26 %r28 -52
-	lw.s	%r26 %f1 -48
-	lw.s	%r26 %f9 -44
-	lw	%r26 %r4 -40
-	lw.s	%r26 %f8 -36
-	lw	%r26 %r2 -32
-	lw.s	%r26 %f2 -28
-	lw.s	%r26 %f6 -24
-	lw.s	%r26 %f4 -20
-	lw	%r26 %r3 -16
-	lw	%r26 %r1 -12
-	lw	%r26 %r5 -8
-	lw.s	%r26 %f3 -4
-	lw	%r26 %r6 0
+	addi	%r26 %r26 248
+	lw	%r26 %r28 -244
+	lw.s	%r26 %f1 -240
 	div.s	%f0 %f1 %f0
+	lw.s	%r26 %f9 -232
 	mul.s	%f9 %f0 %f1
+	lw	%r26 %r4 -228
+	lw.s	%r26 %f8 -224
+	lw	%r26 %r6 -188
+	lw.s	%r26 %f3 -192
+	lw	%r26 %r5 -196
+	lw	%r26 %r1 -200
+	lw	%r26 %r3 -204
+	lw.s	%r26 %f4 -208
+	lw.s	%r26 %f6 -212
+	lw.s	%r26 %f2 -216
+	lw	%r26 %r2 -220
 	j	calc_dirvec_loop.2
 postloop_b.66 :
 return_point.22 :
