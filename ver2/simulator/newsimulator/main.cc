@@ -1255,7 +1255,94 @@ while(1)
 }
 
 //---end fast option ---
-	
+
+
+if(argc==4){
+  if(strcmp(argv[2], "-countl")==0){
+    int block = atoi(argv[3]);
+int caa = 0;
+for(int now = 0; now < instr_num; now++)
+	{
+
+    if (now == block) caa++;
+
+    unsigned int one_instruction = inst_mem[now];
+		if(one_instruction == 0)  {cout << "ret" << endl; break;}
+    /*
+    if(one_instruction == 1610613852){cout << "sin" << endl;freg[0] = sin(freg[0]);}
+    else if (one_instruction == 1610613931){cout << "cos" << endl;freg[0] = cos(freg[0]);}
+    else if (one_instruction == 1610614040){cout << "atan" << endl;freg[0] = atan(freg[0]);}
+    else{
+    */
+		switch(one_instruction >> 26){
+			case 0b000000 :
+				//最初のopecodeがspecialつまり000000だった場合
+				exec_special_code(one_instruction,pc,&now,reg,freg,&fin,&fout);
+				break;
+			case 0b010001 :
+				//code for fpu
+				exec_fpu_code(one_instruction,pc,reg,freg);
+				break;
+			default :
+				//最初の6文字で命令の判別が可能な場合
+				exec_normal_code(one_instruction,pc,reg,freg,&now,mem,inst_mem,
+            howmany_label,label_list,array_num);
+				break;
+		}
+
+
+    howmany_instructions++;
+    if(howmany_instructions % 10000000 == 0){
+      cout << howmany_instructions << endl;
+     /*
+      cout << "---------------------------" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%5 == 0) { cout << "" << endl; }
+      cout << "r" << i << " = " << reg[i] << "  ";
+    }
+    cout << "" << endl;
+    for(int i = 0; i<32; i++){
+      if (i%3 == 0) { cout << "" << endl; }
+      cout << "f" << i << " = " << freg[i] << "  ";
+    }
+    */
+    }
+	}
+  /*
+  if (fclose(fout) == EOF) {
+   		perror("close error");
+   		exit(1);
+ 	}
+  */
+
+
+  cout << "number of executed instructions is " << howmany_instructions << endl;
+cout << "reach this line " <<caa << " times "<< endl;
+  fin.close();
+  fout.close();
+  free(mem);
+  free(inst_mem);
+  free(label_list);
+  free(execute_instruction);
+  free(instruction_set);
+  free(reg);
+  free(freg);
+
+	return 0;
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+
 for(int now = 0; now < instr_num; now++)
 	{
 
@@ -1356,7 +1443,6 @@ for(int now = 0; now < instr_num; now++)
 */
 
   cout << "number of executed instructions is " << howmany_instructions << endl;
-
   fin.close();
   fout.close();
   free(mem);
